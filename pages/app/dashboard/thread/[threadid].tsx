@@ -8,14 +8,13 @@ export default function DashboardPage() {
   const router = useRouter();
 
   const { threadid } = router.query;
+
   if (threadid === undefined || isArray(threadid)) {
-    router.replace("/app/dashboard");
     return <></>;
   }
 
   const threadNum = parseInt(threadid, 10);
   if (isNaN(threadNum)) {
-    router.replace("/app/dashboard");
     return <></>;
   }
 
