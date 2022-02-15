@@ -64,7 +64,7 @@ export default async function messageNotification(messageId: bigint) {
         "<strong>Message Notification</strong><br>",
         subject ? `<p>${subject}</p>` : "",
         ...bodyOfMessage
-          .replaceAll("\r\n", "\n")
+          .replace(/\r\n/g, "\n")
           .split("\n")
           .map((t) => `<p>${t}</p>`),
         `<p>https://${process.env.DOMAIN}/app/dashboard/thread/${threadId}</p>`,
@@ -91,7 +91,7 @@ export default async function messageNotification(messageId: bigint) {
         subject: `New message from ${message.Thread.Team.name}`,
         html: [
           ...body
-            .replaceAll("\r\n", "\n")
+            .replace(/\r\n/g, "\n")
             .split("\n")
             .map((t) => `<p>${t}</p>`),
           `<p>Need to talk securely? ${secureURL}</p>`,
