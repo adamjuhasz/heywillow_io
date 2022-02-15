@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { AliasEmail } from "@prisma/client";
 import { DotsVerticalIcon } from "@heroicons/react/solid";
 import { CheckIcon, ClockIcon } from "@heroicons/react/outline";
@@ -10,6 +11,8 @@ import { Body, ThreadStateType } from "pages/api/v1/thread/state";
 
 type ExtraSupa = SupabaseThread & { AliasEmail: AliasEmail };
 export type { ExtraSupa };
+
+export const width = 166;
 
 interface Props {
   t: ExtraSupa;
@@ -66,7 +69,8 @@ export default function ThreadPill({
 
   return (
     <div
-      className="mr-4 flex h-72 w-40 flex-shrink-0 flex-col justify-end"
+      className="mr-4 flex h-[288px] flex-shrink-0 flex-col justify-end"
+      style={{ width: width }}
       onClick={() => {
         setSelected(Number(t.id));
       }}
@@ -212,16 +216,18 @@ export default function ThreadPill({
           {previewText
             .replace(/\r\n/g, "\n")
             .split("\n")
-            .map((t, idx) =>
-              idx === 0 ? (
-                <span>{t}</span>
-              ) : (
-                <>
-                  <br />
+            .map((t, idx) => (
+              <Fragment key={`${t}-${idx}`}>
+                {idx === 0 ? (
                   <span>{t}</span>
-                </>
-              )
-            )}
+                ) : (
+                  <>
+                    <br />
+                    <span>{t}</span>
+                  </>
+                )}
+              </Fragment>
+            ))}
         </div>
       </div>
     </div>
