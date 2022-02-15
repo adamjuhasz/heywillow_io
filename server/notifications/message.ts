@@ -55,6 +55,8 @@ export default async function messageNotification(messageId: bigint) {
       return;
     }
 
+    const threadId = Number(message.threadId);
+
     return sendPostmarkEmail({
       to: m.Profile?.email || "",
       subject: shortText,
@@ -62,7 +64,7 @@ export default async function messageNotification(messageId: bigint) {
         "<strong>Message Notification</strong><br>",
         subject ? `<p>${subject}</p>` : "",
         `<p>${bodyOfMessage}</p>`,
-        `<p>https://${process.env.DOMAIN}/app/dashboard</p>`,
+        `<p>https://${process.env.DOMAIN}/app/dashboard/thread/${threadId}</p>`,
       ],
     });
   });
