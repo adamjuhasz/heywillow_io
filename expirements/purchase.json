@@ -1,0 +1,17 @@
+{
+  "type": "attribute",
+  "category": "test",
+  "related": ["customer_132", "customer_345"],
+  "id": "purchase_837",
+  "attributes": {
+    "amount": 123.12,
+    "mcc": "4829",
+    "merchant": {
+      "name": "Amazon.com",
+      "city": "Seattle",
+      "region": "WA",
+      "country": "USA"
+    },
+    "description": "Amzn Order #14554"
+  }
+}

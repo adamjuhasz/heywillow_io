@@ -1,0 +1,78 @@
+import { gmail_v1 } from "@googleapis/gmail";
+import { defaultTo } from "lodash";
+
+import { GmailMessage } from "server/addEmailToDB";
+
+import getGoogleMessageText from "./getMessageText";
+import getGoogleMessageEmailerNameFromHeader from "./getName";
+import getGoogleMessageEmailFromHeader from "./getMessage";
+import getGmailAttachments from "./getAttachments";
+import { logger } from "utils/pino";
+
+export default async function getMessageWithId(
+  authedGmail: gmail_v1.Gmail,
+  gmailMessageId: string,
+  _gmailThreadId?: string
+): Promise<GmailMessage | null> {
+  const rawGmail = await authedGmail.users.messages.get({
+    userId: "me",
+    id: gmailMessageId,
+    format: "full",
+  });
+
+  logger.trace("users.messages.get %s %o", gmailMessageId, rawGmail.data);
+  const labels = rawGmail.data.labelIds;
+  if (labels) {
+    if (labels.findIndex((v) => v === "SENT") !== -1) {
+      logger.trace(`Skipping ${gmailMessageId} because labelled "SENT"`);
+      return null;
+    }
+
+    if (labels.findIndex((v) => v === "DRAFT") !== -1) {
+      logger.trace(`Skipping ${gmailMessageId} because labelled "DRAFT"`);
+      return null;
+    }
+  }
+
+  const body = getGoogleMessageText(rawGmail.data);
+  const from = rawGmail.data.payload?.headers?.find(
+    (header) => header.name === "From"
+  )?.value;
+  const to = rawGmail.data.payload?.headers?.find(
+    (header) => header.name === "To"
+  )?.value;
+  const subject = rawGmail.data.payload?.headers?.find(
+    (header) => header.name === "Subject"
+  )?.value;
+  const datetime = rawGmail.data.internalDate;
+  const messageId = rawGmail.data.payload?.headers?.find(
+    (header) => header.name === "Message-ID"
+  )?.value;
+
+  const attaches = await getGmailAttachments(authedGmail, rawGmail.data);
+
+  const msg: GmailMessage = {
+    body,
+    subject: defaultTo(subject, ""),
+    from: defaultTo(getGoogleMessageEmailFromHeader("From", rawGmail.data), ""),
+    fromName: defaultTo(
+      getGoogleMessageEmailerNameFromHeader("From", rawGmail.data),
+      ""
+    ),
+    fromRaw: defaultTo(from, ""),
+    to: defaultTo(getGoogleMessageEmailFromHeader("To", rawGmail.data), ""),
+    toName: defaultTo(
+      getGoogleMessageEmailerNameFromHeader("To", rawGmail.data),
+      ""
+    ),
+    toRaw: defaultTo(to, ""),
+    datetime: defaultTo(datetime, ""),
+    messageId: defaultTo(messageId, ""),
+    googleId: gmailMessageId,
+    attachments: attaches,
+  };
+
+  logger.trace("msg: %o", msg);
+
+  return msg;
+}

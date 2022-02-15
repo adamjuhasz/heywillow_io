@@ -1,0 +1,12 @@
+{
+  "cSpell.words": [
+    "accum",
+    "datetime",
+    "historyid",
+    "idempotency",
+    "nextjs",
+    "pino",
+    "Supa"
+  ],
+  "jest.jestCommandLine": "yarn test"
+}
