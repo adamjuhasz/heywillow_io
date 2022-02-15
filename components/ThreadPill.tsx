@@ -9,6 +9,7 @@ import { SupabaseThread } from "components/ThreadList";
 import { Body, ThreadStateType } from "pages/api/v1/thread/state";
 
 type ExtraSupa = SupabaseThread & { AliasEmail: AliasEmail };
+export type { ExtraSupa };
 
 interface Props {
   t: ExtraSupa;
