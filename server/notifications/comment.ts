@@ -62,7 +62,10 @@ export default async function commentNotification(commentId: bigint) {
         `<p>A comment was added to the conversation with ${
           comment.Message.Alias?.emailAddress || "customer"
         }</p>`,
-        `<p>${comment.text}</p>`,
+        ...comment.text
+          .replace(/\r\n/g, "\n")
+          .split("\n")
+          .map((t) => `<p>${t}</p>`),
         `<p>https://${process.env.DOMAIN}/app/dashboard/thread/${threadId}</p>`,
       ],
     });

@@ -96,7 +96,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
   useEffect(() => {
     if (eCode !== null) {
       if (eDesc !== null) {
-        alert(`Error logging in "${decodeURI(eDesc[1]).replaceAll("+", " ")}"`);
+        alert(`Error logging in "${decodeURI(eDesc[1]).replace(/\+/g, " ")}"`);
       } else {
         alert("Error logging in");
       }
