@@ -1,0 +1,326 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Team {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  name      String
+
+  Inboxs        GmailInbox[]
+  Members       TeamMember[]
+  Thread        Thread[]
+  Alias         AliasEmail[]
+  Customer      Customer[]
+  TeamInvite    TeamInvite[]
+  EncryptedText EncryptedText[]
+  Attachment    Attachment[]
+}
+
+model TeamMember {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  teamId    BigInt
+  profileId String   @db.Uuid
+
+  Team               Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Profile            Profile?       @relation(fields: [profileId], references: [id], onDelete: SetNull)
+  AssignedThreads    ThreadState[]  @relation("Assignee")
+  ThreadsChanged     ThreadState[]  @relation("DoneBy")
+  Notifications      Notification[] @relation("for")
+  CommentTag         CommentTag[]
+  Comment            Comment[]
+  NotificationGenned Notification[] @relation("by")
+
+  Message    Message[]
+  TeamInvite TeamInvite[]
+
+  @@unique([teamId, profileId])
+}
+
+model TeamInvite {
+  id           BigInt           @id @default(autoincrement())
+  createdAt    DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime         @default(now()) @db.Timestamptz(6)
+  teamId       BigInt
+  emailAddress String
+  inviterId    BigInt
+  status       TeamInviteStatus
+
+  Inviter TeamMember @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  Team    Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, emailAddress])
+}
+
+enum TeamInviteStatus {
+  pending
+  accepted
+  cancelled
+}
+
+model Profile {
+  id        String    @id @db.Uuid
+  createdAt DateTime? @default(now()) @db.Timestamptz(6)
+  email     String
+  firstName String?
+  lastName  String?
+
+  TeamMember TeamMember[]
+}
+
+model GmailInbox {
+  id           BigInt   @id @default(autoincrement())
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @db.Timestamptz(6)
+  teamId       BigInt
+  emailAddress String   @unique
+
+  Team Team @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  RefreshToken   RefreshToken?
+  GmailLastSync  GmailLastSync?
+  GmailLastWatch GmailLastWatch?
+  Thread         Thread[]
+}
+
+model RefreshToken {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  inboxId   BigInt   @unique
+  token     String
+
+  Inbox GmailInbox @relation(fields: [inboxId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model GmailLastSync {
+  inboxId   BigInt   @id @unique
+  historyid String
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  Inbox GmailInbox @relation(fields: [inboxId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model GmailLastWatch {
+  inboxId    BigInt   @id @unique
+  updatedAt  DateTime @default(now()) @db.Timestamptz(6)
+  expiration DateTime
+  historyid  String?
+
+  Inbox GmailInbox @relation(fields: [inboxId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model CustomerGroup {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  GroupMembers Customer[]
+}
+
+model Customer {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  teamId    BigInt
+
+  Alias          AliasEmail[]
+  CustomerGroups CustomerGroup[]
+  team           Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+}
+
+model AliasEmail {
+  id           BigInt   @id @default(autoincrement())
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  customerId   BigInt?
+  emailAddress String
+  teamId       BigInt
+
+  Customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  Messages Message[]
+  team     Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  Thread     Thread[]
+  ThreadLink ThreadLink[]
+  @@unique([teamId, emailAddress])
+}
+
+model Message {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  type              MessageType
+  direction         MessageDirection
+  emailMessageId    BigInt?          @unique
+  internalMessageId BigInt?          @unique
+
+  threadId     BigInt
+  aliasId      BigInt?
+  teamMemberId BigInt?
+
+  TeamMember TeamMember? @relation(fields: [teamMemberId], references: [id], onDelete: SetNull)
+  Alias      AliasEmail? @relation(fields: [aliasId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  EmailMessage    EmailMessage?    @relation(fields: [emailMessageId], references: [id], onDelete: SetNull)
+  InternalMessage InternalMessage? @relation(fields: [internalMessageId], references: [id], onDelete: SetNull)
+
+  Thread       Thread         @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  Notification Notification[]
+  Comment      Comment[]
+  Attachments  Attachment[]
+}
+
+enum MessageType {
+  email
+  internal
+}
+
+enum MessageDirection {
+  incoming
+  outgoing
+}
+
+model EmailMessage {
+  id              BigInt   @id @default(autoincrement())
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  from            String
+  to              String
+  sourceMessageId String   @unique
+  emailMessageId  String
+  subject         String
+  body            String
+  raw             Json
+
+  Message Message?
+}
+
+model InternalMessage {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  body      String
+
+  Message Message[]
+}
+
+model Thread {
+  id           BigInt   @id @default(autoincrement())
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @db.Timestamptz(6)
+  teamId       BigInt
+  aliasEmailId BigInt
+  gmailInboxId BigInt?
+
+  Alias       AliasEmail    @relation(fields: [aliasEmailId], references: [id], onDelete: Cascade)
+  Messages    Message[]
+  Team        Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  ThreadState ThreadState[]
+  ThreadLink  ThreadLink[]
+  GmailInbox  GmailInbox?   @relation(fields: [gmailInboxId], references: [id], onDelete: Cascade)
+}
+
+model ThreadState {
+  id           BigInt          @id @default(autoincrement())
+  createdAt    DateTime        @default(now()) @db.Timestamptz(6)
+  threadId     BigInt
+  teamMemberId BigInt?
+  doneById     BigInt?
+  state        ThreadStateType
+  expiresAt    DateTime?
+
+  Thread   Thread      @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  Assignee TeamMember? @relation(name: "Assignee", fields: [teamMemberId], references: [id], onDelete: SetNull)
+  DoneBy   TeamMember? @relation(name: "DoneBy", fields: [doneById], references: [id], onDelete: SetNull)
+}
+
+enum ThreadStateType {
+  open
+  done
+  snoozed
+  assigned
+}
+
+model Comment {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  messageId BigInt
+  text      String
+  authorId  BigInt
+
+  Message      Message        @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  Author       TeamMember     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  CommentTag   CommentTag[]
+  Notification Notification[]
+}
+
+model CommentTag {
+  commentId    BigInt
+  teamMemberId BigInt
+
+  Comment Comment    @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  Tagged  TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@id([commentId, teamMemberId])
+}
+
+model Notification {
+  id          BigInt    @id @default(autoincrement())
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  deliveredAt DateTime? @db.Timestamptz(6)
+  seenAt      DateTime? @db.Timestamptz(6)
+  clearedAt   DateTime? @db.Timestamptz(6)
+
+  forMemberId BigInt
+  text        String
+  messageId   BigInt?
+  commentId   BigInt?
+  byMemberId  BigInt?
+
+  Comment Comment?    @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  Message Message?    @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  For     TeamMember  @relation(name: "for", fields: [forMemberId], references: [id], onDelete: Cascade)
+  By      TeamMember? @relation(name: "by", fields: [byMemberId], references: [id], onDelete: SetNull)
+}
+
+model ThreadLink {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  threadId     BigInt
+  aliasEmailId BigInt
+
+  Thread Thread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  Alias  AliasEmail @relation(fields: [aliasEmailId], references: [id], onDelete: Cascade)
+
+  @@unique([threadId, aliasEmailId])
+}
+
+model EncryptedText {
+  id            BigInt   @id @default(autoincrement())
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  teamId        BigInt
+  encryptedText String
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model Attachment {
+  id          BigInt   @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  teamId      BigInt
+  filename    String
+  location    String
+  mimeType    String
+  messageId   BigInt
+  idempotency String?  @unique
+
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+}

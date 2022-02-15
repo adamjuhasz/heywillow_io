@@ -1,0 +1,187 @@
+import { Prisma } from "@prisma/client";
+import { gmail_v1 } from "@googleapis/gmail";
+import { decode } from "base64-arraybuffer";
+
+import { prisma } from "utils/prisma";
+import messageNotification from "./notifications/message";
+import { serviceSupabase } from "./supabase";
+import sendEmailThroughGmail from "./gmail/sendEmail";
+import createSecureThreadLink from "./createSecureLink";
+import changeThreadStatus from "./changeThreadStatus";
+
+export interface AttachmentData {
+  data: string;
+  size: number;
+  mimeType: string;
+  filename: string;
+  id: string;
+  part: string;
+}
+
+export interface GmailMessage {
+  body: string;
+  subject: string;
+  from: string;
+  fromName: string;
+  fromRaw: string;
+  to: string;
+  toName: string;
+  toRaw: string;
+  datetime: string;
+  messageId: string;
+  googleId: string;
+  attachments: AttachmentData[];
+}
+
+export default async function addEmailToDB(
+  inboxId: number,
+  message: GmailMessage,
+  gmail: gmail_v1.Gmail
+): Promise<bigint> {
+  const aliasEmail = message.from;
+
+  const inbox = await prisma.gmailInbox.findUnique({
+    where: { id: inboxId },
+    include: { Team: true },
+  });
+
+  if (inbox === null) {
+    throw new Error("Inbox not found");
+  }
+
+  const thisAlias = await prisma.aliasEmail.upsert({
+    where: {
+      teamId_emailAddress: { teamId: inbox.Team.id, emailAddress: aliasEmail },
+    },
+    update: {},
+    create: { emailAddress: aliasEmail, teamId: inbox.Team.id },
+  });
+
+  console.log("thisAlias", thisAlias);
+
+  const currentThread = await prisma.thread.findFirst({
+    where: {
+      teamId: inbox.Team.id,
+      aliasEmailId: thisAlias.id,
+      ThreadState: { every: { NOT: { state: "done" } } },
+    },
+    select: {
+      id: true,
+      ThreadState: { select: { state: true }, orderBy: { createdAt: "desc" } },
+    },
+  });
+  console.log("currentThread", currentThread);
+
+  if (currentThread !== null) {
+    await prisma.thread.update({
+      where: { id: currentThread.id },
+      data: { updatedAt: new Date() },
+    });
+
+    const currState = currentThread.ThreadState[0];
+    console.log("currState", currState);
+
+    await changeThreadStatus({ state: "open", threadId: currentThread.id });
+  }
+  try {
+    const savedEmail = await prisma.emailMessage.create({
+      data: {
+        from: message.fromRaw,
+        to: message.toRaw,
+        sourceMessageId: message.googleId,
+        emailMessageId: message.messageId,
+        subject: message.subject,
+        body: message.body,
+        raw: message as unknown as Prisma.InputJsonObject,
+        Message: {
+          create: {
+            type: "email",
+            direction: "incoming",
+            Thread:
+              currentThread !== null
+                ? { connect: { id: currentThread.id } }
+                : {
+                    create: {
+                      teamId: inbox.Team.id,
+                      aliasEmailId: thisAlias.id,
+                      ThreadState: { create: { state: "open" } },
+                      gmailInboxId: inboxId,
+                    },
+                  },
+            Alias: { connect: { id: thisAlias.id } },
+            Attachments: {
+              createMany: {
+                data: message.attachments.map((a) => ({
+                  filename: a.filename,
+                  mimeType: a.mimeType,
+                  teamId: inbox.Team.id,
+                  idempotency: `${message.googleId}-${a.part}`,
+                  location: `attachments/${inbox.Team.id}/${message.googleId}/${a.part}/${a.filename}`,
+                })),
+              },
+            },
+          },
+        },
+      },
+      include: {
+        Message: {
+          include: {
+            Thread: { include: { ThreadState: true, Team: true } },
+            Attachments: true,
+          },
+        },
+      },
+    });
+
+    console.log("savedEmail", savedEmail);
+
+    if (savedEmail.Message !== null) {
+      await messageNotification(savedEmail.Message.id);
+    }
+
+    await Promise.allSettled(
+      message.attachments.map(async (a) => {
+        return serviceSupabase.storage
+          .from("attachments")
+          .upload(
+            `${inbox.Team.id}/${message.googleId}/${a.part}/${a.filename}`,
+            decode(a.data),
+            { contentType: a.mimeType, cacheControl: "604800", upsert: false }
+          );
+      })
+    );
+
+    if (currentThread === null && savedEmail.Message !== null) {
+      const secureURL = await createSecureThreadLink(
+        savedEmail.Message.Thread.id,
+        thisAlias.id
+      );
+
+      const inbox = await prisma.gmailInbox.findUnique({
+        where: { emailAddress: message.to },
+      });
+
+      const sendOptions = {
+        gmail: gmail,
+        from: `${savedEmail.Message.Thread.Team.name} <${
+          inbox?.emailAddress || message.to
+        }>`,
+        to: `${message.fromRaw}`,
+        subject: "Thanks for emailing us!",
+        html: [
+          "<p>We'll get back to you shortly...</p>",
+          "",
+          `<p>✉️🔐 Need to send us a secure message? ${secureURL}</p>`,
+          `<p> - ${savedEmail.Message.Thread.Team.name}</p>`,
+        ],
+      };
+      console.log("sendOptions", sendOptions);
+      await sendEmailThroughGmail(sendOptions);
+    }
+
+    return savedEmail.id;
+  } catch (e) {
+    console.error("Error with savedEmail", e);
+    throw e;
+  }
+}

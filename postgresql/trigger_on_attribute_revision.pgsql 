@@ -1,0 +1,26 @@
+create or replace function trigger_on_attribute_revision()
+    returns trigger
+    language plpgsql as $body$
+begin
+
+    -- Create attribute revision only if values column has changed
+    if old.attributes <> new.attributes then
+        if old.updated_at is null then
+            -- First edit
+            insert into attributes_revisions (id, created_at, team_id, category, attributes, source_id)
+            values (old.id, old.created_at, old.team_id, old.category, old.attributes, old.source_id);
+        else
+            -- Subsequent edits
+            insert into attributes_revisions (id, created_at, team_id, category, attributes, source_id)
+            values (old.id, old.updated_at, old.team_id, old.category, old.attributes, old.source_id);
+        end if;
+    end if;
+    -- Return the `NEW` record so that update can carry on as usual
+    return new;
+end; $body$;
+
+create trigger trigger_attribute_revision
+  before update
+  on attributes
+  for each row
+execute procedure trigger_on_attribute_revision();
