@@ -90,7 +90,8 @@ export default function Message(props: Props & InterfaceProps) {
                       props.InternalMessage?.body
                     ) || ""
                   )
-                    .split("\r\n")
+                    .replaceAll("\r\n", "\n")
+                    .split("\n")
                     .map((b, i) => (
                       <p key={i} className="">
                         <Redacted str={b} />

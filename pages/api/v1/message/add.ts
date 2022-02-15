@@ -27,6 +27,8 @@ export default async function handler(
     return res.status(400).json({ error: "Bad threadId" });
   }
 
+  console.log("text", body.text);
+
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   if (user === null) {
