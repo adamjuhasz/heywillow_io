@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline";
 import { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
 import { useSupabase } from "components/UserContext";
-import ThreadPill, { ExtraSupa } from "components/ThreadPill";
+import ThreadPill, {
+  ExtraSupa,
+  width as pillWidth,
+} from "components/ThreadPill";
+import useElementSize from "hooks/useElementSize";
 
 async function getThreads(supabase: SupabaseClient) {
   const res = await supabase
@@ -43,6 +47,8 @@ interface Props {
 export default function RecentThreadList({ selected, setSelected }: Props) {
   const [page, setPage] = useState(0);
   const supabase = useSupabase();
+  const [perPage, setPerPage] = useState(1);
+  const [leftRef, { width: myWidth }] = useElementSize();
 
   const { data: threads, mutate: mutateThreads } = useSWR(
     () => (supabase ? "/threads" : null),
@@ -77,12 +83,31 @@ export default function RecentThreadList({ selected, setSelected }: Props) {
     };
   }, [supabase, mutateThreads]);
 
-  const perPage = 4;
+  useLayoutEffect(() => {
+    const realPillWidth = pillWidth;
+    const canFit = myWidth / realPillWidth;
+    const canFitRem = (myWidth % realPillWidth) / realPillWidth;
+
+    let recommend = Math.ceil(canFit);
+
+    if (canFitRem < 0.3) {
+      recommend = Math.floor(canFit);
+    }
+
+    recommend = Math.max(1, recommend);
+
+    // console.log(canFit, canFitRem, recommend);
+
+    if (perPage !== recommend) {
+      setPerPage(recommend);
+    }
+  }, [myWidth, perPage]);
+
   const pages = Math.ceil((threads || []).length / perPage);
 
   return (
     <>
-      <div className="flex w-full flex-row justify-between">
+      <div ref={leftRef} className="flex w-full flex-row justify-between">
         <div className="text-2xl font-semibold">recent</div>
         <div className="flex flex-row text-gray-600">
           <button
@@ -111,7 +136,7 @@ export default function RecentThreadList({ selected, setSelected }: Props) {
           .slice(page * perPage, page * perPage + perPage)
           .map((t) => (
             <ThreadPill
-              key={Number(t.id)}
+              key={`${Number(t.id)}`}
               t={t}
               selected={Number(selected)}
               setSelected={setSelected}
