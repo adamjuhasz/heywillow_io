@@ -52,6 +52,8 @@ export default async function commentNotification(commentId: bigint) {
       return;
     }
 
+    const threadId = Number(comment.Message.threadId);
+
     return sendPostmarkEmail({
       to: m.Profile?.email || "",
       subject: `Mentioned in a comment on Willow`,
@@ -61,7 +63,7 @@ export default async function commentNotification(commentId: bigint) {
           comment.Message.Alias?.emailAddress || "customer"
         }</p>`,
         `<p>${comment.text}</p>`,
-        `<p>https://${process.env.DOMAIN}/app/dashboard</p>`,
+        `<p>https://${process.env.DOMAIN}/app/dashboard/thread/${threadId}</p>`,
       ],
     });
   });
