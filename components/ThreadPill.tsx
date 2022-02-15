@@ -56,6 +56,14 @@ export default function ThreadPill({
     }
   };
 
+  const lastMessage = t.Message.reverse()[0];
+  const previewText =
+    lastMessage.EmailMessage?.body ||
+    lastMessage.InternalMessage?.body ||
+    "No body in email";
+
+  const emailAddress = t.AliasEmail.emailAddress || "Unknown";
+
   return (
     <div
       className="mr-4 flex h-72 w-40 flex-shrink-0 flex-col justify-end"
@@ -176,7 +184,7 @@ export default function ThreadPill({
             selected === Number(t.id) ? "text-white" : "text-gray-900",
           ].join(" ")}
         >
-          {t.AliasEmail.emailAddress || "Unknown"}
+          {emailAddress}
         </div>
         <div className="h-4" />
         <div
@@ -201,7 +209,19 @@ export default function ThreadPill({
               : "text-gray-400 text-opacity-50",
           ].join(" ")}
         >
-          {t.Message.reverse()[0].EmailMessage?.body || "No body in email"}
+          {previewText
+            .replace(/\r\n/g, "\n")
+            .split("\n")
+            .map((t, idx) =>
+              idx === 0 ? (
+                <span>{t}</span>
+              ) : (
+                <>
+                  <br />
+                  <span>{t}</span>
+                </>
+              )
+            )}
         </div>
       </div>
     </div>
