@@ -1,12 +1,12 @@
 //inspo from https://www.openphone.co/product/teams
 import { ArrowCircleUpIcon } from "@heroicons/react/outline";
-import type { Comment } from "@prisma/client";
+import { SupabaseComment } from "types/supabase";
 
 import { Body } from "pages/api/v1/comment/add";
 
 interface Props {
   messageId: number;
-  comments: Comment[];
+  comments: SupabaseComment[];
   incoming: boolean;
   teamId: number;
   mutate?: () => void;

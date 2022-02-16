@@ -2,13 +2,13 @@ import { useEffect, useRef } from "react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { isArray } from "lodash";
+import { PrismaClient } from "@prisma/client";
 import {
-  AliasEmail,
-  EmailMessage,
-  InternalMessage,
-  Message as MessageType,
-  PrismaClient,
-} from "@prisma/client";
+  SupabaseAliasEmail,
+  SupabaseEmailMessage,
+  SupabaseInternalMessage,
+  SupabaseMessage,
+} from "types/supabase";
 
 import { Body } from "pages/api/public/v1/message/secure";
 
@@ -30,15 +30,15 @@ export type ChangeTypeOfKeys<
 
 interface ServerSideProps {
   threadLink: string;
-  thread: (MessageType & {
+  thread: (SupabaseMessage & {
     TeamMember: {
       Profile: {
         email: string;
-      } | null;
+      };
     } | null;
-    EmailMessage: EmailMessage | null;
-    InternalMessage: InternalMessage | null;
-    AliasEmail: AliasEmail | null;
+    EmailMessage: SupabaseEmailMessage | null;
+    InternalMessage: SupabaseInternalMessage | null;
+    AliasEmail: SupabaseAliasEmail | null;
   })[];
 }
 
@@ -82,7 +82,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
   const thread = threadLink.Thread.Messages.map(({ Alias, ...m }) => ({
     ...m,
-    AliasEmail: { ...(Alias as AliasEmail) },
+    AliasEmail: { ...Alias },
   }));
   const threadJSON = prismaToJSON(thread);
 

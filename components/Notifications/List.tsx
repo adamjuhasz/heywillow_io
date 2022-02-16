@@ -1,16 +1,16 @@
 import { Fragment, useEffect } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
-import type { Notification } from "@prisma/client";
 import { CheckIcon } from "@heroicons/react/outline";
 import { ChatAlt2Icon, MailIcon } from "@heroicons/react/solid";
 
 import { Body } from "pages/api/v1/notifications/clear";
 import { useSupabase } from "components/UserContext";
+import { SupabaseNotification } from "types/supabase";
 
 async function getNotifications(supabase: SupabaseClient) {
   const res = await supabase
-    .from<Notification>("Notification")
+    .from<SupabaseNotification>("Notification")
     .select("*")
     .is("clearedAt", null);
 

@@ -1,12 +1,13 @@
 import { Fragment, Key } from "react";
 import { subDays } from "date-fns";
-import type {
-  AliasEmail,
-  Comment,
-  EmailMessage,
-  InternalMessage,
-  Message as MessageType,
-} from "@prisma/client";
+import {
+  SupabaseAliasEmail,
+  SupabaseComment,
+  SupabaseEmailMessage,
+  SupabaseInternalMessage,
+  SupabaseMessage,
+  SupabaseProfile,
+} from "types/supabase";
 
 import Message from "components/Inbox/Message";
 import DateSep from "components/Inbox/DateSeperator";
@@ -22,18 +23,19 @@ interface ActionNode {
   type: "Action";
 }
 
-type SupabaseMessage = {
+type MessageNode = {
   type: "Message";
-  message: MessageType & {
-    AliasEmail: AliasEmail | null;
-    InternalMessage: InternalMessage | null;
-    EmailMessage: EmailMessage | null;
-    Comment: Comment[];
+  message: SupabaseMessage & {
+    AliasEmail: SupabaseAliasEmail | null;
+    InternalMessage: SupabaseInternalMessage | null;
+    EmailMessage: SupabaseEmailMessage | null;
+    Comment: SupabaseComment[];
+    TeamMember: null | { Profile: SupabaseProfile };
   };
 };
 
 export default function DemoThread() {
-  const messages: (SupabaseMessage | DateNode | ActionNode)[] = [
+  const messages: (MessageNode | DateNode | ActionNode)[] = [
     {
       type: "Date",
       date: subDays(new Date(), 21).toISOString(),
@@ -41,25 +43,25 @@ export default function DemoThread() {
     {
       type: "Message",
       message: {
-        id: BigInt(1),
-        createdAt: subDays(new Date(), 21),
+        id: 1,
+        createdAt: subDays(new Date(), 21).toISOString(),
         type: "email",
         direction: "incoming",
         emailMessageId: null,
         internalMessageId: null,
-        threadId: BigInt(1),
+        threadId: 1,
         aliasId: null,
         teamMemberId: null,
         AliasEmail: {
-          id: BigInt(1),
-          createdAt: new Date(),
+          id: 1,
+          createdAt: new Date().toISOString(),
           customerId: null,
           emailAddress: "customer@gmail.com",
-          teamId: BigInt(1),
+          teamId: 1,
         },
         EmailMessage: {
-          id: BigInt(1),
-          createdAt: subDays(new Date(), 21),
+          id: 1,
+          createdAt: subDays(new Date(), 21).toISOString(),
           from: "customer@gmail.com",
           to: "",
           sourceMessageId: "",
@@ -71,6 +73,7 @@ export default function DemoThread() {
         },
         InternalMessage: null,
         Comment: [],
+        TeamMember: null,
       },
     },
     {
@@ -86,25 +89,25 @@ export default function DemoThread() {
     {
       type: "Message",
       message: {
-        id: BigInt(2),
-        createdAt: subDays(new Date(), 14),
+        id: 2,
+        createdAt: subDays(new Date(), 14).toISOString(),
         type: "email",
         direction: "outgoing",
         emailMessageId: null,
         internalMessageId: null,
-        threadId: BigInt(1),
+        threadId: 1,
         aliasId: null,
         teamMemberId: null,
         AliasEmail: {
-          id: BigInt(1),
-          createdAt: new Date(),
+          id: 1,
+          createdAt: new Date().toISOString(),
           customerId: null,
           emailAddress: "adam",
-          teamId: BigInt(1),
+          teamId: 1,
         },
         EmailMessage: {
-          id: BigInt(2),
-          createdAt: subDays(new Date(), 14),
+          id: 2,
+          createdAt: subDays(new Date(), 14).toISOString(),
           from: "adam",
           to: "",
           sourceMessageId: "",
@@ -115,6 +118,7 @@ export default function DemoThread() {
         },
         InternalMessage: null,
         Comment: [],
+        TeamMember: null,
       },
     },
     {
@@ -124,25 +128,26 @@ export default function DemoThread() {
     {
       type: "Message",
       message: {
-        id: BigInt(3),
-        createdAt: subDays(new Date(), 14),
+        TeamMember: null,
+        id: 3,
+        createdAt: subDays(new Date(), 14).toISOString(),
         type: "email",
         direction: "incoming",
         emailMessageId: null,
         internalMessageId: null,
-        threadId: BigInt(1),
+        threadId: 1,
         aliasId: null,
         teamMemberId: null,
         AliasEmail: {
-          id: BigInt(1),
-          createdAt: new Date(),
+          id: 1,
+          createdAt: new Date().toISOString(),
           customerId: null,
           emailAddress: "customer@gmail.com",
-          teamId: BigInt(1),
+          teamId: 1,
         },
         EmailMessage: {
-          id: BigInt(3),
-          createdAt: subDays(new Date(), 14),
+          id: 3,
+          createdAt: subDays(new Date(), 14).toISOString(),
           from: "customer@gmail.com",
           to: "",
           sourceMessageId: "",
@@ -154,17 +159,17 @@ export default function DemoThread() {
         InternalMessage: null,
         Comment: [
           {
-            id: BigInt(31),
-            authorId: BigInt(1),
-            createdAt: new Date(),
-            messageId: BigInt(3),
+            id: 31,
+            authorId: 1,
+            createdAt: new Date().toISOString(),
+            messageId: 3,
             text: "@Mike can you handle this?",
           },
           {
-            id: BigInt(32),
-            authorId: BigInt(2),
-            createdAt: new Date(),
-            messageId: BigInt(3),
+            id: 32,
+            authorId: 2,
+            createdAt: new Date().toISOString(),
+            messageId: 3,
             text: "@Adam yep",
           },
         ],
@@ -173,25 +178,26 @@ export default function DemoThread() {
     {
       type: "Message",
       message: {
-        id: BigInt(4),
-        createdAt: subDays(new Date(), 13),
+        TeamMember: null,
+        id: 4,
+        createdAt: subDays(new Date(), 13).toISOString(),
         type: "email",
         direction: "outgoing",
         emailMessageId: null,
         internalMessageId: null,
-        threadId: BigInt(1),
+        threadId: 1,
         aliasId: null,
         teamMemberId: null,
         AliasEmail: {
-          id: BigInt(1),
-          createdAt: new Date(),
+          id: 1,
+          createdAt: new Date().toISOString(),
           customerId: null,
           emailAddress: "mike",
-          teamId: BigInt(1),
+          teamId: 1,
         },
         EmailMessage: {
-          id: BigInt(4),
-          createdAt: subDays(new Date(), 13),
+          id: 4,
+          createdAt: subDays(new Date(), 13).toISOString(),
           from: "mike",
           to: "",
           sourceMessageId: "",
@@ -203,10 +209,10 @@ export default function DemoThread() {
         InternalMessage: null,
         Comment: [
           {
-            id: BigInt(41),
-            authorId: BigInt(1),
-            createdAt: new Date(),
-            messageId: BigInt(4),
+            id: 41,
+            authorId: 1,
+            createdAt: new Date().toISOString(),
+            messageId: 4,
             text: "@Mike thanks!",
           },
         ],

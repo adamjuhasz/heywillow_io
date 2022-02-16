@@ -4,15 +4,30 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
 import { useSupabase } from "components/UserContext";
-import ThreadPill, {
-  ExtraSupa,
-  width as pillWidth,
-} from "components/ThreadPill";
+import ThreadPill, { width as pillWidth } from "components/ThreadPill";
 import useElementSize from "hooks/useElementSize";
+import {
+  SupabaseAliasEmail,
+  SupabaseEmailMessage,
+  SupabaseInternalMessage,
+  SupabaseMessage,
+  SupabaseThread,
+  SupabaseThreadState,
+} from "types/supabase";
+
+type FetchThread = SupabaseThread & {
+  ThreadState: SupabaseThreadState[];
+  Message: (SupabaseMessage & {
+    AliasEmail: SupabaseAliasEmail | null;
+    EmailMessage: SupabaseEmailMessage | null;
+    InternalMessage: SupabaseInternalMessage | null;
+  })[];
+  AliasEmail: SupabaseAliasEmail;
+};
 
 async function getThreads(supabase: SupabaseClient) {
   const res = await supabase
-    .from<ExtraSupa>("Thread")
+    .from<FetchThread>("Thread")
     .select(
       `
     *,

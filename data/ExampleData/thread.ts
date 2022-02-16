@@ -1,39 +1,41 @@
-import type {
-  AliasEmail,
-  Comment,
-  EmailMessage,
-  InternalMessage,
-  Message,
-} from "@prisma/client";
+import {
+  SupabaseAliasEmail,
+  SupabaseComment,
+  SupabaseEmailMessage,
+  SupabaseInternalMessage,
+  SupabaseMessage,
+  SupabaseProfile,
+} from "types/supabase";
 
-type Thread = Message & {
-  AliasEmail: AliasEmail | null;
-  Comment: Comment[];
-  InternalMessage: InternalMessage | null;
-  EmailMessage: EmailMessage | null;
+type Thread = SupabaseMessage & {
+  AliasEmail: SupabaseAliasEmail | null;
+  Comment: SupabaseComment[];
+  InternalMessage: SupabaseInternalMessage | null;
+  EmailMessage: SupabaseEmailMessage | null;
+  TeamMember: { Profile: SupabaseProfile } | null;
 };
 
 export const thread: Thread[] = [
   {
-    id: BigInt(1),
-    createdAt: new Date("2021-01-28T19:24"),
+    id: 1,
+    createdAt: "2021-01-28T19:24",
     type: "email",
     direction: "incoming",
     emailMessageId: null,
     internalMessageId: null,
-    threadId: BigInt(1),
+    threadId: 1,
     aliasId: null,
     teamMemberId: null,
     AliasEmail: {
-      id: BigInt(1),
-      createdAt: new Date(),
+      id: 1,
+      createdAt: new Date().toISOString(),
       customerId: null,
       emailAddress: "Joe Armstrong",
-      teamId: BigInt(1),
+      teamId: 1,
     },
     EmailMessage: {
-      id: BigInt(1),
-      createdAt: new Date("2021-01-28T19:24"),
+      id: 1,
+      createdAt: new Date("2021-01-28T19:24").toISOString(),
       from: "Joe Armstrong",
       to: "",
       sourceMessageId: "",
@@ -44,27 +46,28 @@ export const thread: Thread[] = [
     },
     InternalMessage: null,
     Comment: [],
+    TeamMember: null,
   },
   {
-    id: BigInt(2),
-    createdAt: new Date("2021-01-27T16:35"),
+    id: 2,
+    createdAt: new Date("2021-01-27T16:35").toISOString(),
     type: "email",
     direction: "incoming",
     emailMessageId: null,
     internalMessageId: null,
-    threadId: BigInt(1),
+    threadId: 1,
     aliasId: null,
     teamMemberId: null,
     AliasEmail: {
-      id: BigInt(1),
-      createdAt: new Date(),
+      id: 1,
+      createdAt: new Date().toISOString(),
       customerId: null,
       emailAddress: "Monica White",
-      teamId: BigInt(1),
+      teamId: 1,
     },
     EmailMessage: {
-      id: BigInt(2),
-      createdAt: new Date("2021-01-27T16:35"),
+      id: 2,
+      createdAt: new Date("2021-01-27T16:35").toISOString(),
       from: "Monica White",
       to: "",
       sourceMessageId: "",
@@ -79,27 +82,28 @@ export const thread: Thread[] = [
     },
     InternalMessage: null,
     Comment: [],
+    TeamMember: null,
   },
   {
-    id: BigInt(2),
-    createdAt: new Date("2021-01-27T16:35"),
+    id: 2,
+    createdAt: new Date("2021-01-27T16:35").toISOString(),
     type: "email",
     direction: "outgoing",
     emailMessageId: null,
     internalMessageId: null,
-    threadId: BigInt(1),
+    threadId: 1,
     aliasId: null,
     teamMemberId: null,
     AliasEmail: {
-      id: BigInt(1),
-      createdAt: new Date(),
+      id: 1,
+      createdAt: new Date().toISOString(),
       customerId: null,
       emailAddress: "Monica White",
-      teamId: BigInt(1),
+      teamId: 1,
     },
     EmailMessage: {
-      id: BigInt(2),
-      createdAt: new Date("2021-01-27T16:35"),
+      id: 2,
+      createdAt: new Date("2021-01-27T16:35").toISOString(),
       from: "Monica White",
       to: "",
       sourceMessageId: "",
@@ -114,27 +118,28 @@ export const thread: Thread[] = [
     },
     InternalMessage: null,
     Comment: [],
+    TeamMember: null,
   },
   {
-    id: BigInt(3),
-    createdAt: new Date("2021-01-27T16:09"),
+    id: 3,
+    createdAt: new Date("2021-01-27T16:09").toISOString(),
     type: "email",
     direction: "outgoing",
     emailMessageId: null,
     internalMessageId: null,
-    threadId: BigInt(1),
+    threadId: 1,
     aliasId: null,
     teamMemberId: null,
     AliasEmail: {
-      id: BigInt(1),
-      createdAt: new Date(),
+      id: 1,
+      createdAt: new Date().toISOString(),
       customerId: null,
       emailAddress: "Joe Armstrong",
-      teamId: BigInt(1),
+      teamId: 1,
     },
     EmailMessage: {
-      id: BigInt(3),
-      createdAt: new Date("2021-01-27T16:09"),
+      id: 3,
+      createdAt: new Date("2021-01-27T16:09").toISOString(),
       from: "Joe Armstrong",
       to: "",
       sourceMessageId: "",
@@ -149,5 +154,6 @@ export const thread: Thread[] = [
     },
     InternalMessage: null,
     Comment: [],
+    TeamMember: null,
   },
 ];
