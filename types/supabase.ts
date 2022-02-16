@@ -97,3 +97,14 @@ export interface SupabaseNotification {
   commentId: number | null;
   byMemberId: number | null;
 }
+
+export interface SupabaseAttachment {
+  createdAt: string;
+  filename: string;
+  id: number;
+  idempotency: string;
+  location: string;
+  messageId: number;
+  mimeType: string;
+  teamId: number;
+}

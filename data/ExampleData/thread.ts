@@ -1,5 +1,6 @@
 import {
   SupabaseAliasEmail,
+  SupabaseAttachment,
   SupabaseComment,
   SupabaseEmailMessage,
   SupabaseInternalMessage,
@@ -13,10 +14,12 @@ type Thread = SupabaseMessage & {
   InternalMessage: SupabaseInternalMessage | null;
   EmailMessage: SupabaseEmailMessage | null;
   TeamMember: { Profile: SupabaseProfile } | null;
+  Attachment: SupabaseAttachment[];
 };
 
 export const thread: Thread[] = [
   {
+    Attachment: [],
     id: 1,
     createdAt: "2021-01-28T19:24",
     type: "email",
@@ -49,6 +52,7 @@ export const thread: Thread[] = [
     TeamMember: null,
   },
   {
+    Attachment: [],
     id: 2,
     createdAt: new Date("2021-01-27T16:35").toISOString(),
     type: "email",
@@ -85,6 +89,7 @@ export const thread: Thread[] = [
     TeamMember: null,
   },
   {
+    Attachment: [],
     id: 2,
     createdAt: new Date("2021-01-27T16:35").toISOString(),
     type: "email",
@@ -121,6 +126,7 @@ export const thread: Thread[] = [
     TeamMember: null,
   },
   {
+    Attachment: [],
     id: 3,
     createdAt: new Date("2021-01-27T16:09").toISOString(),
     type: "email",

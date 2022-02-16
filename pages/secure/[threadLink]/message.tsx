@@ -117,7 +117,13 @@ export default function ThreadId(props: ServerSideProps) {
       className="space-y-2 py-4 px-2 sm:space-y-4 sm:px-6 lg:px-8"
     >
       {props.thread.map((item) => (
-        <Message key={`${item.id}`} {...item} teamId={null} Comment={[]} />
+        <Message
+          key={`${item.id}`}
+          {...item}
+          teamId={null}
+          Comment={[]}
+          Attachment={[]}
+        />
       ))}
       <Input
         ref={inputRef}

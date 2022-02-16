@@ -12,6 +12,7 @@ import InputWithRef from "components/Inbox/Input";
 import { Body } from "pages/api/v1/message/add";
 import {
   SupabaseAliasEmail,
+  SupabaseAttachment,
   SupabaseComment,
   SupabaseEmailMessage,
   SupabaseInternalMessage,
@@ -27,6 +28,7 @@ type AMessage = SupabaseMessage & {
   EmailMessage: SupabaseEmailMessage | null;
   InternalMessage: SupabaseInternalMessage | null;
   TeamMember: { Profile: SupabaseProfile } | null;
+  Attachment: SupabaseAttachment[];
 };
 
 export type ThreadFetch = SupabaseThread & {
@@ -66,7 +68,8 @@ async function fetchThead(supabase: SupabaseClient, threadId: number) {
       Comment!Comment_messageId_fkey(*),
       TeamMember!Message_teamMemberId_fkey(
         Profile(*)
-      )
+      ),
+      Attachment(*)
     )
   `
     )
