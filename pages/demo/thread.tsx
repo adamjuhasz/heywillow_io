@@ -2,6 +2,7 @@ import { Fragment, Key } from "react";
 import { subDays } from "date-fns";
 import {
   SupabaseAliasEmail,
+  SupabaseAttachment,
   SupabaseComment,
   SupabaseEmailMessage,
   SupabaseInternalMessage,
@@ -31,6 +32,7 @@ type MessageNode = {
     EmailMessage: SupabaseEmailMessage | null;
     Comment: SupabaseComment[];
     TeamMember: null | { Profile: SupabaseProfile };
+    Attachment: SupabaseAttachment[];
   };
 };
 
@@ -43,6 +45,7 @@ export default function DemoThread() {
     {
       type: "Message",
       message: {
+        Attachment: [],
         id: 1,
         createdAt: subDays(new Date(), 21).toISOString(),
         type: "email",
@@ -89,6 +92,7 @@ export default function DemoThread() {
     {
       type: "Message",
       message: {
+        Attachment: [],
         id: 2,
         createdAt: subDays(new Date(), 14).toISOString(),
         type: "email",
@@ -128,6 +132,7 @@ export default function DemoThread() {
     {
       type: "Message",
       message: {
+        Attachment: [],
         TeamMember: null,
         id: 3,
         createdAt: subDays(new Date(), 14).toISOString(),
@@ -178,6 +183,7 @@ export default function DemoThread() {
     {
       type: "Message",
       message: {
+        Attachment: [],
         TeamMember: null,
         id: 4,
         createdAt: subDays(new Date(), 13).toISOString(),
