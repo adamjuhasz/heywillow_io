@@ -2,8 +2,8 @@ import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
-import { useSupabase } from "../components/UserContext";
-// import { useUser } from "../components/UserContext";
+import { useSupabase } from "components/UserContext";
+// import { useUser } from "components/UserContext";
 
 interface Props {
   redirect?: string;

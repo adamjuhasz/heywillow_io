@@ -2,16 +2,16 @@ import Head from "next/head";
 import React from "react";
 import Link from "next/link";
 
-import Hero from "components/Hero";
-import LogoCloud from "components/LogoCloud";
-import StayOnTop from "components/Benefits/Left/1";
-import BetterUnderstand from "components/Benefits/Right/1";
-import Features from "components/Features";
-import EasyAPI from "components/Benefits/Left/2";
-import KeepPIISecure from "components/Benefits/Left/3";
-import SecureMessaging from "components/Benefits/Right/2";
-import Stats from "components/Stats";
-import Header from "components/Header";
+import Hero from "components/LandingPage/Hero";
+import LogoCloud from "components/LandingPage/LogoCloud";
+import StayOnTop from "components/LandingPage/Benefits/Left/1";
+import BetterUnderstand from "components/LandingPage/Benefits/Right/1";
+import Features from "components/LandingPage/Features";
+import EasyAPI from "components/LandingPage/Benefits/Left/2";
+import KeepPIISecure from "components/LandingPage/Benefits/Left/3";
+import SecureMessaging from "components/LandingPage/Benefits/Right/2";
+import Stats from "components/LandingPage/Stats";
+import Header from "components/LandingPage/Header";
 
 const footerNavigation = {
   solutions: [

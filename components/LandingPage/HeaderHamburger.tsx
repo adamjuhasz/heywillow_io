@@ -4,7 +4,7 @@ import { XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import Image from "next/image";
 
-import { solutions } from "../data/solutions";
+import { solutions } from "data/solutions";
 import Logo from "public/SqLogo.svg";
 
 export default function HeaderHamburger() {

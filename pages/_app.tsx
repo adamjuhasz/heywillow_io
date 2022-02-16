@@ -1,11 +1,11 @@
-import "../styles/globals.css";
+import "styles/globals.css";
 import { useMemo } from "react";
 import type { AppProps } from "next/app";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
 import { usePostHog } from "next-use-posthog";
 
-import { UserContextProvider } from "../components/UserContext";
+import { UserContextProvider } from "components/UserContext";
 import AppLayout from "layouts/app";
 
 function MyApp({ Component, pageProps }: AppProps) {
