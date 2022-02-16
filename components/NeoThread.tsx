@@ -26,7 +26,7 @@ type AMessage = SupabaseMessage & {
   Comment: SupabaseComment[];
   EmailMessage: SupabaseEmailMessage | null;
   InternalMessage: SupabaseInternalMessage | null;
-  TeamMember: { Profile: SupabaseProfile };
+  TeamMember: { Profile: SupabaseProfile } | null;
 };
 
 export type ThreadFetch = SupabaseThread & {

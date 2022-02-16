@@ -51,20 +51,20 @@ export default function SecureMessaging(): JSX.Element {
               ].map((item) => (
                 <Message
                   key={item.id}
-                  id={BigInt(item.id)}
-                  createdAt={new Date()}
+                  id={item.id}
+                  createdAt={new Date().toISOString()}
                   type={"email"}
                   direction={"incoming"}
                   emailMessageId={null}
                   internalMessageId={null}
-                  threadId={BigInt(1)}
+                  threadId={1}
                   aliasId={null}
                   teamMemberId={null}
                   AliasEmail={null}
                   InternalMessage={null}
                   EmailMessage={{
-                    id: BigInt(item.id),
-                    createdAt: new Date(),
+                    id: item.id,
+                    createdAt: new Date().toISOString(),
                     from: item.from,
                     to: "",
                     sourceMessageId: "",
@@ -75,6 +75,7 @@ export default function SecureMessaging(): JSX.Element {
                   }}
                   teamId={null}
                   Comment={[]}
+                  TeamMember={null}
                 />
               ))}
               <Input

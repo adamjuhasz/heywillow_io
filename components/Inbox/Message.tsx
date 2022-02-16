@@ -9,7 +9,6 @@ import {
   SupabaseEmailMessage,
   SupabaseInternalMessage,
   SupabaseMessage,
-  SupabaseProfile,
 } from "types/supabase";
 import Avatar from "./Avatar";
 
@@ -20,7 +19,7 @@ type Props = SupabaseMessage & {
   Comment: SupabaseComment[];
   InternalMessage: SupabaseInternalMessage | null;
   EmailMessage: SupabaseEmailMessage | null;
-  TeamMember: { Profile: SupabaseProfile };
+  TeamMember: { Profile: { email: string } } | null;
   mutate?: () => void;
 };
 
@@ -36,7 +35,7 @@ export default function Message(props: Props & InterfaceProps) {
     defaultTo(props.EmailMessage?.body, props.InternalMessage?.body) || "";
   const author: string =
     props.AliasEmail?.emailAddress ||
-    props.TeamMember.Profile.email ||
+    props.TeamMember?.Profile.email ||
     "Author";
 
   return (
