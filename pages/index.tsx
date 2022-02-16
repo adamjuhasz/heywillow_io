@@ -224,6 +224,53 @@ export default function Vercel(): JSX.Element {
               Your entire team shares one inbox
             </div>
           </h3>
+
+          <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
+            <div className="w-full md:w-6/12 md:border-r md:border-r-blue-500">
+              <div className="flex w-full">
+                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
+                  I need help with selling my SpaceX shares can you help?
+                  <br /> - Katy
+                </div>
+                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
+              </div>
+              <div className="mb-4 mt-0.5 w-full pr-3 text-right text-xs text-zinc-600">
+                Katy (katy@gmail.com)
+              </div>
+
+              <div className="flex w-full">
+                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
+                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
+                  I'm having engineering looking into the issue now. We'll get
+                  back to you within 20 minutes
+                  <br /> -Adam
+                </div>
+              </div>
+              <div className="mb-4 mt-0.5 w-full text-left text-xs text-zinc-600">
+                Adam (CX team)
+              </div>
+
+              <div className="flex w-full">
+                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
+                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
+                  Hey! It's mike from engineering, can you send us the logs from
+                  the app? It's on the bottom of the settings screen Thanks!
+                  <br />
+                  -Mike (CTO)
+                </div>
+              </div>
+              <div className="mb-4 mt-0.5 w-full text-left text-xs text-zinc-600">
+                Mike (Engineering team)
+              </div>
+            </div>
+
+            <div className="hidden flex-col justify-between py-10 pl-3 md:flex md:w-6/12">
+              <div className="">
+                Never play middle-man again, let anyone from the tram respond to
+                make your customers happier.
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mb-14 flex flex-col items-center">
