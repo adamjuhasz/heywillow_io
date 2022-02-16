@@ -1,25 +1,27 @@
-import type {
-  AliasEmail,
-  EmailMessage,
-  InternalMessage,
-  Message,
-  Thread,
-  ThreadState,
-} from "@prisma/client";
 import { MailIcon } from "@heroicons/react/solid";
 import Link from "next/link";
+import Image from "next/image";
 
-export type SupabaseThread = Thread & {
-  ThreadState: ThreadState[];
-  Message: (Message & {
-    AliasEmail: AliasEmail;
-    EmailMessage: EmailMessage | null;
-    InternalMessage: InternalMessage | null;
+import {
+  SupabaseAliasEmail,
+  SupabaseEmailMessage,
+  SupabaseInternalMessage,
+  SupabaseMessage,
+  SupabaseThread,
+  SupabaseThreadState,
+} from "types/supabase";
+
+export type FetchThread = SupabaseThread & {
+  ThreadState: SupabaseThreadState[];
+  Message: (SupabaseMessage & {
+    AliasEmail: SupabaseAliasEmail;
+    EmailMessage: SupabaseEmailMessage | null;
+    InternalMessage: SupabaseInternalMessage | null;
   })[];
 };
 
 interface Props {
-  threads: SupabaseThread[];
+  threads: FetchThread[];
 }
 
 export default function ThreadList(props: Props) {
@@ -34,12 +36,13 @@ export default function ThreadList(props: Props) {
           className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
         >
           <div className="flex flex-1 flex-col p-8">
-            <img
+            <Image
               className="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
               src={
                 "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"
               }
               alt=""
+              layout="responsive"
             />
             <h3 className="mt-6 text-sm font-medium text-gray-900">
               {thread.Message[0].AliasEmail.emailAddress}

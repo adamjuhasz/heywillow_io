@@ -1,13 +1,5 @@
 import { useEffect } from "react";
-import type {
-  AliasEmail,
-  Comment,
-  Message as DBMessage,
-  EmailMessage,
-  InternalMessage,
-  Thread,
-  ThreadState,
-} from "@prisma/client";
+
 import useSWR from "swr";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { defaultTo, orderBy } from "lodash";
@@ -17,18 +9,28 @@ import { flatMap } from "lodash";
 import { useSupabase } from "components/UserContext";
 import Message from "components/Inbox/Message";
 import InputWithRef from "components/Inbox/Input";
-
 import { Body } from "pages/api/v1/message/add";
+import {
+  SupabaseAliasEmail,
+  SupabaseComment,
+  SupabaseEmailMessage,
+  SupabaseInternalMessage,
+  SupabaseMessage,
+  SupabaseProfile,
+  SupabaseThread,
+  SupabaseThreadState,
+} from "types/supabase";
 
-type AMessage = DBMessage & {
-  AliasEmail: AliasEmail;
-  Comment: Comment[];
-  EmailMessage: EmailMessage | null;
-  InternalMessage: InternalMessage | null;
+type AMessage = SupabaseMessage & {
+  AliasEmail: SupabaseAliasEmail;
+  Comment: SupabaseComment[];
+  EmailMessage: SupabaseEmailMessage | null;
+  InternalMessage: SupabaseInternalMessage | null;
+  TeamMember: { Profile: SupabaseProfile };
 };
 
-export type SupabaseThread = Thread & {
-  ThreadState: ThreadState[];
+export type ThreadFetch = SupabaseThread & {
+  ThreadState: SupabaseThreadState[];
   Message: AMessage[];
 };
 
@@ -51,7 +53,7 @@ async function fetchThead(supabase: SupabaseClient, threadId: number) {
   console.log("getThread", getThread);
 
   const res = await supabase
-    .from<SupabaseThread>("Thread")
+    .from<ThreadFetch>("Thread")
     .select(
       `
     *,
@@ -61,13 +63,17 @@ async function fetchThead(supabase: SupabaseClient, threadId: number) {
       AliasEmail(*),
       EmailMessage(*),
       InternalMessage(*),
-      Comment!Comment_messageId_fkey(*)
+      Comment!Comment_messageId_fkey(*),
+      TeamMember!Message_teamMemberId_fkey(
+        Profile(*)
+      )
     )
   `
     )
     .or(`id.eq.${threadId},aliasEmailId.eq.${alias}`)
     .order("createdAt", { ascending: true });
   if (res.error !== null) {
+    console.error("fetchThead", res.error);
     throw res.error;
   }
   console.log("fetchThead", res.data);
@@ -145,7 +151,7 @@ export default function NeoThread(props: Props) {
 
   let nodes: SomeNode[] = defaultTo(messages, []).map((m) => ({
     type: "Message",
-    datetime: new Date(m.createdAt as any as string),
+    datetime: new Date(m.createdAt),
     message: m,
   }));
 

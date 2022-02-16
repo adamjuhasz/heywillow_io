@@ -1,25 +1,26 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import type {
-  AliasEmail,
-  Comment,
-  EmailMessage,
-  InternalMessage,
-  Message,
-} from "@prisma/client";
 import { defaultTo } from "lodash";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 import CommentBox from "./CommentBox";
-
+import {
+  SupabaseAliasEmail,
+  SupabaseComment,
+  SupabaseEmailMessage,
+  SupabaseInternalMessage,
+  SupabaseMessage,
+  SupabaseProfile,
+} from "types/supabase";
 import Avatar from "./Avatar";
 
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
 
-type Props = Message & {
-  AliasEmail: AliasEmail | null;
-  Comment: Comment[];
-  InternalMessage: InternalMessage | null;
-  EmailMessage: EmailMessage | null;
+type Props = SupabaseMessage & {
+  AliasEmail: SupabaseAliasEmail | null;
+  Comment: SupabaseComment[];
+  InternalMessage: SupabaseInternalMessage | null;
+  EmailMessage: SupabaseEmailMessage | null;
+  TeamMember: { Profile: SupabaseProfile };
   mutate?: () => void;
 };
 
@@ -30,6 +31,13 @@ interface InterfaceProps {
 export default function Message(props: Props & InterfaceProps) {
   const [hovering, setHovering] = useState(false);
   const [commenting, setCommenting] = useState(props.Comment.length > 0);
+
+  const text: string =
+    defaultTo(props.EmailMessage?.body, props.InternalMessage?.body) || "";
+  const author: string =
+    props.AliasEmail?.emailAddress ||
+    props.TeamMember.Profile.email ||
+    "Author";
 
   return (
     <>
@@ -59,9 +67,7 @@ export default function Message(props: Props & InterfaceProps) {
             ].join(" ")}
           >
             <div className="text-xs font-medium">
-              <span className="text-gray-400">
-                {props.AliasEmail?.emailAddress || "Author"}
-              </span>
+              <span className="text-gray-400">{author}</span>
             </div>
 
             <div
@@ -84,12 +90,7 @@ export default function Message(props: Props & InterfaceProps) {
                   ""
                 )}
                 <div className="flex w-fit flex-col ">
-                  {(
-                    defaultTo(
-                      props.EmailMessage?.body,
-                      props.InternalMessage?.body
-                    ) || ""
-                  )
+                  {text
                     .replace(/\r\n/g, "\n")
                     .split("\n")
                     .map((b, i) => (

@@ -1,21 +1,34 @@
 import { Fragment } from "react";
-import type { AliasEmail } from "@prisma/client";
 import { DotsVerticalIcon } from "@heroicons/react/solid";
 import { CheckIcon, ClockIcon } from "@heroicons/react/outline";
 import { addDays, formatDistanceToNowStrict } from "date-fns";
 import { Popover } from "@headlessui/react";
 import { shift, useFloating } from "@floating-ui/react-dom";
 
-import { SupabaseThread } from "components/ThreadList";
 import { Body, ThreadStateType } from "pages/api/v1/thread/state";
+import {
+  SupabaseAliasEmail,
+  SupabaseEmailMessage,
+  SupabaseInternalMessage,
+  SupabaseMessage,
+  SupabaseThread,
+  SupabaseThreadState,
+} from "types/supabase";
 
-type ExtraSupa = SupabaseThread & { AliasEmail: AliasEmail };
-export type { ExtraSupa };
+type FetchThread = SupabaseThread & {
+  ThreadState: SupabaseThreadState[];
+  Message: (SupabaseMessage & {
+    AliasEmail: SupabaseAliasEmail | null;
+    EmailMessage: SupabaseEmailMessage | null;
+    InternalMessage: SupabaseInternalMessage | null;
+  })[];
+  AliasEmail: SupabaseAliasEmail;
+};
 
 export const width = 166;
 
 interface Props {
-  t: ExtraSupa;
+  t: FetchThread;
   setSelected: (n: number | null) => void;
   selected: number;
   mutateThread?: () => void;
@@ -200,7 +213,7 @@ export default function ThreadPill({
           ].join(" ")}
         >
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {formatDistanceToNowStrict(new Date(t.updatedAt as any as string), {
+          {formatDistanceToNowStrict(new Date(t.updatedAt), {
             addSuffix: true,
           })}
         </div>
