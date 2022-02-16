@@ -12,7 +12,7 @@ export default async function getGmailAttachments(
   }
 
   const attachments = message.payload.parts.filter(
-    (p) => p.mimeType?.startsWith("image/") && p.body?.attachmentId
+    (p) => p.mimeType?.startsWith("text/") === false && p.body?.attachmentId
   );
 
   if (!message.id) {
