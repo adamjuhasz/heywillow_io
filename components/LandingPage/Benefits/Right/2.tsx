@@ -76,6 +76,7 @@ export default function SecureMessaging(): JSX.Element {
                   teamId={null}
                   Comment={[]}
                   TeamMember={null}
+                  Attachment={[]}
                 />
               ))}
               <Input

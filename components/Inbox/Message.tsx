@@ -2,15 +2,19 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { defaultTo } from "lodash";
 import { PlusCircleIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
+
 import CommentBox from "./CommentBox";
 import {
   SupabaseAliasEmail,
+  SupabaseAttachment,
   SupabaseComment,
   SupabaseEmailMessage,
   SupabaseInternalMessage,
   SupabaseMessage,
 } from "types/supabase";
 import Avatar from "./Avatar";
+import { useSupabase } from "components/UserContext";
 
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
 
@@ -20,6 +24,7 @@ type Props = SupabaseMessage & {
   InternalMessage: SupabaseInternalMessage | null;
   EmailMessage: SupabaseEmailMessage | null;
   TeamMember: { Profile: { email: string } } | null;
+  Attachment: SupabaseAttachment[];
   mutate?: () => void;
 };
 
@@ -30,6 +35,8 @@ interface InterfaceProps {
 export default function Message(props: Props & InterfaceProps) {
   const [hovering, setHovering] = useState(false);
   const [commenting, setCommenting] = useState(props.Comment.length > 0);
+  const supabase = useSupabase();
+  const router = useRouter();
 
   const text: string =
     defaultTo(props.EmailMessage?.body, props.InternalMessage?.body) || "";
@@ -100,6 +107,35 @@ export default function Message(props: Props & InterfaceProps) {
                     ))}
                 </div>
               </div>
+            </div>
+
+            <div className="mt-1 flex space-x-1">
+              {props.Attachment.map((a) => (
+                <div
+                  key={a.id}
+                  className="w-fit cursor-pointer rounded-sm bg-purple-300 px-1 py-0.5 text-xs text-white"
+                  onClick={async () => {
+                    if (supabase) {
+                      console.log(a);
+                      const parts = a.location.split("/");
+                      const bucket = parts[0];
+                      const path = parts.slice(1).join("/");
+                      console.log(bucket, path);
+                      const url = await supabase.storage
+                        .from(bucket)
+                        .createSignedUrl(path, 60 * 60 * 24);
+                      console.log(url);
+                      if (url.error) {
+                        console.error(url.error);
+                        return;
+                      }
+                      router.push(url.data?.signedURL as string);
+                    }
+                  }}
+                >
+                  {a.filename}
+                </div>
+              ))}
             </div>
 
             <div
