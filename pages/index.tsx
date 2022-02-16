@@ -1,260 +1,356 @@
 import Head from "next/head";
-import React from "react";
 import Link from "next/link";
+import { CSSProperties, PropsWithChildren } from "react";
+import { ArrowNarrowRightIcon, CheckCircleIcon } from "@heroicons/react/solid";
 
-import Hero from "components/LandingPage/Hero";
-import LogoCloud from "components/LandingPage/LogoCloud";
-import StayOnTop from "components/LandingPage/Benefits/Left/1";
-import BetterUnderstand from "components/LandingPage/Benefits/Right/1";
-import Features from "components/LandingPage/Features";
-import EasyAPI from "components/LandingPage/Benefits/Left/2";
-import KeepPIISecure from "components/LandingPage/Benefits/Left/3";
-import SecureMessaging from "components/LandingPage/Benefits/Right/2";
-import Stats from "components/LandingPage/Stats";
-import Header from "components/LandingPage/Header";
-
-const footerNavigation = {
-  solutions: [
-    { name: "Customer Service", href: "#" },
-    { name: "Customer Discovery", href: "#" },
-    { name: "Customer Outreach", href: "#" },
-  ],
-  support: [
-    { name: "Pricing", href: "#" },
-    { name: "Documentation", href: "#" },
-    { name: "Guides", href: "#" },
-    {
-      name: (
-        <div className="flex items-center">
-          <span className="mr-2 h-2 w-2  rounded-full bg-lime-400" /> API Status
-        </div>
-      ),
-      href: "#",
-    },
-  ],
-  company: [
-    { name: "About", href: "#" },
-    { name: "Blog", href: "#" },
-    { name: "Press", href: "#" },
-  ],
-  legal: [
-    { name: "Privacy", href: "#" },
-    { name: "Terms", href: "#" },
-  ],
-  compare: [
-    {
-      name: "Willow vs Front",
-      href: "/",
-    },
-    {
-      name: "Willow vs Zendesk",
-      href: "/",
-    },
-    {
-      name: "Willow vs Gladly",
-      href: "/",
-    },
-    {
-      name: "Willow vs Customer.io",
-      href: "/",
-    },
-    {
-      name: "Willow vs Hiver",
-      href: "/",
-    },
-  ],
-};
-
-export default function Example() {
+export default function Vercel(): JSX.Element {
   return (
     <>
       <Head>
-        <title>Willow</title>
+        <style>{`
+        body {
+          background: #18181b;
+        }
+        `}</style>
+        <link
+          rel="stylesheet"
+          href="https://use.typekit.net/itm2wvw.css"
+        ></link>
       </Head>
-      <div className="bg-white">
-        <header>
-          <Header />
-        </header>
-
-        <main>
-          {/* Hero section */}
-          <Hero />
-
-          {/* Logo Cloud */}
-          <LogoCloud />
-
-          {/* Alternating Feature Sections */}
-          <div className="relative overflow-hidden pt-16 pb-32">
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-gray-100"
-            />
-            <StayOnTop />
-            <div className="mt-24">
-              <BetterUnderstand />
-            </div>
-
-            <div className="mt-24">
-              <EasyAPI />
-            </div>
-
-            <div className="mt-24">
-              <SecureMessaging />
-            </div>
-
-            <div className="mt-24">
-              <KeepPIISecure />
-            </div>
+      <div className="sticky top-0 z-50 flex h-20 w-full items-center bg-zinc-900 bg-opacity-50 font-[rubik] text-zinc-200 backdrop-blur-lg">
+        <div className="mx-auto flex w-full max-w-4xl items-center justify-between px-4 lg:px-0">
+          <div className="flex items-center text-2xl font-medium">
+            <WillowLogo className="mr-2 h-5 w-5 shrink-0" /> Willow
           </div>
 
-          {/* Gradient Feature Section */}
-          <Features />
-
-          {/* Stats section */}
-          <Stats />
-
-          {/* CTA Section */}
-          <div className="bg-white">
-            <div className="mx-auto max-w-4xl py-16 px-4 sm:px-6 sm:py-24 lg:flex lg:max-w-7xl lg:items-center lg:justify-between lg:px-8">
-              <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                <span className="block">Ready to get started?</span>
-                <span className="block bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                  Get in touch or create an account.
-                </span>
-              </h2>
-              <div className="mt-6 space-y-4 sm:flex sm:space-y-0 sm:space-x-5">
-                <Link href="mailto:hi@willow.support">
-                  <a className="flex items-center justify-center rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-3 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700">
-                    Learn more
-                  </a>
-                </Link>
-                <Link href="/signup">
-                  <a className="flex items-center justify-center rounded-md border border-transparent bg-indigo-50 px-4 py-3 text-base font-medium text-indigo-800 shadow-sm hover:bg-indigo-100">
-                    Get started
-                  </a>
-                </Link>
-              </div>
-            </div>
+          <div className="flex items-center space-x-4 text-sm font-normal">
+            <Link href="mailto:yo@heywillow.io">
+              <a className="text-zinc-500 hover:text-zinc-100">Contact</a>
+            </Link>
+            <Link href="/login">
+              <a className="text-zinc-500 hover:text-zinc-100">Login</a>
+            </Link>
+            <Link href="/signup">
+              <a className="rounded-md border-2 border-transparent bg-zinc-100 px-3 py-2 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
+                Sign Up
+              </a>
+            </Link>
           </div>
-        </main>
+        </div>
+      </div>
 
-        <footer className="bg-gray-50" aria-labelledby="footer-heading">
-          <h2 id="footer-heading" className="sr-only">
-            Footer
+      <div className="mx-auto max-w-4xl bg-zinc-900 px-4 font-[rubik] text-zinc-200 lg:px-0">
+        <div className="flex flex-col py-14">
+          <h1 className="mb-14 flex flex-col items-center space-y-4 text-[160px] font-semibold leading-[150px]">
+            <span>See</span>
+            <span>
+              <GradientText className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">
+                Everything
+              </GradientText>
+            </span>
+            <span>Together.</span>
+          </h1>
+
+          <div className="mx-auto mb-14 flex space-x-6">
+            <Link href="/signup">
+              <a className="flex min-w-[150px] items-center justify-center rounded-lg bg-zinc-100 px-6 py-4 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100">
+                Try it out
+              </a>
+            </Link>
+            <Link href="mailto:yo@heywillo.io">
+              <a className="flex min-w-[150px] items-center justify-center rounded-lg border-2 border-zinc-500 px-6 py-4 text-zinc-500 hover:border-zinc-100 hover:text-zinc-100">
+                Contact us
+              </a>
+            </Link>
+          </div>
+
+          <h2 className="text-center text-lg text-zinc-500">
+            Willow shows your customer&apos;s entire story in one place, like
+            messages, emails, in-app actions, or user events, so you can provide
+            better customer service without switching tabs.
           </h2>
-          <div className="mx-auto max-w-7xl px-4 pt-16 pb-8 sm:px-6 lg:px-8 lg:pt-24">
-            <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-              <div className="grid grid-cols-2 gap-8 xl:col-span-2">
-                <div className="md:grid md:grid-cols-2 md:gap-8">
-                  <div>
-                    <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                      Solutions
-                    </h3>
-                    <ul role="list" className="mt-4 space-y-4">
-                      {footerNavigation.solutions.map((item) => (
-                        <li key={item.name}>
-                          <Link href={item.href}>
-                            <a className="text-base text-gray-500 hover:text-gray-900">
-                              {item.name}
-                            </a>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+        </div>
+
+        <div className="mb-14 flex flex-col items-center">
+          <h3 className="flex flex-col items-center text-3xl font-semibold">
+            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-blue-500" />
+            <GradientText className="bg-gradient-to-r from-blue-500 to-teal-400">
+              Lifetime view
+            </GradientText>
+            <div className="mt-5 text-center text-5xl">
+              See your entire customer&apos;s story in one place from the very
+              beginning
+            </div>
+          </h3>
+        </div>
+
+        <div className="mb-14 flex flex-col items-center">
+          <h3 className="flex flex-col items-center text-3xl font-semibold">
+            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-fuchsia-500" />
+            <GradientText className="from bg-gradient-to-r from-fuchsia-600 to-pink-500">
+              Teamwork makes the dream work
+            </GradientText>
+            <div className="mt-5 text-center text-5xl">
+              Leave comments directly on the customer&apos;s story
+            </div>
+
+            <div className="mt-6 flex w-full space-x-4 text-base font-normal text-zinc-500"></div>
+
+            <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
+              <div className="w-6/12 space-y-4 border-r border-r-pink-500">
+                <div className="flex w-full">
+                  <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
+                    Hi, how do I transfer my stock from another brokerage to
+                    yours?
+                    <br /> - Katy
                   </div>
-                  <div className="mt-12 md:mt-0">
-                    <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                      Support
-                    </h3>
-                    <ul role="list" className="mt-4 space-y-4">
-                      {footerNavigation.support.map((item, id) => (
-                        <li key={id}>
-                          <a
-                            href={item.href}
-                            className="text-base text-gray-500 hover:text-gray-900"
-                          >
-                            {item.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
                 </div>
-                <div className="md:grid md:grid-cols-2 md:gap-8">
-                  <div>
-                    <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                      Company
-                    </h3>
-                    <ul role="list" className="mt-4 space-y-4">
-                      {footerNavigation.company.map((item) => (
-                        <li key={item.name}>
-                          <Link href={item.href}>
-                            <a className="text-base text-gray-500 hover:text-gray-900">
-                              {item.name}
-                            </a>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+
+                <div className="flex w-full">
+                  <div className="flex grow flex-col divide-y divide-yellow-400 rounded-xl border-2 border-yellow-400 bg-yellow-200 bg-opacity-40 px-4 py-2 text-sm font-light text-white">
+                    <div className="py-1">
+                      <span className="font-medium">@mike</span> can we do this?
+                    </div>
+                    <div className="py-1">
+                      <span className="font-medium">@adam</span> not sure!{" "}
+                      <span className="font-medium">@Stefan</span> where are we
+                      with the transfer project? Any news from eng?
+                    </div>
+                    <div className="py-1">
+                      <span className="font-medium">@adam</span>,{" "}
+                      <span className="font-medium">@mike</span> we&apos;re on
+                      track to release this in 2 weeks
+                    </div>
                   </div>
-                  <div className="mt-12 md:mt-0">
-                    <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                      Compare us
-                    </h3>
-                    <ul role="list" className="mt-4 space-y-4">
-                      {footerNavigation.compare.map((item) => (
-                        <li key={item.name}>
-                          <Link href={item.href}>
-                            <a className="text-base text-gray-500 hover:text-gray-900">
-                              {item.name}
-                            </a>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="ml-1 -mt-2 mr-8 h-6 w-4 rounded-br-xl border-r-2 border-b-2 border-zinc-600" />
+                </div>
+
+                <div className="flex w-full">
+                  <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
+                  <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
+                    Hey Katy!
+                    <br />
+                    <br />
+                    We&apos;ll be launching this in 2 weeks, do you want to be
+                    added to the beta list?
+                    <br />
+                    <br /> - Adam
                   </div>
                 </div>
               </div>
-              {/* <div className="mt-12 xl:mt-0">
-                <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-                  Subscribe to our newsletter
-                </h3>
-                <p className="mt-4 text-base text-gray-500">
-                  The latest news, articles, and resources, sent to your inbox
-                  weekly.
-                </p>
-                <form className="mt-4 sm:flex sm:max-w-md">
-                  <label htmlFor="email-address" className="sr-only">
-                    Email address
-                  </label>
-                  <input
-                    type="email"
-                    name="email-address"
-                    id="email-address"
-                    autoComplete="email"
-                    required
-                    className="appearance-none min-w-0 w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-4 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:placeholder-gray-400"
-                    placeholder="Enter your email"
-                  />
-                  <div className="mt-3 rounded-md sm:mt-0 sm:ml-3 sm:flex-shrink-0">
-                    <button
-                      type="submit"
-                      className="w-full flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white hover:from-purple-700 hover:to-indigo-700"
-                    >
-                      Subscribe
-                    </button>
-                  </div>
-                </form>
-              </div> */}
+
+              <div className="flex w-6/12 flex-col justify-between py-10 pl-3">
+                <div className="">
+                  Never lose context when switching from platform to platform
+                  and never copy-and-paste a link ever again.
+                </div>
+                <div className="">
+                  Scroll back in time anytime to see what how the team came to a
+                  resolution.
+                </div>
+              </div>
             </div>
-            <div className="mt-12 border-t border-gray-200 pt-8 md:flex md:items-center md:justify-between lg:mt-16">
-              <p className="mt-8 text-base text-gray-400 md:order-1 md:mt-0">
-                &copy; 2022 Willow, Inc. All rights reserved.
-              </p>
+          </h3>
+        </div>
+
+        <div className="mb-14 flex flex-col items-center">
+          <h3 className="flex flex-col items-center text-3xl font-semibold">
+            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-orange-500" />
+            <GradientText className="from bg-gradient-to-r from-orange-600 to-yellow-500">
+              Shared inbox
+            </GradientText>
+            <div className="mt-5 text-center text-5xl">
+              Your entire team shares one inbox
+            </div>
+          </h3>
+        </div>
+
+        <div className="mb-14 flex flex-col items-center">
+          <h3 className="flex flex-col items-center text-3xl font-semibold">
+            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-lime-500" />
+            <GradientText className="from bg-gradient-to-r from-lime-600 to-emerald-500">
+              Secure messaging
+            </GradientText>
+            <div className="mt-5 text-center text-5xl">
+              Auto-encrypt and auto-mask incoming PII and provide a secure
+              web-based messaging solution
+            </div>
+            <div className="mt-6 flex w-full space-x-4 text-base font-normal text-zinc-500">
+              <div className="w-full text-center">
+                Never worry about collecting sensitive PII like SSNs, credit
+                card numbers, etc
+              </div>
+            </div>
+          </h3>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="mx-auto h-[200px] w-[1px] bg-gradient-to-b from-transparent to-white" />
+          <h3 className="text-center text-7xl font-medium text-zinc-100">
+            We hate per-seat pricing
+          </h3>
+          <div className="mt-7 text-center text-2xl font-light text-zinc-500">
+            Get your whole team working together by getting everyone together in
+            Willow. We bill per unique human conversation.
+          </div>
+
+          <div className="mt-14 grid grid-cols-3 gap-4">
+            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500">
+              <div className="flex flex-col p-10">
+                <div className="text-3xl font-medium text-zinc-100">
+                  Free forever
+                </div>
+                <div className="text-normal text-zinc-500 line-clamp-1">
+                  Seriously, free tier for life
+                </div>
+              </div>
+
+              <div className="flex grow flex-col space-y-4 bg-zinc-600 bg-opacity-30 p-10">
+                <div className="flex items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                  <div className="grow">50 unique conversations per month</div>
+                </div>
+                <div className="flex items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                  <div className="grow">No limit on team members</div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center bg-zinc-600 bg-opacity-30 p-8">
+                <Link href="/signup">
+                  <a className="flex w-full items-center justify-between rounded-md border-2 border-transparent bg-zinc-100 px-3 py-2 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
+                    Sign up now
+                    <ArrowNarrowRightIcon className="h-4 w-4" />
+                  </a>
+                </Link>
+              </div>
+            </div>
+
+            <div className="col-span-1 flex flex-col overflow-hidden rounded-md border border-[#EE147C] ">
+              <div className="flex flex-col bg-[#EE147C] p-10">
+                <div className="text-3xl font-medium text-zinc-100">
+                  Growing
+                </div>
+                <div className="text-normal text-zinc-100 text-opacity-70">
+                  $50/mo
+                </div>
+              </div>
+
+              <div className="flex grow flex-col space-y-4 bg-zinc-600 bg-opacity-30 p-10">
+                <div className="flex items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                  <div className="grow">Everything in the free tier</div>
+                </div>
+                <div className="flex items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                  <div className="grow">200 unique conversations per month</div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center p-8">
+                <Link href="/signup">
+                  <a className="flex w-full items-center justify-between rounded-md border-2 border-transparent bg-[#EE147C] px-3 py-2 text-zinc-100 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
+                    Sign up now
+                    <ArrowNarrowRightIcon className="h-4 w-4" />
+                  </a>
+                </Link>
+              </div>
+            </div>
+
+            <div className="50 col-span-1 flex flex-col rounded-md border border-[#8341C2]">
+              <div className="flex flex-col bg-[#8341C2] p-10">
+                <div className="text-3xl font-medium text-zinc-100">
+                  Hypergrowth
+                </div>
+                <div className="text-normal text-zing-100 text-opacity-70">
+                  $200/mo
+                </div>
+              </div>
+
+              <div className="flex grow flex-col space-y-4 bg-zinc-600 bg-opacity-30 p-10">
+                <div className="flex grow items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                  <div className="grow">
+                    Everything in the free and growing tier
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center p-8">
+                <Link href="/signup">
+                  <a className="flex w-full items-center justify-between rounded-md border-2 border-transparent bg-[#8341C2] px-3 py-2 text-zinc-100 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
+                    Sign up now
+                    <ArrowNarrowRightIcon className="h-4 w-4" />
+                  </a>
+                </Link>
+              </div>
             </div>
           </div>
-        </footer>
+        </div>
+
+        <div className="flex h-80 w-full justify-between"></div>
       </div>
     </>
+  );
+}
+
+interface GradientProps {
+  className: string;
+  style?: CSSProperties;
+}
+
+function GradientText({
+  className,
+  ...props
+}: PropsWithChildren<GradientProps>) {
+  return (
+    <span className={`relative bg-clip-text text-transparent ${className}`}>
+      {props.children}
+    </span>
+  );
+}
+
+function WillowLogo(props: { className: string }) {
+  return (
+    <svg
+      width="600"
+      height="600"
+      viewBox="0 0 600 600"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`inline-block ${props.className}`}
+    >
+      <circle
+        cx="300"
+        cy="300"
+        r="255"
+        stroke="currentColor"
+        strokeWidth="40"
+      />
+      <circle cx="399" cy="240" r="75" fill="currentColor" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M111.013 387C143.949 458.426 216.185 508 300 508C383.815 508 456.051 458.426 488.987 387H443.747C414.297 435.556 360.937 468 300 468C239.063 468 185.703 435.556 156.253 387H111.013Z"
+        fill="currentColor"
+      />
+      <rect
+        x="214.995"
+        y="141"
+        width="70"
+        height="140"
+        transform="rotate(45 214.995 141)"
+        fill="currentColor"
+      />
+      <rect
+        x="116"
+        y="240"
+        width="70"
+        height="140"
+        transform="rotate(-45 116 240)"
+        fill="currentColor"
+      />
+    </svg>
   );
 }
