@@ -42,7 +42,7 @@ export default function ThreadList(props: Props) {
                 "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"
               }
               alt=""
-              layout="responsive"
+              layout="fill"
             />
             <h3 className="mt-6 text-sm font-medium text-gray-900">
               {thread.Message[0].AliasEmail.emailAddress}
