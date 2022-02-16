@@ -25,7 +25,9 @@ export default function Vercel(): JSX.Element {
 
           <div className="flex items-center space-x-4 text-sm font-normal">
             <Link href="mailto:yo@heywillow.io">
-              <a className="text-zinc-500 hover:text-zinc-100">Contact</a>
+              <a className="hidden text-zinc-500 hover:text-zinc-100 sm:block">
+                Contact
+              </a>
             </Link>
             <Link href="/login">
               <a className="text-zinc-500 hover:text-zinc-100">Login</a>
@@ -41,7 +43,7 @@ export default function Vercel(): JSX.Element {
 
       <div className="mx-auto max-w-4xl bg-zinc-900 px-4 font-[rubik] text-zinc-200 lg:px-0">
         <div className="flex flex-col py-14">
-          <h1 className="mb-14 flex flex-col items-center space-y-4 text-[160px] font-semibold leading-[150px]">
+          <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold lg:space-y-4 lg:text-[160px] lg:leading-[150px]">
             <span>See</span>
             <span>
               <GradientText className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">
@@ -51,9 +53,9 @@ export default function Vercel(): JSX.Element {
             <span>Together.</span>
           </h1>
 
-          <div className="mx-auto mb-14 flex space-x-6">
+          <div className="mx-auto mb-14 flex w-full flex-col space-x-0 space-y-4 lg:w-fit lg:flex-row lg:space-x-6 lg:space-y-0">
             <Link href="/signup">
-              <a className="flex min-w-[150px] items-center justify-center rounded-lg bg-zinc-100 px-6 py-4 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100">
+              <a className="flex w-full items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 lg:min-w-[150px]">
                 Try it out
               </a>
             </Link>
@@ -77,7 +79,7 @@ export default function Vercel(): JSX.Element {
             <GradientText className="bg-gradient-to-r from-blue-500 to-teal-400">
               Lifetime view
             </GradientText>
-            <div className="mt-5 text-center text-5xl">
+            <div className="tex-3xl mt-5 text-center lg:text-5xl">
               See your entire customer&apos;s story in one place from the very
               beginning
             </div>
@@ -87,17 +89,17 @@ export default function Vercel(): JSX.Element {
         <div className="mb-14 flex flex-col items-center">
           <h3 className="flex flex-col items-center text-3xl font-semibold">
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-fuchsia-500" />
-            <GradientText className="from bg-gradient-to-r from-fuchsia-600 to-pink-500">
+            <GradientText className="from bg-gradient-to-r from-fuchsia-600 to-pink-500 text-center">
               Teamwork makes the dream work
             </GradientText>
-            <div className="mt-5 text-center text-5xl">
+            <div className="mt-5 text-center text-3xl lg:text-5xl">
               Leave comments directly on the customer&apos;s story
             </div>
 
             <div className="mt-6 flex w-full space-x-4 text-base font-normal text-zinc-500"></div>
 
             <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
-              <div className="w-6/12 space-y-4 border-r border-r-pink-500">
+              <div className="w-full space-y-4 lg:w-6/12 lg:border-r lg:border-r-fuchsia-500">
                 <div className="flex w-full">
                   <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
                     Hi, how do I transfer my stock from another brokerage to
@@ -140,7 +142,7 @@ export default function Vercel(): JSX.Element {
                 </div>
               </div>
 
-              <div className="flex w-6/12 flex-col justify-between py-10 pl-3">
+              <div className="hidden flex-col justify-between py-10 pl-3 lg:flex lg:w-6/12">
                 <div className="">
                   Never lose context when switching from platform to platform
                   and never copy-and-paste a link ever again.
@@ -157,10 +159,10 @@ export default function Vercel(): JSX.Element {
         <div className="mb-14 flex flex-col items-center">
           <h3 className="flex flex-col items-center text-3xl font-semibold">
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-orange-500" />
-            <GradientText className="from bg-gradient-to-r from-orange-600 to-yellow-500">
+            <GradientText className="from mt-2 bg-gradient-to-r from-orange-600 to-yellow-500">
               Shared inbox
             </GradientText>
-            <div className="mt-5 text-center text-5xl">
+            <div className="mt-5 text-center text-3xl lg:text-5xl">
               Your entire team shares one inbox
             </div>
           </h3>
@@ -172,7 +174,7 @@ export default function Vercel(): JSX.Element {
             <GradientText className="from bg-gradient-to-r from-lime-600 to-emerald-500">
               Secure messaging
             </GradientText>
-            <div className="mt-5 text-center text-5xl">
+            <div className="mt-5 text-center text-3xl lg:text-5xl">
               Auto-encrypt and auto-mask incoming PII and provide a secure
               web-based messaging solution
             </div>
@@ -187,15 +189,15 @@ export default function Vercel(): JSX.Element {
 
         <div className="flex flex-col">
           <div className="mx-auto h-[200px] w-[1px] bg-gradient-to-b from-transparent to-white" />
-          <h3 className="text-center text-7xl font-medium text-zinc-100">
+          <h3 className="text-center text-3xl font-medium text-zinc-100 lg:text-7xl">
             We hate per-seat pricing
           </h3>
-          <div className="mt-7 text-center text-2xl font-light text-zinc-500">
+          <div className="mt-7 text-center text-lg font-light text-zinc-500 lg:text-2xl">
             Get your whole team working together by getting everyone together in
             Willow. We bill per unique human conversation.
           </div>
 
-          <div className="mt-14 grid grid-cols-3 gap-4">
+          <div className="mt-14 grid grid-cols-1 gap-4 lg:grid-cols-3 ">
             <div className="col-span-1 flex flex-col rounded-md border border-zinc-500">
               <div className="flex flex-col p-10">
                 <div className="text-3xl font-medium text-zinc-100">
@@ -219,7 +221,7 @@ export default function Vercel(): JSX.Element {
 
               <div className="flex items-center justify-center bg-zinc-600 bg-opacity-30 p-8">
                 <Link href="/signup">
-                  <a className="flex w-full items-center justify-between rounded-md border-2 border-transparent bg-zinc-100 px-3 py-2 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
+                  <a className="flex w-full items-center justify-between rounded-md border-2 border-transparent bg-zinc-100 px-3 py-2 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100">
                     Sign up now
                     <ArrowNarrowRightIcon className="h-4 w-4" />
                   </a>
@@ -258,7 +260,7 @@ export default function Vercel(): JSX.Element {
               </div>
             </div>
 
-            <div className="50 col-span-1 flex flex-col rounded-md border border-[#8341C2]">
+            <div className="col-span-1 flex flex-col rounded-md border border-[#8341C2]">
               <div className="flex flex-col bg-[#8341C2] p-10">
                 <div className="text-3xl font-medium text-zinc-100">
                   Hypergrowth
