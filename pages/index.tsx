@@ -84,6 +84,64 @@ export default function Vercel(): JSX.Element {
               beginning
             </div>
           </h3>
+
+          <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
+            <div className="w-full space-y-4 md:w-6/12 md:border-r md:border-r-blue-500">
+              <div className="text-xs text-zinc-600">May 4, 2022</div>
+              <div className="flex w-full">
+                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
+                  I got double charged this month, would it be possible to get
+                  one payment refunded?
+                  <br /> - Katy
+                </div>
+                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
+              </div>
+
+              <div className="flex w-full">
+                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
+                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
+                  I am so sorry about that! I just started the refund process
+                  for payment #432. Sorry again! - Adam
+                </div>
+              </div>
+
+              <div className="mx-2 h-[1px] bg-zinc-100 bg-opacity-25" />
+              <div className="text-xs text-zinc-600">July 7, 2022</div>
+
+              <div className="flex w-full">
+                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
+                  I got double charged this month, would it be possible to get
+                  one payment refunded?
+                  <br /> - Katy
+                </div>
+                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
+              </div>
+
+              <div className="flex w-full">
+                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
+                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
+                  I am so sorry again! Since this is the second time, I've also
+                  applied a $20 credit to your account -Mike
+                </div>
+              </div>
+
+              <div className="flex w-full">
+                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
+                  That's Awesome! Thank you!! No worries mistakes happen. You
+                  all are the best!
+                  <br /> - Katy
+                </div>
+                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
+              </div>
+            </div>
+
+            <div className="hidden flex-col justify-between py-10 pl-3 md:flex md:w-6/12">
+              <div className="">
+                See your full history with every customer and go they extra mile
+                when they need it
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mb-14 flex flex-col items-center">
