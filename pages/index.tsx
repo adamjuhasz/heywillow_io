@@ -43,7 +43,7 @@ export default function Vercel(): JSX.Element {
 
       <div className="mx-auto max-w-4xl bg-zinc-900 px-4 font-[rubik] text-zinc-200 lg:px-0">
         <div className="flex flex-col py-14">
-          <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:space-y-4 md:text-[160px] md:leading-[150px]">
+          <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:space-y-4 md:text-9xl lg:text-[160px] lg:leading-[150px]">
             <span>See</span>
             <span>
               <GradientText className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">
@@ -55,12 +55,12 @@ export default function Vercel(): JSX.Element {
 
           <div className="mx-auto mb-14 flex w-full flex-col space-x-0 space-y-4 md:w-fit md:flex-row md:space-x-6 md:space-y-0">
             <Link href="/signup">
-              <a className="flex w-full items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 md:min-w-[150px]">
+              <a className="flex w-full items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 sm:min-w-[200px]">
                 Try it out
               </a>
             </Link>
             <Link href="mailto:yo@heywillo.io">
-              <a className="flex min-w-[150px] items-center justify-center rounded-lg border-2 border-zinc-500 px-6 py-4 text-zinc-500 hover:border-zinc-100 hover:text-zinc-100">
+              <a className="flex items-center justify-center rounded-lg border-2 border-zinc-500 px-6 py-4 text-zinc-500 hover:border-zinc-100 hover:text-zinc-100 sm:min-w-[200px]">
                 Contact us
               </a>
             </Link>
@@ -120,15 +120,15 @@ export default function Vercel(): JSX.Element {
               <div className="flex w-full">
                 <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
                 <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
-                  I am so sorry again! Since this is the second time, I've also
-                  applied a $20 credit to your account -Mike
+                  I am so sorry again! Since this is the second time, I&apos;ve
+                  also applied a $20 credit to your account -Mike
                 </div>
               </div>
 
               <div className="flex w-full">
                 <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
-                  That's Awesome! Thank you!! No worries mistakes happen. You
-                  all are the best!
+                  That&apos;s Awesome! Thank you!! No worries mistakes happen.
+                  You all are the best!
                   <br /> - Katy
                 </div>
                 <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
@@ -226,7 +226,7 @@ export default function Vercel(): JSX.Element {
           </h3>
 
           <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
-            <div className="w-full md:w-6/12 md:border-r md:border-r-blue-500">
+            <div className="w-full md:w-6/12 md:border-r md:border-r-orange-500">
               <div className="flex w-full">
                 <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
                   I need help with selling my SpaceX shares can you help?
@@ -241,8 +241,8 @@ export default function Vercel(): JSX.Element {
               <div className="flex w-full">
                 <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
                 <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
-                  I'm having engineering looking into the issue now. We'll get
-                  back to you within 20 minutes
+                  I&apos;m having engineering looking into the issue now.
+                  We&apos;ll get back to you within 20 minutes
                   <br /> -Adam
                 </div>
               </div>
@@ -251,15 +251,16 @@ export default function Vercel(): JSX.Element {
               </div>
 
               <div className="flex w-full">
-                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
+                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-teal-400"></div>
                 <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
-                  Hey! It's mike from engineering, can you send us the logs from
-                  the app? It's on the bottom of the settings screen Thanks!
+                  Hey! It&apos;s mike from engineering, can you send us the logs
+                  from the app? It&apos;s on the bottom of the settings screen
+                  Thanks!
                   <br />
                   -Mike (CTO)
                 </div>
               </div>
-              <div className="mb-4 mt-0.5 w-full text-left text-xs text-zinc-600">
+              <div className="mt-0.5 w-full text-left text-xs text-zinc-600">
                 Mike (Engineering team)
               </div>
             </div>
@@ -290,6 +291,49 @@ export default function Vercel(): JSX.Element {
               </div>
             </div>
           </h3>
+
+          <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
+            <div className="w-full space-y-4 md:w-6/12 md:border-r md:border-r-lime-500">
+              <div className="flex w-full">
+                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
+                  I think I typed my SSN in wrong during sign up
+                </div>
+                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
+              </div>
+
+              <div className="flex w-full">
+                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
+                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
+                  No worries! Use{" "}
+                  <span className="cursor-pointer font-bold underline">
+                    this link
+                  </span>{" "}
+                  to securely send it to us and I can get that fixed
+                </div>
+              </div>
+
+              <div className="flex w-full">
+                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
+                  My SSN is{" "}
+                  <span className="cursor-pointer rounded-md bg-black px-1.5 py-1 text-white">
+                    SSN masked
+                  </span>
+                </div>
+                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
+              </div>
+
+              <div className="flex w-full">
+                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
+                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
+                  Fixed, your account is good to go!
+                </div>
+              </div>
+            </div>
+
+            <div className="hidden flex-col justify-between py-10 pl-3 md:flex md:w-6/12">
+              <div className=""></div>
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col">
