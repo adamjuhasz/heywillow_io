@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { CSSProperties, PropsWithChildren } from "react";
 import { ArrowNarrowRightIcon, CheckCircleIcon } from "@heroicons/react/solid";
+import { ChipIcon, ClockIcon, UserAddIcon } from "@heroicons/react/outline";
 
 export default function Vercel(): JSX.Element {
   return (
@@ -334,32 +335,64 @@ export default function Vercel(): JSX.Element {
           </div>
         </div>
 
-        <div className="mb-14 flex w-full flex-col items-center">
-          <div className="mb-2 text-lg text-zinc-100 ">
-            Built by an awesome team
+        <div className="flex w-full flex-col">
+          <div className="mb-7 mt-5 text-center text-3xl md:text-5xl">
+            Re-thinking customer support
           </div>
-          <div className="grid grid-cols-3 gap-0 text-lg text-zinc-100 sm:gap-20">
-            <div className="flex flex-col items-center justify-start ">
-              <div className="mb-2 h-10 w-10 rounded-full bg-teal-400 text-center" />
-              <div className="text-center">Mike Perez</div>
-              <div className="text-center">CEO</div>
+          <div className="mb-14 grid w-full grid-cols-1 gap-y-4 md:grid-cols-3 md:gap-x-10 md:gap-y-0">
+            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
+              <div className="flex items-center">
+                <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
+                  <ClockIcon className="h-6 w-6" />
+                </div>
+                <div className="text-xl md:text-lg">
+                  Snooze, don&apos;t lose
+                </div>
+              </div>
+              <div className="mt-7 text-sm font-light text-zinc-400">
+                Need to wait for you customer to write back? Snooze the ticket
+                for 1, 3, or 7 days. If the timer runs out or the customer
+                responds the ticket re-opens itself. Never lose a ticket to
+                pending purgatory again
+              </div>
             </div>
 
-            <div className="flex flex-col items-center justify-start ">
-              <div className="mb-2 h-10 w-10 rounded-full bg-lime-400 text-center" />
-              <div className="text-center">Adam Juhasz</div>
-              <div className="text-center">CTO</div>
+            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
+              <div className="flex items-center">
+                <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
+                  <UserAddIcon className="h-6 w-6" />
+                </div>
+                <div className="text-xl md:text-lg">Assign as needed</div>
+              </div>
+              <div className="mt-7 text-sm font-light text-zinc-400">
+                Does someone specific need to respond to the user? Assign that
+                team member the thread and they&apos;ll be responsible for the
+                next response. After that it goes back to the whole team
+              </div>
             </div>
 
-            <div className="flex flex-col items-center justify-start ">
-              <div className="mb-2 h-10 w-10 rounded-full bg-yellow-400 text-center" />
-              <div className="text-center">Zzyzx</div>
-              <div className="text-center">CFO</div>
+            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
+              <div className="flex items-center">
+                <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
+                  <ChipIcon className="h-6 w-6" />
+                </div>
+                <div className="flex w-full items-center justify-between text-xl md:text-lg">
+                  DIY
+                  <span className="ml-2 text-xs italic text-zinc-500">
+                    (in alpha)
+                  </span>
+                </div>
+              </div>
+              <div className="mt-7 text-sm font-light text-zinc-400">
+                Need to wire up your own thing? With our dev-friendly API all
+                Willow data is retrievable and we can push data in real-time to
+                your systems with our flexible webhooks
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col">
+        <div className="mb-14 flex flex-col">
           <div className="mx-auto h-[200px] w-[1px] bg-gradient-to-b from-transparent to-white" />
           <h3 className="text-center text-3xl font-medium text-zinc-100 md:text-7xl">
             We hate per-seat pricing
@@ -469,8 +502,32 @@ export default function Vercel(): JSX.Element {
           </div>
         </div>
 
-        <div className="flex h-80 w-full justify-between"></div>
+        <div className="mb-14 flex w-full flex-col items-center">
+          <div className="mb-2 text-lg text-zinc-100 ">
+            Built by an awesome team
+          </div>
+          <div className="grid grid-cols-3 gap-0 text-lg text-zinc-100 sm:gap-20">
+            <div className="flex flex-col items-center justify-start ">
+              <div className="mb-2 h-10 w-10 rounded-full bg-teal-400 text-center" />
+              <div className="text-center">Mike Perez</div>
+              <div className="text-center">CEO</div>
+            </div>
+
+            <div className="flex flex-col items-center justify-start ">
+              <div className="mb-2 h-10 w-10 rounded-full bg-lime-400 text-center" />
+              <div className="text-center">Adam Juhasz</div>
+              <div className="text-center">CTO</div>
+            </div>
+
+            <div className="flex flex-col items-center justify-start ">
+              <div className="mb-2 h-10 w-10 rounded-full bg-yellow-400 text-center" />
+              <div className="text-center">Zzyzx</div>
+              <div className="text-center">CFO</div>
+            </div>
+          </div>
+        </div>
       </div>
+      <div className="flex h-40 w-full justify-between bg-zinc-600 bg-opacity-30"></div>
     </>
   );
 }
