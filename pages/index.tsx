@@ -1,46 +1,14 @@
-import Head from "next/head";
 import Link from "next/link";
 import { CSSProperties, PropsWithChildren } from "react";
 import { ArrowNarrowRightIcon, CheckCircleIcon } from "@heroicons/react/solid";
 import { ChipIcon, ClockIcon, UserAddIcon } from "@heroicons/react/outline";
 
+import LandingPageHeader from "components/LandingPage/Header";
+
 export default function Vercel(): JSX.Element {
   return (
     <>
-      <Head>
-        <style>{`
-        body {
-          background: #18181b;
-        }
-        `}</style>
-        <link
-          rel="stylesheet"
-          href="https://use.typekit.net/itm2wvw.css"
-        ></link>
-      </Head>
-      <div className="sticky top-0 z-50 flex h-20 w-full items-center bg-zinc-900 bg-opacity-50 font-[rubik] text-zinc-200 backdrop-blur-lg">
-        <div className="mx-auto flex w-full max-w-4xl items-center justify-between px-4 lg:px-0">
-          <div className="flex items-center text-2xl font-medium">
-            <WillowLogo className="mr-2 h-5 w-5 shrink-0" /> Willow
-          </div>
-
-          <div className="flex items-center space-x-4 text-sm font-normal">
-            <Link href="mailto:yo@heywillow.io">
-              <a className="hidden text-zinc-500 hover:text-zinc-100 sm:block">
-                Contact
-              </a>
-            </Link>
-            <Link href="/login">
-              <a className="text-zinc-500 hover:text-zinc-100">Login</a>
-            </Link>
-            <Link href="/signup">
-              <a className="rounded-md border-2 border-transparent bg-zinc-100 px-3 py-2 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
-                Sign Up
-              </a>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <LandingPageHeader />
 
       <div className="mx-auto max-w-4xl bg-zinc-900 px-4 font-[rubik] text-zinc-200 lg:px-0">
         <div className="flex flex-col py-14">
@@ -600,49 +568,5 @@ function GradientText({
     <span className={`relative bg-clip-text text-transparent ${className}`}>
       {props.children}
     </span>
-  );
-}
-
-function WillowLogo(props: { className: string }) {
-  return (
-    <svg
-      width="600"
-      height="600"
-      viewBox="0 0 600 600"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={`inline-block ${props.className}`}
-    >
-      <circle
-        cx="300"
-        cy="300"
-        r="255"
-        stroke="currentColor"
-        strokeWidth="40"
-      />
-      <circle cx="399" cy="240" r="75" fill="currentColor" />
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M111.013 387C143.949 458.426 216.185 508 300 508C383.815 508 456.051 458.426 488.987 387H443.747C414.297 435.556 360.937 468 300 468C239.063 468 185.703 435.556 156.253 387H111.013Z"
-        fill="currentColor"
-      />
-      <rect
-        x="214.995"
-        y="141"
-        width="70"
-        height="140"
-        transform="rotate(45 214.995 141)"
-        fill="currentColor"
-      />
-      <rect
-        x="116"
-        y="240"
-        width="70"
-        height="140"
-        transform="rotate(-45 116 240)"
-        fill="currentColor"
-      />
-    </svg>
   );
 }

@@ -8,21 +8,24 @@ import { XIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
+import WillowLogo from "components/Logo";
+import { Switch } from "@headlessui/react";
 
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
 
-import logo from "public/SqLogo.svg";
-import image from "public/images/architecture/sam-balye-t0nojyPGbok-unsplash.jpg";
+import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
 
 export default function Signup(): JSX.Element {
   const client = useSupabase();
   const { session } = useUser();
   const router = useRouter();
   const [email, setEmail] = useState(client?.auth.session()?.user?.email || "");
+  const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [disabled, setDisabled] = useState(false);
+  const [useMagicLink, setMagicLink] = useState(false);
 
   useEffect(() => {
     if (session === null || session === undefined) {
@@ -36,19 +39,16 @@ export default function Signup(): JSX.Element {
 
   return (
     <>
-      <div className=" absolute top-0 left-0 flex h-full w-full">
+      <div className="absolute top-0 left-0 flex h-full w-full text-zinc-100">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
-              <Image
-                className="h-12 w-auto"
-                src={logo}
-                alt="Willow"
-                width={48}
-                height={48}
-                layout="fixed"
-              />
-              <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              <Link href="/">
+                <a>
+                  <WillowLogo className="h-12 w-auto text-zinc-100" />
+                </a>
+              </Link>
+              <h2 className="mt-6 text-3xl font-medium text-zinc-200">
                 Sign up for an account
               </h2>
             </div>
@@ -80,6 +80,7 @@ export default function Signup(): JSX.Element {
                     const { error } = await client.auth.signIn(
                       {
                         email,
+                        password: useMagicLink ? undefined : password,
                       },
                       { redirectTo }
                     );
@@ -94,7 +95,7 @@ export default function Signup(): JSX.Element {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-zinc-300"
                     >
                       Email address
                     </label>
@@ -107,10 +108,61 @@ export default function Signup(): JSX.Element {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
+
+                  {!useMagicLink ? (
+                    <div>
+                      <label
+                        htmlFor="password"
+                        className="block text-sm font-medium text-zinc-300"
+                      >
+                        Password
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          id="password"
+                          name="password"
+                          type="password"
+                          required
+                          value={email}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+
+                  <Switch.Group as="div" className="flex items-center">
+                    <Switch
+                      checked={useMagicLink}
+                      onChange={setMagicLink}
+                      className={[
+                        useMagicLink ? "bg-indigo-500" : "bg-zinc-600",
+                        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+                      ].join(" ")}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={[
+                          useMagicLink ? "translate-x-5" : "translate-x-0",
+                          "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-zinc-900 shadow ring-0 transition duration-200 ease-in-out",
+                        ].join(" ")}
+                      />
+                    </Switch>
+                    <Switch.Label as="span" className="ml-3">
+                      <span className="text-sm font-medium text-zinc-200">
+                        Use magic link{" "}
+                      </span>
+                      <span className="text-sm text-zinc-400">
+                        (No password needed)
+                      </span>
+                    </Switch.Label>
+                  </Switch.Group>
 
                   <div>
                     <button
@@ -119,13 +171,17 @@ export default function Signup(): JSX.Element {
                       className={[
                         "flex w-full justify-center py-2 px-4",
                         "rounded-md border border-transparent shadow-sm",
-                        "bg-indigo-600 text-sm font-medium text-white",
-                        "hover:bg-indigo-700",
+                        "border-2 border-transparent bg-indigo-600 text-sm font-medium text-white",
+                        "hover:border-zinc-100 hover:bg-zinc-900",
+                        "focus:border-zinc-100 focus:bg-zinc-900 ",
                         "disabled:bg-indigo-300",
-                        "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
                       ].join(" ")}
                     >
-                      {disabled ? "Sent..." : "Send magic link to email"}
+                      {disabled
+                        ? "Sent..."
+                        : useMagicLink
+                        ? "Send magic link to email"
+                        : "Sign up"}
                     </button>
                   </div>
                 </form>
@@ -133,7 +189,7 @@ export default function Signup(): JSX.Element {
             </div>
             <div className="mt-2">
               <Link href="/login">
-                <a className="text-indigo-600 underline decoration-wavy">
+                <a className="text-indigo-600 ">
                   Already have an account? Log in here
                 </a>
               </Link>
@@ -148,6 +204,16 @@ export default function Signup(): JSX.Element {
             layout="fill"
             placeholder="blur"
           />
+          <div className="absolute bottom-2 right-2 text-sm text-opacity-20 opacity-40">
+            Photo by{" "}
+            <a href="https://unsplash.com/@heytowner?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+              JOHN TOWNER
+            </a>{" "}
+            on{" "}
+            <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+              Unsplash
+            </a>
+          </div>
         </div>
       </div>
       <div

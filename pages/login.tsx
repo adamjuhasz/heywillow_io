@@ -6,14 +6,12 @@ import {
 } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import Link from "next/link";
+import { Switch } from "@headlessui/react";
 
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
-import logo from "public/SqLogo.svg";
-
-import image from "public/images/architecture/alexander-tsang-5Ijn2-YYJio-unsplash.jpg";
+import LandingPageHeader from "components/LandingPage/Header";
 
 export default function Login(): JSX.Element {
   const client = useSupabase();
@@ -23,6 +21,8 @@ export default function Login(): JSX.Element {
   const [show, setShow] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [disabled, setDisabled] = useState(false);
+  const [useMagicLink, setMagicLink] = useState(false);
+  const [, setPassword] = useState("");
 
   useEffect(() => {
     if (session === null || session === undefined) {
@@ -36,112 +36,145 @@ export default function Login(): JSX.Element {
 
   return (
     <>
-      <div className=" absolute top-0 left-0 flex h-full w-full">
-        <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-          <div className="mx-auto w-full max-w-sm lg:w-96">
-            <div>
-              <Image
-                className="h-12 w-auto"
-                src={logo}
-                alt="Willow"
-                width={48}
-                height={48}
-                layout="fixed"
-              />
-              <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                Login
-              </h2>
-            </div>
+      <LandingPageHeader />
+      <div className="-mt-20 flex h-screen min-h-full w-screen min-w-full items-center justify-center">
+        <div className="">
+          <div>
+            <h2 className="mt-6 text-3xl font-medium text-zinc-200">Login</h2>
+          </div>
 
-            <div className="mt-8">
-              <div className="mt-6">
-                <form
-                  action="#"
-                  method="POST"
-                  className="space-y-6"
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    setDisabled(true);
+          <div className="mt-8">
+            <div className="mt-6">
+              <form
+                action="#"
+                method="POST"
+                className="space-y-6"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setDisabled(true);
 
-                    const redirectTo = `${document.location.origin}/app/auth`;
-                    console.log("redirectTo", redirectTo);
+                  const redirectTo = `${document.location.origin}/app/auth`;
+                  console.log("redirectTo", redirectTo);
 
-                    if (client === null || client === undefined) {
-                      setError("Error with login provider");
-                      return;
-                    }
+                  if (client === null || client === undefined) {
+                    setError("Error with login provider");
+                    return;
+                  }
 
-                    const { error } = await client.auth.signIn(
-                      {
-                        email,
-                      },
-                      { redirectTo }
-                    );
-                    if (error === null) {
-                      setShow(true);
-                    } else {
-                      setError(error.message);
-                    }
-                    // setDisabled(false);
-                  }}
-                >
+                  const { error } = await client.auth.signIn(
+                    {
+                      email,
+                    },
+                    { redirectTo }
+                  );
+                  if (error === null) {
+                    setShow(true);
+                  } else {
+                    setError(error.message);
+                  }
+                  // setDisabled(false);
+                }}
+              >
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-zinc-300"
+                  >
+                    Email address
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    />
+                  </div>
+                </div>
+
+                {!useMagicLink ? (
                   <div>
                     <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700"
+                      htmlFor="password"
+                      className="block text-sm font-medium text-zinc-300"
                     >
-                      Email address
+                      Password
                     </label>
                     <div className="mt-1">
                       <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
+                        id="password"
+                        name="password"
+                        type="password"
                         required
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
+                ) : (
+                  <></>
+                )}
 
-                  <div>
-                    <button
-                      disabled={disabled}
-                      type="submit"
+                <Switch.Group as="div" className="flex items-center">
+                  <Switch
+                    checked={useMagicLink}
+                    onChange={setMagicLink}
+                    className={[
+                      useMagicLink ? "bg-indigo-500" : "bg-zinc-600",
+                      "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+                    ].join(" ")}
+                  >
+                    <span
+                      aria-hidden="true"
                       className={[
-                        "flex w-full justify-center py-2 px-4",
-                        "rounded-md border border-transparent shadow-sm",
-                        "bg-indigo-600 text-sm font-medium text-white",
-                        "hover:bg-indigo-700",
-                        "disabled:bg-indigo-300",
-                        "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+                        useMagicLink ? "translate-x-5" : "translate-x-0",
+                        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-zinc-900 shadow ring-0 transition duration-200 ease-in-out",
                       ].join(" ")}
-                    >
-                      {disabled ? "Sent..." : "Send magic link to email"}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div className="mt-2">
-              <Link href="/signup">
-                <a className="text-indigo-600 underline decoration-wavy">
-                  Need to sign up?
-                </a>
-              </Link>
+                    />
+                  </Switch>
+                  <Switch.Label as="span" className="ml-3">
+                    <span className="text-sm font-medium text-zinc-200">
+                      Use magic link{" "}
+                    </span>
+                    <span className="text-sm text-zinc-400">
+                      (No password needed)
+                    </span>
+                  </Switch.Label>
+                </Switch.Group>
+
+                <div>
+                  <button
+                    disabled={disabled}
+                    type="submit"
+                    className={[
+                      "flex w-full justify-center py-2 px-4",
+                      "rounded-md border border-transparent shadow-sm",
+                      "bg-indigo-600 text-sm font-medium text-white",
+                      "hover:bg-indigo-700",
+                      "disabled:bg-indigo-300",
+                      "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+                    ].join(" ")}
+                  >
+                    {disabled
+                      ? "Sent..."
+                      : useMagicLink
+                      ? "Send magic link to email"
+                      : "Log in"}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-        </div>
-        <div className="relative hidden w-0 flex-1 lg:block ">
-          <Image
-            className="absolute inset-0 h-full w-full object-cover "
-            src={image}
-            alt=""
-            layout="fill"
-            placeholder="blur"
-          />
+          <div className="mt-2">
+            <Link href="/signup">
+              <a className="text-indigo-500 ">Need to sign up?</a>
+            </Link>
+          </div>
         </div>
       </div>
       <div
