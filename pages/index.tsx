@@ -370,12 +370,12 @@ export default function Vercel(): JSX.Element {
 
               <div className="relative mt-[6px] flex w-full items-center">
                 <div className="absolute -top-[12px] left-[5.5px] h-[18px] w-[1px] bg-zinc-400" />
-                <div className="h-3 w-3 rounded-full border-2 border-zinc-400"></div>
-                <div className="ml-2">Changed profile photo</div>
+                <div className="h-3 w-3 rounded-full border-2 border-sky-400"></div>
+                <div className="ml-2 text-sky-400">Changed profile photo</div>
               </div>
 
               <div className="relative mt-[6px] flex w-full items-center">
-                <div className="absolute -top-[12px] left-[5.5px] h-[18px] w-[1px] bg-red-400" />
+                <div className="absolute -top-[12px] left-[5.5px] h-[18px] w-[1px] bg-zinc-400" />
                 <div className="h-3 w-3 rounded-full border-2 border-red-400"></div>
                 <div className="ml-2 text-red-400">App crashed</div>
               </div>
