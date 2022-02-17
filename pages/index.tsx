@@ -87,7 +87,7 @@ export default function Vercel(): JSX.Element {
 
           <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
             <div className="w-full space-y-4 md:w-6/12 md:border-r md:border-r-blue-500">
-              <div className="text-xs text-zinc-600">May 4, 2022</div>
+              <div className="text-xs text-zinc-400">May 4, 2022</div>
               <div className="flex w-full">
                 <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
                   I got double charged this month, would it be possible to get
@@ -106,7 +106,7 @@ export default function Vercel(): JSX.Element {
               </div>
 
               <div className="mx-2 h-[1px] bg-zinc-100 bg-opacity-25" />
-              <div className="text-xs text-zinc-600">July 7, 2022</div>
+              <div className="text-xs text-zinc-400">July 7, 2022</div>
 
               <div className="flex w-full">
                 <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
@@ -120,8 +120,9 @@ export default function Vercel(): JSX.Element {
               <div className="flex w-full">
                 <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
                 <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
-                  I am so sorry again! Since this is the second time, I&apos;ve
-                  also applied a $20 credit to your account -Mike
+                  I see this happened in May before, ugh so sorry! Since this is
+                  the second time, I&apos;ve applied a $20 credit to your
+                  account -Mike
                 </div>
               </div>
 
@@ -227,15 +228,12 @@ export default function Vercel(): JSX.Element {
 
           <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
             <div className="w-full md:w-6/12 md:border-r md:border-r-orange-500">
-              <div className="flex w-full">
+              <div className="mb-4 flex w-full">
                 <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
                   I need help with selling my SpaceX shares can you help?
                   <br /> - Katy
                 </div>
                 <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
-              </div>
-              <div className="mb-4 mt-0.5 w-full pr-3 text-right text-xs text-zinc-600">
-                Katy (katy@gmail.com)
               </div>
 
               <div className="flex w-full">
@@ -246,7 +244,7 @@ export default function Vercel(): JSX.Element {
                   <br /> -Adam
                 </div>
               </div>
-              <div className="mb-4 mt-0.5 w-full text-left text-xs text-zinc-600">
+              <div className="mb-4 mt-0.5 w-full text-left text-xs text-zinc-400">
                 Adam (CX team)
               </div>
 
@@ -260,7 +258,7 @@ export default function Vercel(): JSX.Element {
                   -Mike (CTO)
                 </div>
               </div>
-              <div className="mt-0.5 w-full text-left text-xs text-zinc-600">
+              <div className="mt-0.5 w-full text-left text-xs text-zinc-400">
                 Mike (Engineering team)
               </div>
             </div>
@@ -336,6 +334,31 @@ export default function Vercel(): JSX.Element {
           </div>
         </div>
 
+        <div className="mb-14 flex w-full flex-col items-center">
+          <div className="mb-2 text-lg text-zinc-100 ">
+            Built by an awesome team
+          </div>
+          <div className="grid grid-cols-3 gap-0 text-lg text-zinc-100 sm:gap-20">
+            <div className="flex flex-col items-center justify-start ">
+              <div className="mb-2 h-10 w-10 rounded-full bg-teal-400 text-center" />
+              <div className="text-center">Mike Perez</div>
+              <div className="text-center">CEO</div>
+            </div>
+
+            <div className="flex flex-col items-center justify-start ">
+              <div className="mb-2 h-10 w-10 rounded-full bg-lime-400 text-center" />
+              <div className="text-center">Adam Juhasz</div>
+              <div className="text-center">CTO</div>
+            </div>
+
+            <div className="flex flex-col items-center justify-start ">
+              <div className="mb-2 h-10 w-10 rounded-full bg-yellow-400 text-center" />
+              <div className="text-center">Zzyzx</div>
+              <div className="text-center">CFO</div>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col">
           <div className="mx-auto h-[200px] w-[1px] bg-gradient-to-b from-transparent to-white" />
           <h3 className="text-center text-3xl font-medium text-zinc-100 md:text-7xl">
@@ -343,7 +366,7 @@ export default function Vercel(): JSX.Element {
           </h3>
           <div className="mt-7 text-center text-lg font-light text-zinc-500 md:text-2xl">
             Get your whole team working together by getting everyone together in
-            Willow. We bill per unique human conversation.
+            Willow. We bill per unique customer conversation.
           </div>
 
           <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-3 ">
@@ -390,11 +413,11 @@ export default function Vercel(): JSX.Element {
 
               <div className="flex grow flex-col space-y-4 bg-zinc-600 bg-opacity-30 p-10">
                 <div className="flex items-start text-sm">
-                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#EE147C]" />
                   <div className="grow">Everything in the free tier</div>
                 </div>
                 <div className="flex items-start text-sm">
-                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#EE147C]" />
                   <div className="grow">200 unique conversations per month</div>
                 </div>
               </div>
@@ -420,10 +443,16 @@ export default function Vercel(): JSX.Element {
               </div>
 
               <div className="flex grow flex-col space-y-4 bg-zinc-600 bg-opacity-30 p-10">
-                <div className="flex grow items-start text-sm">
-                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                <div className="text- flex grow items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#8341C2]" />
                   <div className="grow">
                     Everything in the free and growing tier
+                  </div>
+                </div>
+                <div className="flex grow items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#8341C2]" />
+                  <div className="grow">
+                    2000 unique conversations per month
                   </div>
                 </div>
               </div>
