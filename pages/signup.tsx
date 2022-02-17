@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import WillowLogo from "components/Logo";
 import { Switch } from "@headlessui/react";
+import Head from "next/head";
 
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
@@ -39,6 +40,9 @@ export default function Signup(): JSX.Element {
 
   return (
     <>
+      <Head>
+        <title>Sign up for Willow</title>
+      </Head>
       <div className="absolute top-0 left-0 flex h-full w-full text-zinc-100">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">

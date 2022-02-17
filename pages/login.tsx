@@ -8,6 +8,7 @@ import { XIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Switch } from "@headlessui/react";
+import Head from "next/head";
 
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
@@ -36,6 +37,9 @@ export default function Login(): JSX.Element {
 
   return (
     <>
+      <Head>
+        <title>Willow login</title>
+      </Head>
       <LandingPageHeader />
       <div className="-mt-20 flex h-screen min-h-full w-screen min-w-full items-center justify-center">
         <div className="">
