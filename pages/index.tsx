@@ -68,9 +68,9 @@ export default function Vercel(): JSX.Element {
           </div>
 
           <h2 className="text-center text-lg text-zinc-500">
-            Willow shows your customer&apos;s entire story in one place, like
-            messages, emails, in-app actions, or user events, so you can provide
-            better customer service without switching tabs.
+            Willow shows your customer&apos;s entire story in one place,
+            including messages, emails, in-app actions, or user events, so you
+            can provide better customer service without switching tabs.
           </h2>
         </div>
 
@@ -331,6 +331,61 @@ export default function Vercel(): JSX.Element {
 
             <div className="hidden flex-col justify-between py-10 pl-3 md:flex md:w-6/12">
               <div className=""></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-14 flex flex-col items-center">
+          <h3 className="flex flex-col items-center text-3xl font-semibold">
+            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-red-500" />
+            <GradientText className="from  bg-gradient-to-r from-pink-600 to-red-500 text-center">
+              Unified view
+              <br />
+              <span className="text-xs">In alpha preview</span>
+            </GradientText>
+            <div className="mt-5 text-center text-3xl md:text-5xl">
+              See your customer&apos;s entire story, including in-app actions,
+              backend events, screens viewed, and web visits...
+            </div>
+            <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
+              <div className="w-full text-center">
+                Get the complete picture of your customers so you can have
+                context for their issues
+              </div>
+            </div>
+          </h3>
+
+          <div className="mt-6 flex w-full text-base font-normal text-zinc-400">
+            <div className="w-full md:mx-auto md:w-6/12">
+              <div className="flex w-full items-center">
+                <div className="h-3 w-3 rounded-full border-2 border-zinc-400"></div>
+                <div className="ml-2">Visited settings screen</div>
+              </div>
+
+              <div className="relative mt-[6px] flex w-full items-center">
+                <div className="absolute -top-[12px] left-[5.5px] h-[18px] w-[1px] bg-zinc-400" />
+                <div className="h-3 w-3 rounded-full border-2 border-zinc-400"></div>
+                <div className="ml-2">Visited profile screen</div>
+              </div>
+
+              <div className="relative mt-[6px] flex w-full items-center">
+                <div className="absolute -top-[12px] left-[5.5px] h-[18px] w-[1px] bg-zinc-400" />
+                <div className="h-3 w-3 rounded-full border-2 border-zinc-400"></div>
+                <div className="ml-2">Changed profile photo</div>
+              </div>
+
+              <div className="relative mt-[6px] flex w-full items-center">
+                <div className="absolute -top-[12px] left-[5.5px] h-[18px] w-[1px] bg-red-400" />
+                <div className="h-3 w-3 rounded-full border-2 border-red-400"></div>
+                <div className="ml-2 text-red-400">App crashed</div>
+              </div>
+
+              <div className="mt-4 flex w-full">
+                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
+                  My app crashed! Please help
+                </div>
+                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
+              </div>
             </div>
           </div>
         </div>
