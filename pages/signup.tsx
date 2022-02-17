@@ -127,7 +127,7 @@ export default function Signup(): JSX.Element {
                           name="password"
                           type="password"
                           required
-                          value={email}
+                          value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                         />
@@ -204,7 +204,7 @@ export default function Signup(): JSX.Element {
             layout="fill"
             placeholder="blur"
           />
-          <div className="absolute bottom-2 right-2 text-sm text-opacity-20 opacity-40">
+          <div className="absolute bottom-2 right-2 text-sm text-opacity-20 opacity-0">
             Photo by{" "}
             <a href="https://unsplash.com/@heytowner?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
               JOHN TOWNER
