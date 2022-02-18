@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
-import AppHeader from "components/App/Header";
+import AppHeader from "components/App/HeaderHOC";
 import DashboardTableTop from "components/Dashboard/TableTop";
 import LinkBar, { Link } from "components/Settings/LinkBar";
 
@@ -23,15 +23,9 @@ export default function DashboardPage() {
 
   return (
     <>
-      <AppHeader
-        teams={[
-          { name: "Pay Tgthr", namespace: "paytgthr" },
-          { name: "Willow", namespace: "willow" },
-        ]}
-        activeTeam="willow"
-      >
+      <AppHeader>
         <LinkBar hideBorder>
-          <Link href="/demo/dashboard">
+          <Link href="/demo/willow/dashboard">
             <div className="flex items-center">
               Threads
               <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs text-white">
@@ -39,7 +33,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </Link>
-          <Link href="/demo/activity">
+          <Link href="/demo/willow/activity">
             <div className="flex items-center">
               Activity
               <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-xs text-white">

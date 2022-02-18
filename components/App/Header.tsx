@@ -13,12 +13,14 @@ interface MiniTeam {
 }
 
 interface Props {
-  teams: MiniTeam[];
+  teams: MiniTeam[] | undefined;
   activeTeam: string;
 }
 
 export default function AppHeader(props: PropsWithChildren<Props>) {
-  const currentTeam = props.teams.find((v) => v.namespace === props.activeTeam);
+  const currentTeam = props.teams?.find(
+    (v) => v.namespace === props.activeTeam
+  );
 
   return (
     <div className="sticky top-0 z-10 flex w-full flex-col items-center border-b border-zinc-700 bg-black bg-opacity-50 font-[rubik] text-zinc-200 backdrop-blur-lg">
@@ -30,7 +32,9 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
             </a>
           </Link>
 
-          {currentTeam === undefined ? (
+          {props.teams === undefined ? (
+            <div className="h-6 w-20 animate-pulse rounded-md bg-zinc-800" />
+          ) : currentTeam === undefined ? (
             <button className="flex items-center rounded-md border border-transparent bg-blue-500 px-2 py-1 hover:border-zinc-100 hover:bg-transparent">
               Create team
             </button>
