@@ -19,7 +19,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <title>Willow - your customer's entire journey</title>
           <link
             rel="stylesheet"
             href="https://use.typekit.net/itm2wvw.css"

@@ -13,6 +13,7 @@ model Team {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   name      String
+  namespace String   @unique
 
   Inboxs        GmailInbox[]
   Members       TeamMember[]
@@ -216,7 +217,7 @@ model Thread {
   updatedAt    DateTime @default(now()) @db.Timestamptz(6)
   teamId       BigInt
   aliasEmailId BigInt
-  gmailInboxId BigInt?
+  gmailInboxId BigInt
 
   Alias       AliasEmail    @relation(fields: [aliasEmailId], references: [id], onDelete: Cascade)
   Messages    Message[]

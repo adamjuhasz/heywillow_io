@@ -73,11 +73,13 @@ export default function Login(): JSX.Element {
                     { redirectTo }
                   );
                   if (error === null) {
-                    setShow(true);
+                    if (useMagicLink) {
+                      setShow(true);
+                    }
                   } else {
                     setError(error.message);
+                    setDisabled(false);
                   }
-                  // setDisabled(false);
                 }}
               >
                 <div>
@@ -96,7 +98,7 @@ export default function Login(): JSX.Element {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      className="block w-full appearance-none rounded-md border border-zinc-300 bg-zinc-900 px-3 py-2 placeholder-zinc-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
                 </div>
@@ -117,7 +119,7 @@ export default function Login(): JSX.Element {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        className="block w-full appearance-none rounded-md border border-zinc-300 bg-zinc-900 px-3 py-2 placeholder-zinc-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -165,7 +167,7 @@ export default function Login(): JSX.Element {
                       "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
                     ].join(" ")}
                   >
-                    {disabled
+                    {disabled && useMagicLink
                       ? "Sent..."
                       : useMagicLink
                       ? "Send magic link to email"
@@ -208,14 +210,14 @@ export default function Login(): JSX.Element {
                     />
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">Sent</p>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="text-sm font-medium text-zinc-900">Sent</p>
+                    <p className="mt-1 text-sm text-zinc-500">
                       Magic link sent to {email}
                     </p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
-                      className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex rounded-md bg-white text-zinc-400 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
                         setShow(false);
                       }}
@@ -256,12 +258,12 @@ export default function Login(): JSX.Element {
                     />
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">Error</p>
-                    <p className="mt-1 text-sm text-gray-500">{error}</p>
+                    <p className="text-sm font-medium text-zinc-900">Error</p>
+                    <p className="mt-1 text-sm text-zinc-500">{error}</p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
-                      className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex rounded-md bg-white text-zinc-400 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
                         setError(null);
                       }}

@@ -56,7 +56,7 @@ export interface SupabaseThread {
   updatedAt: string;
   teamId: number;
   aliasEmailId: number;
-  gmailInboxId: number | null;
+  gmailInboxId: number;
 }
 
 export interface SupabaseThreadState {
@@ -72,7 +72,7 @@ export interface SupabaseThreadState {
 export interface SupabaseTeamMember {
   id: number;
   createdAt: string;
-  upstringdAt: string;
+  updatedAt: string;
   teamId: number;
   profileId: string;
 }
@@ -107,4 +107,20 @@ export interface SupabaseAttachment {
   messageId: number;
   mimeType: string;
   teamId: number;
+}
+
+export interface SupabaseTeam {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  namespace: string;
+}
+
+export interface SupabaseGmailInbox {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  teamId: number;
+  emailAddress: string;
 }
