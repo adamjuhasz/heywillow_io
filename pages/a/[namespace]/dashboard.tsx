@@ -37,7 +37,7 @@ export default function DashboardPage() {
             <div className="flex items-center">
               Threads
               {threads && threads.length > 0 ? (
-                <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs text-white">
+                <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs leading-3 text-white">
                   {threads.length}
                 </div>
               ) : (
