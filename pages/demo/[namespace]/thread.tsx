@@ -1,4 +1,4 @@
-import { Fragment, Key } from "react";
+import { Fragment, Key, ReactElement } from "react";
 import { subDays } from "date-fns";
 import {
   SupabaseAliasEmail,
@@ -10,6 +10,7 @@ import {
   SupabaseProfile,
 } from "types/supabase";
 
+import AppLayout from "layouts/app";
 import Message from "components/Inbox/Message";
 import DateSep from "components/Inbox/DateSeperator";
 import ActionBox from "components/Inbox/ActionBox";
@@ -257,3 +258,7 @@ export default function DemoThread() {
     </>
   );
 }
+
+DemoThread.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};
