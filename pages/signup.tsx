@@ -23,7 +23,12 @@ export default function SignUpPage(): JSX.Element {
   const client = useSupabase();
   const { session } = useUser();
   const router = useRouter();
-  const [email, setEmail] = useState(client?.auth.session()?.user?.email || "");
+  const { email: queryEmail } = router.query;
+  const [email, setEmail] = useState<string>(
+    client?.auth.session()?.user?.email ||
+      (queryEmail as string | undefined) ||
+      ""
+  );
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState<null | string>(null);
