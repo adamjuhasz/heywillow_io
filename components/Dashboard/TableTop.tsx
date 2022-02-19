@@ -1,6 +1,7 @@
 import { ClockIcon } from "@heroicons/react/solid";
 import Avatar from "components/Avatar";
 import Link from "next/link";
+import { formatDistanceToNowStrict } from "date-fns";
 
 interface MiniAlias {
   emailAddress: string;
@@ -13,6 +14,7 @@ interface MiniGmail {
 interface MiniThread {
   id: number;
   aliasEmailId: number;
+  createdAt: string;
 }
 
 interface MiniMessage {
@@ -49,6 +51,9 @@ export default function DashboardTableTop(props: Props) {
 }
 
 function Card({ t }: { t: FetchResponse }) {
+  const lastMessage = t.Message.reverse()[0];
+  const preview =
+    lastMessage.EmailMessage?.body || lastMessage.InternalMessage?.body || "";
   return (
     <Link href="/">
       <a>
@@ -57,23 +62,23 @@ function Card({ t }: { t: FetchResponse }) {
             <div className="flex items-center">
               <Avatar str={`${t.aliasEmailId}`} className="mr-2 h-8 w-8" />
               <div className="flex flex-col">
-                <div className="font-normal text-zinc-100">
+                <div className="truncate font-normal text-zinc-100">
                   {t.AliasEmail.emailAddress}
                 </div>
-                <div className="text-xs text-zinc-500">
+                <div className="truncate text-xs text-zinc-500">
                   {t.GmailInbox.emailAddress}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="my-4 text-zinc-400 line-clamp-3">
-            Thi sis the end of the road
-          </div>
+          <div className="my-4 text-zinc-400 line-clamp-2">{preview}</div>
 
           <div className="flex items-center text-zinc-500">
             <ClockIcon className="h-3 w-3" />
-            <div className="ml-2">3d ago</div>
+            <div className="ml-22">
+              {formatDistanceToNowStrict(new Date(t.createdAt))}
+            </div>
           </div>
         </div>
       </a>

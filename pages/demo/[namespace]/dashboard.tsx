@@ -11,6 +11,7 @@ export default function DemoDashboard() {
   const demo: FetchResponse[] = [
     {
       id: 1,
+      createdAt: new Date().toISOString(),
       aliasEmailId: 1,
       AliasEmail: { emailAddress: "ajuhasz@gmail.com" },
       GmailInbox: { emailAddress: "hi@paytgthr.com" },
@@ -23,6 +24,7 @@ export default function DemoDashboard() {
     },
     {
       id: 2,
+      createdAt: new Date().toISOString(),
       aliasEmailId: 2,
       AliasEmail: { emailAddress: "customer@gmail.com" },
       GmailInbox: { emailAddress: "hi@paytgthr.com" },
@@ -35,6 +37,7 @@ export default function DemoDashboard() {
     },
     {
       id: 3,
+      createdAt: new Date().toISOString(),
       aliasEmailId: 3,
       AliasEmail: { emailAddress: "acust@gmail.com" },
       GmailInbox: { emailAddress: "hi@paytgthr.com" },
@@ -47,6 +50,7 @@ export default function DemoDashboard() {
     },
     {
       id: 4,
+      createdAt: new Date().toISOString(),
       aliasEmailId: 4,
       AliasEmail: { emailAddress: "helpneeded1@gmail.com" },
       GmailInbox: { emailAddress: "hi@paytgthr.com" },

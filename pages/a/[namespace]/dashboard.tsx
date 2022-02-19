@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
@@ -16,13 +17,20 @@ export default function DashboardPage() {
   const { namespace } = router.query;
   const { data: teams } = useGetTeams();
 
-  const currentTeam = teams?.find((t) => t.namespace === namespace)?.id;
+  const currentTeam = teams?.find((t) => t.namespace === namespace);
+  const currentTeamId = currentTeam?.id;
   // const { data: inboxes } = useGetInboxes(currentTeam);
 
-  const { data: threads } = useGetThreads(currentTeam);
+  const { data: threads } = useGetThreads(currentTeamId);
 
   return (
     <>
+      <Head>
+        <title>
+          {currentTeam ? `${currentTeam.name} on Willow` : "Willow"}
+        </title>
+      </Head>
+
       <AppHeader>
         <LinkBar hideBorder>
           <Link href="/demo/willow/dashboard">
