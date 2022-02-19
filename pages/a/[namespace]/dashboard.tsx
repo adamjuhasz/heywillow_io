@@ -38,7 +38,7 @@ export default function DashboardPage() {
               Threads
               {threads && threads.length > 0 ? (
                 <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white">
-                  <div className="-mt-[1px] text-xs leading-3">
+                  <div className="mt-[2px] text-xs leading-3">
                     {threads.length}
                   </div>
                 </div>
