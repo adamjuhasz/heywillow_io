@@ -1,7 +1,7 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { defaultTo } from "lodash";
 
-import { errorHandler } from "./errorHandler";
+import { errorHandler } from "server/errorHandler";
 
 type Handler = Record<string, NextApiHandler>;
 

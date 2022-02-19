@@ -11,7 +11,7 @@ export default function LandingPageHeader(props: Props) {
   return (
     <div
       className={[
-        "sticky top-0 z-50 flex h-20 w-full items-center bg-zinc-900 font-[rubik] text-zinc-200 backdrop-blur-lg",
+        "sticky top-0 z-10 flex h-20 w-full items-center bg-zinc-900 font-[rubik] text-zinc-200 backdrop-blur-lg",
         props.darkest ? "bg-opacity-90" : "bg-opacity-50",
       ].join(" ")}
     >
@@ -23,7 +23,7 @@ export default function LandingPageHeader(props: Props) {
       >
         <div className="flex items-center text-2xl font-medium">
           <Link href="/">
-            <a>
+            <a className="flex items-center">
               <WillowLogo className="mr-2 h-5 w-5 shrink-0" /> Willow
             </a>
           </Link>

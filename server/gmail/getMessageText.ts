@@ -1,6 +1,6 @@
 import { gmail_v1 } from "@googleapis/gmail";
 
-import getGoogleMessageEmailFromHeader from "./getMessage";
+import getGoogleMessageEmailFromHeader from "server/gmail/getMessage";
 
 export default function getGoogleMessageText(
   message: gmail_v1.Schema$Message

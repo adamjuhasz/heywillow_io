@@ -1,4 +1,11 @@
-export default function WillowLogo(props: { className: string }) {
+interface Props {
+  className?: string;
+  eyeClassName?: string;
+}
+export default function WillowLogo({
+  eyeClassName = "fill-yellow-400",
+  ...props
+}: Props) {
   return (
     <svg
       width="600"
@@ -6,36 +13,26 @@ export default function WillowLogo(props: { className: string }) {
       viewBox="0 0 600 600"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`inline-block ${props.className}`}
+      className={`inline-block ${props.className || ""}`}
     >
       <circle
-        cx="300"
-        cy="300"
-        r="255"
+        cx="301.5"
+        cy="300.5"
+        r="257.5"
         stroke="currentColor"
-        strokeWidth="40"
+        strokeWidth="44"
       />
-      <circle cx="399" cy="240" r="75" fill="currentColor" />
+      <circle cx="371.5" cy="240.5" r="47.5" className={eyeClassName} />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M111.013 387C143.949 458.426 216.185 508 300 508C383.815 508 456.051 458.426 488.987 387H443.747C414.297 435.556 360.937 468 300 468C239.063 468 185.703 435.556 156.253 387H111.013Z"
+        d="M143.562 361C165.697 433.639 228.268 486 302 486C375.732 486 438.303 433.639 460.438 361H401.99C382.754 404.062 343.007 431 302 431C260.993 431 221.246 404.062 202.01 361H143.562Z"
         fill="currentColor"
       />
-      <rect
-        x="214.995"
-        y="141"
-        width="70"
-        height="140"
-        transform="rotate(45 214.995 141)"
-        fill="currentColor"
-      />
-      <rect
-        x="116"
-        y="240"
-        width="70"
-        height="140"
-        transform="rotate(-45 116 240)"
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M213.282 158L136 251.072L178.697 286.525L178.883 286.301L229.078 327.974L264.211 285.657L214.018 243.987L255.979 193.453L213.282 158Z"
         fill="currentColor"
       />
     </svg>

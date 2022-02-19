@@ -7,6 +7,7 @@ import { useSupabase } from "components/UserContext";
 
 interface Props {
   redirect?: string;
+  timeout?: boolean;
 }
 
 export default function GetAuthCookie(props: Props): JSX.Element {
@@ -15,7 +16,6 @@ export default function GetAuthCookie(props: Props): JSX.Element {
   const supabase = useSupabase();
   const eCode = /error_code=(\d*)/.exec(router.asPath);
   const eDesc = /error_description=(.*)/.exec(router.asPath);
-  console.log("router.query", router.asPath, eCode, eDesc);
 
   const route = useMemo(
     () => async () => {
@@ -45,26 +45,30 @@ export default function GetAuthCookie(props: Props): JSX.Element {
   const getAuthCookie = useMemo(
     () =>
       async (signal: AbortSignal, event: AuthChangeEvent, session: Session) => {
-        const res = await fetch("/api/v1/auth", {
-          method: "POST",
-          headers: new Headers({ "Content-Type": "application/json" }),
-          credentials: "same-origin",
-          body: JSON.stringify({ event, session }),
-          signal: signal,
-        });
+        try {
+          const res = await fetch("/api/v1/auth", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            credentials: "same-origin",
+            body: JSON.stringify({ event, session }),
+            signal: signal,
+          });
 
-        switch (res.status) {
-          case 200:
-            route();
-            break;
+          switch (res.status) {
+            case 200:
+              route();
+              break;
 
-          default:
-            console.error(res);
-            alert("Error logging you in, try ");
-            break;
+            default:
+              console.error(res);
+              alert("Error logging you in, try ");
+              break;
+          }
+        } catch (e) {
+          console.error("Error trying to get cookie", e, router.query);
         }
       },
-    [route]
+    [route, router.query]
   );
 
   useEffect(() => {
@@ -102,19 +106,23 @@ export default function GetAuthCookie(props: Props): JSX.Element {
       }
       return;
     }
-    const nodeJSTimeout = setTimeout(() => {
-      if (supabase === null || supabase === undefined) {
-        return;
-      }
-      alert("Login failed");
-    }, 3000);
+
+    let nodeJSTimeout: NodeJS.Timeout | undefined;
+    if (props.timeout === true) {
+      nodeJSTimeout = setTimeout(() => {
+        if (supabase === null || supabase === undefined) {
+          return;
+        }
+        alert("Login failed");
+      }, 3000);
+    }
 
     return () => {
       if (nodeJSTimeout !== undefined) {
         clearTimeout(nodeJSTimeout);
       }
     };
-  }, [supabase, route, eCode, eDesc]);
+  }, [supabase, eCode, eDesc, props.timeout]);
 
   return <></>;
 }

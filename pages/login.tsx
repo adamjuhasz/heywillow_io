@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, ReactElement, useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
 import {
   CheckCircleIcon,
@@ -10,9 +10,11 @@ import Link from "next/link";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
 
+import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
 import LandingPageHeader from "components/LandingPage/Header";
+import GetAuthCookie from "components/GetAuthCoookie";
 
 export default function Login(): JSX.Element {
   const client = useSupabase();
@@ -29,10 +31,6 @@ export default function Login(): JSX.Element {
     if (session === null || session === undefined) {
       return;
     }
-
-    if ((session.expires_in || -1) > 0) {
-      router.replace("/app/dashboard");
-    }
   }, [session, router]);
 
   return (
@@ -40,7 +38,10 @@ export default function Login(): JSX.Element {
       <Head>
         <title>Willow login</title>
       </Head>
+
       <LandingPageHeader />
+      <GetAuthCookie redirect="/a/dashboard" />
+
       <div className="-mt-20 flex h-screen min-h-full w-screen min-w-full items-center justify-center">
         <div className="">
           <div>
@@ -57,7 +58,7 @@ export default function Login(): JSX.Element {
                   e.preventDefault();
                   setDisabled(true);
 
-                  const redirectTo = `${document.location.origin}/app/auth`;
+                  const redirectTo = `${document.location.origin}/a/auth`;
                   console.log("redirectTo", redirectTo);
 
                   if (client === null || client === undefined) {
@@ -73,11 +74,13 @@ export default function Login(): JSX.Element {
                     { redirectTo }
                   );
                   if (error === null) {
-                    setShow(true);
+                    if (useMagicLink) {
+                      setShow(true);
+                    }
                   } else {
                     setError(error.message);
+                    setDisabled(false);
                   }
-                  // setDisabled(false);
                 }}
               >
                 <div>
@@ -96,7 +99,7 @@ export default function Login(): JSX.Element {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      className="block w-full appearance-none rounded-md border border-zinc-300 bg-zinc-900 px-3 py-2 placeholder-zinc-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
                 </div>
@@ -117,7 +120,7 @@ export default function Login(): JSX.Element {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        className="block w-full appearance-none rounded-md border border-zinc-300 bg-zinc-900 px-3 py-2 placeholder-zinc-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -165,7 +168,7 @@ export default function Login(): JSX.Element {
                       "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
                     ].join(" ")}
                   >
-                    {disabled
+                    {disabled && useMagicLink
                       ? "Sent..."
                       : useMagicLink
                       ? "Send magic link to email"
@@ -182,9 +185,10 @@ export default function Login(): JSX.Element {
           </div>
         </div>
       </div>
+
       <div
         aria-live="assertive"
-        className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
+        className="pointer-events-none fixed inset-0 z-50 flex items-end px-4 py-6 sm:items-start sm:p-6"
       >
         <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
           {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
@@ -208,14 +212,14 @@ export default function Login(): JSX.Element {
                     />
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">Sent</p>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="text-sm font-medium text-zinc-900">Sent</p>
+                    <p className="mt-1 text-sm text-zinc-500">
                       Magic link sent to {email}
                     </p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
-                      className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex rounded-md bg-white text-zinc-400 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
                         setShow(false);
                       }}
@@ -230,9 +234,10 @@ export default function Login(): JSX.Element {
           </Transition>
         </div>
       </div>
+
       <div
         aria-live="assertive"
-        className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
+        className="pointer-events-none fixed inset-0 z-50 flex items-end px-4 py-6 sm:items-start sm:p-6"
       >
         <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
           {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
@@ -256,12 +261,12 @@ export default function Login(): JSX.Element {
                     />
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">Error</p>
-                    <p className="mt-1 text-sm text-gray-500">{error}</p>
+                    <p className="text-sm font-medium text-zinc-900">Error</p>
+                    <p className="mt-1 text-sm text-zinc-500">{error}</p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
-                      className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex rounded-md bg-white text-zinc-400 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
                         setError(null);
                       }}
@@ -279,3 +284,7 @@ export default function Login(): JSX.Element {
     </>
   );
 }
+
+Login.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};

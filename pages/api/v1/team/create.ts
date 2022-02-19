@@ -5,9 +5,10 @@ import apiHandler from "server/apiHandler";
 
 export interface CreateBody {
   teamName: string;
+  namespace: string;
 }
 
-interface CreateReturn {
+export interface CreateReturn {
   teamId: number;
 }
 
@@ -32,22 +33,26 @@ async function handler(
   const body = req.body as CreateBody;
   console.log("body", body);
 
-  const teamCreated = await prisma.teamMember.create({
-    data: {
-      Profile: { connect: { id: user.id } },
-      Team: { create: { name: body.teamName } },
-    },
-    select: {
-      id: true,
-      profileId: true,
-      teamId: true,
-      Team: true,
-    },
-  });
+  try {
+    const teamCreated = await prisma.teamMember.create({
+      data: {
+        Profile: { connect: { id: user.id } },
+        Team: { create: { name: body.teamName, namespace: body.namespace } },
+      },
+      select: {
+        id: true,
+        profileId: true,
+        teamId: true,
+        Team: true,
+      },
+    });
+    console.log("teamCreated", teamCreated);
 
-  console.log("teamCreated", teamCreated);
-
-  res.redirect("/app/team/connect");
+    return res.json({ teamId: Number(teamCreated.Team.id) });
+  } catch (e) {
+    console.error(e);
+    return res.status(409).json({ error: "Namespace exists" });
+  }
 }
 
 export default apiHandler({

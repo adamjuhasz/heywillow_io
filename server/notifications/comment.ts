@@ -2,8 +2,8 @@ import { uniqBy } from "lodash";
 
 import { prisma } from "utils/prisma";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
-import detectMention from "./detectMention";
-import matchMention from "./matchMention";
+import detectMention from "server/notifications/detectMention";
+import matchMention from "server/notifications/matchMention";
 
 export default async function commentNotification(commentId: bigint) {
   const comment = await prisma.comment.findUnique({
@@ -66,7 +66,7 @@ export default async function commentNotification(commentId: bigint) {
           .replace(/\r\n/g, "\n")
           .split("\n")
           .map((t) => `<p>${t}</p>`),
-        `<p>https://${process.env.DOMAIN}/app/dashboard/thread/${threadId}</p>`,
+        `<p>https://${process.env.DOMAIN}/a/dashboard/thread/${threadId}</p>`,
       ],
     });
   });

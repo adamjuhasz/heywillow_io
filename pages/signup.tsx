@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, ReactElement, useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
 import {
   CheckCircleIcon,
@@ -12,12 +12,14 @@ import WillowLogo from "components/Logo";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
 
+import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
+import GetAuthCookie from "components/GetAuthCoookie";
 
 import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
 
-export default function Signup(): JSX.Element {
+export default function SignUpPage(): JSX.Element {
   const client = useSupabase();
   const { session } = useUser();
   const router = useRouter();
@@ -34,7 +36,7 @@ export default function Signup(): JSX.Element {
     }
 
     if ((session.expires_in || -1) > 0) {
-      router.replace("/app/dashboard");
+      router.replace("/a/dashboard");
     }
   }, [session, router]);
 
@@ -43,6 +45,9 @@ export default function Signup(): JSX.Element {
       <Head>
         <title>Sign up for Willow</title>
       </Head>
+
+      <GetAuthCookie redirect="/a/dashboard" />
+
       <div className="absolute top-0 left-0 flex h-full w-full text-zinc-100">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
@@ -67,21 +72,21 @@ export default function Signup(): JSX.Element {
                     e.preventDefault();
                     setDisabled(true);
 
-                    const redirectTo = `${document.location.origin}/app/auth`;
+                    const redirectTo = `${document.location.origin}/a/auth`;
                     console.log("redirectTo", redirectTo);
 
                     try {
-                      localStorage.setItem("redirect", "/app/team/create");
+                      localStorage.setItem("redirect", "/a/team/create");
                     } catch (e) {
                       console.error(e);
                     }
 
                     if (client === null || client === undefined) {
-                      setError("Error with login provider");
+                      setError("Supabase login provider missing");
                       return;
                     }
 
-                    const { error } = await client.auth.signIn(
+                    const { error } = await client.auth.signUp(
                       {
                         email,
                         password: useMagicLink ? undefined : password,
@@ -89,11 +94,14 @@ export default function Signup(): JSX.Element {
                       { redirectTo }
                     );
                     if (error === null) {
-                      setShow(true);
+                      if (useMagicLink) {
+                        setShow(true);
+                      }
                     } else {
+                      setDisabled(false);
+                      console.error(error);
                       setError(error.message);
                     }
-                    // setDisabled(false);
                   }}
                 >
                   <div>
@@ -112,7 +120,7 @@ export default function Signup(): JSX.Element {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        className="block w-full appearance-none rounded-md border border-zinc-300 bg-zinc-900 px-3 py-2 placeholder-zinc-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -133,7 +141,7 @@ export default function Signup(): JSX.Element {
                           required
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="block w-full appearance-none rounded-md border border-gray-300 bg-zinc-900 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                          className="block w-full appearance-none rounded-md border border-zinc-300 bg-zinc-900 px-3 py-2 placeholder-zinc-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                         />
                       </div>
                     </div>
@@ -181,7 +189,7 @@ export default function Signup(): JSX.Element {
                         "disabled:bg-indigo-300",
                       ].join(" ")}
                     >
-                      {disabled
+                      {disabled && useMagicLink
                         ? "Sent..."
                         : useMagicLink
                         ? "Send magic link to email"
@@ -246,14 +254,14 @@ export default function Signup(): JSX.Element {
                     />
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">Sent</p>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="text-sm font-medium text-zinc-900">Sent</p>
+                    <p className="mt-1 text-sm text-zinc-500">
                       Magic link sent to {email}
                     </p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
-                      className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex rounded-md bg-white text-zinc-400 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
                         setShow(false);
                       }}
@@ -294,12 +302,12 @@ export default function Signup(): JSX.Element {
                     />
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">Error</p>
-                    <p className="mt-1 text-sm text-gray-500">{error}</p>
+                    <p className="text-sm font-medium text-zinc-900">Error</p>
+                    <p className="mt-1 text-sm text-zinc-500">{error}</p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
-                      className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex rounded-md bg-white text-zinc-400 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
                         setError(null);
                       }}
@@ -317,3 +325,7 @@ export default function Signup(): JSX.Element {
     </>
   );
 }
+
+SignUpPage.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};

@@ -125,7 +125,7 @@ export default function OptionMenu() {
                     active ? "bg-violet-500 text-white" : "text-violet-500"
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   onClick={async () => {
-                    router.push("/app/team/invite");
+                    router.push("/a/team/invite");
                   }}
                 >
                   {active ? (
@@ -144,7 +144,7 @@ export default function OptionMenu() {
                     active ? "bg-violet-500 text-white" : "text-violet-500"
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   onClick={() => {
-                    router.push("/app/logout");
+                    router.push("/a/logout");
                   }}
                 >
                   {active ? (

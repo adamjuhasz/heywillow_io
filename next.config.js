@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  productionBrowserSourceMaps: true,
   experimental: {
     outputStandalone: true,
   },
@@ -8,6 +9,15 @@ const nextConfig = {
   headers: async () => [
     {
       source: "/app/logout",
+      headers: [
+        {
+          key: "Set-Cookie",
+          value: "sb:token=invalid; Max-Age=1; Path=/; HttpOnly",
+        },
+      ],
+    },
+    {
+      source: "/a/logout",
       headers: [
         {
           key: "Set-Cookie",
