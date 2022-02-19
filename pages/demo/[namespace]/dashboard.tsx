@@ -1,8 +1,11 @@
+import { ReactElement } from "react";
+
 import AppHeader from "components/App/Header";
 import DashboardTableTop, {
   FetchResponse,
 } from "components/Dashboard/TableTop";
 import LinkBar, { Link } from "components/Settings/LinkBar";
+import AppLayout from "layouts/app";
 
 export default function DemoDashboard() {
   const demo: FetchResponse[] = [
@@ -90,3 +93,7 @@ export default function DemoDashboard() {
     </>
   );
 }
+
+DemoDashboard.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};

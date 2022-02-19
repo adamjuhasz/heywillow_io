@@ -5,6 +5,7 @@ import { CheckIcon, SwitchVerticalIcon } from "@heroicons/react/solid";
 import { Menu } from "@headlessui/react";
 import Avatar from "components/Avatar";
 import Head from "next/head";
+import { useUser } from "components/UserContext";
 
 import WillowLogo from "components/Logo";
 
@@ -24,15 +25,22 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
   const currentTeam = props.teams?.find(
     (v) => v.namespace === props.activeTeam
   );
+  const { user } = useUser();
 
   const teamSelector = (
     <>
       {props.teams === undefined ? (
         <div className="h-6 w-20 animate-pulse rounded-md bg-zinc-800" />
+      ) : props.teams.length === 0 ? (
+        <Link href="/a/onboarding/team/create">
+          <a className="flex items-center rounded-md border border-transparent bg-blue-500 px-2 py-1 hover:border-zinc-100 hover:bg-transparent">
+            Create team
+          </a>
+        </Link>
       ) : (
         <Menu as="div" className="relative inline-block text-left">
           <div>
-            <Menu.Button className="relative flex items-center rounded-md border border-transparent px-2 py-1  hover:border-zinc-100">
+            <Menu.Button className="relative flex items-center rounded-md border border-transparent px-2 py-1 hover:border-zinc-100">
               <div className="flex items-center">
                 {currentTeam === undefined ? (
                   <>No team</>
@@ -45,7 +53,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
                     {currentTeam.name}
                   </>
                 )}
-              </div>{" "}
+              </div>
               <SwitchVerticalIcon className="ml-1 h-4 w-4" />
             </Menu.Button>
           </div>
@@ -92,7 +100,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
       <div className="sticky top-0 z-10 flex w-full flex-col items-center border-b border-zinc-700 bg-black bg-opacity-50 font-[rubik] text-zinc-200 backdrop-blur-lg">
         <div className="mx-auto flex min-h-[3rem] w-full max-w-4xl items-center justify-between space-x-4 px-4 text-sm font-normal lg:px-0">
           <div className="flex h-full items-center space-x-4 ">
-            <Link href="/">
+            <Link href="/a/dashboard">
               <a className="flex items-center">
                 <WillowLogo className="mr-2 h-5 w-5 shrink-0" />
               </a>
@@ -100,8 +108,14 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
 
             {teamSelector}
 
-            <TopLink href="/a/[namespace]/dashboard">Dashboard</TopLink>
-            <TopLink href="/a/[namespace]/settings">Settings</TopLink>
+            {props.teams?.length === 0 ? (
+              <></>
+            ) : (
+              <>
+                <TopLink href="/a/[namespace]/dashboard">Dashboard</TopLink>
+                <TopLink href="/a/[namespace]/settings">Settings</TopLink>
+              </>
+            )}
             {currentTeam !== undefined && props.bubble ? (
               <Link href={{ pathname: props.bubble.href, query: router.query }}>
                 <a className="flex items-center justify-center rounded-full bg-red-500 px-2 py-1 text-xs font-light text-white">
@@ -114,6 +128,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
           </div>
 
           <div className="flex h-full items-center space-x-4 ">
+            <Avatar str={user?.email || ""} className="h-6 w-6" />
             <TopLink exact href="/a/logout">
               Logout
             </TopLink>

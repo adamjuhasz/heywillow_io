@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
+import AppLayout from "layouts/app";
 import OnboardingHeader from "components/Onboarding/Header";
 import SettingsBox from "components/Settings/Box/Box";
 import createTeam from "client/createTeam";
@@ -103,6 +104,10 @@ export default function CreateTeam(): JSX.Element {
     </>
   );
 }
+
+CreateTeam.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};
 
 const namespacer = (s: string): string =>
   s
