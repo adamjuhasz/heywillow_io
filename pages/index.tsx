@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Head from "next/head";
 import { CSSProperties, PropsWithChildren, useEffect } from "react";
 import { ArrowNarrowRightIcon, CheckCircleIcon } from "@heroicons/react/solid";
 import { ChipIcon, ClockIcon, UserAddIcon } from "@heroicons/react/outline";
@@ -9,16 +10,26 @@ import LandingPageHeader from "components/LandingPage/Header";
 export default function Vercel(): JSX.Element {
   const router = useRouter();
 
-  const { type } = router.query;
+  const hashType = /#.*type=([a-z]*)/.exec(router.asPath);
+  console.log(hashType);
+
+  const accessToken = /#.*access_token=([^&]*)/.exec(router.asPath);
 
   useEffect(() => {
-    if (type === "recovery") {
-      router.replace({ pathname: "/password-reset", query: router.query });
+    if (hashType?.[1] === "recovery") {
+      router.replace({
+        pathname: "/password-reset",
+        query: { access_token: accessToken?.[1] },
+      });
     }
-  }, [type, router]);
+  }, [hashType, accessToken, router]);
 
   return (
     <>
+      <Head>
+        {/* eslint-disable-next-line react/no-unescaped-entities */}
+        <title>See your customer's whole story</title>
+      </Head>
       <LandingPageHeader />
 
       <div className="mx-auto max-w-4xl bg-zinc-900 px-4 font-[rubik] text-zinc-200 lg:px-0">
