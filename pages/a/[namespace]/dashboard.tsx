@@ -38,7 +38,9 @@ export default function DashboardPage() {
               Threads
               {threads && threads.length > 0 ? (
                 <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white">
-                  <div className="text-xs leading-3">{threads.length}</div>
+                  <div className="-mt-[1px] text-xs leading-3">
+                    {threads.length}
+                  </div>
                 </div>
               ) : (
                 <></>
@@ -48,9 +50,9 @@ export default function DashboardPage() {
           <Link href="/demo/willow/activity">
             <div className="flex items-center">
               Activity
-              <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-xs text-zinc-900">
-                12
-              </div>
+              {/* <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-zinc-900">
+                <div className="text-xs leading-3">{12}</div>
+              </div> */}
             </div>
           </Link>
         </LinkBar>

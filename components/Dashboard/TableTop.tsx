@@ -2,6 +2,7 @@ import { ClockIcon } from "@heroicons/react/solid";
 import Avatar from "components/Avatar";
 import Link from "next/link";
 import { formatDistanceToNowStrict } from "date-fns";
+import { useRouter } from "next/router";
 
 interface MiniAlias {
   emailAddress: string;
@@ -51,11 +52,18 @@ export default function DashboardTableTop(props: Props) {
 }
 
 function Card({ t }: { t: FetchResponse }) {
+  const router = useRouter();
+
   const lastMessage = t.Message.reverse()[0];
   const preview =
     lastMessage.EmailMessage?.body || lastMessage.InternalMessage?.body || "";
   return (
-    <Link href="/">
+    <Link
+      href={{
+        pathname: "/a/[namespace]/dashboard/thread/[threadid]",
+        query: { ...router.query, threadid: t.id },
+      }}
+    >
       <a>
         <div className="col-span-1 flex h-full flex-col rounded-xl border border-zinc-600 bg-black p-6 text-sm font-light text-zinc-200 hover:border-zinc-100 hover:shadow-lg hover:shadow-black">
           <div className="flex items-center">
