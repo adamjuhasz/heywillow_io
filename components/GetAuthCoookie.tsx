@@ -7,6 +7,7 @@ import { useSupabase } from "components/UserContext";
 
 interface Props {
   redirect?: string;
+  timeout?: boolean;
 }
 
 export default function GetAuthCookie(props: Props): JSX.Element {
@@ -102,12 +103,16 @@ export default function GetAuthCookie(props: Props): JSX.Element {
       }
       return;
     }
-    const nodeJSTimeout = setTimeout(() => {
-      if (supabase === null || supabase === undefined) {
-        return;
-      }
-      alert("Login failed");
-    }, 3000);
+
+    let nodeJSTimeout: NodeJS.Timeout | undefined;
+    if (props.timeout === true) {
+      nodeJSTimeout = setTimeout(() => {
+        if (supabase === null || supabase === undefined) {
+          return;
+        }
+        alert("Login failed");
+      }, 3000);
+    }
 
     return () => {
       if (nodeJSTimeout !== undefined) {

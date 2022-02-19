@@ -15,7 +15,7 @@ export default function SidebarLink({
 
   const normalizedHref = props.href.replace(
     /\[(.*)\]/g,
-    (m, p1) => `${router.query[p1]} || "_` as string
+    (m, p1) => `${router.query[p1] || "_"}` as string
   );
 
   const isActive =
@@ -26,7 +26,7 @@ export default function SidebarLink({
     <Link href={normalizedHref}>
       <a
         className={[
-          "hover:font-normal hover:text-zinc-100",
+          " hover:font-normal hover:text-zinc-100",
           isActive ? "font-normal text-zinc-100" : "font-light text-zinc-500",
         ].join(" ")}
       >

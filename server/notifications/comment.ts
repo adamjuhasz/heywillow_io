@@ -66,7 +66,7 @@ export default async function commentNotification(commentId: bigint) {
           .replace(/\r\n/g, "\n")
           .split("\n")
           .map((t) => `<p>${t}</p>`),
-        `<p>https://${process.env.DOMAIN}/app/dashboard/thread/${threadId}</p>`,
+        `<p>https://${process.env.DOMAIN}/a/dashboard/thread/${threadId}</p>`,
       ],
     });
   });

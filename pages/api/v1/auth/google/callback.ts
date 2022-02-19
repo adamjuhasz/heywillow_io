@@ -20,6 +20,10 @@ export default async function handler(
 
   const state: State = JSON.parse(req.query.state as string);
 
+  if (req.query.code === undefined) {
+    return res.redirect(state.r || "/a/dashboard");
+  }
+
   const oauth2Client = new auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
@@ -41,6 +45,14 @@ export default async function handler(
     console.error("Bad email address", profile.data);
   }
 
+  if (
+    results.tokens.refresh_token === undefined ||
+    results.tokens.refresh_token === null
+  ) {
+    console.error("Refresh Token missing", results.tokens);
+    return res.redirect(state.r || "/a/dashboard");
+  }
+
   const inboxRow = await prisma.gmailInbox.upsert({
     where: { emailAddress: emailAddress },
     update: {},
@@ -52,11 +64,11 @@ export default async function handler(
   const tokenRow = await prisma.refreshToken.upsert({
     where: { inboxId: inboxRow.id },
     update: {
-      token: results.tokens.refresh_token as string,
+      token: results.tokens.refresh_token,
     },
     create: {
-      inboxId: inboxRow.id,
-      token: results.tokens.refresh_token as string,
+      Inbox: { connect: { id: inboxRow.id } },
+      token: results.tokens.refresh_token,
     },
   });
 
@@ -97,5 +109,5 @@ export default async function handler(
     console.log("lastSync", lastSync);
   }
 
-  res.redirect(state.r);
+  res.redirect(state.r || "/a/dashboard");
 }

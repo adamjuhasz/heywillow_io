@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, ReactElement, useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
 import {
   CheckCircleIcon,
@@ -12,12 +12,14 @@ import WillowLogo from "components/Logo";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
 
+import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
+import GetAuthCookie from "components/GetAuthCoookie";
 
 import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
 
-export default function Signup(): JSX.Element {
+export default function SignUpPage(): JSX.Element {
   const client = useSupabase();
   const { session } = useUser();
   const router = useRouter();
@@ -34,7 +36,7 @@ export default function Signup(): JSX.Element {
     }
 
     if ((session.expires_in || -1) > 0) {
-      router.replace("/app/dashboard");
+      router.replace("/a/dashboard");
     }
   }, [session, router]);
 
@@ -43,6 +45,9 @@ export default function Signup(): JSX.Element {
       <Head>
         <title>Sign up for Willow</title>
       </Head>
+
+      <GetAuthCookie redirect="/a/dashboard" />
+
       <div className="absolute top-0 left-0 flex h-full w-full text-zinc-100">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
@@ -67,17 +72,17 @@ export default function Signup(): JSX.Element {
                     e.preventDefault();
                     setDisabled(true);
 
-                    const redirectTo = `${document.location.origin}/app/auth`;
+                    const redirectTo = `${document.location.origin}/a/auth`;
                     console.log("redirectTo", redirectTo);
 
                     try {
-                      localStorage.setItem("redirect", "/app/team/create");
+                      localStorage.setItem("redirect", "/a/team/create");
                     } catch (e) {
                       console.error(e);
                     }
 
                     if (client === null || client === undefined) {
-                      setError("Error with login provider");
+                      setError("Supabase login provider missing");
                       return;
                     }
 
@@ -93,10 +98,10 @@ export default function Signup(): JSX.Element {
                         setShow(true);
                       }
                     } else {
-                      setError(error.message);
                       setDisabled(false);
+                      console.error(error);
+                      setError(error.message);
                     }
-                    // setDisabled(false);
                   }}
                 >
                   <div>
@@ -320,3 +325,7 @@ export default function Signup(): JSX.Element {
     </>
   );
 }
+
+SignUpPage.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};

@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { isArray } from "lodash";
 
 import NeoThread from "components/NeoThread";
-import Dashboard from "components/Page/Dashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -18,16 +17,5 @@ export default function DashboardPage() {
     return <></>;
   }
 
-  return (
-    <Dashboard
-      selected={threadNum}
-      setSelected={(n: number | null) =>
-        n === null
-          ? router.push("/app/dashboard")
-          : router.push(`/app/dashboard/thread/${n}`)
-      }
-    >
-      <NeoThread threadId={threadNum} />
-    </Dashboard>
-  );
+  return <NeoThread threadId={threadNum} />;
 }

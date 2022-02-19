@@ -1,13 +1,15 @@
 import Image from "next/image";
+import { ReactElement } from "react";
 
+import AppLayout from "layouts/app";
 import GetAuthCookie from "components/GetAuthCoookie";
 
 import image from "public/images/architecture/photo-1505904267569-f02eaeb45a4c.jpg";
 
-export default function Login(): JSX.Element {
+export default function AuthPage(): JSX.Element {
   return (
     <>
-      <GetAuthCookie redirect="/app/dashboard" />
+      <GetAuthCookie redirect="/a/dashboard" timeout />
       <div className=" absolute top-0 left-0 flex h-full w-full">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto flex w-full max-w-sm items-center justify-center lg:w-96">
@@ -46,3 +48,7 @@ export default function Login(): JSX.Element {
     </>
   );
 }
+
+AuthPage.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};

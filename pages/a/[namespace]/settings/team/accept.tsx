@@ -1,9 +1,11 @@
+import { ReactElement } from "react";
 import Image from "next/image";
 import { CheckIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import useSWR from "swr";
 import { SupabaseClient } from "@supabase/supabase-js";
 
+import AppLayout from "layouts/app";
 import { useSupabase, useUser } from "components/UserContext";
 import { Body } from "pages/api/v1/team/invite/accept";
 import image from "public/images/architecture/martin-pechy-b11U6T488CM-unsplash.jpg";
@@ -27,7 +29,7 @@ async function getInvites(supabase: SupabaseClient, email: string) {
   return res.data;
 }
 
-export default function Login(): JSX.Element {
+export default function AcceptInvites(): JSX.Element {
   const { user } = useUser();
   const supabase = useSupabase();
   const { data: invites, mutate } = useSWR(
@@ -105,7 +107,7 @@ export default function Login(): JSX.Element {
                   </div>
                 </div>
                 <div className="px-4 py-3 text-left sm:px-6">
-                  <Link href="/app/dashboard">
+                  <Link href="/a/dashboard">
                     <a
                       className={[
                         "inline-flex items-center bg-white px-4 py-2 ",
@@ -135,3 +137,7 @@ export default function Login(): JSX.Element {
     </>
   );
 }
+
+AcceptInvites.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};

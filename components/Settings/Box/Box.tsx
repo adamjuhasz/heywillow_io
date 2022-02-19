@@ -10,6 +10,7 @@ interface Props {
   button: ReactNode;
   disabled?: boolean;
   onSubmit?: FormEventHandler<HTMLFormElement>;
+  error?: boolean;
 }
 
 export default function SettingsBox({
@@ -18,8 +19,17 @@ export default function SettingsBox({
 }: PropsWithChildren<Props>): JSX.Element {
   return (
     <form
-      className="flex w-full flex-col rounded-md border border-zinc-700"
-      onSubmit={props.onSubmit}
+      className={[
+        "flex w-full flex-col rounded-md border ",
+        props.error === true ? "border-red-500" : "border-zinc-700",
+      ].join(" ")}
+      onSubmit={(e) => {
+        e.preventDefault();
+
+        if (props.onSubmit) {
+          return props.onSubmit(e);
+        }
+      }}
     >
       <div className="flex w-full flex-col p-6">
         <div className="mb-2 text-xl">{props.title}</div>

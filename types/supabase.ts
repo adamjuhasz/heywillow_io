@@ -1,6 +1,7 @@
 import type {
   MessageDirection,
   MessageType,
+  TeamInviteStatus,
   ThreadStateType,
 } from "@prisma/client";
 
@@ -123,4 +124,22 @@ export interface SupabaseGmailInbox {
   updatedAt: string;
   teamId: number;
   emailAddress: string;
+}
+
+export interface SupabaseTeamInvite {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  teamId: number;
+  emailAddress: string;
+  inviterId: number;
+  status: TeamInviteStatus;
+}
+
+export interface SupabaseProfile {
+  id: string;
+  createdAt: string;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
 }

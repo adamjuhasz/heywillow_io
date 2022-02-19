@@ -8,15 +8,17 @@ export interface Body {
   inviteeEmail: string;
 }
 
-type Return =
-  | Record<string, never>
+export type Return = Record<string, never>;
+
+type FullReturn =
+  | Return
   | {
       error: string;
     };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Return>
+  res: NextApiResponse<FullReturn>
 ) {
   //create a new team
 

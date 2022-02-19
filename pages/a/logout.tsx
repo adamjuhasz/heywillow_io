@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 import { useSupabase } from "components/UserContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import WillowLogo from "components/Logo";
 
-import logo from "public/SqLogo.svg";
-import image from "public/images/architecture/photo-1505904267569-f02eaeb45a4c.jpg";
+import AppLayout from "layouts/app";
+import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
 
-export default function Login(): JSX.Element {
+export default function LogoutPage(): JSX.Element {
   const client = useSupabase();
   const router = useRouter();
 
@@ -24,16 +25,9 @@ export default function Login(): JSX.Element {
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
-              <Image
-                className="h-12 w-auto"
-                src={logo}
-                alt="Willow"
-                width={48}
-                height={48}
-                layout="fixed"
-              />
+              <WillowLogo className=" h-11 w-11" />
               <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                Logged out
+                Logging out
               </h2>
             </div>
           </div>
@@ -51,3 +45,7 @@ export default function Login(): JSX.Element {
     </>
   );
 }
+
+LogoutPage.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};

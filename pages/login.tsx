@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, ReactElement, useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
 import {
   CheckCircleIcon,
@@ -10,9 +10,11 @@ import Link from "next/link";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
 
+import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
 import LandingPageHeader from "components/LandingPage/Header";
+import GetAuthCookie from "components/GetAuthCoookie";
 
 export default function Login(): JSX.Element {
   const client = useSupabase();
@@ -29,10 +31,6 @@ export default function Login(): JSX.Element {
     if (session === null || session === undefined) {
       return;
     }
-
-    if ((session.expires_in || -1) > 0) {
-      router.replace("/app/dashboard");
-    }
   }, [session, router]);
 
   return (
@@ -40,7 +38,10 @@ export default function Login(): JSX.Element {
       <Head>
         <title>Willow login</title>
       </Head>
+
       <LandingPageHeader />
+      <GetAuthCookie redirect="/a/dashboard" />
+
       <div className="-mt-20 flex h-screen min-h-full w-screen min-w-full items-center justify-center">
         <div className="">
           <div>
@@ -57,7 +58,7 @@ export default function Login(): JSX.Element {
                   e.preventDefault();
                   setDisabled(true);
 
-                  const redirectTo = `${document.location.origin}/app/auth`;
+                  const redirectTo = `${document.location.origin}/a/auth`;
                   console.log("redirectTo", redirectTo);
 
                   if (client === null || client === undefined) {
@@ -281,3 +282,7 @@ export default function Login(): JSX.Element {
     </>
   );
 }
+
+Login.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};

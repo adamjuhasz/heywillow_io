@@ -13,16 +13,16 @@ model Team {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   name      String
-  namespace String?  @unique
+  namespace String?
 
+  Alias         AliasEmail[]
+  Attachment    Attachment[]
+  Customer      Customer[]
+  EncryptedText EncryptedText[]
   Inboxs        GmailInbox[]
+  TeamInvite    TeamInvite[]
   Members       TeamMember[]
   Thread        Thread[]
-  Alias         AliasEmail[]
-  Customer      Customer[]
-  TeamInvite    TeamInvite[]
-  EncryptedText EncryptedText[]
-  Attachment    Attachment[]
 }
 
 model TeamMember {
@@ -32,17 +32,16 @@ model TeamMember {
   teamId    BigInt
   profileId String   @db.Uuid
 
+  Profile            Profile        @relation(fields: [profileId], references: [id], onDelete: SetNull)
   Team               Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  Profile            Profile?       @relation(fields: [profileId], references: [id], onDelete: SetNull)
-  AssignedThreads    ThreadState[]  @relation("Assignee")
-  ThreadsChanged     ThreadState[]  @relation("DoneBy")
-  Notifications      Notification[] @relation("for")
-  CommentTag         CommentTag[]
   Comment            Comment[]
+  CommentTag         CommentTag[]
+  Message            Message[]
   NotificationGenned Notification[] @relation("by")
-
-  Message    Message[]
-  TeamInvite TeamInvite[]
+  Notifications      Notification[] @relation("for")
+  TeamInvite         TeamInvite[]
+  ThreadsChanged     ThreadState[]  @relation("DoneBy")
+  AssignedThreads    ThreadState[]  @relation("Assignee")
 
   @@unique([teamId, profileId])
 }
@@ -62,12 +61,6 @@ model TeamInvite {
   @@unique([teamId, emailAddress])
 }
 
-enum TeamInviteStatus {
-  pending
-  accepted
-  cancelled
-}
-
 model Profile {
   id        String    @id @db.Uuid
   createdAt DateTime? @default(now()) @db.Timestamptz(6)
@@ -85,11 +78,10 @@ model GmailInbox {
   teamId       BigInt
   emailAddress String   @unique
 
-  Team Team @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  RefreshToken   RefreshToken?
+  Team           Team            @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   GmailLastSync  GmailLastSync?
   GmailLastWatch GmailLastWatch?
+  RefreshToken   RefreshToken?
   Thread         Thread[]
 }
 
@@ -132,10 +124,9 @@ model Customer {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   teamId    BigInt
 
+  team           Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Alias          AliasEmail[]
   CustomerGroups CustomerGroup[]
-  team           Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
 }
 
 model AliasEmail {
@@ -145,48 +136,34 @@ model AliasEmail {
   emailAddress String
   teamId       BigInt
 
-  Customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull, onUpdate: NoAction)
-  Messages Message[]
-  team     Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
+  Customer   Customer?    @relation(fields: [customerId], references: [id], onUpdate: NoAction)
+  team       Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Messages   Message[]
   Thread     Thread[]
   ThreadLink ThreadLink[]
+
   @@unique([teamId, emailAddress])
 }
 
 model Message {
-  id        BigInt   @id @default(autoincrement())
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-
+  id                BigInt           @id @default(autoincrement())
+  createdAt         DateTime         @default(now()) @db.Timestamptz(6)
   type              MessageType
   direction         MessageDirection
   emailMessageId    BigInt?          @unique
   internalMessageId BigInt?          @unique
+  threadId          BigInt
+  aliasId           BigInt?
+  teamMemberId      BigInt?
 
-  threadId     BigInt
-  aliasId      BigInt?
-  teamMemberId BigInt?
-
-  TeamMember TeamMember? @relation(fields: [teamMemberId], references: [id], onDelete: SetNull)
-  Alias      AliasEmail? @relation(fields: [aliasId], references: [id], onDelete: SetNull, onUpdate: NoAction)
-
-  EmailMessage    EmailMessage?    @relation(fields: [emailMessageId], references: [id], onDelete: SetNull)
-  InternalMessage InternalMessage? @relation(fields: [internalMessageId], references: [id], onDelete: SetNull)
-
-  Thread       Thread         @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  Notification Notification[]
-  Comment      Comment[]
-  Attachments  Attachment[]
-}
-
-enum MessageType {
-  email
-  internal
-}
-
-enum MessageDirection {
-  incoming
-  outgoing
+  Alias           AliasEmail?      @relation(fields: [aliasId], references: [id], onUpdate: NoAction)
+  EmailMessage    EmailMessage?    @relation(fields: [emailMessageId], references: [id])
+  InternalMessage InternalMessage? @relation(fields: [internalMessageId], references: [id])
+  TeamMember      TeamMember?      @relation(fields: [teamMemberId], references: [id])
+  Thread          Thread           @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  Attachments     Attachment[]
+  Comment         Comment[]
+  Notification    Notification[]
 }
 
 model EmailMessage {
@@ -195,10 +172,10 @@ model EmailMessage {
   from            String
   to              String
   sourceMessageId String   @unique
-  emailMessageId  String
   subject         String
   body            String
   raw             Json
+  emailMessageId  String
 
   Message Message?
 }
@@ -208,7 +185,7 @@ model InternalMessage {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   body      String
 
-  Message Message[]
+  Message Message?
 }
 
 model Thread {
@@ -217,14 +194,14 @@ model Thread {
   updatedAt    DateTime @default(now()) @db.Timestamptz(6)
   teamId       BigInt
   aliasEmailId BigInt
-  gmailInboxId BigInt
+  gmailInboxId BigInt?
 
   Alias       AliasEmail    @relation(fields: [aliasEmailId], references: [id], onDelete: Cascade)
-  Messages    Message[]
+  GmailInbox  GmailInbox?   @relation(fields: [gmailInboxId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Team        Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  ThreadState ThreadState[]
+  Messages    Message[]
   ThreadLink  ThreadLink[]
-  GmailInbox  GmailInbox?   @relation(fields: [gmailInboxId], references: [id], onDelete: Cascade)
+  ThreadState ThreadState[]
 }
 
 model ThreadState {
@@ -232,20 +209,13 @@ model ThreadState {
   createdAt    DateTime        @default(now()) @db.Timestamptz(6)
   threadId     BigInt
   teamMemberId BigInt?
-  doneById     BigInt?
   state        ThreadStateType
+  doneById     BigInt?
   expiresAt    DateTime?
 
+  DoneBy   TeamMember? @relation("DoneBy", fields: [doneById], references: [id])
+  Assignee TeamMember? @relation("Assignee", fields: [teamMemberId], references: [id])
   Thread   Thread      @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  Assignee TeamMember? @relation(name: "Assignee", fields: [teamMemberId], references: [id], onDelete: SetNull)
-  DoneBy   TeamMember? @relation(name: "DoneBy", fields: [doneById], references: [id], onDelete: SetNull)
-}
-
-enum ThreadStateType {
-  open
-  done
-  snoozed
-  assigned
 }
 
 model Comment {
@@ -255,8 +225,8 @@ model Comment {
   text      String
   authorId  BigInt
 
-  Message      Message        @relation(fields: [messageId], references: [id], onDelete: Cascade)
   Author       TeamMember     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  Message      Message        @relation(fields: [messageId], references: [id], onDelete: Cascade)
   CommentTag   CommentTag[]
   Notification Notification[]
 }
@@ -277,28 +247,26 @@ model Notification {
   deliveredAt DateTime? @db.Timestamptz(6)
   seenAt      DateTime? @db.Timestamptz(6)
   clearedAt   DateTime? @db.Timestamptz(6)
-
   forMemberId BigInt
   text        String
   messageId   BigInt?
   commentId   BigInt?
   byMemberId  BigInt?
 
+  By      TeamMember? @relation("by", fields: [byMemberId], references: [id])
   Comment Comment?    @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  Message Message?    @relation(fields: [messageId], references: [id], onDelete: SetNull)
-  For     TeamMember  @relation(name: "for", fields: [forMemberId], references: [id], onDelete: Cascade)
-  By      TeamMember? @relation(name: "by", fields: [byMemberId], references: [id], onDelete: SetNull)
+  For     TeamMember  @relation("for", fields: [forMemberId], references: [id], onDelete: Cascade)
+  Message Message?    @relation(fields: [messageId], references: [id])
 }
 
 model ThreadLink {
-  id        BigInt   @id @default(autoincrement())
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-
+  id           BigInt   @id @default(autoincrement())
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
   threadId     BigInt
   aliasEmailId BigInt
 
-  Thread Thread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
   Alias  AliasEmail @relation(fields: [aliasEmailId], references: [id], onDelete: Cascade)
+  Thread Thread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   @@unique([threadId, aliasEmailId])
 }
@@ -317,11 +285,34 @@ model Attachment {
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
   teamId      BigInt
   filename    String
-  location    String
   mimeType    String
   messageId   BigInt
   idempotency String?  @unique
+  location    String
 
-  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+enum TeamInviteStatus {
+  pending
+  accepted
+  cancelled
+}
+
+enum MessageType {
+  email
+  internal
+}
+
+enum MessageDirection {
+  incoming
+  outgoing
+}
+
+enum ThreadStateType {
+  open
+  done
+  snoozed
+  assigned
 }

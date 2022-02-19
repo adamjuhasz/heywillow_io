@@ -11,12 +11,14 @@ interface ContextData {
   user: undefined | null | User;
   session: undefined | null | Session;
   client: undefined | null | SupabaseClient;
+  usingDefaultValue: boolean;
 }
 
 const UserContext = createContext<ContextData>({
   user: undefined,
   session: undefined,
   client: undefined,
+  usingDefaultValue: true,
 });
 
 interface Props {
@@ -56,22 +58,27 @@ export const UserContextProvider = ({
     session,
     user,
     client: supabaseClient,
+    usingDefaultValue: false,
   };
   return <UserContext.Provider value={value} {...props} />;
 };
 
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (context === undefined) {
-    throw new Error(`useUser must be used within a UserContextProvider.`);
+  if (context.usingDefaultValue === true) {
+    const error = `useUser must be used within a UserContextProvider.`;
+    console.error(error);
+    throw new Error(error);
   }
   return context;
 };
 
 export const useSupabase = () => {
   const context = useContext(UserContext);
-  if (context === undefined) {
-    throw new Error(`useUser must be used within a UserContextProvider.`);
+  if (context.usingDefaultValue === true) {
+    const error = `useUser must be used within a UserContextProvider.`;
+    console.error(error);
+    throw new Error(error);
   }
 
   return context.client;

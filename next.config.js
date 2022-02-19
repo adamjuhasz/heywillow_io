@@ -15,6 +15,15 @@ const nextConfig = {
         },
       ],
     },
+    {
+      source: "/a/logout",
+      headers: [
+        {
+          key: "Set-Cookie",
+          value: "sb:token=invalid; Max-Age=1; Path=/; HttpOnly",
+        },
+      ],
+    },
   ],
 };
 

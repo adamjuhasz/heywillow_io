@@ -1,3 +1,4 @@
+import { useDebugValue } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
@@ -69,6 +70,8 @@ export default function useGetThreads(teamId: number | undefined) {
     },
     { refreshInterval: 60000 }
   );
+
+  useDebugValue(res.data);
 
   return res;
 }
