@@ -1,11 +1,22 @@
 import Link from "next/link";
-import { CSSProperties, PropsWithChildren } from "react";
+import { CSSProperties, PropsWithChildren, useEffect } from "react";
 import { ArrowNarrowRightIcon, CheckCircleIcon } from "@heroicons/react/solid";
 import { ChipIcon, ClockIcon, UserAddIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
 
 import LandingPageHeader from "components/LandingPage/Header";
 
 export default function Vercel(): JSX.Element {
+  const router = useRouter();
+
+  const { type } = router.query;
+
+  useEffect(() => {
+    if (type === "recovery") {
+      router.replace({ pathname: "/password-reset", query: router.query });
+    }
+  }, [type, router]);
+
   return (
     <>
       <LandingPageHeader />
