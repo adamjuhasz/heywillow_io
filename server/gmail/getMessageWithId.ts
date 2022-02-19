@@ -3,10 +3,10 @@ import { defaultTo } from "lodash";
 
 import { GmailMessage } from "server/addEmailToDB";
 
-import getGoogleMessageText from "./getMessageText";
-import getGoogleMessageEmailerNameFromHeader from "./getName";
-import getGoogleMessageEmailFromHeader from "./getMessage";
-import getGmailAttachments from "./getAttachments";
+import getGoogleMessageText from "server/gmail/getMessageText";
+import getGoogleMessageEmailerNameFromHeader from "server/gmail/getName";
+import getGoogleMessageEmailFromHeader from "server/gmail/getMessage";
+import getGmailAttachments from "server/gmail/getAttachments";
 import { logger } from "utils/pino";
 
 export default async function getMessageWithId(

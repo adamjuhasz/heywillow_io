@@ -4,7 +4,7 @@ import { defaultTo } from "lodash";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 
-import CommentBox from "./CommentBox";
+import CommentBox from "components/Inbox/CommentBox";
 import {
   SupabaseAliasEmail,
   SupabaseAttachment,
@@ -13,7 +13,7 @@ import {
   SupabaseInternalMessage,
   SupabaseMessage,
 } from "types/supabase";
-import Avatar from "../Avatar";
+import Avatar from "components/Avatar";
 import { useSupabase } from "components/UserContext";
 
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page

@@ -2,8 +2,8 @@ import { uniqBy } from "lodash";
 
 import { prisma } from "utils/prisma";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
-import detectMention from "./detectMention";
-import matchMention from "./matchMention";
+import detectMention from "server/notifications/detectMention";
+import matchMention from "server/notifications/matchMention";
 
 export default async function commentNotification(commentId: bigint) {
   const comment = await prisma.comment.findUnique({

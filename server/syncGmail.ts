@@ -2,10 +2,10 @@ import pLimit from "p-limit";
 import { defaultTo } from "lodash";
 
 import { prisma } from "utils/prisma";
-import addEmailToDB from "./addEmailToDB";
+import addEmailToDB from "server/addEmailToDB";
 
-import createAuthedGmail from "./gmail/createAuthedGmail";
-import getMessageWithId from "./gmail/getMessageWithId";
+import createAuthedGmail from "server/gmail/createAuthedGmail";
+import getMessageWithId from "server/gmail/getMessageWithId";
 
 interface Extras {
   currentHistoryid?: string;

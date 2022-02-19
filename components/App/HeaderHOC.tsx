@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import { useRouter } from "next/router";
 
-import AppHeader from "./Header";
+import AppHeader from "components/App/Header";
 import useGetTeams from "client/getTeams";
 import useGetInboxes from "client/getInboxes";
 import useGetTeamId from "client/getTeamId";

@@ -3,11 +3,11 @@ import { gmail_v1 } from "@googleapis/gmail";
 import { decode } from "base64-arraybuffer";
 
 import { prisma } from "utils/prisma";
-import messageNotification from "./notifications/message";
-import { serviceSupabase } from "./supabase";
-import sendEmailThroughGmail from "./gmail/sendEmail";
-import createSecureThreadLink from "./createSecureLink";
-import changeThreadStatus from "./changeThreadStatus";
+import messageNotification from "server/notifications/message";
+import { serviceSupabase } from "server/supabase";
+import sendEmailThroughGmail from "server/gmail/sendEmail";
+import createSecureThreadLink from "server/createSecureLink";
+import changeThreadStatus from "server/changeThreadStatus";
 
 export interface AttachmentData {
   data: string;
