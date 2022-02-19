@@ -116,7 +116,7 @@ export default function SignUpPage(): JSX.Element {
                         id="email"
                         name="email"
                         type="email"
-                        autoComplete="email"
+                        autoComplete="username"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -138,6 +138,7 @@ export default function SignUpPage(): JSX.Element {
                           id="password"
                           name="password"
                           type="password"
+                          autoComplete="new-password"
                           required
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}

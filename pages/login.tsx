@@ -21,7 +21,7 @@ export default function Login(): JSX.Element {
   const { session } = useUser();
   const router = useRouter();
   const [email, setEmail] = useState(client?.auth.session()?.user?.email || "");
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState<null | string>(null);
   const [error, setError] = useState<null | string>(null);
   const [disabled, setDisabled] = useState(false);
   const [useMagicLink, setMagicLink] = useState(false);
@@ -75,7 +75,7 @@ export default function Login(): JSX.Element {
                   );
                   if (error === null) {
                     if (useMagicLink) {
-                      setShow(true);
+                      setShow(`Magic link sent to ${email}`);
                     }
                   } else {
                     setError(error.message);
@@ -95,7 +95,7 @@ export default function Login(): JSX.Element {
                       id="email"
                       name="email"
                       type="email"
-                      autoComplete="email"
+                      autoComplete="username"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -117,6 +117,7 @@ export default function Login(): JSX.Element {
                         id="password"
                         name="password"
                         type="password"
+                        autoComplete="current-password"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -183,6 +184,33 @@ export default function Login(): JSX.Element {
               <a className="text-indigo-500 ">Need to sign up?</a>
             </Link>
           </div>
+          <div className="mt-2">
+            <a
+              onClick={async () => {
+                if (email === "") {
+                  setError("No email provided");
+                  return;
+                }
+                if (!client) {
+                  setError("No supabase connectivity");
+                  return;
+                }
+
+                const { error } = await client.auth.api.resetPasswordForEmail(
+                  email
+                );
+
+                if (error) {
+                  setError(error.message);
+                } else {
+                  setShow(`Password reset sent to ${email}`);
+                }
+              }}
+              className="cursor-pointer text-indigo-500"
+            >
+              Need to reset your password?
+            </a>
+          </div>
         </div>
       </div>
 
@@ -193,7 +221,7 @@ export default function Login(): JSX.Element {
         <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
           {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
           <Transition
-            show={show}
+            show={show !== null}
             as={Fragment}
             enter="transform ease-out duration-300 transition"
             enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -213,15 +241,13 @@ export default function Login(): JSX.Element {
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
                     <p className="text-sm font-medium text-zinc-900">Sent</p>
-                    <p className="mt-1 text-sm text-zinc-500">
-                      Magic link sent to {email}
-                    </p>
+                    <p className="mt-1 text-sm text-zinc-500">{show}</p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
                       className="inline-flex rounded-md bg-white text-zinc-400 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
-                        setShow(false);
+                        setShow(null);
                       }}
                     >
                       <span className="sr-only">Close</span>

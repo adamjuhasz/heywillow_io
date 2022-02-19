@@ -18,6 +18,12 @@ export default function PasswordReset(): JSX.Element {
   const [password, setPassword] = useState("");
 
   const { access_token } = router.query;
+  let userInfo: JWT | null = null;
+  try {
+    userInfo = parseJwt(access_token as string);
+  } catch (e) {
+    console.error(e);
+  }
 
   return (
     <>
@@ -71,6 +77,17 @@ export default function PasswordReset(): JSX.Element {
                     New password
                   </label>
                   <div className="mt-1">
+                    {userInfo !== null && userInfo.email !== "" ? (
+                      <input
+                        className="hidden"
+                        id="emailfield"
+                        type="email"
+                        value={userInfo.email}
+                        autoComplete="username"
+                      />
+                    ) : (
+                      <></>
+                    )}
                     <input
                       id="password"
                       name="password"
@@ -164,3 +181,28 @@ export default function PasswordReset(): JSX.Element {
 PasswordReset.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };
+
+interface JWT {
+  aud: string;
+  email: string;
+  exp: number;
+  phone: string;
+  role: string;
+  sub: string;
+  user_metadata: Record<string, unknown>;
+}
+
+function parseJwt(token: string): JWT {
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
+}

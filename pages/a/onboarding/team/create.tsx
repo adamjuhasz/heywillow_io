@@ -58,6 +58,7 @@ export default function CreateTeam(): JSX.Element {
               id="name"
               name="name"
               type="text"
+              autoComplete="organization"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
