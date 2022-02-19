@@ -57,11 +57,14 @@ function Card({ t }: { t: FetchResponse }) {
   return (
     <Link href="/">
       <a>
-        <div className="col-span-1 flex flex-col rounded-xl border border-zinc-600 bg-black p-6 text-sm font-light text-zinc-200 hover:border-zinc-100 hover:shadow-lg hover:shadow-black">
+        <div className="col-span-1 flex h-full flex-col rounded-xl border border-zinc-600 bg-black p-6 text-sm font-light text-zinc-200 hover:border-zinc-100 hover:shadow-lg hover:shadow-black">
           <div className="flex items-center">
-            <div className="flex items-center">
-              <Avatar str={`${t.aliasEmailId}`} className="mr-2 h-8 w-8" />
-              <div className="flex flex-col">
+            <div className="flex items-center truncate">
+              <Avatar
+                str={`${t.aliasEmailId}`}
+                className="mr-2 h-8 w-8 shrink-0"
+              />
+              <div className="flex flex-col truncate">
                 <div className="truncate font-normal text-zinc-100">
                   {t.AliasEmail.emailAddress}
                 </div>
