@@ -18,13 +18,16 @@ import { useSupabase } from "components/UserContext";
 
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
 
-type Props = SupabaseMessage & {
+export type MyMessageType = SupabaseMessage & {
   AliasEmail: SupabaseAliasEmail | null;
   Comment: SupabaseComment[];
   InternalMessage: SupabaseInternalMessage | null;
   EmailMessage: SupabaseEmailMessage | null;
   TeamMember: { Profile: { email: string } } | null;
   Attachment: SupabaseAttachment[];
+};
+
+type Props = MyMessageType & {
   mutate?: () => void;
 };
 
@@ -62,18 +65,21 @@ export default function Message(props: Props & InterfaceProps) {
             props.direction === "outgoing" ? "flex-row-reverse" : "flex-row",
           ].join(" ")}
         >
-          <div className="m mx-2 flex flex-col">
+          <div className="m mx-1 flex flex-col">
             <div className="text-xs font-medium">&nbsp;</div>
-            <Avatar str={props.AliasEmail?.emailAddress || ""} />
+            <Avatar
+              str={props.AliasEmail?.emailAddress || ""}
+              className="h-6 w-6"
+            />
           </div>
           <div
             className={[
-              "mx-2 flex flex-grow flex-col",
+              "mx-1 flex flex-grow flex-col",
               props.direction === "outgoing" ? "items-end" : "",
             ].join(" ")}
           >
             <div className="text-xs font-medium">
-              <span className="text-gray-400">{author}</span>
+              <span className="text-zinc-400">{author}</span>
             </div>
 
             <div
@@ -144,7 +150,7 @@ export default function Message(props: Props & InterfaceProps) {
                 props.direction === "outgoing" ? "self-end" : "",
               ].join(" ")}
             >
-              <span className="text-gray-400">
+              <span className="text-zinc-400">
                 {format(new Date(props.createdAt), "p")}
               </span>
             </div>

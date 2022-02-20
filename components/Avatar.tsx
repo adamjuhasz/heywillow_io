@@ -6,7 +6,7 @@ const hashCode = (s?: string) =>
 
 interface Props {
   str: string;
-  className?: string;
+  className: string;
 }
 
 export default function Avatar({ str, className = "" }: Props): JSX.Element {

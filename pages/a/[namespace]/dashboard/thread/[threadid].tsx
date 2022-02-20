@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 import Head from "next/head";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
@@ -11,11 +11,12 @@ import useGetThread from "client/getThread";
 import AppHeaderHOC from "components/App/HeaderHOC";
 import AppContainer from "components/App/Container";
 import InputWithRef from "components/Input";
-import Message from "components/Thread/Message";
+import Message, { MyMessageType } from "components/Thread/Message";
 import useGetTeamId from "client/getTeamId";
 import useGetAliasThreads from "client/getAliasThreads";
 
 export default function ThreadViewer() {
+  const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { threadid } = router.query;
   let threadNum: number | undefined = parseInt(threadid as string, 10);
@@ -24,6 +25,34 @@ export default function ThreadViewer() {
   const { data: thread } = useGetThread(threadNum);
   const teamId = useGetTeamId() || null;
   const { data: threads } = useGetAliasThreads(thread?.aliasEmailId);
+
+  useEffect(() => {
+    if (divRef.current === null) {
+      console.log("divRef is null");
+      return;
+    }
+
+    divRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [thread]);
+
+  useEffect(() => {
+    if (divRef.current === null) {
+      console.log("divRef is null");
+      return;
+    }
+
+    divRef.current.scrollIntoView({ behavior: "auto" });
+  }, [threads]);
+
+  const scrollToID = (id: string) => {
+    const element = document.getElementById(id);
+    if (element === null) {
+      console.log("element not found", element);
+      return;
+    }
+
+    element.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <>
@@ -37,7 +66,7 @@ export default function ThreadViewer() {
 
       <AppHeaderHOC />
 
-      <AppContainer className="relative -mt-12 flex min-h-screen pt-12">
+      <AppContainer className="relative -mt-12 flex h-screen pt-12">
         <div className="flex h-full w-14 shrink-0 flex-col items-center pt-14">
           <Link
             href={{
@@ -67,11 +96,33 @@ export default function ThreadViewer() {
             </a>
           </Link>
         </div>
-        <div className="mt-7 flex grow flex-col">
-          <div className="grow">
-            {thread?.Message.map((m) => (
-              <Message key={m.id} {...m} teamId={teamId} />
-            ))}
+        <div className="flex h-full grow flex-col pt-7">
+          <div className="grow overflow-scroll">
+            {threads ? (
+              threads.map((t) => (
+                <ThreadPrinter
+                  key={t.id}
+                  subject={t.Message.reverse()[0].EmailMessage?.subject}
+                  messages={t.Message}
+                  teamId={teamId}
+                  threadId={t.id}
+                />
+              ))
+            ) : thread ? (
+              <>
+                <LoadingThread />
+                <ThreadPrinter
+                  subject={thread?.Message.reverse()[0].EmailMessage?.subject}
+                  messages={thread?.Message}
+                  teamId={teamId}
+                  threadId={thread.id}
+                />
+              </>
+            ) : (
+              <LoadingThread />
+            )}
+
+            <div id="thread-bottom" ref={divRef} />
           </div>
           <div className="shrink-0 pb-2">
             <InputWithRef
@@ -101,8 +152,11 @@ export default function ThreadViewer() {
                     </div>
                     {threads.map((t) => (
                       <div
+                        onClick={() => {
+                          scrollToID(`top-thread-${t.id}`);
+                        }}
                         key={t.id}
-                        className="flex items-center justify-between space-x-3 text-xs text-zinc-300"
+                        className="flex cursor-pointer items-center justify-between space-x-3 text-xs text-zinc-300"
                       >
                         <div>
                           {t.Message.reverse()[0].EmailMessage?.subject}
@@ -133,3 +187,62 @@ export default function ThreadViewer() {
 ThreadViewer.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };
+
+function LoadingThread() {
+  return (
+    <div className="mb-7 flex w-full flex-col">
+      <div
+        className={[
+          "mx-12 h-14 w-56 rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
+          "animate-pulse rounded-tl-none bg-zinc-800 text-zinc-50",
+        ].join(" ")}
+      />
+      <div
+        className={[
+          "mx-12 h-14 w-56 self-end rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
+          "animate-pulse rounded-tr-none bg-zinc-800 text-zinc-50",
+        ].join(" ")}
+      />
+      <div
+        className={[
+          "mx-12 h-14 w-56 rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
+          "animate-pulse rounded-tl-none bg-zinc-800 text-zinc-50",
+        ].join(" ")}
+      />
+    </div>
+  );
+}
+
+interface ThreadPrinterProps {
+  messages?: MyMessageType[];
+  teamId: number | null;
+  subject?: string;
+  threadId?: number;
+}
+
+function ThreadPrinter(props: ThreadPrinterProps) {
+  return (
+    <>
+      {props.threadId ? <div id={`top-thread-${props.threadId}`} /> : <></>}
+      {props.messages ? (
+        <>
+          {props.subject ? (
+            <div className="flex w-full items-center">
+              <div className="h-[1px] grow bg-zinc-600" />
+              <div className="mx-2 shrink-0 text-xs">{props.subject}</div>
+              <div className="h-[1px] grow bg-zinc-600" />
+            </div>
+          ) : (
+            <></>
+          )}
+          {props.messages.map((m) => (
+            <Message key={m.id} {...m} teamId={props.teamId} />
+          ))}
+        </>
+      ) : (
+        <LoadingThread />
+      )}
+      {props.threadId ? <div id={`bottom-thread-${props.threadId}`} /> : <></>}
+    </>
+  );
+}
