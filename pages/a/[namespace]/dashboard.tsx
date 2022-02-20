@@ -6,6 +6,7 @@ import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
 import DashboardTableTop from "components/Dashboard/TableTop";
 import LinkBar, { Link } from "components/Settings/LinkBar";
+import AppContainer from "components/App/Container";
 
 import useGetTeams from "client/getTeams";
 // import useGetInboxes from "client/getInboxes";
@@ -58,9 +59,9 @@ export default function DashboardPage() {
         </LinkBar>
       </AppHeader>
 
-      <div className="mx-auto mt-14 max-w-4xl">
+      <AppContainer className="mt-14">
         <DashboardTableTop threads={threads} />
-      </div>
+      </AppContainer>
     </>
   );
 }

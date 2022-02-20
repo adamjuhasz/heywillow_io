@@ -14,6 +14,7 @@ import useGetInboxes from "client/getInboxes";
 import { State } from "pages/api/v1/auth/google/callback";
 import LinkBar, { Link } from "components/Settings/LinkBar";
 import Avatar from "components/Avatar";
+import AppContainer from "components/App/Container";
 
 interface ServerSideProps {
   clientId: string;
@@ -41,7 +42,7 @@ export default function ConnectGmailInbox(props: ServerSideProps): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Team settings</SettingsTitle>
 
-      <div className="mx-auto mt-14 flex max-w-4xl">
+      <AppContainer className=" mt-14 flex ">
         <TeamSettingsSidebar />
 
         <div className="grow space-y-6">
@@ -121,7 +122,7 @@ export default function ConnectGmailInbox(props: ServerSideProps): JSX.Element {
             </div>
           </div>
         </div>
-      </div>
+      </AppContainer>
     </>
   );
 }

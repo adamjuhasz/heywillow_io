@@ -4,6 +4,7 @@ import Head from "next/head";
 import AppLayout from "layouts/app";
 import SettingsTitle from "components/Settings/Title";
 import SettingsHeader from "components/Settings/Header";
+import AppContainer from "components/App/Container";
 
 export default function SettingsPage(): JSX.Element {
   return (
@@ -15,7 +16,7 @@ export default function SettingsPage(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Settings</SettingsTitle>
 
-      <div className="mx-auto mt-14 flex max-w-4xl"></div>
+      <AppContainer className="mt-14 flex"></AppContainer>
     </>
   );
 }

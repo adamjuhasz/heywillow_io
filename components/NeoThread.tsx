@@ -7,8 +7,8 @@ import { formatDistanceToNowStrict, subMinutes } from "date-fns";
 import { flatMap } from "lodash";
 
 import { useSupabase } from "components/UserContext";
-import Message from "components/Inbox/Message";
-import InputWithRef from "components/Inbox/Input";
+import Message from "components/Thread/Message";
+import InputWithRef from "components/Input";
 import { Body } from "pages/api/v1/message/add";
 import {
   SupabaseAliasEmail,

@@ -7,6 +7,7 @@ import OnboardingHeader from "components/Onboarding/Header";
 import SettingsBox from "components/Settings/Box/Box";
 import createTeam from "client/createTeam";
 import Loading from "components/Loading";
+import AppContainer from "components/App/Container";
 
 export default function CreateTeam(): JSX.Element {
   const [name, setName] = useState("");
@@ -22,7 +23,8 @@ export default function CreateTeam(): JSX.Element {
       </Head>
 
       <OnboardingHeader />
-      <div className="mx-auto mt-14 flex max-w-4xl">
+
+      <AppContainer className="mt-14 flex">
         <div className="grow space-y-6">
           <SettingsBox
             error={error}
@@ -101,7 +103,7 @@ export default function CreateTeam(): JSX.Element {
             </div>
           </SettingsBox>
         </div>
-      </div>
+      </AppContainer>
     </>
   );
 }

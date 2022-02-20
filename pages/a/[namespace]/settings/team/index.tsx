@@ -8,6 +8,7 @@ import TeamSettingsSidebar from "components/Settings/Team/Sidebar";
 import SettingsBox from "components/Settings/Box/Box";
 import SettingsHeader from "components/Settings/Header";
 import useGetTeams from "client/getTeams";
+import AppContainer from "components/App/Container";
 
 export default function TeamSettings(): JSX.Element {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function TeamSettings(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Team settings</SettingsTitle>
 
-      <div className="mx-auto mt-14 flex max-w-4xl">
+      <AppContainer className="mt-14 flex">
         <TeamSettingsSidebar />
 
         <div className="grow space-y-6">
@@ -73,7 +74,7 @@ export default function TeamSettings(): JSX.Element {
             />
           </SettingsBox>
         </div>
-      </div>
+      </AppContainer>
     </>
   );
 }

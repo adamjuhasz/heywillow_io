@@ -8,6 +8,7 @@ import Head from "next/head";
 import { useUser } from "components/UserContext";
 
 import WillowLogo from "components/Logo";
+import AppContainer from "components/App/Container";
 
 interface MiniTeam {
   name: string;
@@ -97,8 +98,9 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
         <meta name="theme-color" content="#0B0B0C" />{" "}
         {/* Black * 50% opacity + zinc-900  */}
       </Head>
+
       <div className="sticky top-0 z-10 flex w-full flex-col items-center border-b border-zinc-700 bg-black bg-opacity-50 font-[rubik] text-zinc-200 backdrop-blur-lg">
-        <div className="mx-auto flex min-h-[3rem] w-full max-w-4xl items-center justify-between space-x-4 px-4 text-sm font-normal lg:px-0">
+        <AppContainer className="flex min-h-[3rem] w-full items-center justify-between space-x-4 px-4 text-sm font-normal lg:px-0">
           <div className="flex h-full items-center space-x-4 ">
             <Link href="/a/dashboard">
               <a className="flex items-center">
@@ -133,11 +135,11 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
               Logout
             </TopLink>
           </div>
-        </div>
+        </AppContainer>
         {props.children === undefined ? (
           <></>
         ) : (
-          <div className="mx-auto w-full max-w-4xl">{props.children}</div>
+          <AppContainer className="w-full">{props.children}</AppContainer>
         )}
       </div>
     </>

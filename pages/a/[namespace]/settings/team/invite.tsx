@@ -13,6 +13,7 @@ import Loading from "components/Loading";
 import useGetPendingInvites from "client/getPendingInvites";
 import Avatar from "components/Avatar";
 import useGetTeamMembers from "client/getTeamMembers";
+import AppContainer from "components/App/Container";
 
 type Tabs = "current" | "pending";
 
@@ -37,7 +38,7 @@ export default function InviteTeammates(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Team settings</SettingsTitle>
 
-      <div className="mx-auto my-14 flex max-w-4xl">
+      <AppContainer className="my-14 flex">
         <TeamSettingsSidebar />
 
         <div className="grow space-y-6">
@@ -231,7 +232,7 @@ export default function InviteTeammates(): JSX.Element {
             )}
           </div>
         </div>
-      </div>
+      </AppContainer>
     </>
   );
 }

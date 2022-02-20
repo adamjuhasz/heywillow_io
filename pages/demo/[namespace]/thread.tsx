@@ -11,7 +11,7 @@ import {
 } from "types/supabase";
 
 import AppLayout from "layouts/app";
-import Message from "components/Inbox/Message";
+import Message from "components/Thread/Message";
 import DateSep from "components/Inbox/DateSeperator";
 import ActionBox from "components/Inbox/ActionBox";
 

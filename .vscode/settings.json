@@ -2,11 +2,13 @@
   "cSpell.words": [
     "accum",
     "datetime",
+    "fkey",
     "historyid",
     "idempotency",
     "nextjs",
     "pino",
-    "Supa"
+    "Supa",
+    "threadid"
   ],
   "jest.jestCommandLine": "yarn test"
 }

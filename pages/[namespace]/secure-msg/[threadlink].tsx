@@ -12,8 +12,8 @@ import {
 
 import { Body } from "pages/api/public/v1/message/secure";
 
-import Message from "components/Inbox/Message";
-import Input from "components/Inbox/Input";
+import Message from "components/Thread/Message";
+import Input from "components/Input";
 import hashids from "server/hashids";
 import prismaToJSON from "server/prismaToJSon";
 

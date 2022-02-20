@@ -6,6 +6,7 @@ import DashboardTableTop, {
 } from "components/Dashboard/TableTop";
 import LinkBar, { Link } from "components/Settings/LinkBar";
 import AppLayout from "layouts/app";
+import AppContainer from "components/App/Container";
 
 export default function DemoDashboard() {
   const demo: FetchResponse[] = [
@@ -91,9 +92,9 @@ export default function DemoDashboard() {
         </LinkBar>
       </AppHeader>
 
-      <div className="mx-auto mt-14 max-w-4xl">
+      <AppContainer className="mt-14">
         <DashboardTableTop threads={demo} />
-      </div>
+      </AppContainer>
     </>
   );
 }
