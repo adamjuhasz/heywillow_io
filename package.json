@@ -29,7 +29,7 @@
     "next-use-posthog": "^1.16.0",
     "p-limit": "^4.0.0",
     "pino": "^7.6.5",
-    "postmark": "^2.8.1",
+    "postmark": "^3.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-flip-toolkit": "^7.0.13",
