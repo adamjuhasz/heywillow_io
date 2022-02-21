@@ -5,6 +5,7 @@ import AppLayout from "layouts/app";
 import SettingsTitle from "components/Settings/Title";
 import SettingsHeader from "components/Settings/Header";
 import AppContainer from "components/App/Container";
+import SettingsSidebar from "components/Settings/Sidebar";
 
 export default function SettingsPage(): JSX.Element {
   return (
@@ -16,7 +17,9 @@ export default function SettingsPage(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Settings</SettingsTitle>
 
-      <AppContainer className="mt-14 flex"></AppContainer>
+      <AppContainer className="mt-14 flex">
+        <SettingsSidebar />
+      </AppContainer>
     </>
   );
 }

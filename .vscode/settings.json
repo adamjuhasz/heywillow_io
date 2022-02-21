@@ -7,6 +7,8 @@
     "idempotency",
     "nextjs",
     "pino",
+    "posthog",
+    "signup",
     "Supa",
     "threadid"
   ],

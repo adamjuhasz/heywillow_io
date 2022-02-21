@@ -37,13 +37,13 @@ async function getSecureLink(
     return res.status(500).json({ error: "No namespace" });
   }
 
-  const securelink = await createSecureThreadLink(
+  const secureLink = await createSecureThreadLink(
     thread.id,
     thread.aliasEmailId
   );
 
   res.json({
-    absoluteLink: securelink,
+    absoluteLink: secureLink,
   });
 }
 
