@@ -3,7 +3,11 @@ import Link from "next/link";
 import { ReactElement, useEffect, useRef } from "react";
 import Head from "next/head";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ClipboardCopyIcon,
+} from "@heroicons/react/outline";
 import { formatDistanceToNowStrict } from "date-fns";
 
 import AppLayout from "layouts/app";
@@ -14,6 +18,7 @@ import InputWithRef from "components/Input";
 import Message, { MyMessageType } from "components/Thread/Message";
 import useGetTeamId from "client/getTeamId";
 import useGetAliasThreads from "client/getAliasThreads";
+import { Return } from "pages/api/v1/thread/[threadid]/link";
 
 export default function ThreadViewer() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -172,11 +177,41 @@ export default function ThreadViewer() {
                 ) : (
                   <></>
                 )}
-                {}
               </>
             ) : (
               <></>
             )}
+            <div className="mt-7 text-sm font-medium text-zinc-500">
+              Actions
+            </div>
+            <div
+              className="flex w-full cursor-pointer items-center justify-between text-zinc-400 hover:text-zinc-100"
+              onClick={async () => {
+                const res = await fetch(`/api/v1/thread/${threadid}/link`, {
+                  method: "GET",
+                  headers: { Accept: "application/json" },
+                });
+
+                switch (res.status) {
+                  case 200: {
+                    const body = (await res.json()) as Return;
+                    await navigator.clipboard.writeText(body.absoluteLink);
+                    break;
+                  }
+
+                  default: {
+                    const body = await res.json();
+                    console.error(body);
+                    return;
+                  }
+                }
+              }}
+            >
+              <div className="text-xs">Copy secure link</div>
+              <div className="">
+                <ClipboardCopyIcon className="h-4 w-4" />
+              </div>
+            </div>
           </div>
         </div>
       </AppContainer>

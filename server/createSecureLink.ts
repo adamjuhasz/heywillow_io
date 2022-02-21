@@ -17,13 +17,16 @@ export default async function createSecureThreadLink(
       threadId: threadId,
       aliasEmailId: aliasId,
     },
+    include: { Thread: { select: { Team: { select: { namespace: true } } } } },
   });
 
   console.log("threadLink", threadLink);
 
-  const secureURL = `${process.env.PROTOCOL}://${
-    process.env.DOMAIN
-  }/secure/${hashids.encode(threadLink.id)}/message`;
+  const namespace = threadLink.Thread.Team.namespace;
+  const encodedTL = hashids.encode(threadLink.id);
+  const host = `${process.env.PROTOCOL}://${process.env.DOMAIN}`;
+
+  const secureURL = `${host}/${namespace}/secure-msg/${encodedTL}`;
   console.log("secureURL", secureURL);
 
   return secureURL;
