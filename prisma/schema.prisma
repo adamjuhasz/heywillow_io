@@ -25,6 +25,13 @@ model Team {
   Thread        Thread[]
 }
 
+model Namespace {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  namespace String   @unique
+  teamId    BigInt?  @unique
+}
+
 model TeamMember {
   id        BigInt   @id @default(autoincrement())
   createdAt DateTime @default(now()) @db.Timestamptz(6)
