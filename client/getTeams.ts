@@ -7,8 +7,8 @@ import { useSupabase } from "components/UserContext";
 
 export async function getTeams(supabase: SupabaseClient) {
   const res = await supabase
-    .from<SupabaseTeam & { Namespace: SupabaseNamespace }>(`Team, Namespace(*)`)
-    .select("*");
+    .from<SupabaseTeam & { Namespace: SupabaseNamespace }>("Team")
+    .select(`*, Namespace(*)`);
 
   if (res.error !== null) {
     console.error(res.error);
