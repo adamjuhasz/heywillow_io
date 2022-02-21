@@ -9,7 +9,9 @@ export default function useGetTeamId(): number | undefined {
 
   const { data: teams } = useGetTeams();
 
-  const currentTeam = teams?.find((t) => t.namespace === namespace)?.id;
+  const currentTeam = teams?.find(
+    (t) => t.Namespace.namespace === namespace
+  )?.id;
 
   useDebugValue(currentTeam);
   return currentTeam;

@@ -18,7 +18,7 @@ export default function DashboardPage() {
   const { namespace } = router.query;
   const { data: teams } = useGetTeams();
 
-  const currentTeam = teams?.find((t) => t.namespace === namespace);
+  const currentTeam = teams?.find((t) => t.Namespace.namespace === namespace);
   const currentTeamId = currentTeam?.id;
   // const { data: inboxes } = useGetInboxes(currentTeam);
 

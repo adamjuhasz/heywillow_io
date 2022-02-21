@@ -14,7 +14,9 @@ export default function TeamSettings(): JSX.Element {
   const router = useRouter();
   const { namespace } = router.query;
   const { data: teams } = useGetTeams();
-  const teamName = teams?.find((t) => t.namespace === namespace)?.name;
+  const teamName = teams?.find(
+    (t) => t.Namespace.namespace === namespace
+  )?.name;
   const [newName, setNewName] = useState(teamName || "");
 
   return (
