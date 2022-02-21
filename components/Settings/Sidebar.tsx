@@ -8,10 +8,10 @@ export default function SettingsSidebar(): JSX.Element {
 
   return (
     <div className="flex w-56 shrink-0 flex-col space-y-4 text-sm font-light text-zinc-500">
-      <SidebarLink exact href="/a/[namespace]/settings">
+      <SidebarLink exact href="/a/settings">
         Profile
       </SidebarLink>
-      <SidebarLink href="/a/[namespace]/settings/invites">
+      <SidebarLink href="/a/settings/invites">
         Invites{" "}
         {pendingCount !== 0 ? (
           <div className="ml-2 inline-flex h-full items-center">

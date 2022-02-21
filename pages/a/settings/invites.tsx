@@ -8,7 +8,7 @@ import SettingsTitle from "components/Settings/Title";
 import AppContainer from "components/App/Container";
 import useGetMyInvites from "client/getMyInvites";
 import SettingsSidebar from "components/Settings/Sidebar";
-// import acceptInvite from "client/acceptInvite";
+import acceptInvite from "client/acceptInvite";
 
 type Tabs = "pending" | "cancelled";
 
@@ -80,29 +80,30 @@ export default function AcceptInvites(): JSX.Element {
                     )}
                     <div
                       key={tm.id}
-                      className="flex h-16 items-center justify-between p-4"
+                      className="flex h-16 w-full items-center justify-between p-4"
                     >
-                      <div className="flex items-center">
-                        <div className="flex flex-col">
-                          <div className="text-sm font-light">
-                            {tm.Team.name}
-                          </div>
-                          <div className="text-xs font-normal text-zinc-500">
-                            Invited{" "}
-                            {formatDistanceToNowStrict(new Date(tm.createdAt), {
-                              addSuffix: true,
-                            })}
-                          </div>
+                      <div className="flex flex-col">
+                        <div className="text-sm font-light">{tm.Team.name}</div>
+                        <div className="text-xs font-normal text-zinc-500">
+                          Invited{" "}
+                          {formatDistanceToNowStrict(new Date(tm.createdAt), {
+                            addSuffix: true,
+                          })}
                         </div>
+                      </div>
 
-                        <div className="flex flex-row">
-                          <button className="border border-zinc-600 px-3 py-1.5 text-zinc-500">
-                            Decline
-                          </button>
-                          <button className="bg-blue-500 px-3 py-1.5 text-white">
-                            Accept
-                          </button>
-                        </div>
+                      <div className="flex flex-row space-x-2">
+                        {/* <button className="rounded-md border border-zinc-600 px-3 py-1.5 text-xs text-zinc-500 hover:border-zinc-100 hover:text-zinc-100">
+                          Decline
+                        </button> */}
+                        <button
+                          onClick={async () => {
+                            await acceptInvite({ inviteId: tm.id });
+                          }}
+                          className="flex items-center justify-center rounded-md border border-transparent bg-blue-500 px-3 py-1.5 text-xs text-white hover:border-blue-500 hover:bg-black hover:text-blue-400"
+                        >
+                          <div>Accept</div>
+                        </button>
                       </div>
                     </div>
                   </>

@@ -23,6 +23,8 @@ interface Props {
 
 export default function AppHeader(props: PropsWithChildren<Props>) {
   const router = useRouter();
+  const { namespace } = router.query;
+
   const currentTeam = props.teams?.find(
     (v) => v.Namespace.namespace === props.activeTeam
   );
@@ -116,11 +118,15 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
             {props.teams?.length === 0 ? (
               <></>
             ) : (
-              <>
-                <TopLink href="/a/[namespace]/dashboard">Dashboard</TopLink>
-                <TopLink href="/a/[namespace]/settings">Settings</TopLink>
-              </>
+              <TopLink href="/a/[namespace]/dashboard">Dashboard</TopLink>
             )}
+
+            {namespace ? (
+              <TopLink href="/a/[namespace]/settings">Settings</TopLink>
+            ) : (
+              <TopLink href="/a/settings">Settings</TopLink>
+            )}
+
             {currentTeam !== undefined && props.bubble ? (
               <Link href={{ pathname: props.bubble.href, query: router.query }}>
                 <a className="flex items-center justify-center rounded-full bg-red-500 px-2 py-1 text-xs font-light text-white">

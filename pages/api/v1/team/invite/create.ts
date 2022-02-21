@@ -22,9 +22,16 @@ export default async function handler(
 ) {
   //create a new team
 
-  const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
+  console.log(serviceSupabase.auth.api);
+
+  const {
+    user,
+    error: cookieError,
+    token,
+  } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   if (user === null) {
+    console.log("Can't auth user", cookieError, token);
     return res.status(403).send({ error: "Bad auth cookie" });
   }
 

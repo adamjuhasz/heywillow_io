@@ -10,7 +10,7 @@ const myCustomAuthClient = new GoTrueClient({
     apikey: `${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
   },
   cookieOptions: {
-    name: "sb:token",
+    name: "sb",
     lifetime: 604800, //seconds from https://app.supabase.io/project/ygdlkvsxphwkmneocxtd/auth/settings
     domain: "",
     path: "/",
