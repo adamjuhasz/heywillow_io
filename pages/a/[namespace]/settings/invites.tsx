@@ -8,6 +8,7 @@ import SettingsTitle from "components/Settings/Title";
 import AppContainer from "components/App/Container";
 import useGetMyInvites from "client/getMyInvites";
 import SettingsSidebar from "components/Settings/Sidebar";
+// import acceptInvite from "client/acceptInvite";
 
 type Tabs = "pending" | "cancelled";
 
@@ -92,6 +93,15 @@ export default function AcceptInvites(): JSX.Element {
                               addSuffix: true,
                             })}
                           </div>
+                        </div>
+
+                        <div className="flex flex-row">
+                          <button className="border border-zinc-600 px-3 py-1.5 text-zinc-500">
+                            Decline
+                          </button>
+                          <button className="bg-blue-500 px-3 py-1.5 text-white">
+                            Accept
+                          </button>
                         </div>
                       </div>
                     </div>
