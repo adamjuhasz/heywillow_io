@@ -115,7 +115,7 @@ export interface SupabaseTeam {
   createdAt: string;
   updatedAt: string;
   name: string;
-  namespace: string;
+  namespaceId: number;
 }
 
 export interface SupabaseGmailInbox {
@@ -142,4 +142,10 @@ export interface SupabaseProfile {
   email: string;
   firstName: string | null;
   lastName: string | null;
+}
+
+export interface SupabaseNamespace {
+  id: number;
+  createdAt: string;
+  namespace: string;
 }

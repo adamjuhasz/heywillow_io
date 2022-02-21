@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Team {
-  id        BigInt   @id @default(autoincrement())
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @db.Timestamptz(6)
-  name      String
-  namespace String?
+  id          BigInt   @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  name        String
+  namespaceId BigInt   @unique
 
+  Namespace     Namespace       @relation(fields: [namespaceId], references: [id], onDelete: SetNull)
   Alias         AliasEmail[]
   Attachment    Attachment[]
   Customer      Customer[]
@@ -23,6 +24,13 @@ model Team {
   TeamInvite    TeamInvite[]
   Members       TeamMember[]
   Thread        Thread[]
+}
+
+model Namespace {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  namespace String   @unique
+  Team      Team[]
 }
 
 model TeamMember {

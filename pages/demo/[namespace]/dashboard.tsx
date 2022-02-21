@@ -67,8 +67,8 @@ export default function DemoDashboard() {
     <>
       <AppHeader
         teams={[
-          { name: "Pay Tgthr", namespace: "paytgthr" },
-          { name: "Willow", namespace: "willow" },
+          { name: "Pay Tgthr", Namespace: { namespace: "paytgthr" } },
+          { name: "Willow", Namespace: { namespace: "willow" } },
         ]}
         activeTeam="willow"
       >

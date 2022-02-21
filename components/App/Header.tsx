@@ -12,7 +12,7 @@ import AppContainer from "components/App/Container";
 
 interface MiniTeam {
   name: string;
-  namespace: string;
+  Namespace: { namespace: string };
 }
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
 export default function AppHeader(props: PropsWithChildren<Props>) {
   const router = useRouter();
   const currentTeam = props.teams?.find(
-    (v) => v.namespace === props.activeTeam
+    (v) => v.Namespace.namespace === props.activeTeam
   );
   const { user } = useUser();
 
@@ -49,7 +49,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
                   <>
                     <Avatar
                       className="mr-2 h-4 w-4"
-                      str={currentTeam.namespace}
+                      str={currentTeam.Namespace.namespace}
                     />{" "}
                     {currentTeam.name}
                   </>
@@ -62,7 +62,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
             <div className="px-1 py-1 ">
               <div className="my-3 px-2 text-sm text-zinc-500">Teams</div>
               {props.teams.map((t) => (
-                <Menu.Item key={t.namespace}>
+                <Menu.Item key={t.Namespace.namespace}>
                   {({ active }) => (
                     <button
                       className={`${
@@ -70,13 +70,16 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
                       } group flex w-full items-center justify-between rounded-md px-2 py-2 text-sm`}
                     >
                       <ButtonLink
-                        href={`/a/${t.namespace}/dashboard`}
+                        href={`/a/${t.Namespace.namespace}/dashboard`}
                         className="flex items-center"
                       >
-                        <Avatar className="mr-2 h-4 w-4" str={t.namespace} />
+                        <Avatar
+                          className="mr-2 h-4 w-4"
+                          str={t.Namespace.namespace}
+                        />
                         <div>{t.name}</div>
                       </ButtonLink>
-                      {t.namespace === props.activeTeam ? (
+                      {t.Namespace.namespace === props.activeTeam ? (
                         <CheckIcon className="h-4 w-4" />
                       ) : (
                         <></>

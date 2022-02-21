@@ -37,7 +37,12 @@ async function handler(
     const teamCreated = await prisma.teamMember.create({
       data: {
         Profile: { connect: { id: user.id } },
-        Team: { create: { name: body.teamName, namespace: body.namespace } },
+        Team: {
+          create: {
+            name: body.teamName,
+            Namespace: { create: { namespace: body.namespace } },
+          },
+        },
       },
       select: {
         id: true,

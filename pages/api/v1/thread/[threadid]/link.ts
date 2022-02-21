@@ -25,7 +25,7 @@ async function getSecureLink(
     select: {
       id: true,
       aliasEmailId: true,
-      Team: { select: { namespace: true } },
+      Team: { select: { Namespace: { select: { namespace: true } } } },
     },
   });
 
@@ -33,7 +33,7 @@ async function getSecureLink(
     return res.status(404).json({ error: "Can't find thread" });
   }
 
-  if (thread.Team.namespace === null) {
+  if (thread.Team.Namespace.namespace === null) {
     return res.status(500).json({ error: "No namespace" });
   }
 

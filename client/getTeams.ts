@@ -2,11 +2,13 @@ import { useDebugValue } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import { SupabaseTeam } from "types/supabase";
+import { SupabaseNamespace, SupabaseTeam } from "types/supabase";
 import { useSupabase } from "components/UserContext";
 
 export async function getTeams(supabase: SupabaseClient) {
-  const res = await supabase.from<SupabaseTeam>("Team").select("*");
+  const res = await supabase
+    .from<SupabaseTeam & { Namespace: SupabaseNamespace }>(`Team, Namespace(*)`)
+    .select("*");
 
   if (res.error !== null) {
     console.error(res.error);
