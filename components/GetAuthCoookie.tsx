@@ -37,7 +37,10 @@ export default function GetAuthCookie(props: Props): JSX.Element {
 
       if (props.redirect) {
         await router.replace(props.redirect);
+        return;
       }
+
+      alert("Nowhere to route you");
     },
     [router, props.redirect]
   );
@@ -56,6 +59,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
 
           switch (res.status) {
             case 200:
+              console.log("");
               route();
               break;
 
@@ -72,8 +76,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
   );
 
   useEffect(() => {
-    console.log("onAuthStateChange", supabase);
-    if (supabase === undefined || supabase === null) {
+    if (supabase === undefined) {
       return;
     }
 
@@ -110,11 +113,21 @@ export default function GetAuthCookie(props: Props): JSX.Element {
 
     let nodeJSTimeout: NodeJS.Timeout | undefined;
     if (props.timeout === true) {
-      nodeJSTimeout = setTimeout(() => {
+      nodeJSTimeout = setTimeout(async () => {
         if (supabase === null || supabase === undefined) {
           return;
         }
-        alert("Login failed");
+        const session = supabase.auth.session();
+        if (session !== null) {
+          const controller = new AbortController();
+          try {
+            await getAuthCookie(controller.signal, "SIGNED_IN", session);
+          } catch (e) {
+            console.error("Auth cookie failure", e);
+          }
+        } else {
+          alert("Login failed");
+        }
       }, 3000);
     }
 
@@ -123,7 +136,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
         clearTimeout(nodeJSTimeout);
       }
     };
-  }, [supabase, eCode, eDesc, props.timeout]);
+  }, [supabase, eCode, eDesc, props.timeout, getAuthCookie]);
 
   return <></>;
 }
