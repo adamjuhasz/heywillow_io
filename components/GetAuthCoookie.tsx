@@ -59,7 +59,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
 
           switch (res.status) {
             case 200:
-              console.log("");
+              console.log("got cookie, routing");
               route();
               break;
 
@@ -99,6 +99,18 @@ export default function GetAuthCookie(props: Props): JSX.Element {
         authListener.unsubscribe();
       }
     };
+  }, [supabase, getAuthCookie]);
+
+  useEffect(() => {
+    if (supabase === undefined) {
+      return;
+    }
+
+    const session = supabase.auth.session();
+    if (session !== null) {
+      const controller = new AbortController();
+      getAuthCookie(controller.signal, "SIGNED_IN", session);
+    }
   }, [supabase, getAuthCookie]);
 
   useEffect(() => {

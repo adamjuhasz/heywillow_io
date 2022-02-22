@@ -38,7 +38,11 @@ export default function TeamPicker(): JSX.Element {
       <AppHeader />
 
       <AppContainer>
-        <OnboardingTableTop />
+        {validTeams?.length === 0 || validTeams === undefined ? (
+          <OnboardingTableTop />
+        ) : (
+          <></>
+        )}
       </AppContainer>
     </>
   );
