@@ -6,17 +6,18 @@ export interface Body {
   inviteId: number;
 }
 
-type Return =
-  | {
-      teamId: number;
-    }
-  | {
-      error: string;
-    };
+export type Return = {
+  teamId: number;
+};
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Return>
+  res: NextApiResponse<
+    | Return
+    | {
+        error: string;
+      }
+  >
 ) {
   //create a new team
 

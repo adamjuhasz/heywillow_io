@@ -33,13 +33,17 @@ async function getSecureLink(
     return res.status(404).json({ error: "Can't find thread" });
   }
 
-  const securelink = await createSecureThreadLink(
+  if (thread.Team.Namespace.namespace === null) {
+    return res.status(500).json({ error: "No namespace" });
+  }
+
+  const secureLink = await createSecureThreadLink(
     thread.id,
     thread.aliasEmailId
   );
 
   res.json({
-    absoluteLink: securelink,
+    absoluteLink: secureLink,
   });
 }
 

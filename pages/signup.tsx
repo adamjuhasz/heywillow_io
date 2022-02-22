@@ -81,7 +81,7 @@ export default function SignUpPage(): JSX.Element {
                     console.log("redirectTo", redirectTo);
 
                     try {
-                      localStorage.setItem("redirect", "/a/team/create");
+                      localStorage.setItem("redirect", "/a/dashboard");
                     } catch (e) {
                       console.error(e);
                     }

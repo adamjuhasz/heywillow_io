@@ -8,7 +8,7 @@ const nextConfig = {
   images: { domains: ["images.unsplash.com", "tailwindui.com"] },
   headers: async () => [
     {
-      source: "/app/logout",
+      source: "/a/logout",
       headers: [
         {
           key: "Set-Cookie",
@@ -21,7 +21,7 @@ const nextConfig = {
       headers: [
         {
           key: "Set-Cookie",
-          value: "sb:token=invalid; Max-Age=1; Path=/; HttpOnly",
+          value: "sb:token-access-token=invalid; Max-Age=1; Path=/; HttpOnly",
         },
       ],
     },

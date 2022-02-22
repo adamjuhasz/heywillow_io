@@ -10,7 +10,7 @@ import SettingsHeader from "components/Settings/Header";
 import createInvite from "client/createInvite";
 import useGetTeamId from "client/getTeamId";
 import Loading from "components/Loading";
-import useGetPendingInvites from "client/getPendingInvites";
+import useGetInvites from "client/getInvites";
 import Avatar from "components/Avatar";
 import useGetTeamMembers from "client/getTeamMembers";
 import AppContainer from "components/App/Container";
@@ -23,7 +23,8 @@ export default function InviteTeammates(): JSX.Element {
   const teamId = useGetTeamId();
   const [currentTab, setTab] = useState<Tabs>("current");
   const [isLoading, setLoading] = useState(false);
-  const { data: pendingInvites } = useGetPendingInvites(teamId);
+  const { data: invites } = useGetInvites(teamId);
+  const pendingInvites = invites?.filter((i) => i.status === "pending");
   const numberOfPendingInvites = pendingInvites?.length || 0;
 
   const { data: teamMembers } = useGetTeamMembers(teamId);
@@ -124,7 +125,7 @@ export default function InviteTeammates(): JSX.Element {
               <button
                 disabled={isLoading}
                 type="submit"
-                className="flex min-w-[80px] items-center justify-center rounded-md border border-transparent bg-blue-500 py-1.5 px-3 text-sm font-normal text-white hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 disabled:cursor-not-allowed disabled:border-zinc-500 disabled:bg-transparent disabled:font-light disabled:text-zinc-500"
+                className="flex min-w-[80px] items-center justify-center rounded-md border border-transparent bg-blue-500 py-1.5 px-3 text-sm font-normal text-white hover:border-blue-500 hover:bg-transparent hover:text-blue-400 disabled:cursor-not-allowed disabled:border-zinc-500 disabled:bg-transparent disabled:font-light disabled:text-zinc-500"
               >
                 {isLoading ? <Loading className="h-4 w-4" /> : "Send invites"}
               </button>

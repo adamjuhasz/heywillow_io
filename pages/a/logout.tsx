@@ -12,8 +12,19 @@ export default function LogoutPage(): JSX.Element {
   const router = useRouter();
 
   useEffect(() => {
-    client?.auth.signOut().then((res) => {
-      console.log(res);
+    client?.auth.signOut().then(async ({ error }) => {
+      if (error) {
+        console.error(error);
+      }
+
+      const res = await fetch("/api/v1/auth/logout", { method: "POST" });
+      switch (res.status) {
+        case 307:
+          break;
+
+        default:
+          console.error("Logout status is", res.status);
+      }
       router.push("/");
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

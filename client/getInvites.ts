@@ -5,10 +5,7 @@ import useSWR from "swr";
 import { SupabaseTeamInvite } from "types/supabase";
 import { useSupabase } from "components/UserContext";
 
-export async function getPendingInvites(
-  supabase: SupabaseClient,
-  teamId: number
-) {
+export async function getInvites(supabase: SupabaseClient, teamId: number) {
   const res = await supabase
     .from<SupabaseTeamInvite>("TeamInvite")
     .select("*")
@@ -23,12 +20,12 @@ export async function getPendingInvites(
   return res.data;
 }
 
-export default function useGetPendingInvites(teamId: number | undefined) {
+export default function useGetInvites(teamId: number | undefined) {
   const supabase = useSupabase();
 
   const res = useSWR(
     () => (supabase && teamId ? `/team/${teamId}/invites` : null),
-    () => getPendingInvites(supabase as SupabaseClient, teamId as number),
+    () => getInvites(supabase as SupabaseClient, teamId as number),
     { refreshInterval: 60000 }
   );
 
