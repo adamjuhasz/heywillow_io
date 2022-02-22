@@ -1,6 +1,5 @@
 import { ReactElement, useEffect } from "react";
 import { useSupabase } from "components/UserContext";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import WillowLogo from "components/Logo";
 
@@ -9,7 +8,6 @@ import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
 
 export default function LogoutPage(): JSX.Element {
   const client = useSupabase();
-  const router = useRouter();
 
   useEffect(() => {
     client?.auth.signOut().then(async ({ error }) => {
@@ -17,15 +15,7 @@ export default function LogoutPage(): JSX.Element {
         console.error(error);
       }
 
-      const res = await fetch("/api/v1/auth/logout", { method: "POST" });
-      switch (res.status) {
-        case 307:
-          break;
-
-        default:
-          console.error("Logout status is", res.status);
-      }
-      router.push("/");
+      document.location.assign("/api/v1/auth/logout");
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
