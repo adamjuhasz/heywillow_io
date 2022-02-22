@@ -20,7 +20,9 @@ export default function PasswordReset(): JSX.Element {
   const { access_token } = router.query;
   let userInfo: JWT | null = null;
   try {
-    userInfo = parseJwt(access_token as string);
+    if (access_token !== undefined) {
+      userInfo = parseJwt(access_token as string);
+    }
   } catch (e) {
     console.error(e);
   }

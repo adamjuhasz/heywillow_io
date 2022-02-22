@@ -2,8 +2,8 @@ import { uniqBy } from "lodash";
 
 import { prisma } from "utils/prisma";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
-import detectMention from "server/notifications/detectMention";
-import matchMention from "server/notifications/matchMention";
+import detectMention from "server/notifications/utils/detectMention";
+import matchMention from "server/notifications/utils/matchMention";
 
 export default async function commentNotification(commentId: bigint) {
   const comment = await prisma.comment.findUnique({
@@ -13,7 +13,11 @@ export default async function commentNotification(commentId: bigint) {
       Author: {
         select: {
           Team: {
-            include: { Inboxs: true, Members: { include: { Profile: true } } },
+            include: {
+              Namespace: true,
+              Inboxs: true,
+              Members: { include: { Profile: true } },
+            },
           },
         },
       },
@@ -54,6 +58,8 @@ export default async function commentNotification(commentId: bigint) {
 
     const threadId = Number(comment.Message.threadId);
 
+    const namespace = comment.Author.Team.Namespace.namespace;
+
     return sendPostmarkEmail({
       to: m.Profile?.email || "",
       subject: `Mentioned in a comment on Willow`,
@@ -66,7 +72,7 @@ export default async function commentNotification(commentId: bigint) {
           .replace(/\r\n/g, "\n")
           .split("\n")
           .map((t) => `<p>${t}</p>`),
-        `<p>https://${process.env.DOMAIN}/a/dashboard/thread/${threadId}</p>`,
+        `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
       ],
     });
   });
