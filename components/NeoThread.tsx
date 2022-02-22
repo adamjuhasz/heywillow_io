@@ -60,7 +60,7 @@ async function fetchThead(supabase: SupabaseClient, threadId: number) {
       `
     *,
     ThreadState(*),
-    Message ( 
+    Message!Message_threadId_fkey ( 
       *, 
       AliasEmail(*),
       EmailMessage(*),

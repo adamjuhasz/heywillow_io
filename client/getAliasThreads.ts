@@ -37,7 +37,7 @@ export async function getAliasThreads(
       `
       *,
       ThreadState(*),
-      Message ( 
+      Message!Message_threadId_fkey ( 
         *, 
         AliasEmail(*),
         EmailMessage(*),

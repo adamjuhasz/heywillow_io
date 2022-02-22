@@ -83,7 +83,10 @@ function Card({ t }: { t: FetchResponse }) {
             </div>
           </div>
 
-          <div className="my-4 text-zinc-400 line-clamp-2">{preview}</div>
+          <div className="mt-4 truncate font-medium text-zinc-100 line-clamp-1">
+            {t.Message[0].EmailMessage?.subject}
+          </div>
+          <div className="mt-1 mb-4 text-zinc-400 line-clamp-2">{preview}</div>
 
           <div className="flex items-center text-zinc-500">
             <ClockIcon className="h-3 w-3" />

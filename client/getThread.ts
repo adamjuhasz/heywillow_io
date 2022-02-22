@@ -34,7 +34,7 @@ export async function getThread(supabase: SupabaseClient, threadId: number) {
       `
       *,
       ThreadState(*),
-      Message ( 
+      Message!Message_threadId_fkey ( 
         *, 
         AliasEmail(*),
         EmailMessage(*),
