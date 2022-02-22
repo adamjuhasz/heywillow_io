@@ -25,6 +25,22 @@ export const prisma: PrismaClient =
       });
     }
 
+    localClient.$use(async (params, next) => {
+      const before = Date.now();
+
+      const result = await next(params);
+
+      const after = Date.now();
+
+      console.log(
+        `Query ${params.model}.${params.action} (Transaction? ${
+          params.runInTransaction ? "Yes" : "No"
+        }) took ${after - before}ms`
+      );
+
+      return result;
+    });
+
     return localClient;
   })();
 
