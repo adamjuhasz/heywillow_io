@@ -35,13 +35,15 @@ export default function SignUpPage(): JSX.Element {
   const [disabled, setDisabled] = useState(false);
   const [useMagicLink, setMagicLink] = useState(false);
 
+  const redirectPath = "/a/auth";
+
   useEffect(() => {
     if (session === null || session === undefined) {
       return;
     }
 
     if ((session.expires_in || -1) > 0) {
-      router.replace("/a/dashboard");
+      router.replace(redirectPath);
     }
   }, [session, router]);
 
@@ -51,7 +53,7 @@ export default function SignUpPage(): JSX.Element {
         <title>Sign up for Willow</title>
       </Head>
 
-      <GetAuthCookie redirect="/a/dashboard" />
+      <GetAuthCookie redirect={redirectPath} />
 
       <div className="absolute top-0 left-0 flex h-full w-full text-zinc-100">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
@@ -77,11 +79,10 @@ export default function SignUpPage(): JSX.Element {
                     e.preventDefault();
                     setDisabled(true);
 
-                    const redirectTo = `${document.location.origin}/a/auth`;
-                    console.log("redirectTo", redirectTo);
+                    const redirectTo = `${document.location.origin}${redirectPath}`;
 
                     try {
-                      localStorage.setItem("redirect", "/a/dashboard");
+                      localStorage.setItem("redirect", redirectPath);
                     } catch (e) {
                       console.error(e);
                     }

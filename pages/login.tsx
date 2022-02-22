@@ -27,6 +27,8 @@ export default function Login(): JSX.Element {
   const [useMagicLink, setMagicLink] = useState(false);
   const [password, setPassword] = useState("");
 
+  const redirectPath = "/a/auth";
+
   useEffect(() => {
     if (session === null || session === undefined) {
       return;
@@ -40,7 +42,7 @@ export default function Login(): JSX.Element {
       </Head>
 
       <LandingPageHeader />
-      <GetAuthCookie redirect="/a/dashboard" />
+      <GetAuthCookie redirect={redirectPath} />
 
       <div className="-mt-20 flex h-screen min-h-full w-screen min-w-full items-center justify-center">
         <div className="">
@@ -58,7 +60,7 @@ export default function Login(): JSX.Element {
                   e.preventDefault();
                   setDisabled(true);
 
-                  const redirectTo = `${document.location.origin}/a/auth`;
+                  const redirectTo = `${document.location.origin}${redirectPath}`;
                   console.log("redirectTo", redirectTo);
 
                   if (client === null || client === undefined) {
