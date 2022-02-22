@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
       <AppHeader>
         <LinkBar hideBorder>
-          <Link href="/demo/willow/dashboard">
+          <Link href="/a/[namespace]/dashboard">
             <div className="flex items-center">
               Threads
               {threads && threads.length > 0 ? (
@@ -48,14 +48,14 @@ export default function DashboardPage() {
               )}
             </div>
           </Link>
-          <Link href="/demo/willow/activity">
+          {/* <Link href="/a/[namespace]/activity">
             <div className="flex items-center">
               Activity
-              {/* <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-zinc-900">
+              <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-zinc-900">
                 <div className="text-xs leading-3">{12}</div>
-              </div> */}
+              </div>
             </div>
-          </Link>
+          </Link> */}
         </LinkBar>
       </AppHeader>
 
