@@ -23,7 +23,7 @@ export default function InviteTeammates(): JSX.Element {
   const teamId = useGetTeamId();
   const [currentTab, setTab] = useState<Tabs>("current");
   const [isLoading, setLoading] = useState(false);
-  const { data: invites } = useGetInvites(teamId);
+  const { data: invites, mutate } = useGetInvites(teamId);
   const pendingInvites = invites?.filter((i) => i.status === "pending");
   const numberOfPendingInvites = pendingInvites?.length || 0;
 
@@ -65,6 +65,7 @@ export default function InviteTeammates(): JSX.Element {
               );
 
               await Promise.allSettled(invites);
+              mutate(); // Grab new invites
 
               setLoading(false);
               setEmails([""]);
@@ -159,7 +160,18 @@ export default function InviteTeammates(): JSX.Element {
                     : "text-zinc-500",
                 ].join(" ")}
               >
-                Pending Invitations
+                <div className="flex items-center">
+                  <div>Pending Invitations</div>
+                  {pendingInvites && pendingInvites.length > 0 ? (
+                    <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs text-zinc-100">
+                      <div className="-ml-[1px] mt-[2px]">
+                        {pendingInvites.length}
+                      </div>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
               </button>
             </div>
 
