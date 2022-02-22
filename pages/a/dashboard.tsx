@@ -16,9 +16,15 @@ export default function TeamPicker(): JSX.Element {
   const { data: invites } = useGetMyInvites();
 
   const nonAccepted = invites?.filter((i) => i.status !== "accepted") || [];
-  const validTeams = teams?.filter(
-    (t) => nonAccepted.findIndex((invite) => invite.teamId === t.id) === -1
-  );
+  const validTeams =
+    teams === undefined || invites === undefined
+      ? undefined
+      : teams.filter(
+          (t) =>
+            nonAccepted.findIndex((invite) => invite.teamId === t.id) === -1
+        );
+
+  console;
 
   useEffect(() => {
     if (validTeams?.length === 1) {
