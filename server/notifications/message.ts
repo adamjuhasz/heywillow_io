@@ -17,7 +17,11 @@ export default async function messageNotification(messageId: bigint) {
         include: {
           Alias: true,
           Team: {
-            include: { Inboxs: true, Members: { include: { Profile: true } } },
+            include: {
+              Inboxs: true,
+              Namespace: true,
+              Members: { include: { Profile: true } },
+            },
           },
         },
       },
@@ -56,6 +60,7 @@ export default async function messageNotification(messageId: bigint) {
     }
 
     const threadId = Number(message.threadId);
+    const namespace = message.Thread.Team.Namespace.namespace;
 
     return sendPostmarkEmail({
       to: m.Profile?.email || "",
@@ -67,7 +72,7 @@ export default async function messageNotification(messageId: bigint) {
           .replace(/\r\n/g, "\n")
           .split("\n")
           .map((t) => `<p>${t}</p>`),
-        `<p>https://${process.env.DOMAIN}/a/dashboard/thread/${threadId}</p>`,
+        `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
       ],
     });
   });

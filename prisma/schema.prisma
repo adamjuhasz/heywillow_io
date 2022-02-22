@@ -204,12 +204,13 @@ model Thread {
   aliasEmailId BigInt
   gmailInboxId BigInt?
 
-  Alias       AliasEmail    @relation(fields: [aliasEmailId], references: [id], onDelete: Cascade)
-  GmailInbox  GmailInbox?   @relation(fields: [gmailInboxId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Team        Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  Messages    Message[]
-  ThreadLink  ThreadLink[]
-  ThreadState ThreadState[]
+  Alias        AliasEmail     @relation(fields: [aliasEmailId], references: [id], onDelete: Cascade)
+  GmailInbox   GmailInbox?    @relation(fields: [gmailInboxId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Messages     Message[]
+  ThreadLink   ThreadLink[]
+  ThreadState  ThreadState[]
+  Notification Notification[]
 }
 
 model ThreadState {
@@ -260,11 +261,13 @@ model Notification {
   messageId   BigInt?
   commentId   BigInt?
   byMemberId  BigInt?
+  threadId    BigInt?
 
   By      TeamMember? @relation("by", fields: [byMemberId], references: [id])
   Comment Comment?    @relation(fields: [commentId], references: [id], onDelete: Cascade)
   For     TeamMember  @relation("for", fields: [forMemberId], references: [id], onDelete: Cascade)
   Message Message?    @relation(fields: [messageId], references: [id])
+  Thread  Thread?     @relation(fields: [threadId], references: [id], onDelete: Cascade)
 }
 
 model ThreadLink {

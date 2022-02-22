@@ -1,5 +1,6 @@
 import { ThreadState, ThreadStateType } from "@prisma/client";
 import { prisma } from "utils/prisma";
+import threadStateNotification from "server/notifications/threadState";
 
 interface Options {
   threadId: number | bigint;
@@ -37,5 +38,7 @@ export default async function changeThreadStatus({
     },
   });
   console.log("changeThreadStatus newState", newState);
+
+  await threadStateNotification(threadId);
   return newState;
 }
