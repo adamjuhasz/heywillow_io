@@ -10,7 +10,7 @@ import { Session, SupabaseClient, User } from "@supabase/supabase-js";
 interface ContextData {
   user: undefined | null | User;
   session: undefined | null | Session;
-  client: undefined | null | SupabaseClient;
+  client: undefined | SupabaseClient;
   usingDefaultValue: boolean;
 }
 

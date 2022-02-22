@@ -72,6 +72,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
   );
 
   useEffect(() => {
+    console.log("onAuthStateChange", supabase);
     if (supabase === undefined || supabase === null) {
       return;
     }
