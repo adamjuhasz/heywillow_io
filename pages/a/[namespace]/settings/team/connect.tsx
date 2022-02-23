@@ -50,6 +50,21 @@ export default function ConnectGmailInbox(props: ServerSideProps): JSX.Element {
             title="Connect Gmail account"
             explainer="Connect your teams shared inbox. This is the account at which you receive customer support emails."
             button="Connect"
+            warning={
+              <div>
+                <div className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2 py-0.5 text-black">
+                  beta
+                </div>{" "}
+                During our beta we&apos;ll need to whitelist your gmail, email
+                it to{" "}
+                <a
+                  className=" text-zinc-100 underline decoration-2 underline-offset-4"
+                  href="mailto:help@heywillow.io"
+                >
+                  help@heywillow.io
+                </a>
+              </div>
+            }
             onSubmit={() => {
               if (user === null || user === undefined) {
                 throw new Error("user is not found");

@@ -30,7 +30,7 @@ export default function LandingPageHeader(props: Props) {
         </div>
 
         <div className="flex items-center space-x-4 text-sm font-normal">
-          <Link href="mailto:yo@heywillow.io">
+          <Link href="mailto:help@heywillow.io">
             <a className="hidden text-zinc-500 hover:text-zinc-100 sm:block">
               Contact
             </a>
