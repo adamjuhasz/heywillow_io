@@ -1,11 +1,11 @@
-import { uniqBy } from "lodash";
+import { defaultTo, uniqBy } from "lodash";
 import { NotificationType } from "@prisma/client";
 
 import { prisma } from "utils/prisma";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
 import detectMention from "server/notifications/utils/detectMention";
 import matchMention from "server/notifications/utils/matchMention";
-import notificationDefaults from "./defaults";
+import notificationDefaults from "shared/notifications/defaults";
 
 export default async function commentNotification(commentId: bigint) {
   const comment = await prisma.comment.findUnique({
@@ -56,9 +56,10 @@ export default async function commentNotification(commentId: bigint) {
       },
     });
 
-    const inAppPref =
-      preferences.find((p) => p.channel === "InApp")?.enabled ||
-      notificationDefaults[thisType];
+    const inAppPref: boolean = defaultTo(
+      preferences.find((p) => p.channel === "InApp")?.enabled,
+      notificationDefaults[thisType]["InApp"]
+    );
 
     if (inAppPref === true) {
       await prisma.notification.create({
@@ -72,9 +73,10 @@ export default async function commentNotification(commentId: bigint) {
       });
     }
 
-    const emailPref =
-      preferences.find((p) => p.channel === "InApp")?.enabled ||
-      notificationDefaults[thisType];
+    const emailPref: boolean = defaultTo(
+      preferences.find((p) => p.channel === "Email")?.enabled,
+      notificationDefaults[thisType]["Email"]
+    );
 
     if (emailPref === true) {
       if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {

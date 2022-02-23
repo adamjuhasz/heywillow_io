@@ -1,11 +1,12 @@
 import { NotificationType } from "@prisma/client";
+import { defaultTo } from "lodash";
 
 import { prisma } from "utils/prisma";
 import sendEmailThroughGmail from "server/gmail/sendEmail";
 import createAuthedGmail from "server/gmail/createAuthedGmail";
 import createSecureThreadLink from "server/createSecureLink";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
-import notificationDefaults from "./defaults";
+import notificationDefaults from "../../shared/notifications/defaults";
 
 export default async function messageNotification(messageId: bigint) {
   console.log("messageNotification", messageId);
@@ -63,9 +64,10 @@ export default async function messageNotification(messageId: bigint) {
       },
     });
 
-    const inAppPref =
-      preferences.find((p) => p.channel === "InApp")?.enabled ||
-      notificationDefaults[thisType];
+    const inAppPref: boolean = defaultTo(
+      preferences.find((p) => p.channel === "InApp")?.enabled,
+      notificationDefaults[thisType]["InApp"]
+    );
 
     if (inAppPref === true) {
       await prisma.notification.create({
@@ -79,9 +81,10 @@ export default async function messageNotification(messageId: bigint) {
       });
     }
 
-    const emailPref =
-      preferences.find((p) => p.channel === "InApp")?.enabled ||
-      notificationDefaults[thisType];
+    const emailPref: boolean = defaultTo(
+      preferences.find((p) => p.channel === "Email")?.enabled,
+      notificationDefaults[thisType]["Email"]
+    );
 
     if (emailPref === true) {
       if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
