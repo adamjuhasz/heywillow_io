@@ -70,7 +70,6 @@ export default async function threadStateNotification(
       where: {
         teamMemberId: tm.id,
         type: thisType,
-        gmailInboxId: thread.gmailInboxId,
       },
     });
 

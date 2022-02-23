@@ -53,7 +53,6 @@ export default async function commentNotification(commentId: bigint) {
       where: {
         teamMemberId: tm.id,
         type: thisType,
-        gmailInboxId: comment.Message.Thread.gmailInboxId,
       },
     });
 

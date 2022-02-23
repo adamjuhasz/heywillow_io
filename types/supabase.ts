@@ -156,7 +156,6 @@ export interface SupabaseNamespace {
 
 export interface SupabaseNotificationPreference {
   teamMemberId: number;
-  gmailInboxId: number;
   type: NotificationType;
   enabled: boolean;
   channel: NotificationChannel;

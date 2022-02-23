@@ -122,7 +122,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
             )}
 
             {namespace ? (
-              <TopLink href="/a/[namespace]/settings">Settings</TopLink>
+              <TopLink href="/a/[namespace]/settings/team">Settings</TopLink>
             ) : (
               <TopLink href="/a/settings">Settings</TopLink>
             )}

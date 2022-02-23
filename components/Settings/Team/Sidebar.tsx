@@ -11,7 +11,10 @@ export default function TeamSettingsSidebar(): JSX.Element {
   return (
     <div className="flex w-56 shrink-0 flex-col space-y-4 text-sm font-light text-zinc-500">
       <SidebarLink exact href="/a/[namespace]/settings/team">
-        Team name
+        Team info
+      </SidebarLink>
+      <SidebarLink href="/a/[namespace]/settings/team/notifications">
+        Notification preferences
       </SidebarLink>
       <SidebarLink href="/a/[namespace]/settings/team/connect">
         Link Gmail{" "}

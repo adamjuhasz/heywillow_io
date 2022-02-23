@@ -60,7 +60,6 @@ export default async function messageNotification(messageId: bigint) {
       where: {
         teamMemberId: tm.id,
         type: thisType,
-        gmailInboxId: message.Thread.gmailInboxId,
       },
     });
 
