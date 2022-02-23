@@ -1,9 +1,11 @@
-import { prisma } from "utils/prisma";
+import { NotificationType } from "@prisma/client";
 
+import { prisma } from "utils/prisma";
 import sendEmailThroughGmail from "server/gmail/sendEmail";
 import createAuthedGmail from "server/gmail/createAuthedGmail";
 import createSecureThreadLink from "server/createSecureLink";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
+import notificationDefaults from "./defaults";
 
 export default async function messageNotification(messageId: bigint) {
   console.log("messageNotification", messageId);
@@ -15,10 +17,11 @@ export default async function messageNotification(messageId: bigint) {
       EmailMessage: true,
       Thread: {
         include: {
+          _count: { select: { Messages: true } },
           Alias: true,
           Team: {
             include: {
-              Inboxs: true,
+              Inboxes: true,
               Namespace: true,
               Members: { include: { Profile: true } },
             },
@@ -32,53 +35,80 @@ export default async function messageNotification(messageId: bigint) {
     throw new Error("Message not found");
   }
 
-  const members = message.Thread.Team.Members;
-
   const shortText =
     message.direction === "incoming"
       ? `New message from ${message.Thread.Alias.emailAddress}`
       : `New message sent to ${message.Thread.Alias.emailAddress}`;
-
-  await prisma.notification.createMany({
-    data: members.map((m) => ({
-      forMemberId: m.id,
-      text: shortText,
-      messageId: messageId,
-      deliveredAt: new Date(),
-    })),
-  });
-
   const bodyOfMessage =
     message.EmailMessage?.body || message.InternalMessage?.body || "Unknown";
   const subject = message.EmailMessage?.subject;
+  const threadId = Number(message.threadId);
 
-  const ourEmails = message.Thread.Team.Inboxs.map((i) => i.emailAddress);
-  const emails = members.map((m) => {
-    if (ourEmails.findIndex((e) => e === m.Profile?.email) !== -1) {
-      console.log("Was going to send to self");
-      return;
+  const thisType =
+    message.direction === "incoming"
+      ? message.Thread._count.Messages == 1
+        ? NotificationType.ThreadNew
+        : NotificationType.ThreadCustomerReplied
+      : NotificationType.ThreadTeamMemberReplied;
+  const ourEmails = message.Thread.Team.Inboxes.map((i) => i.emailAddress);
+  const namespace = message.Thread.Team.Namespace.namespace;
+
+  console.log("thisType", thisType);
+
+  const generatedNotifications = message.Thread.Team.Members.map(async (tm) => {
+    const preferences = await prisma.notificationPreference.findMany({
+      where: {
+        teamMemberId: tm.id,
+        type: thisType,
+        gmailInboxId: message.Thread.gmailInboxId,
+      },
+    });
+
+    const inAppPref =
+      preferences.find((p) => p.channel === "InApp")?.enabled ||
+      notificationDefaults[thisType];
+
+    if (inAppPref === true) {
+      await prisma.notification.create({
+        data: {
+          forMemberId: tm.id,
+          text: shortText,
+          deliveredAt: new Date(),
+          threadId: message.threadId,
+          type: thisType,
+        },
+      });
     }
 
-    const threadId = Number(message.threadId);
-    const namespace = message.Thread.Team.Namespace.namespace;
+    const emailPref =
+      preferences.find((p) => p.channel === "InApp")?.enabled ||
+      notificationDefaults[thisType];
 
-    return sendPostmarkEmail({
-      to: m.Profile?.email || "",
-      subject: shortText,
-      htmlBody: [
-        "<strong>Message Notification</strong><br>",
-        subject ? `<p>${subject}</p>` : "",
-        ...bodyOfMessage
-          .replace(/\r\n/g, "\n")
-          .split("\n")
-          .map((t) => `<p>${t}</p>`),
-        `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
-      ],
-    });
+    if (emailPref === true) {
+      if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
+        console.log("Was going to send to self");
+        return;
+      }
+
+      await sendPostmarkEmail({
+        to: tm.Profile.email || "",
+        subject: shortText,
+        htmlBody: [
+          "<strong>Message Notification</strong><br>",
+          subject ? `<p>${subject}</p>` : "",
+          ...bodyOfMessage
+            .replace(/\r\n/g, "\n")
+            .split("\n")
+            .map((t) => `<p>${t}</p>`),
+          `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
+        ],
+      });
+    }
   });
 
+  // respond back to the end user
   if (message.direction === "outgoing") {
-    const inbox = message.Thread.Team.Inboxs[0];
+    const inbox = message.Thread.Team.Inboxes[0];
     const inboxId = inbox.id;
     const gmail = await createAuthedGmail(Number(inboxId));
     const body = message.InternalMessage?.body || message.EmailMessage?.body;
@@ -89,7 +119,7 @@ export default async function messageNotification(messageId: bigint) {
     );
 
     if (body) {
-      sendEmailThroughGmail({
+      await sendEmailThroughGmail({
         gmail: gmail,
         from: inbox.emailAddress,
         to: message.Thread.Alias.emailAddress,
@@ -106,5 +136,5 @@ export default async function messageNotification(messageId: bigint) {
     }
   }
 
-  await Promise.allSettled(emails);
+  await Promise.allSettled(generatedNotifications);
 }

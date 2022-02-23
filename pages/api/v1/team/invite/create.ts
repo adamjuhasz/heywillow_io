@@ -53,12 +53,12 @@ export default async function handler(
       status: "pending",
       inviterId: membership.id,
     },
-    include: { Team: { include: { Inboxs: true } } },
+    include: { Team: { include: { Inboxes: true } } },
   });
 
   console.log("invite", invite);
 
-  const ourEmails = invite.Team.Inboxs.map((i) => i.emailAddress);
+  const ourEmails = invite.Team.Inboxes.map((i) => i.emailAddress);
   if (ourEmails.findIndex((e) => e === body.inviteeEmail) !== -1) {
     console.log("Was going to send to self");
     return;
