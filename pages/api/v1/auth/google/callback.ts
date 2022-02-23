@@ -9,7 +9,7 @@ export interface State {
   r: string;
 }
 
-const pubsubTopic = "projects/willow-support/topics/gmail-push";
+const pubsubTopic = "projects/celestial-geode-342221/topics/gmail-push";
 
 export default async function handler(
   req: NextApiRequest,
