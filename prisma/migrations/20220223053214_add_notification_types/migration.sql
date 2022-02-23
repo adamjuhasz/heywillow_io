@@ -38,6 +38,28 @@ CREATE TABLE "NotificationPreference" (
     CONSTRAINT "NotificationPreference_pkey" PRIMARY KEY ("teamMemberId","gmailInboxId","type","channel")
 );
 
+ALTER TABLE "NotificationPreference" enable row level security;
+
+CREATE POLICY "Users can see their own notification preferences."
+  on "NotificationPreference" for select
+  using (
+    auth.uid() IN ( 
+      SELECT "TeamMember"."profileId"
+      FROM "TeamMember"
+      WHERE ("TeamMember"."id" = "NotificationPreference"."teamMemberId")
+    )
+  );
+
+CREATE POLICY "Users can update their own notification preferences."
+  on "NotificationPreference" for update
+  using (
+    auth.uid() IN ( 
+      SELECT "TeamMember"."profileId"
+      FROM "TeamMember"
+      WHERE ("TeamMember"."id" = "NotificationPreference"."teamMemberId")
+    )
+  );
+
 -- AddForeignKey
 ALTER TABLE "NotificationPreference" ADD CONSTRAINT "NotificationPreference_teamMemberId_fkey" FOREIGN KEY ("teamMemberId") REFERENCES "TeamMember"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 

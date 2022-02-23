@@ -74,7 +74,7 @@ interface Props {
   inboxId: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   interpreted: any;
-  raw: any;
+  raw: string;
 }
 
 export default function InboxList(props: Props) {

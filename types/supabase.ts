@@ -1,6 +1,8 @@
 import type {
   MessageDirection,
   MessageType,
+  NotificationChannel,
+  NotificationType,
   TeamInviteStatus,
   ThreadStateType,
 } from "@prisma/client";
@@ -93,10 +95,12 @@ export interface SupabaseNotification {
   seenAt: string | null;
   clearedAt: string | null;
   forMemberId: number;
+  type: NotificationType;
   text: string;
-  messageId: number | null;
+
+  //FKeys
   commentId: number | null;
-  byMemberId: number | null;
+  threadId: number | null;
 }
 
 export interface SupabaseAttachment {
@@ -148,4 +152,12 @@ export interface SupabaseNamespace {
   id: number;
   createdAt: string;
   namespace: string;
+}
+
+export interface SupabaseNotificationPreference {
+  teamMemberId: number;
+  gmailInboxId: number;
+  type: NotificationType;
+  enabled: boolean;
+  channel: NotificationChannel;
 }

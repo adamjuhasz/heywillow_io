@@ -1,8 +1,9 @@
-//inspo from https://www.openphone.co/product/teams
+//inspiration from https://www.openphone.co/product/teams
 import { ArrowCircleUpIcon } from "@heroicons/react/outline";
 import { SupabaseComment } from "types/supabase";
 
 import { Body } from "pages/api/v1/comment/add";
+import Avatar from "components/Avatar";
 
 interface Props {
   messageId: number;
@@ -11,11 +12,6 @@ interface Props {
   teamId: number;
   mutate?: () => void;
 }
-
-const images = [
-  "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-];
 
 export default function CommentBox(props: Props) {
   return (
@@ -41,12 +37,11 @@ export default function CommentBox(props: Props) {
       >
         <div className="flex items-center border-b-2 border-slate-200 px-2  py-1 text-sm text-slate-500">
           <div className="relative z-0 flex -space-x-1 overflow-hidden">
-            {props.comments.slice(0, 3).map((_, indx) => (
-              <img
+            {props.comments.slice(0, 3).map((c, indx) => (
+              <Avatar
                 key={indx}
+                str={`${c.authorId}`}
                 className="relative z-30 inline-block h-6 w-6 rounded-full ring-2 ring-white"
-                src={images[indx % images.length]}
-                alt=""
               />
             ))}
           </div>
@@ -58,11 +53,10 @@ export default function CommentBox(props: Props) {
         {props.comments.map((c) => (
           <div key={`${c.id}`} className="my-2 flex flex-col px-2">
             <div className="mx-1 flex items-center text-xs text-slate-500">
-              <img
+              <Avatar
                 key={`${c.id}`}
                 className="mr-1 inline-block h-3 w-3  rounded-full"
-                src={images[Number(c.id) % images.length]}
-                alt=""
+                str={`${c.authorId}`}
               />
               User #{Number(c.authorId)}
             </div>
