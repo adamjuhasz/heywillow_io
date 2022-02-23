@@ -21,7 +21,7 @@ export default async function handler(
   const state: State = JSON.parse(req.query.state as string);
 
   if (req.query.code === undefined) {
-    return res.redirect(state.r || "/a/dashboard");
+    return res.redirect(state.r || "/a/workspace");
   }
 
   const oauth2Client = new auth.OAuth2(
@@ -50,7 +50,7 @@ export default async function handler(
     results.tokens.refresh_token === null
   ) {
     console.error("Refresh Token missing", results.tokens);
-    return res.redirect(state.r || "/a/dashboard");
+    return res.redirect(state.r || "/a/workspace");
   }
 
   const inboxRow = await prisma.gmailInbox.upsert({
@@ -109,5 +109,5 @@ export default async function handler(
     console.log("lastSync", lastSync);
   }
 
-  res.redirect(state.r || "/a/dashboard");
+  res.redirect(state.r || "/a/workspace");
 }

@@ -73,7 +73,7 @@ export default function DemoDashboard() {
         activeTeam="willow"
       >
         <LinkBar hideBorder>
-          <Link href="/demo/dashboard">
+          <Link href="/demo/workspace">
             <div className="flex items-center">
               Threads
               <div className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs text-white">

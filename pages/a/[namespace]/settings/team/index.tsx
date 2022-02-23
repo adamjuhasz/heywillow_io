@@ -45,14 +45,14 @@ export default function TeamSettings(): JSX.Element {
               <input
                 disabled
                 type="text"
-                name="company-website"
-                id="company-website"
+                name="Namespace"
+                id="Namespace"
                 value={(namespace as string) || ""}
                 className="block w-20 min-w-0 max-w-full flex-1 rounded-none border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="stealth-ai"
               />
               <span className="inline-flex items-center rounded-r-md border border-l-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:text-sm">
-                /dashboard
+                /workspace
               </span>
             </div>
           </SettingsBox>
@@ -65,8 +65,8 @@ export default function TeamSettings(): JSX.Element {
           >
             <input
               disabled
-              id="teamname"
-              name="teamname"
+              id="TeamName"
+              name="TeamName"
               type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}

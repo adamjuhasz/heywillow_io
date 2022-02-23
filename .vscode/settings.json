@@ -2,14 +2,17 @@
   "cSpell.words": [
     "accum",
     "datetime",
+    "decompile",
     "fkey",
     "historyid",
     "idempotency",
     "nextjs",
+    "paytgthr",
     "pino",
     "posthog",
     "signup",
     "Supa",
+    "tailwindui",
     "threadid"
   ],
   "jest.jestCommandLine": "yarn test"

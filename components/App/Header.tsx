@@ -72,7 +72,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
                       } group flex w-full items-center justify-between rounded-md px-2 py-2 text-sm`}
                     >
                       <ButtonLink
-                        href={`/a/${t.Namespace.namespace}/dashboard`}
+                        href={`/a/${t.Namespace.namespace}/workspace`}
                         className="flex items-center"
                       >
                         <Avatar
@@ -107,7 +107,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
       <div className="sticky top-0 z-10 flex w-full flex-col items-center border-b border-zinc-700 bg-black bg-opacity-50 font-[rubik] text-zinc-200 backdrop-blur-lg">
         <AppContainer className="flex min-h-[3rem] w-full items-center justify-between space-x-4 px-4 text-sm font-normal lg:px-0">
           <div className="flex h-full items-center space-x-4 ">
-            <Link href="/a/dashboard">
+            <Link href="/a/workspace">
               <a className="flex items-center">
                 <WillowLogo className="mr-2 h-5 w-5 shrink-0" />
               </a>
@@ -118,7 +118,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
             {props.teams?.length === 0 ? (
               <></>
             ) : (
-              <TopLink href="/a/[namespace]/dashboard">Dashboard</TopLink>
+              <TopLink href="/a/[namespace]/workspace">Workspace</TopLink>
             )}
 
             {namespace ? (

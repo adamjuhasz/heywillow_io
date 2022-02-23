@@ -9,7 +9,7 @@ import image from "public/images/architecture/photo-1505904267569-f02eaeb45a4c.j
 export default function AuthPage(): JSX.Element {
   return (
     <>
-      <GetAuthCookie redirect="/a/dashboard" timeout />
+      <GetAuthCookie redirect="/a/workspace" timeout />
       <div className=" absolute top-0 left-0 flex h-full w-full">
         <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto flex w-full max-w-sm items-center justify-center lg:w-96">
