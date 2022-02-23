@@ -7,23 +7,29 @@ import changeThreadStatus from "server/changeThreadStatus";
 
 export { ThreadStateType };
 
-export interface Body {
-  threadId: number;
-  state: ThreadStateType;
-  snoozeDate?: string;
-}
-
-type Return =
-  | Record<string, string | number>
+export type Body =
   | {
-      error: string;
+      state: "open" | "done" | "assigned";
+    }
+  | {
+      state: "snoozed";
+      snoozeDate: string;
     };
+
+export type Return = Record<string, string | number>;
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Return>
+  res: NextApiResponse<
+    | Return
+    | {
+        error: string;
+      }
+  >
 ) {
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
+  const threadIdStr = req.query.threadid;
+  const threadId = parseInt(threadIdStr as string, 10);
 
   if (user === null) {
     return res.status(401).json({ error: "Bad user auth" });
@@ -32,7 +38,7 @@ export default async function handler(
   const body = req.body as Body;
 
   const thread = await prisma.thread.findUnique({
-    where: { id: body.threadId },
+    where: { id: threadId },
     include: { Team: true },
   });
   if (thread === null) {
@@ -54,7 +60,8 @@ export default async function handler(
         state: body.state,
         threadId: thread.id,
         doneBy: teamMember.id,
-        expiresAt: body.snoozeDate ? new Date(body.snoozeDate) : undefined,
+        expiresAt:
+          body.state === "snoozed" ? new Date(body.snoozeDate) : undefined,
       });
       return res.json({ id: Number(newState.id), state: newState.state });
     }

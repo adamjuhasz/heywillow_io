@@ -77,7 +77,7 @@ export default function CreateTeam(): JSX.Element {
             </div>
             <div className="mt-1 flex rounded-md shadow-sm">
               <span className="inline-flex items-center rounded-l-md border border-r-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:text-sm">
-                https://heywillow.io/
+                https://heywillow.io/s/
               </span>
               <input
                 disabled={loading}

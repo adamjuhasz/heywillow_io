@@ -47,101 +47,95 @@ export default function Message(props: Props & InterfaceProps) {
     <>
       <li
         className={[
-          "flex flex-col break-words",
+          "flex w-full",
           props.direction === "incoming" ? "self-start" : "",
           props.direction === "outgoing" ? "self-end" : "",
+          props.direction === "outgoing" ? "flex-row-reverse" : "flex-row",
         ].join(" ")}
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
       >
+        <div className="ml-[0.25rem] flex w-[1.5rem] grow-0 flex-col">
+          <div className="text-xs font-medium">&nbsp;</div>
+          <Avatar
+            str={props.AliasEmail?.emailAddress || ""}
+            className="h-[1.5rem] w-[1.5rem]"
+          />
+        </div>
         <div
           className={[
-            "flex",
-            props.direction === "outgoing" ? "flex-row-reverse" : "flex-row",
+            "mx-1 flex w-[calc(100%_-_1.75rem)] grow flex-col",
+            props.direction === "outgoing" ? "items-end" : "",
           ].join(" ")}
         >
-          <div className="m mx-1 flex flex-col">
-            <div className="text-xs font-medium">&nbsp;</div>
-            <Avatar
-              str={props.AliasEmail?.emailAddress || ""}
-              className="h-6 w-6"
-            />
+          <div className="text-xs font-medium">
+            <span className="text-zinc-400">{author}</span>
           </div>
+
           <div
             className={[
-              "mx-1 flex flex-grow flex-col",
-              props.direction === "outgoing" ? "items-end" : "",
+              "w-fit overflow-x-hidden rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
+              props.direction === "incoming"
+                ? "rounded-tl-none bg-violet-800 text-violet-50"
+                : "",
+              props.direction === "outgoing"
+                ? "rounded-tr-none bg-violet-100 text-violet-900"
+                : "",
             ].join(" ")}
           >
-            <div className="text-xs font-medium">
-              <span className="text-zinc-400">{author}</span>
-            </div>
-
-            <div
-              className={[
-                "w-fit rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
-                props.direction === "incoming"
-                  ? "rounded-tl-none bg-violet-800 text-violet-50"
-                  : "",
-                props.direction === "outgoing"
-                  ? "rounded-tr-none bg-violet-100 text-violet-900"
-                  : "",
-              ].join(" ")}
-            >
-              <div className="space-y-0 text-sm">
-                {props.EmailMessage !== null ? (
-                  <div className="text-md mb-2 font-bold">
-                    {props.EmailMessage.subject}
-                  </div>
-                ) : (
-                  ""
-                )}
-                <div className="flex w-fit flex-col ">
-                  {text
-                    .replace(/\r\n/g, "\n")
-                    .split("\n")
-                    .map((b, i) => (
-                      <p key={i} className="">
-                        <Redacted str={b} />
-                        &nbsp;
-                      </p>
-                    ))}
+            <div className="space-y-0 text-sm">
+              {props.EmailMessage !== null ? (
+                <div className="text-md mb-2 font-bold">
+                  {props.EmailMessage.subject}
                 </div>
+              ) : (
+                ""
+              )}
+              <div className="flex w-full flex-col">
+                {text
+                  .replace(/\r\n/g, "\n")
+                  .split("\n")
+                  .map((b, i) => (
+                    <div key={i} className="w-full">
+                      <Redacted str={b} />
+                      &nbsp;
+                    </div>
+                  ))}
               </div>
             </div>
-
-            <div className="mt-1 flex space-x-1">
-              {props.Attachment.map((a) => (
-                <Attachment key={a.id} {...a} />
-              ))}
-            </div>
-
-            <div
-              className={[
-                "mx-3 mt-1 text-xs font-medium",
-                props.direction === "outgoing" ? "self-end" : "",
-              ].join(" ")}
-            >
-              <span className="text-zinc-400">
-                {format(new Date(props.createdAt), "p")}
-              </span>
-            </div>
-            {hovering && !commenting && props.teamId !== null ? (
-              <button
-                className={[
-                  "w-fit rounded-full bg-yellow-100 px-4 py-2 text-yellow-600",
-                  "flex items-center",
-                  "hover:bg-yellow-200",
-                ].join(" ")}
-                onClick={() => setCommenting(true)}
-              >
-                <PlusCircleIcon className="mr-1 h-5 w-5" />
-                Add comment
-              </button>
-            ) : (
-              <></>
-            )}
           </div>
+
+          <div className="mt-1 flex space-x-1">
+            {props.Attachment.map((a) => (
+              <Attachment key={a.id} {...a} />
+            ))}
+          </div>
+
+          <div
+            className={[
+              "mx-3 mt-1 text-xs font-medium",
+              props.direction === "outgoing" ? "self-end" : "",
+            ].join(" ")}
+          >
+            <span className="text-zinc-400">
+              {format(new Date(props.createdAt), "p")}
+            </span>
+          </div>
+          {hovering && !commenting && props.teamId !== null ? (
+            <button
+              className={[
+                "w-fit rounded-full bg-yellow-100 px-4 py-2 text-yellow-600",
+                "flex items-center",
+                "hover:bg-yellow-200",
+              ].join(" ")}
+              onClick={() => setCommenting(true)}
+            >
+              <PlusCircleIcon className="mr-1 h-5 w-5" />
+              Add comment
+            </button>
+          ) : (
+            <></>
+          )}
         </div>
       </li>
       {commenting && props.teamId !== null ? (
@@ -235,5 +229,5 @@ function Redacted({ str }: { str: string }): JSX.Element {
     );
   }
 
-  return <span>{str}</span>;
+  return <>{str}</>;
 }
