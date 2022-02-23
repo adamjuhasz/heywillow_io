@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
       <AppHeader>
         <LinkBar hideBorder>
-          <Link href="/a/[namespace]/dashboard">
+          <Link href="/a/[namespace]/workspace">
             <div className="flex items-center">
               Threads
               {threads && threads.length > 0 ? (

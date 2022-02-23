@@ -81,7 +81,7 @@ export default function ThreadViewer() {
           <div className="flex h-full w-[3.5rem] shrink-0 flex-col items-center pt-14">
             <Link
               href={{
-                pathname: "/a/[namespace]/dashboard",
+                pathname: "/a/[namespace]/workspace",
                 query: { namespace: router.query.namespace },
               }}
             >
@@ -226,7 +226,7 @@ export default function ThreadViewer() {
                   try {
                     await changeThreadState(threadNum, { state: "done" });
                     router.push({
-                      pathname: "/a/[namespace]/dashboard",
+                      pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
                   } catch (e) {
@@ -253,7 +253,7 @@ export default function ThreadViewer() {
                       snoozeDate: addDays(new Date(), 1).toISOString(),
                     });
                     router.push({
-                      pathname: "/a/[namespace]/dashboard",
+                      pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
                   } catch (e) {
@@ -280,7 +280,7 @@ export default function ThreadViewer() {
                       snoozeDate: addDays(new Date(), 3).toISOString(),
                     });
                     router.push({
-                      pathname: "/a/[namespace]/dashboard",
+                      pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
                   } catch (e) {
@@ -307,7 +307,7 @@ export default function ThreadViewer() {
                       snoozeDate: addDays(new Date(), 7).toISOString(),
                     });
                     router.push({
-                      pathname: "/a/[namespace]/dashboard",
+                      pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
                   } catch (e) {
@@ -334,7 +334,7 @@ export default function ThreadViewer() {
                       snoozeDate: addMinutes(new Date(), 5).toISOString(),
                     });
                     router.push({
-                      pathname: "/a/[namespace]/dashboard",
+                      pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
                   } catch (e) {
