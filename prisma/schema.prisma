@@ -20,7 +20,7 @@ model Team {
   Attachment    Attachment[]
   Customer      Customer[]
   EncryptedText EncryptedText[]
-  Inboxs        GmailInbox[]
+  Inboxes       GmailInbox[]
   TeamInvite    TeamInvite[]
   Members       TeamMember[]
   Thread        Thread[]
@@ -40,17 +40,17 @@ model TeamMember {
   teamId    BigInt
   profileId String   @db.Uuid
 
-  Profile            Profile        @relation(fields: [profileId], references: [id], onDelete: SetNull)
-  Team               Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  Comment            Comment[]
-  CommentTag         CommentTag[]
-  Message            Message[]
-  NotificationGenned Notification[] @relation("by")
-  Notifications      Notification[] @relation("for")
-  TeamInvite         TeamInvite[]
-  ThreadsChanged     ThreadState[]  @relation("DoneBy")
-  AssignedThreads    ThreadState[]  @relation("Assignee")
+  Profile         Profile        @relation(fields: [profileId], references: [id], onDelete: SetNull)
+  Team            Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Comment         Comment[]
+  CommentTag      CommentTag[]
+  Message         Message[]
+  Notifications   Notification[] @relation("for")
+  TeamInvite      TeamInvite[]
+  ThreadsChanged  ThreadState[]  @relation("DoneBy")
+  AssignedThreads ThreadState[]  @relation("Assignee")
 
+  NotificationPreference NotificationPreference[]
   @@unique([teamId, profileId])
 }
 
@@ -86,11 +86,12 @@ model GmailInbox {
   teamId       BigInt
   emailAddress String   @unique
 
-  Team           Team            @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  GmailLastSync  GmailLastSync?
-  GmailLastWatch GmailLastWatch?
-  RefreshToken   RefreshToken?
-  Thread         Thread[]
+  Team                   Team                     @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  GmailLastSync          GmailLastSync?
+  GmailLastWatch         GmailLastWatch?
+  RefreshToken           RefreshToken?
+  Thread                 Thread[]
+  NotificationPreference NotificationPreference[]
 }
 
 model RefreshToken {
@@ -171,7 +172,6 @@ model Message {
   Thread          Thread           @relation(fields: [threadId], references: [id], onDelete: Cascade)
   Attachments     Attachment[]
   Comment         Comment[]
-  Notification    Notification[]
 }
 
 model EmailMessage {
@@ -202,7 +202,7 @@ model Thread {
   updatedAt    DateTime @default(now()) @db.Timestamptz(6)
   teamId       BigInt
   aliasEmailId BigInt
-  gmailInboxId BigInt?
+  gmailInboxId BigInt
 
   Alias        AliasEmail     @relation(fields: [aliasEmailId], references: [id], onDelete: Cascade)
   GmailInbox   GmailInbox?    @relation(fields: [gmailInboxId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -251,23 +251,22 @@ model CommentTag {
 }
 
 model Notification {
-  id          BigInt    @id @default(autoincrement())
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  deliveredAt DateTime? @db.Timestamptz(6)
-  seenAt      DateTime? @db.Timestamptz(6)
-  clearedAt   DateTime? @db.Timestamptz(6)
+  id          BigInt           @id @default(autoincrement())
+  createdAt   DateTime         @default(now()) @db.Timestamptz(6)
+  deliveredAt DateTime?        @db.Timestamptz(6)
+  seenAt      DateTime?        @db.Timestamptz(6)
+  clearedAt   DateTime?        @db.Timestamptz(6)
   forMemberId BigInt
+  type        NotificationType
   text        String
-  messageId   BigInt?
-  commentId   BigInt?
-  byMemberId  BigInt?
-  threadId    BigInt?
 
-  By      TeamMember? @relation("by", fields: [byMemberId], references: [id])
-  Comment Comment?    @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  For     TeamMember  @relation("for", fields: [forMemberId], references: [id], onDelete: Cascade)
-  Message Message?    @relation(fields: [messageId], references: [id])
-  Thread  Thread?     @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  // FKeys
+  commentId BigInt?
+  threadId  BigInt?
+
+  Comment Comment?   @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  For     TeamMember @relation("for", fields: [forMemberId], references: [id], onDelete: Cascade)
+  Thread  Thread?    @relation(fields: [threadId], references: [id], onDelete: Cascade)
 }
 
 model ThreadLink {
@@ -303,6 +302,33 @@ model Attachment {
 
   message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model NotificationPreference {
+  teamMemberId BigInt
+  gmailInboxId BigInt
+  type         NotificationType
+  enabled      Boolean
+  channel      NotificationChannel
+
+  TeamMember TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  Inbox      GmailInbox @relation(fields: [gmailInboxId], references: [id], onDelete: Cascade)
+
+  @@id([teamMemberId, gmailInboxId, type, channel])
+}
+
+enum NotificationType {
+  ThreadNew
+  ThreadTeamMemberReplied
+  ThreadCustomerReplied
+  ThreadAwaken
+  ThreadClosed
+  CommentMentioned
+}
+
+enum NotificationChannel {
+  InApp
+  Email
 }
 
 enum TeamInviteStatus {

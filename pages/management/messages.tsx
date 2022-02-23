@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       EmailMessage: true,
       InternalMessage: true,
       Thread: {
-        select: { Team: { select: { Inboxs: { select: { id: true } } } } },
+        select: { Team: { select: { Inboxes: { select: { id: true } } } } },
       },
     },
   });
@@ -64,7 +64,7 @@ interface Props {
     };
     Thread: {
       Team: {
-        Inboxs: {
+        Inboxes: {
           id: number;
         }[];
       };
@@ -113,7 +113,7 @@ export default function InboxList(props: Props) {
             {i.EmailMessage ? (
               <span>
                 <Link
-                  href={`/management/gmail/${i.Thread.Team.Inboxs[0].id}/${i.EmailMessage.sourceMessageId}`}
+                  href={`/management/gmail/${i.Thread.Team.Inboxes[0].id}/${i.EmailMessage.sourceMessageId}`}
                 >
                   <a className="text-rose-500 underline">
                     {i.EmailMessage.sourceMessageId}

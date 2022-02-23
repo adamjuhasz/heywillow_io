@@ -1,5 +1,8 @@
+import { NotificationType, ThreadStateType } from "@prisma/client";
+
 import { prisma } from "utils/prisma";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
+import notificationDefaults from "./defaults";
 
 export default async function threadStateNotification(
   threadId: number | bigint
@@ -10,7 +13,7 @@ export default async function threadStateNotification(
       Alias: true,
       Team: {
         include: {
-          Inboxs: true,
+          Inboxes: true,
           Members: { include: { Profile: true } },
           Namespace: true,
         },
@@ -21,6 +24,7 @@ export default async function threadStateNotification(
           EmailMessage: true,
         },
       },
+      ThreadState: { orderBy: { createdAt: "desc" }, take: 2 },
     },
   });
 
@@ -28,36 +32,85 @@ export default async function threadStateNotification(
     throw new Error("Thread not found");
   }
 
-  const members = thread.Team.Members;
+  const currentState: ThreadStateType | undefined =
+    thread.ThreadState?.[0]?.state;
+  const previousState: ThreadStateType | undefined =
+    thread.ThreadState?.[1]?.state;
 
-  await prisma.notification.createMany({
-    data: members.map((m) => ({
-      forMemberId: m.id,
-      text: `Thread un-snoozed from ${thread.Alias.emailAddress}`,
-      deliveredAt: new Date(),
-      threadId: threadId,
-    })),
-  });
+  let thisType: NotificationType | undefined;
 
-  const ourEmails = thread.Team.Inboxs.map((i) => i.emailAddress);
-  const emails = members.map((m) => {
-    if (ourEmails.findIndex((e) => e === m.Profile?.email) !== -1) {
-      console.log("Was going to send to self");
+  if (currentState === "open" && previousState === "snoozed") {
+    thisType = "ThreadAwaken";
+  } else if (currentState === "done") {
+    thisType = "ThreadClosed";
+  } else {
+    thisType = undefined;
+  }
+
+  console.log(
+    "currentState, previousState, NotificationType",
+    currentState,
+    previousState,
+    thisType
+  );
+
+  if (thisType === undefined) {
+    return;
+  }
+
+  const ourEmails = thread.Team.Inboxes.map((i) => i.emailAddress);
+  const namespace = thread.Team.Namespace.namespace;
+
+  const generatedNotifications = thread.Team.Members.map(async (tm) => {
+    if (thisType === undefined) {
       return;
     }
 
-    const namespace = thread.Team.Namespace.namespace;
-
-    return sendPostmarkEmail({
-      to: m.Profile?.email || "",
-      subject: `Thread un-snoozed from ${thread.Alias.emailAddress}`,
-      htmlBody: [
-        "<strong>Thread Notification</strong><br>",
-        "Thread un-snoozed",
-        `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
-      ],
+    const preferences = await prisma.notificationPreference.findMany({
+      where: {
+        teamMemberId: tm.id,
+        type: thisType,
+        gmailInboxId: thread.gmailInboxId,
+      },
     });
+
+    const inAppPref =
+      preferences.find((p) => p.channel === "InApp")?.enabled ||
+      notificationDefaults[thisType];
+
+    if (inAppPref === true) {
+      await prisma.notification.create({
+        data: {
+          forMemberId: tm.id,
+          text: `Thread un-snoozed for ${thread.Alias.emailAddress}`,
+          deliveredAt: new Date(),
+          threadId: threadId,
+          type: thisType,
+        },
+      });
+    }
+
+    const emailPref =
+      preferences.find((p) => p.channel === "InApp")?.enabled ||
+      notificationDefaults[thisType];
+
+    if (emailPref === true) {
+      if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
+        console.log("Was going to send to self");
+        return;
+      }
+
+      await sendPostmarkEmail({
+        to: tm.Profile?.email || "",
+        subject: `Thread un-snoozed for ${thread.Alias.emailAddress}`,
+        htmlBody: [
+          "<strong>Thread Notification</strong><br>",
+          "Thread un-snoozed",
+          `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
+        ],
+      });
+    }
   });
 
-  await Promise.allSettled(emails);
+  await Promise.allSettled(generatedNotifications);
 }
