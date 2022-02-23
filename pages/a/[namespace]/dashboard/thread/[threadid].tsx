@@ -4,11 +4,13 @@ import { ReactElement, useEffect, useRef } from "react";
 import Head from "next/head";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
 import {
+  CheckIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   ClipboardCopyIcon,
+  ClockIcon,
 } from "@heroicons/react/outline";
-import { formatDistanceToNowStrict } from "date-fns";
+import { addDays, addMinutes, formatDistanceToNowStrict } from "date-fns";
 
 import AppLayout from "layouts/app";
 import useGetThread from "client/getThread";
@@ -18,7 +20,8 @@ import InputWithRef from "components/Input";
 import Message, { MyMessageType } from "components/Thread/Message";
 import useGetTeamId from "client/getTeamId";
 import useGetAliasThreads from "client/getAliasThreads";
-import { Return } from "pages/api/v1/thread/[threadid]/link";
+import useGetSecureThreadLink from "client/getSecureThreadLink";
+import changeThreadState from "client/changeThreadState";
 
 export default function ThreadViewer() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -26,6 +29,8 @@ export default function ThreadViewer() {
   const { threadid } = router.query;
   let threadNum: number | undefined = parseInt(threadid as string, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
+
+  const { data: threadLink } = useGetSecureThreadLink(threadNum);
 
   const { data: thread } = useGetThread(threadNum);
   const teamId = useGetTeamId() || null;
@@ -71,145 +76,277 @@ export default function ThreadViewer() {
 
       <AppHeaderHOC />
 
-      <AppContainer className="relative -mt-12 flex h-screen pt-12">
-        <div className="flex h-full w-14 shrink-0 flex-col items-center pt-14">
-          <Link
-            href={{
-              pathname: "/a/[namespace]/dashboard",
-              query: { namespace: router.query.namespace },
-            }}
-          >
-            <a className="block rounded-full hover:shadow-zinc-900">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
-                <ArrowLeftIcon className="h-6 w-6" />
-              </div>
-            </a>
-          </Link>
-
-          <Link href="/">
-            <a className="mt-7 flex h-12 w-10 justify-center rounded-t-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200">
-              <div className="relative h-full w-6">
-                <ChevronUpIcon className="absolute top-2 h-6 w-6" />
-              </div>
-            </a>
-          </Link>
-          <Link href="/">
-            <a className="flex h-12 w-10 justify-center rounded-b-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200">
-              <div className="relative h-full w-6">
-                <ChevronDownIcon className="absolute bottom-2 h-6 w-6" />
-              </div>
-            </a>
-          </Link>
-        </div>
-        <div className="flex h-full grow flex-col pt-7">
-          <div className="grow overflow-scroll">
-            {threads ? (
-              threads.map((t) => (
-                <ThreadPrinter
-                  key={t.id}
-                  subject={t.Message.reverse()[0].EmailMessage?.subject}
-                  messages={t.Message}
-                  teamId={teamId}
-                  threadId={t.id}
-                />
-              ))
-            ) : thread ? (
-              <>
-                <LoadingThread />
-                <ThreadPrinter
-                  subject={thread?.Message.reverse()[0].EmailMessage?.subject}
-                  messages={thread?.Message}
-                  teamId={teamId}
-                  threadId={thread.id}
-                />
-              </>
-            ) : (
-              <LoadingThread />
-            )}
-
-            <div id="thread-bottom" ref={divRef} />
-          </div>
-          <div className="shrink-0 pb-2">
-            <InputWithRef
-              submit={async () => {
-                return;
-              }}
-            />
-          </div>
-        </div>
-        <div className="min-w-[13rem] shrink-0 px-4 py-7">
-          <div className="d-border-zinc-600 d-bg-black d-border flex min-h-[100px] flex-col rounded-md px-2 py-2">
-            {thread ? (
-              <>
-                <div className="text-sm">
-                  {thread.Message[0].AliasEmail.emailAddress}
-                </div>
-                <div className="text-xs text-zinc-400">
-                  Created{" "}
-                  {formatDistanceToNowStrict(new Date(thread.createdAt), {
-                    addSuffix: true,
-                  })}
-                </div>
-                {threads ? (
-                  <>
-                    <div className="mt-7 text-sm font-medium text-zinc-500">
-                      Threads
-                    </div>
-                    {threads.map((t) => (
-                      <div
-                        onClick={() => {
-                          scrollToID(`top-thread-${t.id}`);
-                        }}
-                        key={t.id}
-                        className="flex cursor-pointer items-center justify-between space-x-3 text-xs text-zinc-300"
-                      >
-                        <div>
-                          {t.Message.reverse()[0].EmailMessage?.subject}
-                        </div>
-                        <div className="text-zinc-500">
-                          {formatDistanceToNowStrict(new Date(t.createdAt), {
-                            addSuffix: true,
-                          })}
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  <></>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-            <div className="mt-7 text-sm font-medium text-zinc-500">
-              Actions
-            </div>
-            <div
-              className="flex w-full cursor-pointer items-center justify-between text-zinc-400 hover:text-zinc-100"
-              onClick={async () => {
-                const res = await fetch(`/api/v1/thread/${threadid}/link`, {
-                  method: "GET",
-                  headers: { Accept: "application/json" },
-                });
-
-                switch (res.status) {
-                  case 200: {
-                    const body = (await res.json()) as Return;
-                    await navigator.clipboard.writeText(body.absoluteLink);
-                    break;
-                  }
-
-                  default: {
-                    const body = await res.json();
-                    console.error(body);
-                    return;
-                  }
-                }
+      <AppContainer className="">
+        <div className="flex h-[calc(100vh_-_3rem)] w-full overflow-x-hidden">
+          <div className="flex h-full w-[3.5rem] shrink-0 flex-col items-center pt-14">
+            <Link
+              href={{
+                pathname: "/a/[namespace]/dashboard",
+                query: { namespace: router.query.namespace },
               }}
             >
-              <div className="text-xs">Copy secure link</div>
-              <div className="">
-                <ClipboardCopyIcon className="h-4 w-4" />
+              <a className="block rounded-full hover:shadow-zinc-900">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
+                  <ArrowLeftIcon className="h-6 w-6" />
+                </div>
+              </a>
+            </Link>
+
+            <Link href="/">
+              <a className="mt-7 flex h-12 w-10 justify-center rounded-t-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200">
+                <div className="relative h-full w-6">
+                  <ChevronUpIcon className="absolute top-2 h-6 w-6" />
+                </div>
+              </a>
+            </Link>
+            <Link href="/">
+              <a className="flex h-12 w-10 justify-center rounded-b-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200">
+                <div className="relative h-full w-6">
+                  <ChevronDownIcon className="absolute bottom-2 h-6 w-6" />
+                </div>
+              </a>
+            </Link>
+          </div>
+          <div className="flex h-full w-[calc(100%_-_16.5rem)] flex-col pt-7">
+            <div className="grow overflow-x-hidden overflow-y-scroll">
+              {threads ? (
+                threads.map((t) => (
+                  <ThreadPrinter
+                    key={t.id}
+                    subject={t.Message.reverse()[0].EmailMessage?.subject}
+                    messages={t.Message}
+                    teamId={teamId}
+                    threadId={t.id}
+                  />
+                ))
+              ) : thread ? (
+                <>
+                  <LoadingThread />
+                  <ThreadPrinter
+                    subject={thread?.Message.reverse()[0].EmailMessage?.subject}
+                    messages={thread?.Message}
+                    teamId={teamId}
+                    threadId={thread.id}
+                  />
+                </>
+              ) : (
+                <LoadingThread />
+              )}
+
+              <div id="thread-bottom" ref={divRef} />
+            </div>
+            <div className="shrink-0 pb-2">
+              <InputWithRef
+                submit={async () => {
+                  return;
+                }}
+              />
+            </div>
+          </div>
+          <div className="w-[13rem] shrink-0 px-4 py-7">
+            <div className="d-border-zinc-600 d-bg-black d-border flex min-h-[100px] flex-col rounded-md px-2 py-2">
+              {thread ? (
+                <>
+                  <div className="truncate text-sm line-clamp-1">
+                    {thread.Message[0].AliasEmail.emailAddress}
+                  </div>
+                  <div className="text-xs text-zinc-400">
+                    Created{" "}
+                    {formatDistanceToNowStrict(new Date(thread.createdAt), {
+                      addSuffix: true,
+                    })}
+                  </div>
+                  {threads ? (
+                    <>
+                      <div className="mt-7 text-sm font-medium text-zinc-500">
+                        Threads
+                      </div>
+                      {threads.map((t) => (
+                        <div
+                          onClick={() => {
+                            scrollToID(`top-thread-${t.id}`);
+                          }}
+                          key={t.id}
+                          className="flex cursor-pointer items-center justify-between space-x-3 truncate text-xs text-zinc-400 line-clamp-1 hover:text-zinc-100"
+                        >
+                          <div>
+                            {t.Message.reverse()[0].EmailMessage?.subject.trim()}
+                          </div>
+                          <div className="text-zinc-500">
+                            {formatDistanceToNowStrict(new Date(t.createdAt), {
+                              addSuffix: true,
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+              <div className="mt-7 text-sm font-medium text-zinc-500">
+                Actions
+              </div>
+              <div
+                className="flex w-full cursor-pointer items-center justify-between text-zinc-400 hover:text-zinc-100"
+                onClick={async () => {
+                  try {
+                    if (threadLink !== undefined) {
+                      await navigator.clipboard.writeText(
+                        threadLink?.absoluteLink
+                      );
+                    } else {
+                      alert("Could not get secure link");
+                    }
+                  } catch (e) {
+                    console.error("Can't copy", e);
+                    alert("Could not copy");
+                  }
+                }}
+              >
+                <div className="text-xs">Copy secure link</div>
+                <div className="">
+                  <ClipboardCopyIcon className="h-4 w-4" />
+                </div>
+              </div>
+
+              <div className="mt-7 text-sm font-medium text-zinc-500">
+                Modify ticket
+              </div>
+              <div
+                className="-mx-1  flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-lime-800 hover:bg-opacity-30 hover:text-lime-500"
+                onClick={async () => {
+                  if (threadNum === undefined) {
+                    alert("Not sure what thread this is");
+                    return;
+                  }
+                  try {
+                    await changeThreadState(threadNum, { state: "done" });
+                    router.push({
+                      pathname: "/a/[namespace]/dashboard",
+                      query: router.query,
+                    });
+                  } catch (e) {
+                    console.error(e);
+                    alert("Could not change state of thread");
+                  }
+                }}
+              >
+                <div className="text-xs">Mark done</div>
+                <div className="">
+                  <CheckIcon className="h-4 w-4" />
+                </div>
+              </div>
+              <div
+                className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
+                onClick={async () => {
+                  if (threadNum === undefined) {
+                    alert("Not sure what thread this is");
+                    return;
+                  }
+                  try {
+                    await changeThreadState(threadNum, {
+                      state: "snoozed",
+                      snoozeDate: addDays(new Date(), 1).toISOString(),
+                    });
+                    router.push({
+                      pathname: "/a/[namespace]/dashboard",
+                      query: router.query,
+                    });
+                  } catch (e) {
+                    console.error(e);
+                    alert("Could not change state of thread");
+                  }
+                }}
+              >
+                <div className="text-xs">Snooze 1 day</div>
+                <div className="">
+                  <ClockIcon className="h-4 w-4" />
+                </div>
+              </div>
+              <div
+                className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-20 hover:text-yellow-600"
+                onClick={async () => {
+                  if (threadNum === undefined) {
+                    alert("Not sure what thread this is");
+                    return;
+                  }
+                  try {
+                    await changeThreadState(threadNum, {
+                      state: "snoozed",
+                      snoozeDate: addDays(new Date(), 3).toISOString(),
+                    });
+                    router.push({
+                      pathname: "/a/[namespace]/dashboard",
+                      query: router.query,
+                    });
+                  } catch (e) {
+                    console.error(e);
+                    alert("Could not change state of thread");
+                  }
+                }}
+              >
+                <div className="text-xs">Snooze 3 days</div>
+                <div className="">
+                  <ClockIcon className="h-4 w-4" />
+                </div>
+              </div>
+              <div
+                className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-10 hover:text-yellow-700"
+                onClick={async () => {
+                  if (threadNum === undefined) {
+                    alert("Not sure what thread this is");
+                    return;
+                  }
+                  try {
+                    await changeThreadState(threadNum, {
+                      state: "snoozed",
+                      snoozeDate: addDays(new Date(), 7).toISOString(),
+                    });
+                    router.push({
+                      pathname: "/a/[namespace]/dashboard",
+                      query: router.query,
+                    });
+                  } catch (e) {
+                    console.error(e);
+                    alert("Could not change state of thread");
+                  }
+                }}
+              >
+                <div className="text-xs">Snooze 7 days</div>
+                <div className="">
+                  <ClockIcon className="h-4 w-4" />
+                </div>
+              </div>
+              <div
+                className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-10 hover:text-yellow-700"
+                onClick={async () => {
+                  if (threadNum === undefined) {
+                    alert("Not sure what thread this is");
+                    return;
+                  }
+                  try {
+                    await changeThreadState(threadNum, {
+                      state: "snoozed",
+                      snoozeDate: addMinutes(new Date(), 5).toISOString(),
+                    });
+                    router.push({
+                      pathname: "/a/[namespace]/dashboard",
+                      query: router.query,
+                    });
+                  } catch (e) {
+                    console.error(e);
+                    alert("Could not change state of thread");
+                  }
+                }}
+              >
+                <div className="text-xs">Snooze 5 minutes</div>
+                <div className="">
+                  <ClockIcon className="h-4 w-4" />
+                </div>
               </div>
             </div>
           </div>
@@ -264,7 +401,9 @@ function ThreadPrinter(props: ThreadPrinterProps) {
           {props.subject ? (
             <div className="flex w-full items-center">
               <div className="h-[1px] grow bg-zinc-600" />
-              <div className="mx-2 shrink-0 text-xs">{props.subject}</div>
+              <div className="mx-2 max-w-[60%] shrink-0 text-xs line-clamp-1">
+                {props.subject}
+              </div>
               <div className="h-[1px] grow bg-zinc-600" />
             </div>
           ) : (

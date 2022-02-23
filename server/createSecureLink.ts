@@ -32,7 +32,7 @@ export default async function createSecureThreadLink(
   const encodedTL = hashids.encode(threadLink.id);
   const host = `${process.env.PROTOCOL}://${process.env.DOMAIN}`;
 
-  const secureURL = `${host}/${namespace}/secure-msg/${encodedTL}`;
+  const secureURL = `${host}/p/${namespace}/secure-msg/${encodedTL}`;
   console.log("secureURL", secureURL);
 
   return secureURL;
