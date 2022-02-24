@@ -84,6 +84,10 @@ export default async function commentNotification(commentId: bigint) {
         return;
       }
 
+      const commentId = Number(comment.id);
+      const domain = process.env.DOMAIN;
+      const link = `https://${domain}/a/${namespace}/thread/${threadId}?comment=${commentId}`;
+
       await sendPostmarkEmail({
         to: tm.Profile.email || "",
         subject: `Mentioned in a comment on Willow`,
@@ -96,7 +100,7 @@ export default async function commentNotification(commentId: bigint) {
             .replace(/\r\n/g, "\n")
             .split("\n")
             .map((t) => `<p>${t}</p>`),
-          `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
+          `<p>${link}</p>`,
         ],
       });
     }
