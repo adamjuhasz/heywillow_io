@@ -51,7 +51,11 @@ export default function CommentBox(props: Props) {
           </span>
         </div>
         {props.comments.map((c) => (
-          <div key={`${c.id}`} className="my-2 flex flex-col px-2">
+          <div
+            key={`${c.id}`}
+            id={`comment-${c.id}`}
+            className="my-2 flex flex-col px-2"
+          >
             <div className="mx-1 flex items-center text-xs text-slate-500">
               <Avatar
                 key={`${c.id}`}
