@@ -4,6 +4,9 @@ import Link from "next/link";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
 
+import unwrapRFC2822 from "shared/rfc2822unwrap";
+import applyMaybe from "shared/applyMaybe";
+
 interface MiniAlias {
   emailAddress: string;
 }
@@ -55,8 +58,13 @@ function Card({ t }: { t: FetchResponse }) {
   const router = useRouter();
 
   const lastMessage = t.Message.reverse()[0];
-  const preview =
-    lastMessage.EmailMessage?.body || lastMessage.InternalMessage?.body || "";
+
+  const unwrappedBody = applyMaybe(
+    unwrapRFC2822,
+    lastMessage.EmailMessage?.body
+  );
+
+  const preview = unwrappedBody || lastMessage.InternalMessage?.body || "";
   return (
     <Link
       href={{

@@ -7,6 +7,8 @@ import createAuthedGmail from "server/gmail/createAuthedGmail";
 import createSecureThreadLink from "server/createSecureLink";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
+import unwrapRFC2822 from "shared/rfc2822unwrap";
+import applyMaybe from "shared/applyMaybe";
 
 export default async function messageNotification(messageId: bigint) {
   console.log("messageNotification", messageId);
@@ -41,7 +43,9 @@ export default async function messageNotification(messageId: bigint) {
       ? `New message from ${message.Thread.Alias.emailAddress}`
       : `New message sent to ${message.Thread.Alias.emailAddress}`;
   const bodyOfMessage =
-    message.EmailMessage?.body || message.InternalMessage?.body || "Unknown";
+    applyMaybe(unwrapRFC2822, message.EmailMessage?.body) ||
+    message.InternalMessage?.body ||
+    "Unknown";
   const subject = message.EmailMessage?.subject;
   const threadId = Number(message.threadId);
 
@@ -113,7 +117,9 @@ export default async function messageNotification(messageId: bigint) {
     const inbox = message.Thread.Team.Inboxes[0];
     const inboxId = inbox.id;
     const gmail = await createAuthedGmail(Number(inboxId));
-    const body = message.InternalMessage?.body || message.EmailMessage?.body;
+    const body =
+      message.InternalMessage?.body ||
+      applyMaybe(unwrapRFC2822, message.EmailMessage?.body);
 
     const secureURL = await createSecureThreadLink(
       message.Thread.id,

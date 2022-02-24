@@ -6,6 +6,8 @@ import { MessageDirection } from "@prisma/client";
 import { SupabaseAttachment, SupabaseComment } from "types/supabase";
 import Avatar from "components/Avatar";
 import Attachment from "components/Thread/Attachment";
+import unwrapRFC2822 from "shared/rfc2822unwrap";
+import applyMaybe from "shared/applyMaybe";
 
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
 
@@ -30,8 +32,11 @@ interface InterfaceProps {
 
 export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
   function Message(props, ref) {
-    const text: string =
-      defaultTo(props.EmailMessage?.body, props.InternalMessage?.body) || "";
+    const formattedEmail = applyMaybe(unwrapRFC2822, props.EmailMessage?.body);
+
+    let bodyText: string =
+      defaultTo(formattedEmail, props.InternalMessage?.body) || "";
+    bodyText = bodyText.replace(/\r\n/g, "\n");
     const author: string =
       props.AliasEmail?.emailAddress ||
       props.TeamMember?.Profile.email ||
@@ -98,15 +103,12 @@ export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
                   ""
                 )}
                 <div className="flex w-full flex-col">
-                  {text
-                    .replace(/\r\n/g, "\n")
-                    .split("\n")
-                    .map((b, i) => (
-                      <div key={i} className="w-full">
-                        <Redacted str={b} />
-                        &nbsp;
-                      </div>
-                    ))}
+                  {bodyText.split("\n").map((b, i) => (
+                    <div key={i} className="w-full">
+                      <Redacted str={b} />
+                      &nbsp;
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

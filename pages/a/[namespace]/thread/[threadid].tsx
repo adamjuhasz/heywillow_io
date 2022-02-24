@@ -37,6 +37,8 @@ import useGetSecureThreadLink from "client/getSecureThreadLink";
 import changeThreadState from "client/changeThreadState";
 import postNewMessage from "client/postNewMessage";
 import CommentBox from "components/Thread/CommentBox";
+import unwrapRFC2822 from "shared/rfc2822unwrap";
+import applyMaybe from "shared/applyMaybe";
 
 export default function ThreadViewer() {
   const [scrolled, setScrolled] = useState(false);
@@ -533,11 +535,13 @@ function MessagePrinter(props: MessagePrinterProps) {
     };
   }, [refs.reference, refs.floating, update]);
 
+  const unwrappedEmail = applyMaybe(
+    unwrapRFC2822,
+    props.message.EmailMessage?.body
+  );
+
   const text =
-    defaultTo(
-      props.message.EmailMessage?.body,
-      props.message.InternalMessage?.body
-    ) || "";
+    defaultTo(unwrappedEmail, props.message.InternalMessage?.body) || "";
 
   // absolute bottom-[calc(100%_-_10px)] // props.message.direction === "incoming" ? "-right-4" : "-right-6",
   return (
