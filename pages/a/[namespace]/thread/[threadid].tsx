@@ -25,7 +25,7 @@ import postNewMessage from "client/postNewMessage";
 export default function ThreadViewer() {
   const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { threadid } = router.query;
+  const { threadid, comment } = router.query;
   let threadNum: number | undefined = parseInt(threadid as string, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
 
@@ -38,22 +38,30 @@ export default function ThreadViewer() {
   );
 
   useEffect(() => {
+    if (comment !== undefined) {
+      return;
+    }
+
     if (divRef.current === null) {
       console.log("divRef is null");
       return;
     }
 
     divRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [thread]);
+  }, [comment, thread]);
 
   useEffect(() => {
+    if (comment !== undefined) {
+      return;
+    }
+
     if (divRef.current === null) {
       console.log("divRef is null");
       return;
     }
 
     divRef.current.scrollIntoView({ behavior: "auto" });
-  }, [threads]);
+  }, [comment, threads]);
 
   const scrollToID = (id: string) => {
     const element = document.getElementById(id);
@@ -64,6 +72,14 @@ export default function ThreadViewer() {
 
     element.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (comment === undefined) {
+      return;
+    }
+
+    scrollToID(`comment-${parseInt(comment as string, 10)}`);
+  }, [comment]);
 
   const customerEmail = thread?.Message.filter((m) => m.AliasEmail !== null)[0]
     ?.AliasEmail?.emailAddress;
