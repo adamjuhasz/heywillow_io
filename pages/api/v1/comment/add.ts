@@ -10,15 +10,16 @@ export interface Body {
   teamId: number;
 }
 
-type Return =
-  | Record<string, never>
-  | {
-      error: string;
-    };
+export type Return = { id: number };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Return>
+  res: NextApiResponse<
+    | Return
+    | {
+        error: string;
+      }
+  >
 ) {
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
@@ -44,5 +45,5 @@ export default async function handler(
   console.log("comment", comment);
   await commentNotification(comment.id);
 
-  res.json({});
+  res.json({ id: Number(comment.id) });
 }

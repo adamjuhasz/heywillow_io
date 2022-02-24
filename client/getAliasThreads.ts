@@ -2,30 +2,8 @@ import { useDebugValue } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import {
-  SupabaseAliasEmail,
-  SupabaseAttachment,
-  SupabaseComment,
-  SupabaseEmailMessage,
-  SupabaseInternalMessage,
-  SupabaseMessage,
-  SupabaseProfile,
-  SupabaseThread,
-  SupabaseThreadState,
-} from "types/supabase";
 import { useSupabase } from "components/UserContext";
-
-type ThreadFetch = SupabaseThread & {
-  ThreadState: SupabaseThreadState[];
-  Message: (SupabaseMessage & {
-    AliasEmail: SupabaseAliasEmail;
-    Comment: SupabaseComment[];
-    EmailMessage: SupabaseEmailMessage | null;
-    InternalMessage: SupabaseInternalMessage | null;
-    TeamMember: { Profile: SupabaseProfile } | null;
-    Attachment: SupabaseAttachment[];
-  })[];
-};
+import { ThreadFetch, selectQuery } from "./getThread";
 
 export async function getAliasThreads(
   supabase: SupabaseClient,
@@ -33,23 +11,7 @@ export async function getAliasThreads(
 ) {
   const res = await supabase
     .from<ThreadFetch>("Thread")
-    .select(
-      `
-      *,
-      ThreadState(*),
-      Message!Message_threadId_fkey ( 
-        *, 
-        AliasEmail(*),
-        EmailMessage(*),
-        InternalMessage(*),
-        Comment!Comment_messageId_fkey(*),
-        TeamMember!Message_teamMemberId_fkey(
-          Profile(*)
-        ),
-        Attachment(*)
-      )
-      `
-    )
+    .select(selectQuery)
     .eq("aliasEmailId", aliasId)
     .order("createdAt", { ascending: true });
 
