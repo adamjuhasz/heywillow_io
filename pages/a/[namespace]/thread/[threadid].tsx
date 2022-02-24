@@ -108,7 +108,7 @@ export default function ThreadViewer() {
               </a>
             </Link>
           </div>
-          <div className="flex h-full w-[calc(100%_-_16.5rem)] flex-col pt-7">
+          <div className="flex h-full w-[calc(100%_-_3rem_-_20rem)] flex-col pt-7">
             <div className="grow overflow-x-hidden overflow-y-scroll">
               {threads ? (
                 threads.map((t) => (
@@ -161,7 +161,7 @@ export default function ThreadViewer() {
               />
             </div>
           </div>
-          <div className="w-[13rem] shrink-0 px-4 py-7">
+          <div className="w-[20rem] shrink-0 px-4 py-7">
             <div className="d-border-zinc-600 d-bg-black d-border flex min-h-[100px] flex-col rounded-md px-2 py-2">
               {thread ? (
                 <>
