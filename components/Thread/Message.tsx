@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { MouseEventHandler, forwardRef, useState } from "react";
 import { format } from "date-fns";
 import { defaultTo } from "lodash";
-import { PlusCircleIcon } from "@heroicons/react/outline";
 import { MessageDirection } from "@prisma/client";
 
-import CommentBox from "components/Inbox/CommentBox";
 import { SupabaseAttachment, SupabaseComment } from "types/supabase";
 import Avatar from "components/Avatar";
 import Attachment from "components/Thread/Attachment";
@@ -24,36 +22,29 @@ export type MyMessageType = {
   Attachment: SupabaseAttachment[];
 };
 
-type Props = MyMessageType & {
-  mutate?: () => void;
-};
-
 interface InterfaceProps {
   teamId: number | null;
+  onMouseEnter?: MouseEventHandler<HTMLDivElement>;
+  onMouseLeave?: MouseEventHandler<HTMLDivElement>;
 }
 
-export default function Message(props: Props & InterfaceProps) {
-  const [hovering, setHovering] = useState(false);
-  const [commenting, setCommenting] = useState(props.Comment.length > 0);
+export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
+  function Message(props, ref) {
+    const text: string =
+      defaultTo(props.EmailMessage?.body, props.InternalMessage?.body) || "";
+    const author: string =
+      props.AliasEmail?.emailAddress ||
+      props.TeamMember?.Profile.email ||
+      "Author";
 
-  const text: string =
-    defaultTo(props.EmailMessage?.body, props.InternalMessage?.body) || "";
-  const author: string =
-    props.AliasEmail?.emailAddress ||
-    props.TeamMember?.Profile.email ||
-    "Author";
-
-  return (
-    <>
-      <li
+    return (
+      <div
         className={[
           "flex w-full",
           props.direction === "incoming" ? "self-start" : "",
           props.direction === "outgoing" ? "self-end" : "",
           props.direction === "outgoing" ? "flex-row-reverse" : "flex-row",
         ].join(" ")}
-        onMouseEnter={() => setHovering(true)}
-        onMouseLeave={() => setHovering(false)}
       >
         <div className="ml-[0.25rem] flex w-[1.5rem] grow-0 flex-col">
           <div className="text-xs font-medium">&nbsp;</div>
@@ -74,34 +65,55 @@ export default function Message(props: Props & InterfaceProps) {
 
           <div
             className={[
-              "w-fit overflow-x-hidden rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
-              props.direction === "incoming"
-                ? "rounded-tl-none bg-violet-800 text-violet-50"
-                : "",
-              props.direction === "outgoing"
-                ? "rounded-tr-none bg-violet-100 text-violet-900"
-                : "",
+              "flex items-center sm:min-w-[30%] sm:max-w-[70%]",
+              props.direction === "incoming" ? "flex-row" : "flex-row-reverse",
             ].join(" ")}
           >
-            <div className="space-y-0 text-sm">
-              {props.EmailMessage !== null ? (
-                <div className="text-md mb-2 font-bold">
-                  {props.EmailMessage.subject}
+            <div
+              onMouseEnter={(e) => {
+                console.log("entering");
+                if (props.onMouseEnter) {
+                  props.onMouseEnter(e);
+                }
+                props.onMouseEnter;
+              }}
+              onMouseLeave={props.onMouseLeave}
+              ref={ref}
+              className={[
+                "relative w-fit rounded-2xl px-3 py-3",
+                props.direction === "incoming"
+                  ? "rounded-tl-none bg-violet-800 text-violet-50"
+                  : "",
+                props.direction === "outgoing"
+                  ? "rounded-tr-none bg-violet-500 bg-opacity-20 text-violet-400"
+                  : "",
+              ].join(" ")}
+            >
+              <div className="space-y-0 text-sm">
+                {props.EmailMessage !== null ? (
+                  <div className="text-md mb-2 font-bold">
+                    {props.EmailMessage.subject}
+                  </div>
+                ) : (
+                  ""
+                )}
+                <div className="flex w-full flex-col">
+                  {text
+                    .replace(/\r\n/g, "\n")
+                    .split("\n")
+                    .map((b, i) => (
+                      <div key={i} className="w-full">
+                        <Redacted str={b} />
+                        &nbsp;
+                      </div>
+                    ))}
                 </div>
-              ) : (
-                ""
-              )}
-              <div className="flex w-full flex-col">
-                {text
-                  .replace(/\r\n/g, "\n")
-                  .split("\n")
-                  .map((b, i) => (
-                    <div key={i} className="w-full">
-                      <Redacted str={b} />
-                      &nbsp;
-                    </div>
-                  ))}
               </div>
+            </div>
+            <div className={["mx-1 mt-1 text-xs font-medium"].join(" ")}>
+              <span className="text-zinc-600">
+                {format(new Date(props.createdAt), "p")}
+              </span>
             </div>
           </div>
 
@@ -110,48 +122,11 @@ export default function Message(props: Props & InterfaceProps) {
               <Attachment key={a.id} {...a} />
             ))}
           </div>
-
-          <div
-            className={[
-              "mx-3 mt-1 text-xs font-medium",
-              props.direction === "outgoing" ? "self-end" : "",
-            ].join(" ")}
-          >
-            <span className="text-zinc-400">
-              {format(new Date(props.createdAt), "p")}
-            </span>
-          </div>
-          {hovering && !commenting && props.teamId !== null ? (
-            <button
-              className={[
-                "w-fit rounded-full bg-yellow-100 px-4 py-2 text-yellow-600",
-                "flex items-center",
-                "hover:bg-yellow-200",
-              ].join(" ")}
-              onClick={() => setCommenting(true)}
-            >
-              <PlusCircleIcon className="mr-1 h-5 w-5" />
-              Add comment
-            </button>
-          ) : (
-            <></>
-          )}
         </div>
-      </li>
-      {commenting && props.teamId !== null ? (
-        <CommentBox
-          comments={props.Comment}
-          incoming={props.direction === "incoming"}
-          messageId={Number(props.id)}
-          teamId={props.teamId}
-          mutate={props.mutate}
-        />
-      ) : (
-        <></>
-      )}
-    </>
-  );
-}
+      </div>
+    );
+  }
+);
 
 function Redacted({ str }: { str: string }): JSX.Element {
   const [redacted, setRedaction] = useState(true);

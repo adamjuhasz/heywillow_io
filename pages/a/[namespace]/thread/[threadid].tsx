@@ -1,28 +1,45 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ReactElement, useEffect, useRef } from "react";
+import {
+  PropsWithChildren,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Head from "next/head";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
 import {
+  AnnotationIcon,
   CheckIcon,
   ClipboardCopyIcon,
   ClockIcon,
 } from "@heroicons/react/outline";
 import { addDays, addMinutes, formatDistanceToNowStrict } from "date-fns";
+import {
+  flip,
+  getScrollParents,
+  offset,
+  shift,
+  useFloating,
+} from "@floating-ui/react-dom";
+import { defaultTo } from "lodash";
 
 import AppLayout from "layouts/app";
-import useGetThread from "client/getThread";
+import useGetThread, { ThreadFetch } from "client/getThread";
 import AppHeaderHOC from "components/App/HeaderHOC";
 import AppContainer from "components/App/Container";
 import InputWithRef from "components/Input";
-import Message, { MyMessageType } from "components/Thread/Message";
+import Message from "components/Thread/Message";
 import useGetTeamId from "client/getTeamId";
 import useGetAliasThreads from "client/getAliasThreads";
 import useGetSecureThreadLink from "client/getSecureThreadLink";
 import changeThreadState from "client/changeThreadState";
 import postNewMessage from "client/postNewMessage";
+import CommentBox from "components/Thread/CommentBox";
 
 export default function ThreadViewer() {
+  const [scrolled, setScrolled] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { threadid, comment } = router.query;
@@ -38,7 +55,7 @@ export default function ThreadViewer() {
   );
 
   useEffect(() => {
-    if (comment !== undefined) {
+    if (comment !== undefined || scrolled) {
       return;
     }
 
@@ -48,10 +65,11 @@ export default function ThreadViewer() {
     }
 
     divRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [comment, thread]);
+    setScrolled(true);
+  }, [scrolled, comment, thread]);
 
   useEffect(() => {
-    if (comment !== undefined) {
+    if (comment !== undefined || scrolled) {
       return;
     }
 
@@ -61,7 +79,8 @@ export default function ThreadViewer() {
     }
 
     divRef.current.scrollIntoView({ behavior: "auto" });
-  }, [comment, threads]);
+    setScrolled(true);
+  }, [scrolled, comment, threads]);
 
   const scrollToID = (id: string) => {
     const element = document.getElementById(id);
@@ -74,15 +93,23 @@ export default function ThreadViewer() {
   };
 
   useEffect(() => {
-    if (comment === undefined) {
+    if (comment === undefined || scrolled) {
       return;
     }
 
     scrollToID(`comment-${parseInt(comment as string, 10)}`);
-  }, [comment]);
+    setScrolled(true);
+  }, [scrolled, comment]);
 
   const customerEmail = thread?.Message.filter((m) => m.AliasEmail !== null)[0]
     ?.AliasEmail?.emailAddress;
+
+  const refreshComment = async (commentId: number) => {
+    await Promise.allSettled([mutateThread(), mutateThreads()]);
+    router.replace({
+      query: { ...router.query, comment: commentId },
+    });
+  };
 
   return (
     <>
@@ -122,6 +149,7 @@ export default function ThreadViewer() {
                     messages={t.Message}
                     teamId={teamId}
                     threadId={t.id}
+                    mutate={refreshComment}
                   />
                 ))
               ) : thread ? (
@@ -136,6 +164,7 @@ export default function ThreadViewer() {
                     messages={thread?.Message}
                     teamId={teamId}
                     threadId={thread.id}
+                    mutate={refreshComment}
                   />
                 </>
               ) : (
@@ -413,10 +442,11 @@ function LoadingThread() {
 }
 
 interface ThreadPrinterProps {
-  messages?: MyMessageType[];
+  messages?: ThreadFetch["Message"];
   teamId: number | null;
   subject?: string;
   threadId?: number;
+  mutate?: (id: number) => unknown;
 }
 
 function ThreadPrinter(props: ThreadPrinterProps) {
@@ -425,19 +455,14 @@ function ThreadPrinter(props: ThreadPrinterProps) {
       {props.threadId ? <div id={`top-thread-${props.threadId}`} /> : <></>}
       {props.messages ? (
         <>
-          {props.subject ? (
-            <div className="flex w-full items-center">
-              <div className="h-[1px] grow bg-zinc-600" />
-              <div className="mx-2 max-w-[60%] shrink-0 text-xs line-clamp-1">
-                {props.subject}
-              </div>
-              <div className="h-[1px] grow bg-zinc-600" />
-            </div>
-          ) : (
-            <></>
-          )}
+          {props.subject ? <SubjectLine>{props.subject}</SubjectLine> : <></>}
           {props.messages.map((m) => (
-            <Message key={m.id} {...m} teamId={props.teamId} />
+            <MessagePrinter
+              key={m.id}
+              message={m}
+              teamId={props.teamId}
+              mutate={props.mutate}
+            />
           ))}
         </>
       ) : (
@@ -445,5 +470,131 @@ function ThreadPrinter(props: ThreadPrinterProps) {
       )}
       {props.threadId ? <div id={`bottom-thread-${props.threadId}`} /> : <></>}
     </>
+  );
+}
+
+function SubjectLine(props: PropsWithChildren<unknown>) {
+  return (
+    <div className="flex w-full items-center">
+      <div className="h-[1px] grow bg-zinc-600" />
+      <div className="mx-2 max-w-[60%] shrink-0 text-xs line-clamp-1">
+        {props.children}
+      </div>
+      <div className="h-[1px] grow bg-zinc-600" />
+    </div>
+  );
+}
+
+interface MessagePrinterProps {
+  message: ThreadFetch["Message"][number];
+  teamId: number | null;
+  mutate?: (id: number) => unknown;
+}
+
+function MessagePrinter(props: MessagePrinterProps) {
+  const [hoveringMessage, setHoveringMessage] = useState(false);
+  const [hoveringToolbar, setHoveringToolbar] = useState(false);
+  const [showComments, setShowComments] = useState(
+    props.message.Comment.length > 0
+  );
+
+  const { x, y, reference, floating, strategy, update, refs } = useFloating({
+    placement: props.message.direction === "incoming" ? "top-end" : "top-start",
+    middleware: [
+      offset({
+        mainAxis: -10,
+        crossAxis: props.message.direction === "incoming" ? 20 : -20,
+      }),
+      shift(),
+      flip(),
+    ],
+  });
+
+  useEffect(() => {
+    if (!refs.reference.current || !refs.floating.current) {
+      return;
+    }
+
+    const parents = [
+      ...getScrollParents(refs.reference.current),
+      ...getScrollParents(refs.floating.current),
+    ];
+
+    parents.forEach((parent) => {
+      parent.addEventListener("scroll", update);
+      parent.addEventListener("resize", update);
+    });
+
+    return () => {
+      parents.forEach((parent) => {
+        parent.removeEventListener("scroll", update);
+        parent.removeEventListener("resize", update);
+      });
+    };
+  }, [refs.reference, refs.floating, update]);
+
+  const text =
+    defaultTo(
+      props.message.EmailMessage?.body,
+      props.message.InternalMessage?.body
+    ) || "";
+
+  // absolute bottom-[calc(100%_-_10px)] // props.message.direction === "incoming" ? "-right-4" : "-right-6",
+  return (
+    <div className={["relative my-3 flex w-full flex-col"].join(" ")}>
+      <Message
+        {...props.message}
+        teamId={props.teamId}
+        ref={reference}
+        onMouseEnter={() => {
+          console.log("enter");
+          setHoveringMessage(true);
+        }}
+        onMouseLeave={() => setHoveringMessage(false)}
+      ></Message>
+      <div
+        ref={floating}
+        onMouseEnter={() => setHoveringToolbar(true)}
+        onMouseLeave={() => setHoveringToolbar(false)}
+        className={[
+          "flex items-center space-x-1 rounded-full border-[1.5px] border-zinc-600 bg-zinc-800 px-0.5 py-0.5 opacity-80",
+          hoveringMessage || hoveringToolbar ? "" : " invisible",
+        ].join(" ")}
+        style={{
+          position: strategy,
+          top: y ?? "",
+          left: x ?? "",
+        }}
+      >
+        <AnnotationIcon
+          className="h-6 w-6 cursor-pointer rounded-full p-0.5 text-zinc-300 hover:bg-yellow-300 hover:text-yellow-800"
+          onClick={() => {
+            setShowComments(true);
+          }}
+        />
+        <ClipboardCopyIcon
+          className="h-6 w-6 cursor-pointer rounded-full p-0.5 text-zinc-300 hover:bg-zinc-300 hover:text-zinc-800"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(text);
+            } catch (e) {
+              console.error("Can't copy", e);
+              alert("Could not copy");
+            }
+          }}
+        />
+      </div>
+      {showComments ? (
+        <CommentBox
+          comments={props.message.Comment}
+          direction={props.message.direction}
+          messageId={Number(props.message.id)}
+          teamId={props.teamId as number}
+          mutate={props.mutate}
+        />
+      ) : (
+        <></>
+      )}
+    </div>
   );
 }

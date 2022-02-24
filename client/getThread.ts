@@ -15,11 +15,11 @@ import {
 } from "types/supabase";
 import { useSupabase } from "components/UserContext";
 
-type ThreadFetch = SupabaseThread & {
+export type ThreadFetch = SupabaseThread & {
   ThreadState: SupabaseThreadState[];
   Message: (SupabaseMessage & {
     AliasEmail: SupabaseAliasEmail | null;
-    Comment: SupabaseComment[];
+    Comment: (SupabaseComment & { TeamMember: { Profile: SupabaseProfile } })[];
     EmailMessage: SupabaseEmailMessage | null;
     InternalMessage: SupabaseInternalMessage | null;
     TeamMember: { Profile: SupabaseProfile } | null;
@@ -27,26 +27,29 @@ type ThreadFetch = SupabaseThread & {
   })[];
 };
 
+export const selectQuery = `
+*,
+ThreadState(*),
+Message!Message_threadId_fkey ( 
+  *, 
+  AliasEmail(*),
+  EmailMessage(*),
+  InternalMessage(*),
+  Comment!Comment_messageId_fkey(
+    *,
+    TeamMember!Comment_authorId_fkey(Profile(*))
+  ),
+  TeamMember!Message_teamMemberId_fkey(
+    Profile(*)
+  ),
+  Attachment(*)
+)
+`;
+
 export async function getThread(supabase: SupabaseClient, threadId: number) {
   const res = await supabase
     .from<ThreadFetch>("Thread")
-    .select(
-      `
-      *,
-      ThreadState(*),
-      Message!Message_threadId_fkey ( 
-        *, 
-        AliasEmail(*),
-        EmailMessage(*),
-        InternalMessage(*),
-        Comment!Comment_messageId_fkey(*),
-        TeamMember!Message_teamMemberId_fkey(
-          Profile(*)
-        ),
-        Attachment(*)
-      )
-      `
-    )
+    .select(selectQuery)
     .eq("id", threadId)
     .single();
 

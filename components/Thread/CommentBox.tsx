@@ -1,48 +1,66 @@
 //inspiration from https://www.openphone.co/product/teams
 import { ArrowCircleUpIcon } from "@heroicons/react/outline";
 import { SupabaseComment } from "types/supabase";
+import type { MessageDirection } from "@prisma/client";
+import { uniqBy } from "lodash";
 
-import { Body } from "pages/api/v1/comment/add";
+import { Body, Return } from "pages/api/v1/comment/add";
 import Avatar from "components/Avatar";
 
 interface Props {
   messageId: number;
-  comments: SupabaseComment[];
-  incoming: boolean;
+  comments: (SupabaseComment & {
+    TeamMember: {
+      Profile: {
+        email: string;
+        firstName: string | null;
+        lastName: string | null;
+      };
+    };
+  })[];
+  direction: MessageDirection;
   teamId: number;
-  mutate?: () => void;
+  mutate?: (commentId: number) => unknown;
+  id?: string;
 }
 
 export default function CommentBox(props: Props) {
+  const commentators = uniqBy(props.comments, (c) => c.authorId);
+
   return (
     <div
+      id={props.id}
       className={[
-        "flex",
-        props.incoming === true ? "ml-14 self-start" : "mr-14 self-end",
-        props.incoming === true ? "flex-row" : "flex-row-reverse",
+        "mt-1 flex w-full",
+        props.direction === "incoming" ? "ml-14 self-start" : "mr-14 self-end",
+        props.direction === "incoming" ? "flex-row" : "flex-row-reverse",
       ].join(" ")}
     >
       <div
         className={[
-          "-mt-4 h-10 w-4 border-b-2 border-slate-200",
-          props.incoming === true
+          "-mt-1 h-7 w-4 border-b-2 border-zinc-500",
+          props.direction === "incoming"
             ? "mr-1 rounded-bl-xl border-l-2"
             : "ml-1 rounded-br-xl border-r-2",
         ].join(" ")}
       />
       <div
         className={[
-          "w-[260px] rounded-xl border-2 border-slate-200 pt-2 pb-2",
+          "w-full max-w-[60%] rounded-xl border-2 border-zinc-200 pt-2 pb-2",
         ].join(" ")}
       >
-        <div className="flex items-center border-b-2 border-slate-200 px-2  py-1 text-sm text-slate-500">
+        <div className="flex items-center border-b-2 border-zinc-200 px-2  py-1 text-sm text-zinc-500">
           <div className="relative z-0 flex -space-x-1 overflow-hidden">
-            {props.comments.slice(0, 3).map((c, indx) => (
-              <Avatar
+            {commentators.slice(0, 3).map((c, indx) => (
+              <div
                 key={indx}
-                str={`${c.authorId}`}
-                className="relative z-30 inline-block h-6 w-6 rounded-full ring-2 ring-white"
-              />
+                className="m-[2px] flex items-center justify-center"
+              >
+                <Avatar
+                  str={`${c.TeamMember.Profile.email}`}
+                  className="relative z-30 inline-block h-6 w-6 rounded-full ring-2 ring-black"
+                />
+              </div>
             ))}
           </div>
           <span className="ml-2">
@@ -56,15 +74,16 @@ export default function CommentBox(props: Props) {
             id={`comment-${c.id}`}
             className="my-2 flex flex-col px-2"
           >
-            <div className="mx-1 flex items-center text-xs text-slate-500">
+            <div className="mx-1 flex items-center text-xs text-zinc-500">
               <Avatar
-                key={`${c.id}`}
-                className="mr-1 inline-block h-3 w-3  rounded-full"
-                str={`${c.authorId}`}
+                className="mr-1 inline-block h-3 w-3 rounded-full"
+                str={`${c.TeamMember.Profile.email}`}
               />
-              User #{Number(c.authorId)}
+              {c.TeamMember.Profile.firstName && c.TeamMember.Profile.lastName
+                ? `${c.TeamMember.Profile.firstName} ${c.TeamMember.Profile.lastName}`
+                : c.TeamMember.Profile.email}
             </div>
-            <div className="rounded-lg border-2 border-yellow-200 border-opacity-70 bg-yellow-100 bg-opacity-30 px-2 py-2 text-sm">
+            <div className="rounded-lg border-2 border-yellow-300 border-opacity-20 bg-yellow-100 bg-opacity-10 px-2 py-2 text-xs text-yellow-50">
               <HighlightMentions str={c.text} />
             </div>
           </div>
@@ -78,7 +97,7 @@ export default function CommentBox(props: Props) {
             const elements = e.currentTarget.elements as any;
             const body: Body = {
               messageId: props.messageId,
-              text: (elements.name as HTMLInputElement).value,
+              text: (elements.comment as HTMLInputElement).value,
               teamId: props.teamId,
             };
             const res = await fetch("/api/v1/comment/add", {
@@ -90,12 +109,14 @@ export default function CommentBox(props: Props) {
             });
 
             switch (res.status) {
-              case 200:
+              case 200: {
+                const body = (await res.json()) as Return;
                 if (props.mutate) {
-                  props.mutate();
+                  props.mutate(body.id);
                 }
-                elements.name.value = "";
+                elements.comment.value = "";
                 return;
+              }
 
               default:
                 alert("Could not save comment");
@@ -104,10 +125,10 @@ export default function CommentBox(props: Props) {
         >
           <input
             type="text"
-            name="teamName"
-            id="name"
+            name="comment"
+            id="comment"
             required
-            className="focus:border-1 block w-full min-w-0 flex-grow rounded-md border-yellow-300 text-xs focus:border-yellow-300 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+            className="focus:border-1 block w-full min-w-0 flex-grow rounded-md border-yellow-300 bg-zinc-900 text-xs focus:border-yellow-300 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
             placeholder="Comment internally"
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-3">
