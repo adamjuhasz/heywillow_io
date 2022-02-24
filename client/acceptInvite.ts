@@ -1,6 +1,6 @@
 import { Body, Return } from "pages/api/v1/team/invite/accept";
 
-interface Options {
+export interface Options {
   inviteId: number;
 }
 

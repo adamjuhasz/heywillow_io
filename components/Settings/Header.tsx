@@ -10,10 +10,7 @@ export default function SettingsHeader() {
   return (
     <AppHeader>
       <LinkBar hideBorder>
-        <Link
-          exact
-          href={namespace ? "/a/[namespace]/settings" : "/a/settings"}
-        >
+        <Link href={namespace ? "/a/[namespace]/settings/self" : "/a/settings"}>
           <div className="flex items-center">Overview</div>
         </Link>
 

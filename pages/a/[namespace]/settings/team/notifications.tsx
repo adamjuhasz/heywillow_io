@@ -8,7 +8,7 @@ import AppLayout from "layouts/app";
 import SettingsHeader from "components/Settings/Header";
 import SettingsTitle from "components/Settings/Title";
 import AppContainer from "components/App/Container";
-import TeamSettingsSidebar from "components/Settings/Team/Sidebar";
+import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import useGetNotificationPreferences from "client/getNotificationPreferences";
 import useChangeNotificationPreference from "client/changeNotificationPreference";
 import useGetMyTeamMemberId from "client/getMyTeamMemberId";

@@ -5,20 +5,25 @@ import AppLayout from "layouts/app";
 import SettingsTitle from "components/Settings/Title";
 import SettingsHeader from "components/Settings/Header";
 import AppContainer from "components/App/Container";
-import SettingsSidebar from "components/Settings/Sidebar";
+import ProfileSettingsPage from "components/Settings/Pages/Profile";
+import OverviewTeamSidebar from "components/Settings/Team/OverviewSidebar";
 
 export default function SettingsPage(): JSX.Element {
   return (
     <>
       <Head>
-        <title>Settings</title>
+        <title>Profile Settings</title>
       </Head>
 
       <SettingsHeader />
-      <SettingsTitle>Settings</SettingsTitle>
+      <SettingsTitle>Profile Settings</SettingsTitle>
 
       <AppContainer className="mt-14 flex">
-        <SettingsSidebar />
+        <OverviewTeamSidebar />
+
+        <div className="grow space-y-6">
+          <ProfileSettingsPage />
+        </div>
       </AppContainer>
     </>
   );

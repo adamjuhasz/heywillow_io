@@ -5,7 +5,7 @@ import AppLayout from "layouts/app";
 import SettingsHeader from "components/Settings/Header";
 import SettingsTitle from "components/Settings/Title";
 import AppContainer from "components/App/Container";
-import SettingsSidebar from "components/Settings/Sidebar";
+import OverviewTeamSidebar from "components/Settings/Team/OverviewSidebar";
 import AcceptInvites from "components/Settings/Pages/AcceptInvites";
 
 export default function InvitesSettingsPage(): JSX.Element {
@@ -19,7 +19,7 @@ export default function InvitesSettingsPage(): JSX.Element {
       <SettingsTitle>Accept team invites</SettingsTitle>
 
       <AppContainer className="my-14 flex">
-        <SettingsSidebar />
+        <OverviewTeamSidebar />
 
         <div className="grow space-y-6">
           <AcceptInvites />
