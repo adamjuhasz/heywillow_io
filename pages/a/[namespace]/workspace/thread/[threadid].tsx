@@ -167,14 +167,15 @@ export default function ThreadViewer() {
                             scrollToID(`top-thread-${t.id}`);
                           }}
                           key={t.id}
-                          className="flex cursor-pointer items-center justify-between space-x-3 truncate text-xs text-zinc-400 line-clamp-1 hover:text-zinc-100"
+                          className="flex w-full cursor-pointer items-center justify-between text-xs text-zinc-400 hover:text-zinc-100"
                         >
                           <div>
                             {t.Message.filter(
                               (m) => m.EmailMessage?.subject !== undefined
                             )
                               .reverse()[0]
-                              .EmailMessage?.subject.trim()}
+                              .EmailMessage?.subject.trim()
+                              .slice(0, 14)}
                           </div>
                           <div className="text-zinc-500">
                             {formatDistanceToNowStrict(new Date(t.createdAt), {
