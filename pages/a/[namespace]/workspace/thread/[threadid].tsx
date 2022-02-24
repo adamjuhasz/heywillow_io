@@ -152,7 +152,9 @@ export default function ThreadViewer() {
                     Created{" "}
                     {formatDistanceToNowStrict(new Date(thread.createdAt), {
                       addSuffix: true,
-                    }).replace("minute", "min")}
+                    })
+                      .replace("minute", "min")
+                      .replace("second", "sec")}
                   </div>
                   {threads ? (
                     <>
