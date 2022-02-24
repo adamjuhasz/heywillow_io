@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import SettingsTitle from "components/Settings/Title";
-import TeamSettingsSidebar from "components/Settings/Team/Sidebar";
+import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsBox from "components/Settings/Box/Box";
 import SettingsHeader from "components/Settings/Header";
 import useGetTeams from "client/getTeams";

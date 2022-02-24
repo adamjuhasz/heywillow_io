@@ -60,6 +60,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
               <SwitchVerticalIcon className="ml-1 h-4 w-4" />
             </Menu.Button>
           </div>
+
           <Menu.Items className="absolute mt-0.5 w-56 origin-top-left divide-y divide-gray-100 rounded-md border border-zinc-600 bg-zinc-900 font-light text-zinc-300 shadow-lg ">
             <div className="px-1 py-1 ">
               <div className="my-3 px-2 text-sm text-zinc-500">Teams</div>
@@ -122,7 +123,12 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
             )}
 
             {namespace ? (
-              <TopLink href="/a/[namespace]/settings/team">Settings</TopLink>
+              <TopLink
+                activePath="/a/[namespace]/settings"
+                href="/a/[namespace]/settings/team"
+              >
+                Settings
+              </TopLink>
             ) : (
               <TopLink href="/a/settings">Settings</TopLink>
             )}
@@ -158,22 +164,20 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
 interface TopLinkProps {
   href: string;
   exact?: boolean;
+  activePath?: string;
 }
 
 function TopLink({ exact = false, ...props }: PropsWithChildren<TopLinkProps>) {
   const router = useRouter();
 
-  const normalizedHref = props.href.replace(
-    /\[(.*)\]/g,
-    (m, p1) => `${router.query[p1] || "_"}` as string
-  );
-
+  const pathToTest =
+    props.activePath === undefined ? props.href : props.activePath;
   const isActive =
-    (!exact && router.pathname.startsWith(props.href)) ||
-    (exact && router.pathname === props.href);
+    (!exact && router.pathname.startsWith(pathToTest)) ||
+    (exact && router.pathname === pathToTest);
 
   return (
-    <Link href={normalizedHref}>
+    <Link href={{ pathname: props.href, query: router.query }}>
       <a
         className={[
           "flex h-full items-center hover:text-zinc-100",

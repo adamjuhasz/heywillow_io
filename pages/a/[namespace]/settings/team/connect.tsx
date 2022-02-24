@@ -6,7 +6,7 @@ import { formatDistanceToNowStrict } from "date-fns";
 import AppLayout from "layouts/app";
 import SettingsHeader from "components/Settings/Header";
 import SettingsTitle from "components/Settings/Title";
-import TeamSettingsSidebar from "components/Settings/Team/Sidebar";
+import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsBox from "components/Settings/Box/Box";
 import { useUser } from "components/UserContext";
 import useGetTeamId from "client/getTeamId";

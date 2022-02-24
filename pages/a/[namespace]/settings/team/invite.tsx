@@ -5,7 +5,7 @@ import { formatDistanceToNowStrict } from "date-fns";
 
 import AppLayout from "layouts/app";
 import SettingsTitle from "components/Settings/Title";
-import TeamSettingsSidebar from "components/Settings/Team/Sidebar";
+import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsHeader from "components/Settings/Header";
 import createInvite from "client/createInvite";
 import useGetTeamId from "client/getTeamId";
