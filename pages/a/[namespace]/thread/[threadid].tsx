@@ -136,7 +136,7 @@ export default function ThreadViewer() {
                     return;
                   }
                   await postNewMessage(threadNum, { text: t });
-                  await Promise.allSettled([mutateThread, mutateThreads]);
+                  await Promise.allSettled([mutateThread(), mutateThreads()]);
                 }}
               />
             </div>
