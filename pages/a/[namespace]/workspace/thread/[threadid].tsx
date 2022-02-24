@@ -179,7 +179,9 @@ export default function ThreadViewer() {
                           <div className="text-zinc-500">
                             {formatDistanceToNowStrict(new Date(t.createdAt), {
                               addSuffix: true,
-                            })}
+                            })
+                              .replace("minute", "min")
+                              .replace("second", "sec")}
                           </div>
                         </div>
                       ))}
