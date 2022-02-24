@@ -136,7 +136,11 @@ export default function ThreadViewer() {
                     return;
                   }
                   await postNewMessage(threadNum, { text: t });
-                  await Promise.allSettled([mutateThread(), mutateThreads()]);
+
+                  // wait for Supabase to see the write, ~200-400ms seems to be the magic number
+                  setTimeout(async () => {
+                    await Promise.allSettled([mutateThread(), mutateThreads()]);
+                  }, 300);
                 }}
               />
             </div>
