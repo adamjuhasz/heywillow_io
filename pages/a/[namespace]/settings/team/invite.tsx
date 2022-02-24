@@ -43,7 +43,7 @@ export default function InviteTeammates(): JSX.Element {
         <TeamSettingsSidebar />
 
         <div className="grow space-y-6">
-          <div className="text-2xl">Members</div>
+          <div className="text-2xl">Team members</div>
           <div className="text-normal font-light text-zinc-500">
             Manage and invite team members
           </div>

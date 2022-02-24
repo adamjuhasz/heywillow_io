@@ -15,7 +15,10 @@ export default function SettingsHeader() {
         </Link>
 
         {namespace ? (
-          <Link href="/a/[namespace]/settings/team">
+          <Link
+            activePath="/a/[namespace]/settings/team"
+            href="/a/[namespace]/settings/team/notifications"
+          >
             <div className="flex items-center">Team</div>
           </Link>
         ) : (

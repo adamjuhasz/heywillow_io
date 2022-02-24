@@ -29,7 +29,9 @@ export default function AppHeaderHOC(props: PropsWithChildren<unknown>) {
       activeTeam={(router.query.namespace as string) || ""}
       bubble={
         inboxCount === 0 &&
-        router.pathname.startsWith("/a/[namespace]/settings/team/") === false
+        router.pathname.startsWith(
+          "/a/[namespace]/settings/team/notifications"
+        ) === false
           ? {
               text: "Need to connect inbox",
               href: "/a/[namespace]/settings/team/connect",
