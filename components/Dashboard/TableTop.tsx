@@ -60,7 +60,7 @@ function Card({ t }: { t: FetchResponse }) {
   return (
     <Link
       href={{
-        pathname: "/a/[namespace]/workspace/thread/[threadid]",
+        pathname: "/a/[namespace]/thread/[threadid]",
         query: { ...router.query, threadid: t.id },
       }}
     >
