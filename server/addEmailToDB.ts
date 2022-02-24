@@ -83,6 +83,11 @@ export default async function addEmailToDB(
 
     await changeThreadStatus({ state: "open", threadId: currentThread.id });
   }
+
+  const rawToSave = { ...message };
+  const attachments = rawToSave.attachments.map((a) => ({ ...a, data: "" }));
+  rawToSave.attachments = attachments;
+
   try {
     const savedEmail = await prisma.emailMessage.create({
       data: {
@@ -92,7 +97,7 @@ export default async function addEmailToDB(
         emailMessageId: message.messageId,
         subject: message.subject,
         body: message.body,
-        raw: message as unknown as Prisma.InputJsonObject,
+        raw: rawToSave as unknown as Prisma.InputJsonObject,
         Message: {
           create: {
             type: "email",
