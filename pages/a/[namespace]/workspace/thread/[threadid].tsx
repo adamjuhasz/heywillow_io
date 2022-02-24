@@ -5,8 +5,6 @@ import Head from "next/head";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
 import {
   CheckIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
   ClipboardCopyIcon,
   ClockIcon,
 } from "@heroicons/react/outline";
@@ -90,21 +88,6 @@ export default function ThreadViewer() {
               <a className="block rounded-full hover:shadow-zinc-900">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
                   <ArrowLeftIcon className="h-6 w-6" />
-                </div>
-              </a>
-            </Link>
-
-            <Link href="/">
-              <a className="mt-7 flex h-12 w-10 justify-center rounded-t-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200">
-                <div className="relative h-full w-6">
-                  <ChevronUpIcon className="absolute top-2 h-6 w-6" />
-                </div>
-              </a>
-            </Link>
-            <Link href="/">
-              <a className="flex h-12 w-10 justify-center rounded-b-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200">
-                <div className="relative h-full w-6">
-                  <ChevronDownIcon className="absolute bottom-2 h-6 w-6" />
                 </div>
               </a>
             </Link>
