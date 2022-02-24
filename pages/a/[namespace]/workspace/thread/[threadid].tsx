@@ -22,6 +22,7 @@ import useGetTeamId from "client/getTeamId";
 import useGetAliasThreads from "client/getAliasThreads";
 import useGetSecureThreadLink from "client/getSecureThreadLink";
 import changeThreadState from "client/changeThreadState";
+import postNewMessage from "client/postNewMessage";
 
 export default function ThreadViewer() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -32,9 +33,11 @@ export default function ThreadViewer() {
 
   const { data: threadLink } = useGetSecureThreadLink(threadNum);
 
-  const { data: thread } = useGetThread(threadNum);
+  const { data: thread, mutate: mutateThread } = useGetThread(threadNum);
   const teamId = useGetTeamId() || null;
-  const { data: threads } = useGetAliasThreads(thread?.aliasEmailId);
+  const { data: threads, mutate: mutateThreads } = useGetAliasThreads(
+    thread?.aliasEmailId
+  );
 
   useEffect(() => {
     if (divRef.current === null) {
@@ -137,8 +140,13 @@ export default function ThreadViewer() {
             </div>
             <div className="shrink-0 pb-2">
               <InputWithRef
-                submit={async () => {
-                  return;
+                submit={async (t: string) => {
+                  if (threadNum === undefined) {
+                    alert("Don't know which thread you're sending to");
+                    return;
+                  }
+                  await postNewMessage(threadNum, { text: t });
+                  await Promise.allSettled([mutateThread, mutateThreads]);
                 }}
               />
             </div>
