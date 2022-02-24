@@ -18,7 +18,7 @@ import { useSupabase } from "components/UserContext";
 type ThreadFetch = SupabaseThread & {
   ThreadState: SupabaseThreadState[];
   Message: (SupabaseMessage & {
-    AliasEmail: SupabaseAliasEmail;
+    AliasEmail: SupabaseAliasEmail | null;
     Comment: SupabaseComment[];
     EmailMessage: SupabaseEmailMessage | null;
     InternalMessage: SupabaseInternalMessage | null;

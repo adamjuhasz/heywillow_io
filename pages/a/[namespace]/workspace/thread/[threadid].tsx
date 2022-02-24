@@ -67,14 +67,13 @@ export default function ThreadViewer() {
     element.scrollIntoView({ behavior: "smooth" });
   };
 
+  const customerEmail = thread?.Message.filter((m) => m.AliasEmail !== null)[0]
+    ?.AliasEmail?.emailAddress;
+
   return (
     <>
       <Head>
-        <title>
-          {thread
-            ? `${thread.Message[0].AliasEmail.emailAddress} on Willow`
-            : "Willow"}
-        </title>
+        <title>{customerEmail ? `${customerEmail} on Willow` : "Willow"}</title>
       </Head>
 
       <AppHeaderHOC />
@@ -116,7 +115,11 @@ export default function ThreadViewer() {
                 threads.map((t) => (
                   <ThreadPrinter
                     key={t.id}
-                    subject={t.Message.reverse()[0].EmailMessage?.subject}
+                    subject={
+                      t.Message.filter(
+                        (m) => m.EmailMessage?.subject !== undefined
+                      ).reverse()[0].EmailMessage?.subject
+                    }
                     messages={t.Message}
                     teamId={teamId}
                     threadId={t.id}
@@ -126,7 +129,11 @@ export default function ThreadViewer() {
                 <>
                   <LoadingThread />
                   <ThreadPrinter
-                    subject={thread?.Message.reverse()[0].EmailMessage?.subject}
+                    subject={
+                      thread?.Message.filter(
+                        (m) => m.EmailMessage?.subject !== undefined
+                      ).reverse()[0].EmailMessage?.subject
+                    }
                     messages={thread?.Message}
                     teamId={teamId}
                     threadId={thread.id}
@@ -156,7 +163,7 @@ export default function ThreadViewer() {
               {thread ? (
                 <>
                   <div className="truncate text-sm line-clamp-1">
-                    {thread.Message[0].AliasEmail.emailAddress}
+                    {customerEmail}
                   </div>
                   <div className="text-xs text-zinc-400">
                     Created{" "}
@@ -178,7 +185,11 @@ export default function ThreadViewer() {
                           className="flex cursor-pointer items-center justify-between space-x-3 truncate text-xs text-zinc-400 line-clamp-1 hover:text-zinc-100"
                         >
                           <div>
-                            {t.Message.reverse()[0].EmailMessage?.subject.trim()}
+                            {t.Message.filter(
+                              (m) => m.EmailMessage?.subject !== undefined
+                            )
+                              .reverse()[0]
+                              .EmailMessage?.subject.trim()}
                           </div>
                           <div className="text-zinc-500">
                             {formatDistanceToNowStrict(new Date(t.createdAt), {
