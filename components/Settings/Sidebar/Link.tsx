@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 interface TopLinkProps {
   href: string;
   exact?: boolean;
+  activePath?: string;
 }
 
 export default function SidebarLink({
@@ -13,17 +14,14 @@ export default function SidebarLink({
 }: PropsWithChildren<TopLinkProps>) {
   const router = useRouter();
 
-  const normalizedHref = props.href.replace(
-    /\[(.*)\]/g,
-    (m, p1) => `${router.query[p1] || "_"}` as string
-  );
-
+  const pathToTest =
+    props.activePath === undefined ? props.href : props.activePath;
   const isActive =
-    (!exact && router.pathname.startsWith(props.href)) ||
-    (exact && router.pathname === props.href);
+    (!exact && router.pathname.startsWith(pathToTest)) ||
+    (exact && router.pathname === pathToTest);
 
   return (
-    <Link href={normalizedHref}>
+    <Link href={{ pathname: props.href, query: router.query }}>
       <a
         className={[
           " hover:font-normal hover:text-zinc-100",

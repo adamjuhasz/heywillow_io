@@ -22,6 +22,7 @@ export default function LinkBar(props: PropsWithChildren<Props>) {
 interface LinkProps {
   href: string;
   exact?: boolean;
+  activePath?: string;
 }
 
 export function Link({
@@ -30,17 +31,14 @@ export function Link({
 }: PropsWithChildren<LinkProps>) {
   const router = useRouter();
 
-  const normalizedHref = props.href.replace(
-    /\[(.*)\]/g,
-    (m, p1) => `${router.query[p1] || "_"}` as string
-  );
-
+  const pathToTest =
+    props.activePath === undefined ? props.href : props.activePath;
   const isActive =
-    (!exact && router.pathname.startsWith(props.href)) ||
-    (exact && router.pathname === props.href);
+    (!exact && router.pathname.startsWith(pathToTest)) ||
+    (exact && router.pathname === pathToTest);
 
   return (
-    <NextLink href={normalizedHref}>
+    <NextLink href={{ pathname: props.href, query: router.query }}>
       <a
         className={[
           "flex h-9 items-center font-light hover:text-zinc-100",

@@ -10,12 +10,18 @@ export default function TeamSettingsSidebar(): JSX.Element {
 
   return (
     <div className="flex w-56 shrink-0 flex-col space-y-4 text-sm font-light text-zinc-500">
-      <SidebarLink exact href="/a/[namespace]/settings/team">
-        Team info
-      </SidebarLink>
       <SidebarLink href="/a/[namespace]/settings/team/notifications">
         Notification preferences
       </SidebarLink>
+
+      <SidebarLink exact href="/a/[namespace]/settings/team">
+        Team info
+      </SidebarLink>
+
+      <SidebarLink href="/a/[namespace]/settings/team/invite">
+        Team members
+      </SidebarLink>
+
       <SidebarLink href="/a/[namespace]/settings/team/connect">
         Link Gmail{" "}
         {inboxCount === 0 ? (
@@ -25,9 +31,6 @@ export default function TeamSettingsSidebar(): JSX.Element {
         ) : (
           <></>
         )}
-      </SidebarLink>
-      <SidebarLink href="/a/[namespace]/settings/team/invite">
-        Members
       </SidebarLink>
     </div>
   );

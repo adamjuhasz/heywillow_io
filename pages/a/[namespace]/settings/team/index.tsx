@@ -32,6 +32,25 @@ export default function TeamSettings(): JSX.Element {
 
         <div className="grow space-y-6">
           <SettingsBox
+            title="Team Name"
+            explainer=" This is your team's name, it will be visible around the Willow website."
+            button="Save"
+            disabled
+          >
+            <input
+              disabled
+              id="TeamName"
+              name="TeamName"
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              required
+              className="block w-72 appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm"
+              placeholder="Stealth AI"
+            />
+          </SettingsBox>
+
+          <SettingsBox
             title="Team URL"
             explainer="This is your team's URL namespace in Willow. This will be part of the url for this specific team."
             warning="This can't be changed once your team is created"
@@ -55,25 +74,6 @@ export default function TeamSettings(): JSX.Element {
                 /workspace
               </span>
             </div>
-          </SettingsBox>
-
-          <SettingsBox
-            title="Team Name"
-            explainer=" This is your team's name, it will be visible around the Willow website."
-            button="Save"
-            disabled
-          >
-            <input
-              disabled
-              id="TeamName"
-              name="TeamName"
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              required
-              className="block w-72 appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm"
-              placeholder="Stealth AI"
-            />
           </SettingsBox>
         </div>
       </AppContainer>
