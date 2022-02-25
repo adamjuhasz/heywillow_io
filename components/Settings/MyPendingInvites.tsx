@@ -1,10 +1,12 @@
 import { formatDistanceToNowStrict } from "date-fns";
 
 import { Options } from "client/acceptInvite";
+import Loading from "components/Loading";
 
 interface Props {
   pending: { id: number; createdAt: string; Team: { name: string } }[];
   acceptInvite: (options: Options) => Promise<unknown>;
+  loading?: boolean;
 }
 
 export default function MyPendingInvites(props: Props): JSX.Element {
@@ -33,12 +35,17 @@ export default function MyPendingInvites(props: Props): JSX.Element {
                           Decline
                         </button> */}
                 <button
+                  disabled={props.loading === true}
                   onClick={async () => {
                     await props.acceptInvite({ inviteId: tm.id });
                   }}
                   className="flex items-center justify-center rounded-md border border-transparent bg-blue-500 px-3 py-1.5 text-xs text-white hover:border-blue-500 hover:bg-black hover:text-blue-400"
                 >
-                  <div>Accept</div>
+                  {props.loading === true ? (
+                    <Loading className="h-4 w-4" />
+                  ) : (
+                    <div>Accept</div>
+                  )}
                 </button>
               </div>
             </div>

@@ -8,8 +8,11 @@ import MyCancelledInvites from "components/Settings/MyCancelledInvites";
 type Tabs = "pending" | "cancelled";
 
 export default function AcceptInvites(): JSX.Element {
+  const [loading, setLoading] = useState(false);
   const [currentTab, setTab] = useState<Tabs>("pending");
-  const { data: invites } = useGetMyInvites();
+
+  const { data: invites, mutate } = useGetMyInvites();
+
   const pending = invites?.filter((i) => i.status === "pending");
   const numberOfPending = pending?.length;
   const cancelled = invites?.filter((i) => i.status === "cancelled");
@@ -56,7 +59,21 @@ export default function AcceptInvites(): JSX.Element {
         {currentTab === "pending" &&
         numberOfPending !== 0 &&
         pending !== undefined ? (
-          <MyPendingInvites pending={pending} acceptInvite={acceptInvite} />
+          <MyPendingInvites
+            pending={pending}
+            acceptInvite={async (opt) => {
+              try {
+                setLoading(true);
+                await acceptInvite(opt);
+                await mutate();
+              } catch (e) {
+                console.error(e);
+              } finally {
+                setLoading(false);
+              }
+            }}
+            loading={loading}
+          />
         ) : currentTab === "cancelled" &&
           numberOfCancelled !== 0 &&
           cancelled !== undefined ? (
