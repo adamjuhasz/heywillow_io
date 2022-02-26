@@ -1,5 +1,6 @@
 import { prisma } from "utils/prisma";
 import hashids from "server/hashids";
+import { logger } from "utils/logger";
 
 export default async function createSecureThreadLink(
   threadId: number | bigint,
@@ -26,14 +27,14 @@ export default async function createSecureThreadLink(
     },
   });
 
-  console.log("threadLink", threadLink);
+  logger.info("threadLink", { threadId, aliasId, threadLink });
 
   const namespace = threadLink.Thread.Team.Namespace.namespace;
   const encodedTL = hashids.encode(threadLink.id);
   const host = `${process.env.PROTOCOL}://${process.env.DOMAIN}`;
 
   const secureURL = `${host}/p/${namespace}/secure-msg/${encodedTL}`;
-  console.log("secureURL", secureURL);
+  logger.info("secureURL", { threadId, aliasId, threadLink, secureURL });
 
   return secureURL;
 }

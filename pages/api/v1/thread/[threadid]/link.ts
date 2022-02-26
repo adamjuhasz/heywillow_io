@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import apiHandler from "server/apiHandler";
 import { prisma } from "utils/prisma";
 import createSecureThreadLink from "server/createSecureLink";
+import { logger } from "utils/logger";
 
 export interface Return {
   absoluteLink: string;
@@ -41,6 +42,8 @@ async function getSecureLink(
     thread.id,
     thread.aliasEmailId
   );
+
+  logger.info("Secure link accessed", { secureLink });
 
   res.json({
     absoluteLink: secureLink,
