@@ -27,7 +27,13 @@ export default function useGetSecureThreadLink(threadId: number | undefined) {
   const res = useSWR(
     () => (threadId ? `/thread/${threadId}/securelink` : null),
     () => getLink(threadId as number),
-    { refreshInterval: 60000 }
+    {
+      refreshInterval: 0,
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    }
   );
 
   useDebugValue(res.data);
