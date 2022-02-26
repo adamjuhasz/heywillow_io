@@ -21,7 +21,8 @@
     "@typescript-eslint/no-unused-vars": [
       "error",
       { "argsIgnorePattern": "^_" }
-    ]
+    ],
+    "no-shadow": "error"
   },
   "globals": { "JSX": "readonly", "NodeJS": "readonly" }
 }

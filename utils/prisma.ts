@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { logger } from "utils/logger";
 
 declare global {
   // allow global `var` declarations
@@ -20,7 +21,12 @@ export const prisma: PrismaClient =
     if (process.env.NODE_ENV !== "production") {
       localClient.$on("query", (e) => {
         if (e.duration > 100) {
-          console.log(`Query (${e.duration} ms): ${e.query}`);
+          logger.debug(`Query`, {
+            duration: e.duration,
+            query: e.query,
+            params: e.params,
+            target: e.target,
+          });
         }
       });
     }
@@ -32,10 +38,11 @@ export const prisma: PrismaClient =
 
       const after = Date.now();
 
-      console.log(
+      logger.info(
         `Query ${params.model}.${params.action} (Transaction? ${
           params.runInTransaction ? "Yes" : "No"
-        }) took ${after - before}ms`
+        }) took ${after - before}ms`,
+        { params }
       );
 
       return result;

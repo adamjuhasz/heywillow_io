@@ -6,6 +6,7 @@
     "fkey",
     "historyid",
     "idempotency",
+    "logtail",
     "nextjs",
     "paytgthr",
     "pino",

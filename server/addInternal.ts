@@ -2,6 +2,7 @@ import { prisma } from "utils/prisma";
 import { MessageDirection } from "@prisma/client";
 
 import messageNotification from "server/notifications/message";
+import { logger } from "utils/logger";
 
 interface InternalMessage {
   body: string;
@@ -45,7 +46,12 @@ export async function addInternalMessage(
     },
   });
 
-  console.log("newMessage", newMessage);
+  logger.info("addInternalMessage newMessage", {
+    threadId,
+    direction,
+    message,
+    newMessage,
+  });
 
   await messageNotification(newMessage.id);
 

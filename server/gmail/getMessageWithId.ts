@@ -7,7 +7,7 @@ import getGoogleMessageText from "server/gmail/getMessageText";
 import getGoogleMessageEmailerNameFromHeader from "server/gmail/getName";
 import getGoogleMessageEmailFromHeader from "server/gmail/getMessage";
 import getGmailAttachments from "server/gmail/getAttachments";
-import { logger } from "utils/pino";
+import { logger } from "utils/logger";
 
 export default async function getMessageWithId(
   authedGmail: gmail_v1.Gmail,
@@ -20,16 +20,23 @@ export default async function getMessageWithId(
     format: "full",
   });
 
-  logger.trace("users.messages.get %s %o", gmailMessageId, rawGmail.data);
+  logger.info("users.messages.get", { gmailMessageId, data: rawGmail.data });
+
   const labels = rawGmail.data.labelIds;
   if (labels) {
     if (labels.findIndex((v) => v === "SENT") !== -1) {
-      logger.trace(`Skipping ${gmailMessageId} because labelled "SENT"`);
+      logger.info(`Skipping ${gmailMessageId} because labelled "SENT"`, {
+        gmailMessageId,
+        labels,
+      });
       return null;
     }
 
     if (labels.findIndex((v) => v === "DRAFT") !== -1) {
-      logger.trace(`Skipping ${gmailMessageId} because labelled "DRAFT"`);
+      logger.info(`Skipping ${gmailMessageId} because labelled "DRAFT"`, {
+        gmailMessageId,
+        labels,
+      });
       return null;
     }
   }
@@ -72,7 +79,7 @@ export default async function getMessageWithId(
     attachments: attaches,
   };
 
-  logger.trace("msg: %o", msg);
+  logger.info("msg", { gmailMessageId, msg });
 
   return msg;
 }

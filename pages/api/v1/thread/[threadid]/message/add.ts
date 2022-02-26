@@ -2,9 +2,9 @@ import { defaultTo } from "lodash";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { serviceSupabase } from "server/supabase";
 
-import messageNotification from "server/notifications/message";
 import { addInternalMessage } from "server/addInternal";
 import { prisma } from "utils/prisma";
+import { logger } from "utils/logger";
 
 export interface Body {
   text: string;
@@ -28,9 +28,13 @@ export default async function handler(
     return res.status(400).json({ error: "Bad threadId" });
   }
 
-  console.log("text", body.text);
-
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
+
+  logger.info("New message to add", {
+    requestId: req.headers["x-vercel-id"],
+    user: user,
+    text: body.text,
+  });
 
   if (user === null) {
     return res.status(401).json({ error: "Bad auth cookie" });
@@ -53,6 +57,11 @@ export default async function handler(
   });
 
   if (teamMember === null) {
+    logger.error("Can't access team member", {
+      requestId: req.headers["x-vercel-id"],
+      teamId: currentThread.teamId,
+      profileId: user.id,
+    });
     return res.status(404).json({ error: "Can't access team member" });
   }
 
@@ -61,7 +70,13 @@ export default async function handler(
     sender: { type: "member", memberId: Number(teamMember.id) },
   });
 
-  await messageNotification(msgId);
+  logger.info("adding internal message", {
+    requestId: req.headers["x-vercel-id"],
+    user: user,
+    teamMember: teamMember,
+    msgId: msgId,
+    currentThread,
+  });
 
   res.json({});
 }

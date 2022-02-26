@@ -1,4 +1,5 @@
 import { gmail_v1 } from "@googleapis/gmail";
+import { logger } from "utils/logger";
 
 interface Options {
   gmail: gmail_v1.Gmail;
@@ -44,8 +45,8 @@ export default async function sendEmailThroughGmail({
         raw: encodedMessage,
       },
     });
-    console.log("users.messages.send", res);
+    logger.info("users.messages.send", { res, messageParts });
   } else {
-    console.log("email not sent:", messageParts);
+    logger.info("email not sent:", { messageParts });
   }
 }

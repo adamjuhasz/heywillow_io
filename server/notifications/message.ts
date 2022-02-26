@@ -9,9 +9,10 @@ import sendPostmarkEmail from "server/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
 import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";
+import { logger } from "utils/logger";
 
 export default async function messageNotification(messageId: bigint) {
-  console.log("messageNotification", messageId);
+  logger.info("messageNotification", { messageId });
 
   const message = await prisma.message.findUnique({
     where: { id: messageId },
@@ -35,6 +36,7 @@ export default async function messageNotification(messageId: bigint) {
   });
 
   if (message === null) {
+    logger.error("messageNotification message not found", { messageId });
     throw new Error("Message not found");
   }
 
@@ -58,7 +60,16 @@ export default async function messageNotification(messageId: bigint) {
   const ourEmails = message.Thread.Team.Inboxes.map((i) => i.emailAddress);
   const namespace = message.Thread.Team.Namespace.namespace;
 
-  console.log("thisType", thisType);
+  logger.info("messageNotification ready to generate", {
+    messageId,
+    thisType,
+    shortText,
+    bodyOfMessage,
+    subject,
+    threadId,
+    ourEmails,
+    namespace,
+  });
 
   const generatedNotifications = message.Thread.Team.Members.map(async (tm) => {
     const preferences = await prisma.notificationPreference.findMany({
@@ -74,14 +85,16 @@ export default async function messageNotification(messageId: bigint) {
     );
 
     if (inAppPref === true) {
+      const data = {
+        forMemberId: tm.id,
+        text: shortText,
+        deliveredAt: new Date(),
+        threadId: message.threadId,
+        type: thisType,
+      };
+      logger.info("messageNotification create InApp", { messageId, data });
       await prisma.notification.create({
-        data: {
-          forMemberId: tm.id,
-          text: shortText,
-          deliveredAt: new Date(),
-          threadId: message.threadId,
-          type: thisType,
-        },
+        data: data,
       });
     }
 
@@ -92,11 +105,15 @@ export default async function messageNotification(messageId: bigint) {
 
     if (emailPref === true) {
       if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
-        console.log("Was going to send to self");
+        logger.info("messageNotification was going to send to self", {
+          messageId,
+          ourEmails,
+          tm,
+        });
         return;
       }
 
-      await sendPostmarkEmail({
+      const data = {
         to: tm.Profile.email || "",
         subject: shortText,
         htmlBody: [
@@ -108,12 +125,17 @@ export default async function messageNotification(messageId: bigint) {
             .map((t) => `<p>${t}</p>`),
           `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
         ],
-      });
+      };
+
+      logger.info("messageNotification create Email", { messageId, data });
+
+      await sendPostmarkEmail(data);
     }
   });
 
   // respond back to the end user
   if (message.direction === "outgoing") {
+    logger.info("messageNotification sending to end-user", { messageId });
     const inbox = message.Thread.Team.Inboxes[0];
     const inboxId = inbox.id;
     const gmail = await createAuthedGmail(Number(inboxId));
@@ -127,7 +149,7 @@ export default async function messageNotification(messageId: bigint) {
     );
 
     if (body) {
-      await sendEmailThroughGmail({
+      const data = {
         gmail: gmail,
         from: inbox.emailAddress,
         to: message.Thread.Alias.emailAddress,
@@ -140,6 +162,21 @@ export default async function messageNotification(messageId: bigint) {
           `<p>Need to talk securely? ${secureURL}</p>`,
           `<p> -${message.Thread.Team.name}</p>`,
         ],
+      };
+
+      logger.info("messageNotification sending to end-user", {
+        messageId,
+        inbox,
+        inboxId,
+        data: { ...data, gmail: undefined },
+      });
+      await sendEmailThroughGmail(data);
+    } else {
+      logger.error("messageNotification no body to send to end user", {
+        messageId,
+        body,
+        inbox,
+        message,
       });
     }
   }
