@@ -75,8 +75,18 @@ export const logger: Logger =
   global.logger ||
   (() => {
     if (process.env.NODE_ENV === "production") {
-      console.log("starting up Logtail");
+      console.log("starting up Logtail", process.env.LOGTAIL_TOKEN);
       const logtail = new Logtail(process.env.LOGTAIL_TOKEN as string);
+
+      logtail
+        .debug("Starting logtail")
+        .then(() => {
+          console.log("logging ok");
+        })
+        .catch((e) => {
+          console.error("logging failed", e);
+        });
+
       return logtail;
     } else {
       const localLogger: Logger = {
