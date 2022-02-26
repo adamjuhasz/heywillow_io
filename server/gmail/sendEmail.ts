@@ -49,9 +49,17 @@ export default async function sendEmailThroughGmail({
     });
     logger.info("users.messages.send", {
       res: mapValues(res, toJSONable),
-      messageParts: messageParts.toString(),
+      messageParts: messageParts.reduce(
+        (a, v, idx) => ({ ...a, [`${idx}`.padStart(3, "0")]: v }),
+        {}
+      ),
     });
   } else {
-    logger.info("email not sent:", { messageParts: messageParts.toString() });
+    logger.info("email not sent:", {
+      messageParts: messageParts.reduce(
+        (a, v, idx) => ({ ...a, [`${idx}`.padStart(3, "0")]: v }),
+        {}
+      ),
+    });
   }
 }

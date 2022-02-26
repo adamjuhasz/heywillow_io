@@ -50,7 +50,7 @@ export default async function handler(
   });
   logger.info("inboxes", {
     requestId: req.headers["x-vercel-id"] as string,
-    inboxes: inboxes.toString(),
+    inboxes: JSON.stringify(inboxes),
   });
 
   if (inboxes.length === 0) {

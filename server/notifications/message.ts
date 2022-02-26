@@ -69,7 +69,7 @@ export default async function messageNotification(messageId: bigint) {
     bodyOfMessage,
     subject: subject || null,
     threadId,
-    ourEmails: ourEmails.toString(),
+    ourEmails: JSON.stringify(ourEmails),
     namespace,
   });
 
@@ -112,7 +112,7 @@ export default async function messageNotification(messageId: bigint) {
       if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
         logger.info("messageNotification was going to send to self", {
           messageId: Number(messageId),
-          ourEmails: ourEmails.toString(),
+          ourEmails: JSON.stringify(ourEmails),
           tm: mapValues(tm, toJSONable),
         });
         return;
@@ -184,7 +184,7 @@ export default async function messageNotification(messageId: bigint) {
     } else {
       logger.error("messageNotification no body to send to end user", {
         messageId: Number(messageId),
-        body: body?.toString() || null,
+        body: toJSONable(body, ""),
         inbox: mapValues(inbox, toJSONable),
         message: mapValues(message, toJSONable),
       });

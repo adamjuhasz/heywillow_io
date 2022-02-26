@@ -30,7 +30,7 @@ export default async function getMessageWithId(
     if (labels.findIndex((v) => v === "SENT") !== -1) {
       logger.info(`Skipping ${gmailMessageId} because labelled "SENT"`, {
         gmailMessageId,
-        labels: labels.toString(),
+        labels: JSON.stringify(labels),
       });
       return null;
     }
@@ -38,7 +38,7 @@ export default async function getMessageWithId(
     if (labels.findIndex((v) => v === "DRAFT") !== -1) {
       logger.info(`Skipping ${gmailMessageId} because labelled "DRAFT"`, {
         gmailMessageId,
-        labels: labels.toString(),
+        labels: JSON.stringify(labels),
       });
       return null;
     }
