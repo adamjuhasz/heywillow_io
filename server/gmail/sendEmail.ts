@@ -1,5 +1,7 @@
 import { gmail_v1 } from "@googleapis/gmail";
-import { logger } from "utils/logger";
+import { mapValues } from "lodash";
+
+import { logger, toJSONable } from "utils/logger";
 
 interface Options {
   gmail: gmail_v1.Gmail;
@@ -45,8 +47,11 @@ export default async function sendEmailThroughGmail({
         raw: encodedMessage,
       },
     });
-    logger.info("users.messages.send", { res, messageParts });
+    logger.info("users.messages.send", {
+      res: mapValues(res, toJSONable),
+      messageParts: messageParts.toString(),
+    });
   } else {
-    logger.info("email not sent:", { messageParts });
+    logger.info("email not sent:", { messageParts: messageParts.toString() });
   }
 }

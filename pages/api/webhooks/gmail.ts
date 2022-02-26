@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Buffer } from "buffer";
+import { mapValues } from "lodash";
 
 import syncGmail from "server/syncGmail";
 import { prisma } from "utils/prisma";
-import { logger } from "utils/logger";
+import { logger, toJSONable } from "utils/logger";
 
 interface Body {
   message: {
@@ -24,7 +25,7 @@ export default async function handler(
   res: NextApiResponse<unknown>
 ) {
   logger.info("/api/webhooks/gmail", {
-    requestId: req.headers["x-vercel-id"],
+    requestId: req.headers["x-vercel-id"] as string,
     body: req.body,
   });
   const body = req.body as Body;
@@ -34,23 +35,31 @@ export default async function handler(
   );
 
   logger.info("decodedData", {
-    requestId: req.headers["x-vercel-id"],
+    requestId: req.headers["x-vercel-id"] as string,
     decodedData,
   });
 
   const push = JSON.parse(decodedData) as PushNotification;
-  logger.info("push", { requestId: req.headers["x-vercel-id"], push });
+  logger.info("push", {
+    requestId: req.headers["x-vercel-id"] as string,
+    push: mapValues(push, toJSONable),
+  });
 
   const inboxes = await prisma.gmailInbox.findMany({
     where: { emailAddress: push.emailAddress },
   });
-  logger.info("inboxes", { requestId: req.headers["x-vercel-id"], inboxes });
+  logger.info("inboxes", {
+    requestId: req.headers["x-vercel-id"] as string,
+    inboxes: inboxes.toString(),
+  });
 
   if (inboxes.length === 0) {
-    logger.error("Can't find inbox", { requestId: req.headers["x-vercel-id"] });
+    logger.error("Can't find inbox", {
+      requestId: req.headers["x-vercel-id"] as string,
+    });
   } else if (inboxes.length > 1) {
     logger.error("Don't know how to process multiple inboxes", {
-      requestId: req.headers["x-vercel-id"],
+      requestId: req.headers["x-vercel-id"] as string,
     });
   } else {
     try {
@@ -59,8 +68,8 @@ export default async function handler(
       });
     } catch (e) {
       logger.info("Webhook failed", {
-        requestId: req.headers["x-vercel-id"],
-        error: e,
+        requestId: req.headers["x-vercel-id"] as string,
+        error: (e as Error).toString(),
       });
     }
   }

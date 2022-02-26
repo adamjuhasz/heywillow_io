@@ -9,7 +9,7 @@ type Handler = Record<string, NextApiHandler>;
 export function apiHandler(handler: Handler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const method = defaultTo(req.method?.toLowerCase(), "");
-    logger.info("Incoming request", { method, url: req.url });
+    logger.info("Incoming request", { method, url: defaultTo(req.url, null) });
 
     // check handler supports HTTP method
     if (!handler[method])

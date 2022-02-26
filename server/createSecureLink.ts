@@ -27,14 +27,23 @@ export default async function createSecureThreadLink(
     },
   });
 
-  logger.info("threadLink", { threadId, aliasId, threadLink });
+  logger.info("threadLink", {
+    threadId: Number(threadId),
+    aliasId: Number(aliasId),
+    threadLink: Number(threadLink),
+  });
 
   const namespace = threadLink.Thread.Team.Namespace.namespace;
   const encodedTL = hashids.encode(threadLink.id);
   const host = `${process.env.PROTOCOL}://${process.env.DOMAIN}`;
 
   const secureURL = `${host}/p/${namespace}/secure-msg/${encodedTL}`;
-  logger.info("secureURL", { threadId, aliasId, threadLink, secureURL });
+  logger.info("secureURL", {
+    threadId: Number(threadId),
+    aliasId: Number(aliasId),
+    threadLink: Number(threadLink),
+    secureURL: Number(secureURL),
+  });
 
   return secureURL;
 }

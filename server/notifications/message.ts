@@ -1,5 +1,5 @@
 import { NotificationType } from "@prisma/client";
-import { defaultTo } from "lodash";
+import { defaultTo, mapValues } from "lodash";
 
 import { prisma } from "utils/prisma";
 import sendEmailThroughGmail from "server/gmail/sendEmail";
@@ -9,10 +9,10 @@ import sendPostmarkEmail from "server/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
 import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";
-import { logger } from "utils/logger";
+import { logger, toJSONable } from "utils/logger";
 
 export default async function messageNotification(messageId: bigint) {
-  logger.info("messageNotification", { messageId });
+  logger.info("messageNotification", { messageId: Number(messageId) });
 
   const message = await prisma.message.findUnique({
     where: { id: messageId },
@@ -36,7 +36,9 @@ export default async function messageNotification(messageId: bigint) {
   });
 
   if (message === null) {
-    logger.error("messageNotification message not found", { messageId });
+    logger.error("messageNotification message not found", {
+      messageId: Number(messageId),
+    });
     throw new Error("Message not found");
   }
 
@@ -61,13 +63,13 @@ export default async function messageNotification(messageId: bigint) {
   const namespace = message.Thread.Team.Namespace.namespace;
 
   logger.info("messageNotification ready to generate", {
-    messageId,
+    messageId: Number(messageId),
     thisType,
     shortText,
     bodyOfMessage,
-    subject,
+    subject: subject || null,
     threadId,
-    ourEmails,
+    ourEmails: ourEmails.toString(),
     namespace,
   });
 
@@ -92,7 +94,10 @@ export default async function messageNotification(messageId: bigint) {
         threadId: message.threadId,
         type: thisType,
       };
-      logger.info("messageNotification create InApp", { messageId, data });
+      logger.info("messageNotification create InApp", {
+        messageId: Number(messageId),
+        data: mapValues(data, toJSONable),
+      });
       await prisma.notification.create({
         data: data,
       });
@@ -106,9 +111,9 @@ export default async function messageNotification(messageId: bigint) {
     if (emailPref === true) {
       if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
         logger.info("messageNotification was going to send to self", {
-          messageId,
-          ourEmails,
-          tm,
+          messageId: Number(messageId),
+          ourEmails: ourEmails.toString(),
+          tm: mapValues(tm, toJSONable),
         });
         return;
       }
@@ -127,7 +132,10 @@ export default async function messageNotification(messageId: bigint) {
         ],
       };
 
-      logger.info("messageNotification create Email", { messageId, data });
+      logger.info("messageNotification create Email", {
+        messageId: Number(messageId),
+        data: mapValues(data, toJSONable),
+      });
 
       await sendPostmarkEmail(data);
     }
@@ -135,7 +143,9 @@ export default async function messageNotification(messageId: bigint) {
 
   // respond back to the end user
   if (message.direction === "outgoing") {
-    logger.info("messageNotification sending to end-user", { messageId });
+    logger.info("messageNotification sending to end-user", {
+      messageId: Number(messageId),
+    });
     const inbox = message.Thread.Team.Inboxes[0];
     const inboxId = inbox.id;
     const gmail = await createAuthedGmail(Number(inboxId));
@@ -165,18 +175,18 @@ export default async function messageNotification(messageId: bigint) {
       };
 
       logger.info("messageNotification sending to end-user", {
-        messageId,
-        inbox,
-        inboxId,
-        data: { ...data, gmail: undefined },
+        messageId: Number(messageId),
+        inbox: mapValues(inbox, toJSONable),
+        inboxId: Number(inboxId),
+        data: mapValues({ ...data, gmail: null }, toJSONable),
       });
       await sendEmailThroughGmail(data);
     } else {
       logger.error("messageNotification no body to send to end user", {
-        messageId,
-        body,
-        inbox,
-        message,
+        messageId: Number(messageId),
+        body: body?.toString() || null,
+        inbox: mapValues(inbox, toJSONable),
+        message: mapValues(message, toJSONable),
       });
     }
   }

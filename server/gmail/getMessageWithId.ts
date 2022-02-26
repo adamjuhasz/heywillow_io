@@ -1,5 +1,5 @@
 import { gmail_v1 } from "@googleapis/gmail";
-import { defaultTo } from "lodash";
+import { defaultTo, mapValues } from "lodash";
 
 import { GmailMessage } from "server/addEmailToDB";
 
@@ -7,7 +7,7 @@ import getGoogleMessageText from "server/gmail/getMessageText";
 import getGoogleMessageEmailerNameFromHeader from "server/gmail/getName";
 import getGoogleMessageEmailFromHeader from "server/gmail/getMessage";
 import getGmailAttachments from "server/gmail/getAttachments";
-import { logger } from "utils/logger";
+import { logger, toJSONable } from "utils/logger";
 
 export default async function getMessageWithId(
   authedGmail: gmail_v1.Gmail,
@@ -20,14 +20,17 @@ export default async function getMessageWithId(
     format: "full",
   });
 
-  logger.info("users.messages.get", { gmailMessageId, data: rawGmail.data });
+  logger.info("users.messages.get", {
+    gmailMessageId,
+    data: mapValues(rawGmail.data, toJSONable),
+  });
 
   const labels = rawGmail.data.labelIds;
   if (labels) {
     if (labels.findIndex((v) => v === "SENT") !== -1) {
       logger.info(`Skipping ${gmailMessageId} because labelled "SENT"`, {
         gmailMessageId,
-        labels,
+        labels: labels.toString(),
       });
       return null;
     }
@@ -35,7 +38,7 @@ export default async function getMessageWithId(
     if (labels.findIndex((v) => v === "DRAFT") !== -1) {
       logger.info(`Skipping ${gmailMessageId} because labelled "DRAFT"`, {
         gmailMessageId,
-        labels,
+        labels: labels.toString(),
       });
       return null;
     }
@@ -79,7 +82,7 @@ export default async function getMessageWithId(
     attachments: attaches,
   };
 
-  logger.info("msg", { gmailMessageId, msg });
+  logger.info("msg", { gmailMessageId, msg: mapValues(msg, toJSONable) });
 
   return msg;
 }

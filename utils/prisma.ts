@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { logger } from "utils/logger";
+import { logger, toJSONable } from "utils/logger";
+import { mapValues } from "lodash";
 
 declare global {
   // allow global `var` declarations
@@ -42,7 +43,7 @@ export const prisma: PrismaClient =
         `Query ${params.model}.${params.action} (Transaction? ${
           params.runInTransaction ? "Yes" : "No"
         }) took ${after - before}ms`,
-        { params }
+        { params: mapValues(params, toJSONable) }
       );
 
       return result;

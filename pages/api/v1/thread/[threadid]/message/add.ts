@@ -1,10 +1,11 @@
 import { defaultTo } from "lodash";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { serviceSupabase } from "server/supabase";
+import { mapValues } from "lodash";
 
 import { addInternalMessage } from "server/addInternal";
 import { prisma } from "utils/prisma";
-import { logger } from "utils/logger";
+import { logger, toJSONable } from "utils/logger";
 
 export interface Body {
   text: string;
@@ -31,8 +32,8 @@ export default async function handler(
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   logger.info("New message to add", {
-    requestId: req.headers["x-vercel-id"],
-    user: user,
+    requestId: (req.headers["x-vercel-id"] as string) || null,
+    user: user?.id || null,
     text: body.text,
   });
 
@@ -58,8 +59,8 @@ export default async function handler(
 
   if (teamMember === null) {
     logger.error("Can't access team member", {
-      requestId: req.headers["x-vercel-id"],
-      teamId: currentThread.teamId,
+      requestId: (req.headers["x-vercel-id"] as string) || null,
+      teamId: Number(currentThread.teamId),
       profileId: user.id,
     });
     return res.status(404).json({ error: "Can't access team member" });
@@ -71,11 +72,11 @@ export default async function handler(
   });
 
   logger.info("adding internal message", {
-    requestId: req.headers["x-vercel-id"],
-    user: user,
-    teamMember: teamMember,
-    msgId: msgId,
-    currentThread,
+    requestId: (req.headers["x-vercel-id"] as string) || null,
+    user: user.id,
+    teamMember: Number(teamMember.id),
+    msgId: Number(msgId),
+    currentThread: mapValues(currentThread, toJSONable),
   });
 
   res.json({});

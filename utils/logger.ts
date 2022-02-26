@@ -1,77 +1,97 @@
 import { Logtail } from "@logtail/node";
-import { LogtailTransport } from "@logtail/winston";
-import Winston from "winston";
+import { Context, ContextKey } from "@logtail/types";
 import { isDate, isPlainObject } from "lodash";
+
+export type { Context };
+
+interface Logger {
+  debug: (
+    msg: string,
+    obj: Record<string, Context | ContextKey>
+  ) => Promise<unknown>;
+  info: (
+    msg: string,
+    obj: Record<string, Context | ContextKey>
+  ) => Promise<unknown>;
+  warn: (
+    msg: string,
+    obj: Record<string, Context | ContextKey>
+  ) => Promise<unknown>;
+  error: (
+    msg: string,
+    obj: Record<string, Context | ContextKey>
+  ) => Promise<unknown>;
+}
 
 declare global {
   // allow global `var` declarations
   // eslint-disable-next-line no-var
-  var logger: Winston.Logger | undefined;
+  var logger: Logger | undefined;
 }
 
-const myFormatter = Winston.format((info) => {
-  const mappedInfo = mapKeysDeepLodash(info, (val, _key) => {
-    if (isDate(val)) {
-      return val.toISOString();
-    }
+export function toJSONable(val: unknown, _key: string) {
+  if (isDate(val)) {
+    return val.toISOString();
+  }
 
-    if (typeof val === "bigint") {
-      return Number(val);
-    }
+  if (typeof val === "bigint") {
+    return Number(val);
+  }
 
+  if (typeof val === "number") {
     return val;
-  });
+  }
 
-  return mappedInfo;
-});
+  if (typeof val === "string") {
+    return val;
+  }
 
-export const logger: Winston.Logger =
+  if (typeof val === "boolean") {
+    return val;
+  }
+
+  if (val === null) {
+    return val;
+  }
+
+  if (val === undefined) {
+    return null;
+  }
+
+  if (Array.isArray(val)) {
+    return val.toString();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if ((val as any)?.toString) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (val as any).toString();
+  }
+
+  return null;
+}
+
+export const logger: Logger =
   global.logger ||
   (() => {
-    const win = Winston.createLogger({
-      level: "info",
-      format: Winston.format.combine(myFormatter()),
-      transports: [],
-    });
-
-    if (process.env.NODE_ENV !== "production") {
-      global.logger = win;
-    }
-
     if (process.env.NODE_ENV === "production") {
-      win.add(
-        new Winston.transports.Console({
-          format: Winston.format.combine(
-            Winston.format.timestamp(),
-            Winston.format.simple()
-          ),
-        })
-      );
-    } else {
-      win.add(
-        new Winston.transports.Console({
-          format: Winston.format.combine(
-            Winston.format.colorize(),
-            Winston.format.timestamp(),
-            Winston.format.simple()
-          ),
-        })
-      );
-    }
-
-    if (process.env.NODE_ENV === "production") {
+      console.log("starting up Logtail");
       const logtail = new Logtail(process.env.LOGTAIL_SOURCE_TOKEN as string);
-      win.add(new LogtailTransport(logtail));
+      logtail.debug;
+      return logtail;
+    } else {
+      const localLogger: Logger = {
+        debug: async (m, obj) => console.debug(m, obj),
+        info: async (m, obj) => console.info(m, obj),
+        warn: async (m, obj) => console.warn(m, obj),
+        error: async (m, obj) => console.error(m, obj),
+      };
+      return localLogger;
     }
-
-    console.log("winston created");
-    win.info("winston ready");
-
-    return win;
   })();
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-function mapKeysDeepLodash(
+export function mapKeysDeepLodash(
   obj: any,
   cb: (value: any, key: string) => any
 ): any {
