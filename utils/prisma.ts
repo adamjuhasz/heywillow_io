@@ -20,14 +20,12 @@ export const prisma: PrismaClient =
     });
 
     localClient.$on("query", (e) => {
-      if (e.duration > 100) {
-        logger.debug(`Query`, {
-          duration: e.duration,
-          query: e.query,
-          params: e.params,
-          target: e.target,
-        });
-      }
+      logger.debug(`Query ${e.query}`, {
+        duration: e.duration,
+        query: e.query,
+        params: e.params,
+        target: e.target,
+      });
     });
 
     localClient.$use(async (params, next) => {
@@ -41,7 +39,7 @@ export const prisma: PrismaClient =
         `Query ${params.model}.${params.action} (Transaction? ${
           params.runInTransaction ? "Yes" : "No"
         }) took ${after - before}ms`,
-        { params: mapValues(params, toJSONable) }
+        { params: mapValues(params, toJSONable), durationMs: after - before }
       );
 
       return result;
