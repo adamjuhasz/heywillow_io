@@ -64,7 +64,7 @@ export function toJSONable(val: unknown, _key?: string): ContextKey | Context {
         ...a,
         [`${idx}`.padStart(3, "0")]: mapValues(v),
       }),
-      {} as object
+      {} as Record<string, ContextKey | Context>
     );
   }
 
