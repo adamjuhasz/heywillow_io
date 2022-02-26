@@ -75,8 +75,8 @@ export default function SignUpPage(): JSX.Element {
                   action="#"
                   method="POST"
                   className="space-y-6"
-                  onSubmit={async (e) => {
-                    e.preventDefault();
+                  onSubmit={async (event) => {
+                    event.preventDefault();
                     setDisabled(true);
 
                     const redirectTo = `${document.location.origin}${redirectPath}`;
@@ -92,21 +92,21 @@ export default function SignUpPage(): JSX.Element {
                       return;
                     }
 
-                    const { error } = await client.auth.signUp(
+                    const { error: signUpError } = await client.auth.signUp(
                       {
                         email,
                         password: useMagicLink ? undefined : password,
                       },
                       { redirectTo }
                     );
-                    if (error === null) {
+                    if (signUpError === null) {
                       if (useMagicLink) {
                         setShow(true);
                       }
                     } else {
                       setDisabled(false);
-                      console.error(error);
-                      setError(error.message);
+                      console.error(signUpError);
+                      setError(signUpError.message);
                     }
                   }}
                 >

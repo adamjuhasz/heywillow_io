@@ -68,19 +68,19 @@ export default function Login(): JSX.Element {
                     return;
                   }
 
-                  const { error } = await client.auth.signIn(
+                  const { error: signInError } = await client.auth.signIn(
                     {
                       email,
                       password: useMagicLink ? undefined : password,
                     },
                     { redirectTo }
                   );
-                  if (error === null) {
+                  if (signInError === null) {
                     if (useMagicLink) {
                       setShow(`Magic link sent to ${email}`);
                     }
                   } else {
-                    setError(error.message);
+                    setError(signInError.message);
                     setDisabled(false);
                   }
                 }}
@@ -198,12 +198,11 @@ export default function Login(): JSX.Element {
                   return;
                 }
 
-                const { error } = await client.auth.api.resetPasswordForEmail(
-                  email
-                );
+                const { error: resetPasswordError } =
+                  await client.auth.api.resetPasswordForEmail(email);
 
-                if (error) {
-                  setError(error.message);
+                if (resetPasswordError) {
+                  setError(resetPasswordError.message);
                 } else {
                   setShow(`Password reset sent to ${email}`);
                 }

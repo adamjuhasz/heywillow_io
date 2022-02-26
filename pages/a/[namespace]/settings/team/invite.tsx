@@ -60,11 +60,11 @@ export default function InviteTeammates(): JSX.Element {
 
               setLoading(true);
 
-              const invites = emails.map((e) =>
-                createInvite({ email: e, teamId: teamId })
+              const createdInvites = emails.map((email) =>
+                createInvite({ email: email, teamId: teamId })
               );
 
-              await Promise.allSettled(invites);
+              await Promise.allSettled(createdInvites);
               mutate(); // Grab new invites
 
               setLoading(false);

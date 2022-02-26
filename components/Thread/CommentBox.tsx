@@ -110,9 +110,9 @@ export default function CommentBox(props: Props) {
 
             switch (res.status) {
               case 200: {
-                const body = (await res.json()) as Return;
+                const responseBody = (await res.json()) as Return;
                 if (props.mutate) {
-                  props.mutate(body.id);
+                  props.mutate(responseBody.id);
                 }
                 elements.comment.value = "";
                 return;

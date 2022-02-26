@@ -58,15 +58,15 @@ export default function PasswordReset(): JSX.Element {
                     return;
                   }
 
-                  const { error } = await client.auth.api.updateUser(
-                    access_token as string,
-                    { password: password }
-                  );
-                  if (error === null) {
+                  const { error: updateUserError } =
+                    await client.auth.api.updateUser(access_token as string, {
+                      password: password,
+                    });
+                  if (updateUserError === null) {
                     router.push("/a/auth");
                     setDisabled(false);
                   } else {
-                    setError(error.message);
+                    setError(updateUserError.message);
                     setDisabled(false);
                   }
                 }}

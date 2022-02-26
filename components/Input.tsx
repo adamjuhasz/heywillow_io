@@ -51,8 +51,8 @@ const InputWithRef = forwardRef<HTMLDivElement, Props>(function Input(
             <div className="flex-shrink-0">
               <button
                 disabled={inProgress}
-                onClick={async (e) => {
-                  e.preventDefault();
+                onClick={async (event) => {
+                  event.preventDefault();
                   setProgress(true);
                   try {
                     await props.submit(text);

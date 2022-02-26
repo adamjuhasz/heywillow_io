@@ -33,18 +33,18 @@ export const UserContextProvider = ({
   const [user, setUser] = useState<User | null | undefined>(undefined);
 
   useEffect(() => {
-    const session = supabaseClient.auth.session();
+    const supabaseSession = supabaseClient.auth.session();
 
-    setSession(session);
-    setUser(session === null ? null : session?.user);
+    setSession(supabaseSession);
+    setUser(supabaseSession === null ? null : supabaseSession?.user);
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        console.log("user", session?.user);
+      async (_event, stateChangeSession) => {
+        setSession(stateChangeSession);
+        setUser(stateChangeSession?.user ?? null);
+        console.log("user", stateChangeSession?.user);
       }
     );
-    console.log("user", session?.user);
+    console.log("user", supabaseSession?.user);
 
     return () => {
       if (authListener !== null) {
