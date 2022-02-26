@@ -62,6 +62,13 @@ export function toJSONable(val: unknown, _key: string) {
     return val.toString();
   }
 
+  try {
+    const j = JSON.stringify(val);
+    return j;
+  } catch (e) {
+    console.error("Could not json", e);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((val as any)?.toString) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
