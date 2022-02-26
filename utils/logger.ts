@@ -1,6 +1,6 @@
 import { Logtail } from "@logtail/node";
 import { Context, ContextKey, ILogtailLog } from "@logtail/types";
-import { isDate, isPlainObject } from "lodash";
+import { isDate, isPlainObject, mapValues } from "lodash";
 
 export type { Context };
 
@@ -29,7 +29,7 @@ declare global {
   var logger: Logger | undefined;
 }
 
-export function toJSONable(val: unknown, _key: string) {
+export function toJSONable(val: unknown, _key: string): ContextKey | Context {
   if (isDate(val)) {
     return val.toISOString();
   }
@@ -62,17 +62,16 @@ export function toJSONable(val: unknown, _key: string) {
     return val.toString();
   }
 
+  if (isPlainObject(val)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return mapValues(val as any, toJSONable);
+  }
+
   try {
     const j = JSON.stringify(val);
     return j;
   } catch (e) {
     console.error("Could not json", e);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if ((val as any)?.toString) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (val as any).toString();
   }
 
   return null;
