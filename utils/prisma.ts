@@ -19,18 +19,16 @@ export const prisma: PrismaClient =
       ],
     });
 
-    if (process.env.NODE_ENV !== "production") {
-      localClient.$on("query", (e) => {
-        if (e.duration > 100) {
-          logger.debug(`Query`, {
-            duration: e.duration,
-            query: e.query,
-            params: e.params,
-            target: e.target,
-          });
-        }
-      });
-    }
+    localClient.$on("query", (e) => {
+      if (e.duration > 100) {
+        logger.debug(`Query`, {
+          duration: e.duration,
+          query: e.query,
+          params: e.params,
+          target: e.target,
+        });
+      }
+    });
 
     localClient.$use(async (params, next) => {
       const before = Date.now();
