@@ -4,7 +4,7 @@ import { mapValues } from "lodash";
 
 import syncGmail from "server/syncGmail";
 import { prisma } from "utils/prisma";
-import { Context, logger, toJSONable } from "utils/logger";
+import { logger, toJSONable } from "utils/logger";
 
 interface Body {
   message: {
@@ -50,10 +50,7 @@ export default async function handler(
   });
   logger.info("inboxes", {
     requestId: req.headers["x-vercel-id"] as string,
-    inboxes: mapValues(inboxes, toJSONable).reduce(
-      (a, v, idx) => ({ ...a, [`${idx}`.padStart(3, "0")]: v }),
-      {} as object
-    ) as Context,
+    inboxes: toJSONable(inboxes, ""),
   });
 
   if (inboxes.length === 0) {

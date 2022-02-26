@@ -29,7 +29,7 @@ declare global {
   var logger: Logger | undefined;
 }
 
-export function toJSONable(val: unknown, _key: string): ContextKey | Context {
+export function toJSONable(val: unknown, _key?: string): ContextKey | Context {
   if (isDate(val)) {
     return val.toISOString();
   }
@@ -59,7 +59,13 @@ export function toJSONable(val: unknown, _key: string): ContextKey | Context {
   }
 
   if (Array.isArray(val)) {
-    return val.toString();
+    return val.reduce(
+      (a, v, idx) => ({
+        ...a,
+        [`${idx}`.padStart(3, "0")]: mapValues(v),
+      }),
+      {} as object
+    );
   }
 
   if (isPlainObject(val)) {
