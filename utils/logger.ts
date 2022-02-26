@@ -73,16 +73,26 @@ export function toJSONable(val: unknown, _key: string) {
 
 async function logToConsole(log: ILogtailLog): Promise<ILogtailLog> {
   const { level, dt, message, ...obj } = log;
+
   switch (level) {
     case "error":
       console.error(dt, message, obj);
       break;
 
-    case "debug":
     case "info":
     case "warn":
       console.log(dt, message, obj);
+      break;
+
+    case "debug":
+      if (process.env.NODE_ENV === "production") {
+        break;
+      } else {
+        console.debug(dt, message, obj);
+      }
+      break;
   }
+
   return log;
 }
 
@@ -90,7 +100,7 @@ export const logger: Logger =
   global.logger ||
   (() => {
     if (process.env.NODE_ENV === "production") {
-      console.log("starting up Logtail", process.env.LOGTAIL_TOKEN);
+      console.log("starting up Logtail");
       const logtail = new Logtail(process.env.LOGTAIL_TOKEN as string);
       logtail.use(logToConsole);
       logtail
