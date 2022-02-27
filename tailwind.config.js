@@ -5,7 +5,17 @@ module.exports = {
     "./layouts/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        leftRightAnim: {
+          "0%": { "background-position": "0% 0%" },
+          "100%": { "background-position": "-200% 0%" },
+        },
+      },
+      animation: {
+        loading: "leftRightAnim 1s linear infinite",
+      },
+    },
   },
   plugins: [
     require("@tailwindcss/forms"),
