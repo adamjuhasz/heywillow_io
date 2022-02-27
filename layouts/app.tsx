@@ -2,6 +2,7 @@ import { PropsWithChildren } from "react";
 import { SupabaseClient, createClient } from "@supabase/supabase-js";
 
 import { UserContextProvider } from "components/UserContext";
+import { ToastProvider } from "components/Toast";
 
 declare global {
   // allow global `var` declarations
@@ -25,7 +26,7 @@ const supabase: SupabaseClient =
 export default function AppLayout(props: PropsWithChildren<unknown>) {
   return (
     <UserContextProvider supabaseClient={supabase}>
-      {props.children}
+      <ToastProvider>{props.children}</ToastProvider>
     </UserContextProvider>
   );
 }
