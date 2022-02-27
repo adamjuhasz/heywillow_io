@@ -4,6 +4,7 @@ import { ReactElement, ReactNode } from "react";
 import type { AppProps } from "next/app";
 import { NextPage } from "next";
 import { usePostHog } from "next-use-posthog";
+import PageLoading from "components/PageLoading";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -23,7 +24,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
-  return getLayout(<Component {...pageProps} />);
+  return getLayout(
+    <>
+      <Component {...pageProps} />
+      <PageLoading />
+    </>
+  );
 }
 
 export default MyApp;
