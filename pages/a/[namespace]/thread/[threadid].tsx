@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   PropsWithChildren,
   ReactElement,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -39,6 +40,7 @@ import postNewMessage from "client/postNewMessage";
 import CommentBox from "components/Thread/CommentBox";
 import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";
+import ToastContext from "components/Toast";
 
 export default function ThreadViewer() {
   const [scrolled, setScrolled] = useState(false);
@@ -102,6 +104,8 @@ export default function ThreadViewer() {
     scrollToID(`comment-${parseInt(comment as string, 10)}`);
     setScrolled(true);
   }, [scrolled, comment]);
+
+  const { addToast } = useContext(ToastContext);
 
   const customerEmail = thread?.Message.filter((m) => m.AliasEmail !== null)[0]
     ?.AliasEmail?.emailAddress;
@@ -179,14 +183,29 @@ export default function ThreadViewer() {
               <InputWithRef
                 submit={async (t: string) => {
                   if (threadNum === undefined) {
-                    alert("Don't know which thread you're sending to");
+                    addToast({
+                      type: "error",
+                      string: "Don't know which thread you're sending to",
+                    });
                     return;
                   }
-                  await postNewMessage(threadNum, { text: t });
+                  const response = await postNewMessage(threadNum, { text: t });
 
-                  // wait for Supabase to see the write, ~200-400ms seems to be the magic number
+                  // wait to mutate for Supabase to see the write, ~200-400ms seems to be the magic number
                   setTimeout(async () => {
                     await Promise.allSettled([mutateThread(), mutateThreads()]);
+                    if (comment) {
+                      router.replace({
+                        pathname: "/a/[namespace]/thread/[threadid]",
+                        query: {
+                          ...router.query,
+                          comment: undefined,
+                          message: response.messageId,
+                        },
+                      });
+                    } else {
+                      setScrolled(false);
+                    }
                   }, 300);
                 }}
               />
@@ -257,11 +276,14 @@ export default function ThreadViewer() {
                         threadLink?.absoluteLink
                       );
                     } else {
-                      alert("Could not get secure link");
+                      addToast({
+                        type: "error",
+                        string: "Could not get secure link",
+                      });
                     }
                   } catch (e) {
                     console.error("Can't copy", e);
-                    alert("Could not copy");
+                    addToast({ type: "error", string: "Could not copy" });
                   }
                 }}
               >
@@ -278,7 +300,10 @@ export default function ThreadViewer() {
                 className="-mx-1  flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-lime-800 hover:bg-opacity-30 hover:text-lime-500"
                 onClick={async () => {
                   if (threadNum === undefined) {
-                    alert("Not sure what thread this is");
+                    addToast({
+                      type: "error",
+                      string: "Not sure what thread this is",
+                    });
                     return;
                   }
                   try {
@@ -289,7 +314,10 @@ export default function ThreadViewer() {
                     });
                   } catch (e) {
                     console.error(e);
-                    alert("Could not change state of thread");
+                    addToast({
+                      type: "error",
+                      string: "Could not change state of thread",
+                    });
                   }
                 }}
               >
@@ -302,7 +330,10 @@ export default function ThreadViewer() {
                 className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
                 onClick={async () => {
                   if (threadNum === undefined) {
-                    alert("Not sure what thread this is");
+                    addToast({
+                      type: "error",
+                      string: "Not sure what thread this is",
+                    });
                     return;
                   }
                   try {
@@ -316,7 +347,10 @@ export default function ThreadViewer() {
                     });
                   } catch (e) {
                     console.error(e);
-                    alert("Could not change state of thread");
+                    addToast({
+                      type: "error",
+                      string: "Could not change state of thread",
+                    });
                   }
                 }}
               >
@@ -329,7 +363,10 @@ export default function ThreadViewer() {
                 className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-20 hover:text-yellow-600"
                 onClick={async () => {
                   if (threadNum === undefined) {
-                    alert("Not sure what thread this is");
+                    addToast({
+                      type: "error",
+                      string: "Not sure what thread this is",
+                    });
                     return;
                   }
                   try {
@@ -343,7 +380,10 @@ export default function ThreadViewer() {
                     });
                   } catch (e) {
                     console.error(e);
-                    alert("Could not change state of thread");
+                    addToast({
+                      type: "error",
+                      string: "Could not change state of thread",
+                    });
                   }
                 }}
               >
@@ -356,7 +396,10 @@ export default function ThreadViewer() {
                 className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-10 hover:text-yellow-700"
                 onClick={async () => {
                   if (threadNum === undefined) {
-                    alert("Not sure what thread this is");
+                    addToast({
+                      type: "error",
+                      string: "Not sure what thread this is",
+                    });
                     return;
                   }
                   try {
@@ -370,7 +413,10 @@ export default function ThreadViewer() {
                     });
                   } catch (e) {
                     console.error(e);
-                    alert("Could not change state of thread");
+                    addToast({
+                      type: "error",
+                      string: "Could not change state of thread",
+                    });
                   }
                 }}
               >
@@ -383,7 +429,10 @@ export default function ThreadViewer() {
                 className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-10 hover:text-yellow-700"
                 onClick={async () => {
                   if (threadNum === undefined) {
-                    alert("Not sure what thread this is");
+                    addToast({
+                      type: "error",
+                      string: "Not sure what thread this is",
+                    });
                     return;
                   }
                   try {
@@ -397,7 +446,10 @@ export default function ThreadViewer() {
                     });
                   } catch (e) {
                     console.error(e);
-                    alert("Could not change state of thread");
+                    addToast({
+                      type: "error",
+                      string: "Could not change state of thread",
+                    });
                   }
                 }}
               >
@@ -500,6 +552,8 @@ function MessagePrinter(props: MessagePrinterProps) {
     props.message.Comment.length > 0
   );
 
+  const { addToast } = useContext(ToastContext);
+
   const { x, y, reference, floating, strategy, update, refs } = useFloating({
     placement: props.message.direction === "incoming" ? "top-end" : "top-start",
     middleware: [
@@ -583,7 +637,7 @@ function MessagePrinter(props: MessagePrinterProps) {
               await navigator.clipboard.writeText(text);
             } catch (e) {
               console.error("Can't copy", e);
-              alert("Could not copy");
+              addToast({ type: "error", string: "Could not copy" });
             }
           }}
         />

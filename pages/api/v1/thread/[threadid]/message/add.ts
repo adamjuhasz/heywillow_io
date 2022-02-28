@@ -11,7 +11,7 @@ export interface Body {
   text: string;
 }
 
-export type Return = Record<string, never>;
+export type Return = { messageId: number };
 
 export default async function handler(
   req: NextApiRequest,
@@ -79,5 +79,5 @@ export default async function handler(
     currentThread: mapValues(currentThread, toJSONable),
   });
 
-  res.json({});
+  res.json({ messageId: Number(msgId) });
 }
