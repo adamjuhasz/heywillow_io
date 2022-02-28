@@ -20,20 +20,19 @@ export default async function createTeam(options: Options) {
 
   switch (res.status) {
     case 409: {
-      const body = await res.json();
-      body.status = res.status;
-      throw body;
+      const returnBody = await res.json();
+      returnBody.status = res.status;
+      throw returnBody;
     }
 
     case 200: {
-      const body = (await res.json()) as CreateReturn;
-      return body;
+      const returnBody = (await res.json()) as CreateReturn;
+      return returnBody;
     }
 
     default: {
-      const body = await res.json();
-      body.status = res.status;
-      throw body;
+      const returnBody = { status: res.status };
+      throw returnBody;
     }
   }
 }

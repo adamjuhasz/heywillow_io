@@ -47,8 +47,20 @@ export default function CreateTeam(): JSX.Element {
                 setLoading(true);
                 await createTeam({ name, namespace });
                 router.push(`/a/${namespace}/settings/team/connect`);
-              } catch (e) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              } catch (e: any) {
                 setError(true);
+                if (e.status === 409) {
+                  addToast({
+                    type: "error",
+                    string: "Namespace already taken, choose another",
+                  });
+                } else {
+                  addToast({
+                    type: "error",
+                    string: `Error creating team. error: ${e.status}`,
+                  });
+                }
               } finally {
                 setLoading(false);
               }
