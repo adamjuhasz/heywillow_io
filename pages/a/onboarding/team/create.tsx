@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -8,6 +8,7 @@ import SettingsBox from "components/Settings/Box/Box";
 import createTeam from "client/createTeam";
 import Loading from "components/Loading";
 import AppContainer from "components/App/Container";
+import ToastContext from "components/Toast";
 
 export default function CreateTeam(): JSX.Element {
   const [name, setName] = useState("");
@@ -15,6 +16,7 @@ export default function CreateTeam(): JSX.Element {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { addToast } = useContext(ToastContext);
 
   return (
     <>
@@ -39,6 +41,8 @@ export default function CreateTeam(): JSX.Element {
             }
             disabled={name.length === 0 || namespace.length === 0 || loading}
             onSubmit={async () => {
+              addToast({ type: "string", string: `Creating ${name} team...` });
+
               try {
                 setLoading(true);
                 await createTeam({ name, namespace });

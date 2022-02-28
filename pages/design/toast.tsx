@@ -7,14 +7,16 @@ export default function ToastDesign() {
   const [num, setNum] = useState(1);
   const { addToast } = useContext(ToastContext);
 
-  const addAToast = () => {
-    addToast({ type: "string", string: `A new toast #${num}` });
+  const addAToast = (type: "string" | "error", timeout?: number) => {
+    addToast({ type: type, string: `A new toast #${num}` }, timeout);
     setNum(num + 1);
   };
   return (
-    <>
-      <button onClick={addAToast}>Add Toast</button>
-    </>
+    <div className="flex flex-col">
+      <button onClick={() => addAToast("string")}>Add Toast</button>
+      <button onClick={() => addAToast("error")}>Add Error Toast</button>
+      <button onClick={() => addAToast("string", 6000)}>Add Long Toast</button>
+    </div>
   );
 }
 
