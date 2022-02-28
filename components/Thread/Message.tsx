@@ -1,4 +1,4 @@
-import { MouseEventHandler, forwardRef, useState } from "react";
+import { MouseEventHandler, forwardRef } from "react";
 import { format } from "date-fns";
 import { defaultTo } from "lodash";
 import { MessageDirection } from "@prisma/client";
@@ -8,6 +8,7 @@ import Avatar from "components/Avatar";
 import Attachment from "components/Thread/Attachment";
 import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";
+import Redacted from "components/Redacted";
 
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
 
@@ -129,82 +130,3 @@ export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
     );
   }
 );
-
-function Redacted({ str }: { str: string }): JSX.Element {
-  const [redacted, setRedaction] = useState(true);
-
-  const panRegex = /\d{4}-\d{4}-\d{4}-\d{4}/g;
-  const ssnRegex = /\d{3}-\d{2}-\d{4}/g;
-  const hasPan = panRegex.exec(str);
-  const hasSSN = ssnRegex.exec(str);
-
-  if (hasPan !== null) {
-    const before = str.slice(0, hasPan.index);
-
-    return (
-      <div className="inline">
-        {before}
-        <div className="relative inline select-none overflow-hidden rounded-sm bg-black p-1 font-mono text-black shadow-black  drop-shadow-md">
-          5151-5151-5151-5151
-          {redacted ? (
-            <>
-              <div className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-sm text-xs text-white hover:text-transparent ">
-                PAN redacted
-              </div>
-              <div
-                onClick={() => setRedaction(!redacted)}
-                className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-sm text-xs text-transparent hover:bg-black hover:text-white "
-              >
-                Click to show
-              </div>
-            </>
-          ) : (
-            <div
-              onClick={() => setRedaction(!redacted)}
-              className=" absolute top-0 left-0 flex h-full w-full select-none items-center justify-center rounded-sm text-white"
-            >
-              {hasPan[0]}
-            </div>
-          )}
-        </div>
-        <Redacted str={str.slice(panRegex.lastIndex)} />
-      </div>
-    );
-  }
-
-  if (hasSSN !== null) {
-    const before = str.slice(0, hasSSN.index);
-
-    return (
-      <div className="inline">
-        {before}
-        <div className="relative inline select-none overflow-hidden rounded-sm bg-black p-1 font-mono text-black shadow-black  drop-shadow-md">
-          515-15-1515
-          {redacted ? (
-            <>
-              <div className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-sm text-xs text-white hover:text-transparent ">
-                SSN redacted
-              </div>
-              <div
-                onClick={() => setRedaction(!redacted)}
-                className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-sm text-xs text-transparent hover:bg-black hover:text-white "
-              >
-                Click to show
-              </div>
-            </>
-          ) : (
-            <div
-              onClick={() => setRedaction(!redacted)}
-              className=" absolute top-0 left-0 flex h-full w-full select-none items-center justify-center rounded-sm text-white"
-            >
-              {hasSSN[0]}
-            </div>
-          )}
-        </div>
-        <Redacted str={str.slice(ssnRegex.lastIndex)} />
-      </div>
-    );
-  }
-
-  return <>{str}</>;
-}
