@@ -614,8 +614,13 @@ export default function Vercel(): JSX.Element {
         </div>
       </div>
       <div className="flex min-h-[160px] w-full justify-between bg-black pt-7 pb-14 text-zinc-500">
-        <div className="mx-auto grid w-full max-w-4xl grid-cols-6">
-          <div className="col-span-2 flex flex-col">
+        <div className="mx-auto grid w-full max-w-4xl grid-cols-1 space-y-4 px-4 md:grid-cols-6 md:space-y-0 md:px-0">
+          <div className="col-span-1 flex flex-col md:col-span-2">
+            <div className="font-medium text-zinc-100">Guides</div>
+            <div className="">Setting up email forwarding</div>
+          </div>
+
+          <div className="col-span-1 flex flex-col md:col-span-2">
             <div className="font-medium text-zinc-100">Resources</div>
             <div className="">Front vs Willow</div>
             <div className="">Zendesk vs Willow</div>
@@ -623,11 +628,8 @@ export default function Vercel(): JSX.Element {
             <div className="">Gmail collaborative inbox vs Willow</div>
             <div className="">Help scout vs Willow</div>
           </div>
-          <div className="col-span-2 flex flex-col">
-            <div className="font-medium text-zinc-100">Guides</div>
-            <div className="">Setting up email forwarding</div>
-          </div>
-          <div className="col-span-2 flex flex-col">
+
+          <div className="col-span-1 flex flex-col md:col-span-2">
             <div className="font-medium text-zinc-100">Company</div>
             <div className="">
               <Link href="/privacy-policy">
@@ -644,8 +646,6 @@ export default function Vercel(): JSX.Element {
               </Link>
             </div>
           </div>
-          <div className="col-span-4 flex flex-col"></div>
-          <div className="col-span-2 flex flex-col"></div>
         </div>
       </div>
     </>
