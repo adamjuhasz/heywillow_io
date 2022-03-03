@@ -5,7 +5,9 @@
     "decompile",
     "fkey",
     "historyid",
+    "Hiver",
     "idempotency",
+    "Juhasz",
     "logtail",
     "nextjs",
     "paytgthr",
@@ -14,7 +16,8 @@
     "signup",
     "Supa",
     "tailwindui",
-    "threadid"
+    "threadid",
+    "Zzyzx"
   ],
   "jest.jestCommandLine": "yarn test"
 }

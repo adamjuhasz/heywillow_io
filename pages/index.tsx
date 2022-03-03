@@ -1,7 +1,11 @@
 import Link from "next/link";
 import Head from "next/head";
 import { CSSProperties, PropsWithChildren, useEffect } from "react";
-import { ArrowNarrowRightIcon, CheckCircleIcon } from "@heroicons/react/solid";
+import {
+  ArrowNarrowRightIcon,
+  CheckCircleIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/solid";
 import { ChipIcon, ClockIcon, UserAddIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 
@@ -395,7 +399,7 @@ export default function Vercel(): JSX.Element {
                 </div>
               </div>
               <div className="mt-7 text-sm font-light text-zinc-400">
-                Need to wait for you customer to write back? Snooze the ticket
+                Need to wait for your customer to write back? Snooze the ticket
                 for 1, 3, or 7 days. If the timer runs out or the customer
                 responds the ticket re-opens itself. Never lose a ticket to
                 pending purgatory again
@@ -461,11 +465,23 @@ export default function Vercel(): JSX.Element {
               <div className="flex grow flex-col space-y-4 bg-zinc-600 bg-opacity-30 p-10">
                 <div className="flex items-start text-sm">
                   <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
-                  <div className="grow">50 unique conversations per month</div>
+                  <div className="grow">
+                    50 unique{" "}
+                    <Explainer explainer={conversationExplainer}>
+                      conversations
+                    </Explainer>{" "}
+                    per month
+                  </div>
                 </div>
                 <div className="flex items-start text-sm">
                   <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
                   <div className="grow">No limit on team members</div>
+                </div>
+                <div className="flex items-start text-sm">
+                  <PlusCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
+                  <div className="grow">
+                    $0.10 per conversation over included 50
+                  </div>
                 </div>
               </div>
 
@@ -485,18 +501,30 @@ export default function Vercel(): JSX.Element {
                   Growing
                 </div>
                 <div className="text-normal text-zinc-100 text-opacity-70">
-                  $50/mo
+                  $100/mo
                 </div>
               </div>
 
               <div className="flex grow flex-col space-y-4 bg-zinc-600 bg-opacity-30 p-10">
                 <div className="flex items-start text-sm">
                   <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#EE147C]" />
-                  <div className="grow">Everything in the free tier</div>
+                  <div className="grow">
+                    1,000 unique{" "}
+                    <Explainer explainer={conversationExplainer}>
+                      conversations
+                    </Explainer>{" "}
+                    per month
+                  </div>
                 </div>
                 <div className="flex items-start text-sm">
                   <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#EE147C]" />
-                  <div className="grow">200 unique conversations per month</div>
+                  <div className="grow">No limit on team members</div>
+                </div>
+                <div className="flex items-start text-sm">
+                  <PlusCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#EE147C]" />
+                  <div className="grow">
+                    $0.10 per conversation over included 1,000
+                  </div>
                 </div>
               </div>
 
@@ -513,24 +541,32 @@ export default function Vercel(): JSX.Element {
             <div className="col-span-1 flex flex-col rounded-md border border-[#8341C2]">
               <div className="flex flex-col bg-[#8341C2] p-10">
                 <div className="text-3xl font-medium text-zinc-100">
-                  Hypergrowth
+                  Hyper growth
                 </div>
                 <div className="text-normal text-zing-100 text-opacity-70">
-                  $200/mo
+                  $1000/mo
                 </div>
               </div>
 
               <div className="flex grow flex-col space-y-4 bg-zinc-600 bg-opacity-30 p-10">
-                <div className="text- flex grow items-start text-sm">
-                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#8341C2]" />
+                <div className="flex grow items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-purple-400" />
                   <div className="grow">
-                    Everything in the free and growing tier
+                    10,000 unique{" "}
+                    <Explainer explainer={conversationExplainer}>
+                      conversations
+                    </Explainer>{" "}
+                    per month
                   </div>
                 </div>
-                <div className="flex grow items-start text-sm">
-                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#8341C2]" />
+                <div className="text- flex grow items-start text-sm">
+                  <CheckCircleIcon className="mr-2 h-5 w-5 shrink-0 text-purple-400" />
+                  <div className="grow">No limit on team members</div>
+                </div>
+                <div className="flex items-start text-sm">
+                  <PlusCircleIcon className="mr-2 h-5 w-5 shrink-0 text-purple-400" />
                   <div className="grow">
-                    2000 unique conversations per month
+                    $0.01 per conversation over included 10,000
                   </div>
                 </div>
               </div>
@@ -551,28 +587,67 @@ export default function Vercel(): JSX.Element {
           <div className="mb-2 text-lg text-zinc-100 ">
             Built by an awesome team
           </div>
-          <div className="grid grid-cols-3 gap-0 text-lg text-zinc-100 sm:gap-20">
+          <div className="grid grid-cols-2 gap-0 text-lg text-zinc-100 sm:gap-20">
             <div className="flex flex-col items-center justify-start ">
-              <div className="mb-2 h-10 w-10 rounded-full bg-teal-400 text-center" />
-              <div className="text-center">Mike Perez</div>
-              <div className="text-center">CEO</div>
-            </div>
-
-            <div className="flex flex-col items-center justify-start ">
-              <div className="mb-2 h-10 w-10 rounded-full bg-lime-400 text-center" />
-              <div className="text-center">Adam Juhasz</div>
+              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-lime-400 text-center">
+                👨‍💻
+              </div>
+              <div className="text-center">
+                <a
+                  href="mailto:heyadam@heywillow.io"
+                  className="hover:text-zinc-100 hover:underline hover:decoration-wavy"
+                >
+                  Adam Juhasz
+                </a>
+              </div>
               <div className="text-center">CTO</div>
             </div>
 
             <div className="flex flex-col items-center justify-start ">
-              <div className="mb-2 h-10 w-10 rounded-full bg-yellow-400 text-center" />
+              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-center">
+                🐶
+              </div>
               <div className="text-center">Zzyzx</div>
-              <div className="text-center">CFO</div>
+              <div className="text-center">C(Fur)O</div>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex h-40 w-full justify-between bg-zinc-600 bg-opacity-30"></div>
+      <div className="flex min-h-[160px] w-full justify-between bg-black pt-7 pb-14 text-zinc-500">
+        <div className="mx-auto grid w-full max-w-4xl grid-cols-6">
+          <div className="col-span-2 flex flex-col">
+            <div className="font-medium text-zinc-100">Resources</div>
+            <div className="">Front vs Willow</div>
+            <div className="">Zendesk vs Willow</div>
+            <div className="">Hiver vs Willow</div>
+            <div className="">Gmail collaborative inbox vs Willow</div>
+            <div className="">Help scout vs Willow</div>
+          </div>
+          <div className="col-span-2 flex flex-col">
+            <div className="font-medium text-zinc-100">Guides</div>
+            <div className="">Setting up email forwarding</div>
+          </div>
+          <div className="col-span-2 flex flex-col">
+            <div className="font-medium text-zinc-100">Company</div>
+            <div className="">
+              <Link href="/privacy-policy">
+                <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
+                  Privacy Policy
+                </a>
+              </Link>
+            </div>
+            <div className="">
+              <Link href="/terms-of-service">
+                <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
+                  Terms of service
+                </a>
+              </Link>
+            </div>
+          </div>
+          <div className="col-span-4 flex flex-col"></div>
+          <div className="col-span-2 flex flex-col"></div>
+        </div>
+      </div>
     </>
   );
 }
@@ -588,6 +663,21 @@ function GradientText({
 }: PropsWithChildren<GradientProps>) {
   return (
     <span className={`relative bg-clip-text text-transparent ${className}`}>
+      {props.children}
+    </span>
+  );
+}
+
+const conversationExplainer =
+  "A conversation is unlimited communication with a unique person per month. Multiples email address for a customer count as 1 conversation.";
+
+interface ExplainerProps {
+  explainer: string;
+}
+
+function Explainer(props: PropsWithChildren<ExplainerProps>) {
+  return (
+    <span title={props.explainer} className="underline decoration-dashed">
       {props.children}
     </span>
   );
