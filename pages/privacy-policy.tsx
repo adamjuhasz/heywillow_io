@@ -3,7 +3,7 @@ export default function PP() {
     <div className="prose prose-invert mx-auto my-7 max-w-5xl">
       <h2>Privacy Policy</h2>
       <p>
-        Your privacy is important to us. It is Willow Corp&#39;s policy to
+        Your privacy is important to us. It is HeyWillow Corp&#39;s policy to
         respect your privacy and comply with any applicable law and regulation
         regarding any personal information we may collect about you, including
         across our website,{" "}
@@ -237,9 +237,9 @@ export default function PP() {
         using the following details:{" "}
       </p>
       <p>
-        Peter Perez
+        Adam Juhasz
         <br />
-        mike@heywillow.io{" "}
+        heyadam@heywillow.io{" "}
       </p>
     </div>
   );
