@@ -17,6 +17,8 @@ export interface SupabaseMessage {
   threadId: number;
   aliasId: number | null;
   teamMemberId: number | null;
+  text: { text: string }[];
+  subject: null | string;
 }
 
 export interface SupabaseAliasEmail {
@@ -43,14 +45,9 @@ export interface SupabaseEmailMessage {
   sourceMessageId: string;
   emailMessageId: string;
   subject: string;
-  body: string;
+  textBody: string;
+  htmlBody: string;
   raw: Record<string, unknown>;
-}
-
-export interface SupabaseInternalMessage {
-  id: number;
-  createdAt: string;
-  body: string;
 }
 
 export interface SupabaseThread {

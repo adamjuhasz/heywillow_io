@@ -4,8 +4,6 @@ import Image from "next/image";
 
 import {
   SupabaseAliasEmail,
-  SupabaseEmailMessage,
-  SupabaseInternalMessage,
   SupabaseMessage,
   SupabaseThread,
   SupabaseThreadState,
@@ -14,9 +12,9 @@ import {
 export type FetchThread = SupabaseThread & {
   ThreadState: SupabaseThreadState[];
   Message: (SupabaseMessage & {
+    text: { text: string }[];
+    subject: null | string;
     AliasEmail: SupabaseAliasEmail;
-    EmailMessage: SupabaseEmailMessage | null;
-    InternalMessage: SupabaseInternalMessage | null;
   })[];
 };
 
@@ -50,7 +48,7 @@ export default function ThreadList(props: Props) {
             <dl className="mt-1 flex flex-grow flex-col justify-between">
               <dt className="sr-only">Title</dt>
               <dd className="text-sm text-gray-500">
-                {thread.Message.reverse()[0].EmailMessage?.subject}
+                {thread.Message.reverse()[0].subject || ""}
               </dd>
               <dt className="sr-only">Count</dt>
               <dd className="text-sm text-gray-500">
@@ -58,7 +56,10 @@ export default function ThreadList(props: Props) {
               </dd>
               <dt className="sr-only">Sall text</dt>
               <dd className="text-sm text-gray-500">
-                {thread.Message.reverse()[0].EmailMessage?.body.slice(0, 50)}
+                {thread.Message.reverse()[0]
+                  .text.map((t) => t.text)
+                  .join("\n")
+                  .slice(0, 50)}
               </dd>
               <dt className="sr-only">Role</dt>
               <dd className="mt-3">

@@ -2,8 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Buffer } from "buffer";
 import { mapValues } from "lodash";
 
-import syncGmail from "server/syncGmail";
-import { prisma } from "utils/prisma";
 import { logger, toJSONable } from "utils/logger";
 
 interface Body {
@@ -44,35 +42,6 @@ export default async function handler(
     requestId: req.headers["x-vercel-id"] as string,
     push: mapValues(push, toJSONable),
   });
-
-  const inboxes = await prisma.gmailInbox.findMany({
-    where: { emailAddress: push.emailAddress },
-  });
-  logger.info("inboxes", {
-    requestId: req.headers["x-vercel-id"] as string,
-    inboxes: toJSONable(inboxes, ""),
-  });
-
-  if (inboxes.length === 0) {
-    logger.error("Can't find inbox", {
-      requestId: req.headers["x-vercel-id"] as string,
-    });
-  } else if (inboxes.length > 1) {
-    logger.error("Don't know how to process multiple inboxes", {
-      requestId: req.headers["x-vercel-id"] as string,
-    });
-  } else {
-    try {
-      await syncGmail(Number(inboxes[0].id), {
-        currentHistoryid: push.historyId,
-      });
-    } catch (e) {
-      logger.info("Webhook failed", {
-        requestId: req.headers["x-vercel-id"] as string,
-        error: (e as Error).toString(),
-      });
-    }
-  }
 
   res.status(200).send("");
 }

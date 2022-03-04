@@ -8,7 +8,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
   const prisma = global?.prisma || new PrismaClient();
 
-  const inboxes = await prisma.gmailInbox.findMany({
+  const inboxes = await prisma.inbox.findMany({
     select: { id: true, emailAddress: true },
   });
 

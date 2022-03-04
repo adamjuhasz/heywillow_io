@@ -4,9 +4,7 @@ import useSWR from "swr";
 
 import {
   SupabaseAliasEmail,
-  SupabaseEmailMessage,
   SupabaseGmailInbox,
-  SupabaseInternalMessage,
   SupabaseMessage,
   SupabaseThread,
   SupabaseThreadState,
@@ -16,9 +14,9 @@ import { useSupabase } from "components/UserContext";
 export type FetchThread = SupabaseThread & {
   ThreadState: SupabaseThreadState[];
   Message: (SupabaseMessage & {
+    text: { text: string }[];
+    subject: null | string;
     AliasEmail: SupabaseAliasEmail | null;
-    EmailMessage: SupabaseEmailMessage | null;
-    InternalMessage: SupabaseInternalMessage | null;
   })[];
   AliasEmail: SupabaseAliasEmail;
   GmailInbox: SupabaseGmailInbox;
@@ -36,8 +34,6 @@ export async function getThreads(supabase: SupabaseClient, teamId: number) {
     Message!Message_threadId_fkey ( 
       *, 
       AliasEmail(*),
-      EmailMessage(*),
-      InternalMessage(*)
     )
   `
     )

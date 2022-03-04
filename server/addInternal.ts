@@ -21,11 +21,8 @@ export async function addInternalMessage(
     data: {
       type: "internal",
       direction: direction,
-      InternalMessage: {
-        create: {
-          body: message.body,
-        },
-      },
+      text: [{ text: message.body }],
+      subject: null,
       Thread: {
         connect: { id: threadId },
       },
@@ -40,8 +37,6 @@ export async function addInternalMessage(
     },
     include: {
       Thread: true,
-      EmailMessage: true,
-      InternalMessage: true,
       Alias: true,
       TeamMember: true,
     },

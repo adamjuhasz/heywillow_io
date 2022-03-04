@@ -16,11 +16,11 @@ export type MyMessageType = {
   direction: MessageDirection;
   createdAt: string;
   id: number;
+  text: { text: string }[];
+  subject: null | string;
 } & {
   AliasEmail: { emailAddress: string } | null;
   Comment: SupabaseComment[];
-  InternalMessage: { body: string } | null;
-  EmailMessage: { subject: string; body: string } | null;
   TeamMember: { Profile: { email: string } } | null;
   Attachment: SupabaseAttachment[];
 };
@@ -33,10 +33,12 @@ interface InterfaceProps {
 
 export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
   function Message(props, ref) {
-    const formattedEmail = applyMaybe(unwrapRFC2822, props.EmailMessage?.body);
+    const formattedEmail = applyMaybe(
+      unwrapRFC2822,
+      props.text.map((t) => t.text).join("\r\n\r\n")
+    );
 
-    let bodyText: string =
-      defaultTo(formattedEmail, props.InternalMessage?.body) || "";
+    let bodyText: string = defaultTo(formattedEmail, "");
     bodyText = bodyText.replace(/\r\n/g, "\n");
     const author: string =
       props.AliasEmail?.emailAddress ||
@@ -96,10 +98,8 @@ export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
               ].join(" ")}
             >
               <div className="space-y-0 text-sm">
-                {props.EmailMessage !== null ? (
-                  <div className="text-md mb-2 font-bold">
-                    {props.EmailMessage.subject}
-                  </div>
+                {props.subject !== null ? (
+                  <div className="text-md mb-2 font-bold">{props.subject}</div>
                 ) : (
                   ""
                 )}

@@ -22,14 +22,8 @@ interface MiniThread {
 }
 
 interface MiniMessage {
-  EmailMessage: {
-    body: string;
-    subject: string;
-  } | null;
-
-  InternalMessage: {
-    body: string;
-  } | null;
+  text: { text: string }[];
+  subject: null | string;
 }
 
 export type FetchResponse = MiniThread & {
@@ -61,10 +55,10 @@ function Card({ t }: { t: FetchResponse }) {
 
   const unwrappedBody = applyMaybe(
     unwrapRFC2822,
-    lastMessage.EmailMessage?.body
+    lastMessage.text.map((txt) => txt.text).join("\r\n\r\n")
   );
 
-  const preview = unwrappedBody || lastMessage.InternalMessage?.body || "";
+  const preview = unwrappedBody || "";
   return (
     <Link
       href={{
@@ -92,7 +86,7 @@ function Card({ t }: { t: FetchResponse }) {
           </div>
 
           <div className="mt-4 truncate font-medium text-zinc-100 line-clamp-1">
-            {t.Message[0].EmailMessage?.subject}
+            {t.Message[0].subject || ""}
           </div>
           <div className="mt-1 mb-4 text-zinc-400 line-clamp-2">{preview}</div>
 

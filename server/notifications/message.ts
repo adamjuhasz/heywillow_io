@@ -2,14 +2,13 @@ import { NotificationType } from "@prisma/client";
 import { defaultTo, mapValues } from "lodash";
 
 import { prisma } from "utils/prisma";
-import sendEmailThroughGmail from "server/gmail/sendEmail";
-import createAuthedGmail from "server/gmail/createAuthedGmail";
-import createSecureThreadLink from "server/createSecureLink";
+// import createSecureThreadLink from "server/createSecureLink";
 import sendPostmarkEmail from "server/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
 import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";
 import { logger, toJSONable } from "utils/logger";
+import { SlateText } from "types/Slate";
 
 export default async function messageNotification(messageId: bigint) {
   logger.info("messageNotification", { messageId: Number(messageId) });
@@ -17,7 +16,6 @@ export default async function messageNotification(messageId: bigint) {
   const message = await prisma.message.findUnique({
     where: { id: messageId },
     include: {
-      InternalMessage: true,
       EmailMessage: true,
       Thread: {
         include: {
@@ -47,10 +45,11 @@ export default async function messageNotification(messageId: bigint) {
       ? `New message from ${message.Thread.Alias.emailAddress}`
       : `New message sent to ${message.Thread.Alias.emailAddress}`;
   const bodyOfMessage =
-    applyMaybe(unwrapRFC2822, message.EmailMessage?.body) ||
-    message.InternalMessage?.body ||
-    "Unknown";
-  const subject = message.EmailMessage?.subject;
+    applyMaybe(
+      unwrapRFC2822,
+      (message.text as any as SlateText[]).map((t) => t.text).join("/r/n/r/n")
+    ) || "Unknown";
+  const subject = message.subject;
   const threadId = Number(message.threadId);
 
   const thisType =
@@ -142,54 +141,54 @@ export default async function messageNotification(messageId: bigint) {
   });
 
   // respond back to the end user
-  if (message.direction === "outgoing") {
-    logger.info("messageNotification sending to end-user", {
-      messageId: Number(messageId),
-    });
-    const inbox = message.Thread.Team.Inboxes[0];
-    const inboxId = inbox.id;
-    const gmail = await createAuthedGmail(Number(inboxId));
-    const body =
-      message.InternalMessage?.body ||
-      applyMaybe(unwrapRFC2822, message.EmailMessage?.body);
+  // if (message.direction === "outgoing") {
+  //   logger.info("messageNotification sending to end-user", {
+  //     messageId: Number(messageId),
+  //   });
+  //   const inbox = message.Thread.Team.Inboxes[0];
+  //   const inboxId = inbox.id;
+  //   const gmail = await createAuthedGmail(Number(inboxId));
+  //   const body =
+  //     message.InternalMessage?.body ||
+  //     applyMaybe(unwrapRFC2822, message.EmailMessage?.body);
 
-    const secureURL = await createSecureThreadLink(
-      message.Thread.id,
-      message.Thread.Alias.id
-    );
+  //   const secureURL = await createSecureThreadLink(
+  //     message.Thread.id,
+  //     message.Thread.Alias.id
+  //   );
 
-    if (body) {
-      const data = {
-        gmail: gmail,
-        from: inbox.emailAddress,
-        to: message.Thread.Alias.emailAddress,
-        subject: `New message from ${message.Thread.Team.name}`,
-        html: [
-          ...body
-            .replace(/\r\n/g, "\n")
-            .split("\n")
-            .map((t) => `<p>${t}</p>`),
-          `<p>Need to talk securely? ${secureURL}</p>`,
-          `<p> -${message.Thread.Team.name}</p>`,
-        ],
-      };
+  //   if (body) {
+  //     const data = {
+  //       gmail: gmail,
+  //       from: inbox.emailAddress,
+  //       to: message.Thread.Alias.emailAddress,
+  //       subject: `New message from ${message.Thread.Team.name}`,
+  //       html: [
+  //         ...body
+  //           .replace(/\r\n/g, "\n")
+  //           .split("\n")
+  //           .map((t) => `<p>${t}</p>`),
+  //         `<p>Need to talk securely? ${secureURL}</p>`,
+  //         `<p> -${message.Thread.Team.name}</p>`,
+  //       ],
+  //     };
 
-      logger.info("messageNotification sending to end-user", {
-        messageId: Number(messageId),
-        inbox: mapValues(inbox, toJSONable),
-        inboxId: Number(inboxId),
-        data: mapValues({ ...data, gmail: null }, toJSONable),
-      });
-      await sendEmailThroughGmail(data);
-    } else {
-      logger.error("messageNotification no body to send to end user", {
-        messageId: Number(messageId),
-        body: toJSONable(body, ""),
-        inbox: mapValues(inbox, toJSONable),
-        message: mapValues(message, toJSONable),
-      });
-    }
-  }
+  //     logger.info("messageNotification sending to end-user", {
+  //       messageId: Number(messageId),
+  //       inbox: mapValues(inbox, toJSONable),
+  //       inboxId: Number(inboxId),
+  //       data: mapValues({ ...data, gmail: null }, toJSONable),
+  //     });
+  //     await sendEmailThroughGmail(data);
+  //   } else {
+  //     logger.error("messageNotification no body to send to end user", {
+  //       messageId: Number(messageId),
+  //       body: toJSONable(body, ""),
+  //       inbox: mapValues(inbox, toJSONable),
+  //       message: mapValues(message, toJSONable),
+  //     });
+  //   }
+  // }
 
   await Promise.allSettled(generatedNotifications);
 }

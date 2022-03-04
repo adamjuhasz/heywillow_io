@@ -148,9 +148,8 @@ export default function ThreadViewer() {
                   <ThreadPrinter
                     key={t.id}
                     subject={
-                      t.Message.filter(
-                        (m) => m.EmailMessage?.subject !== undefined
-                      ).reverse()[0].EmailMessage?.subject
+                      t.Message.filter((m) => m.subject !== null).reverse()[0]
+                        ?.subject || undefined
                     }
                     messages={t.Message}
                     teamId={teamId}
@@ -164,8 +163,8 @@ export default function ThreadViewer() {
                   <ThreadPrinter
                     subject={
                       thread?.Message.filter(
-                        (m) => m.EmailMessage?.subject !== undefined
-                      ).reverse()[0].EmailMessage?.subject
+                        (m) => m.subject !== null
+                      ).reverse()[0].subject || undefined
                     }
                     messages={thread?.Message}
                     teamId={teamId}
@@ -240,11 +239,13 @@ export default function ThreadViewer() {
                           className="flex w-full cursor-pointer items-center justify-between text-xs text-zinc-400 hover:text-zinc-100"
                         >
                           <div>
-                            {t.Message.filter(
-                              (m) => m.EmailMessage?.subject !== undefined
+                            {defaultTo(
+                              t.Message.filter(
+                                (m) => m.subject !== null
+                              ).reverse()[0].subject,
+                              ""
                             )
-                              .reverse()[0]
-                              .EmailMessage?.subject.trim()
+                              .trim()
                               .slice(0, 14)}
                           </div>
                           <div className="text-zinc-500">
@@ -591,11 +592,10 @@ function MessagePrinter(props: MessagePrinterProps) {
 
   const unwrappedEmail = applyMaybe(
     unwrapRFC2822,
-    props.message.EmailMessage?.body
+    props.message.text.map((t) => t.text).join("\r\n\r\n")
   );
 
-  const text =
-    defaultTo(unwrappedEmail, props.message.InternalMessage?.body) || "";
+  const text = defaultTo(unwrappedEmail, "");
 
   // absolute bottom-[calc(100%_-_10px)] // props.message.direction === "incoming" ? "-right-4" : "-right-6",
   return (

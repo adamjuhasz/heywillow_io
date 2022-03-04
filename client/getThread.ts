@@ -6,8 +6,6 @@ import {
   SupabaseAliasEmail,
   SupabaseAttachment,
   SupabaseComment,
-  SupabaseEmailMessage,
-  SupabaseInternalMessage,
   SupabaseMessage,
   SupabaseProfile,
   SupabaseThread,
@@ -20,10 +18,10 @@ export type ThreadFetch = SupabaseThread & {
   Message: (SupabaseMessage & {
     AliasEmail: SupabaseAliasEmail | null;
     Comment: (SupabaseComment & { TeamMember: { Profile: SupabaseProfile } })[];
-    EmailMessage: SupabaseEmailMessage | null;
-    InternalMessage: SupabaseInternalMessage | null;
     TeamMember: { Profile: SupabaseProfile } | null;
     Attachment: SupabaseAttachment[];
+    text: { text: string }[];
+    subject: string | null;
   })[];
 };
 
@@ -33,8 +31,6 @@ ThreadState(*),
 Message!Message_threadId_fkey ( 
   *, 
   AliasEmail(*),
-  EmailMessage(*),
-  InternalMessage(*),
   Comment!Comment_messageId_fkey(
     *,
     TeamMember!Comment_authorId_fkey(Profile(*))

@@ -23,7 +23,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     orderBy: { id: "desc" },
     include: {
       EmailMessage: true,
-      InternalMessage: true,
       Thread: {
         select: { Team: { select: { Inboxes: { select: { id: true } } } } },
       },

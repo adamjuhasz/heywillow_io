@@ -19,12 +19,7 @@ export default async function threadStateNotification(
           Namespace: true,
         },
       },
-      Messages: {
-        include: {
-          InternalMessage: true,
-          EmailMessage: true,
-        },
-      },
+      Messages: true,
       ThreadState: { orderBy: { createdAt: "desc" }, take: 2 },
     },
   });

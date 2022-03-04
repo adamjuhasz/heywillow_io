@@ -1,6 +1,5 @@
 import { ReactElement } from "react";
 import Head from "next/head";
-import { GetServerSideProps } from "next";
 import { formatDistanceToNowStrict } from "date-fns";
 
 import AppLayout from "layouts/app";
@@ -8,29 +7,14 @@ import SettingsHeader from "components/Settings/Header";
 import SettingsTitle from "components/Settings/Title";
 import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsBox from "components/Settings/Box/Box";
-import { useUser } from "components/UserContext";
 import useGetTeamId from "client/getTeamId";
 import useGetInboxes from "client/getInboxes";
-import { State } from "pages/api/v1/auth/google/callback";
 import LinkBar, { Link } from "components/Settings/LinkBar";
 import Avatar from "components/Avatar";
 import AppContainer from "components/App/Container";
 
-interface ServerSideProps {
-  clientId: string;
-}
-
-export const getServerSideProps: GetServerSideProps<
-  ServerSideProps
-> = async () => {
-  return {
-    props: { clientId: process.env.GOOGLE_CLIENT_ID as string },
-  };
-};
-
-export default function ConnectGmailInbox(props: ServerSideProps): JSX.Element {
+export default function ConnectGmailInbox(): JSX.Element {
   const teamId = useGetTeamId();
-  const { user } = useUser();
   const { data: inboxes } = useGetInboxes(teamId);
 
   return (
@@ -66,35 +50,7 @@ export default function ConnectGmailInbox(props: ServerSideProps): JSX.Element {
               </div>
             }
             onSubmit={() => {
-              if (user === null || user === undefined) {
-                throw new Error("user is not found");
-              }
-
-              if (teamId === undefined) {
-                throw new Error("user is not found");
-              }
-
-              const qs = new URLSearchParams();
-              qs.set("client_id", props.clientId);
-              qs.set(
-                "redirect_uri",
-                `${document.location.origin}/api/v1/auth/google/callback`
-              );
-              qs.set("response_type", "code");
-              qs.set("scope", "https://mail.google.com/");
-              qs.set("access_type", "offline");
-              qs.set("state", "offline");
-              const state: State = {
-                u: user.id,
-                t: teamId,
-                r: location.pathname,
-              };
-              qs.set("state", JSON.stringify(state));
-
-              console.log("");
-              document.location.assign(
-                `https://accounts.google.com/o/oauth2/v2/auth?${qs.toString()}`
-              );
+              alert("Noop now");
             }}
           />
 

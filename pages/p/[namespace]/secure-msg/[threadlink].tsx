@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { isArray } from "lodash";
-import { MessageDirection, PrismaClient } from "@prisma/client";
+import { MessageDirection, Prisma, PrismaClient } from "@prisma/client";
 
 import { Body } from "pages/api/public/v1/message/secure";
 
@@ -26,14 +26,14 @@ type prismaReturn = {
   id: number | bigint;
   direction: MessageDirection;
   createdAt: string | Date;
+  text: Prisma.JsonValue;
+  subject: null | string;
 } & {
   TeamMember: {
     Profile: {
       email: string;
     };
   } | null;
-  EmailMessage: { subject: string; body: string } | null;
-  InternalMessage: { body: string } | null;
   AliasEmail: { emailAddress: string } | null;
 };
 
@@ -70,8 +70,8 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
               id: true,
               direction: true,
               createdAt: true,
-              InternalMessage: { select: { body: true } },
-              EmailMessage: { select: { subject: true, body: true } },
+              text: true,
+              subject: true,
               Alias: { select: { emailAddress: true } },
               TeamMember: { select: { Profile: { select: { email: true } } } },
             },
@@ -128,7 +128,12 @@ export default function ThreadId(props: ServerSideProps) {
         {props.thread.map((item) => (
           <Message
             key={`${item.id}`}
-            {...item}
+            direction={item.direction}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            text={item.text as any}
+            subject={item.subject}
+            AliasEmail={item.AliasEmail}
+            TeamMember={item.TeamMember}
             teamId={null}
             Comment={[]}
             Attachment={[]}

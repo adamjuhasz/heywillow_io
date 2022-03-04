@@ -1,12 +1,10 @@
 import { Prisma } from "@prisma/client";
-import { gmail_v1 } from "@googleapis/gmail";
 import { decode } from "base64-arraybuffer";
 
 import { prisma } from "utils/prisma";
 import messageNotification from "server/notifications/message";
 import { serviceSupabase } from "server/supabase";
-import sendEmailThroughGmail from "server/gmail/sendEmail";
-import createSecureThreadLink from "server/createSecureLink";
+// import createSecureThreadLink from "server/createSecureLink";
 import changeThreadStatus from "server/changeThreadStatus";
 
 export interface AttachmentData {
@@ -35,12 +33,11 @@ export interface GmailMessage {
 
 export default async function addEmailToDB(
   inboxId: number,
-  message: GmailMessage,
-  gmail: gmail_v1.Gmail
+  message: GmailMessage
 ): Promise<bigint> {
   const aliasEmail = message.from;
 
-  const inbox = await prisma.gmailInbox.findUnique({
+  const inbox = await prisma.inbox.findUnique({
     where: { id: inboxId },
     include: { Team: true },
   });
@@ -96,12 +93,15 @@ export default async function addEmailToDB(
         sourceMessageId: message.googleId,
         emailMessageId: message.messageId,
         subject: message.subject,
-        body: message.body,
+        textBody: message.body,
+        htmlBody: message.body,
         raw: rawToSave as unknown as Prisma.InputJsonObject,
         Message: {
           create: {
             type: "email",
             direction: "incoming",
+            text: [{ text: message.body }],
+            subject: message.subject,
             Thread:
               currentThread !== null
                 ? { connect: { id: currentThread.id } }
@@ -156,33 +156,32 @@ export default async function addEmailToDB(
       })
     );
 
-    if (currentThread === null && savedEmail.Message !== null) {
-      const secureURL = await createSecureThreadLink(
-        savedEmail.Message.Thread.id,
-        thisAlias.id
-      );
+    // if (currentThread === null && savedEmail.Message !== null) {
+    //   const secureURL = await createSecureThreadLink(
+    //     savedEmail.Message.Thread.id,
+    //     thisAlias.id
+    //   );
 
-      const inbox = await prisma.gmailInbox.findUnique({
-        where: { emailAddress: message.to },
-      });
+    //   const toInbox = await prisma.inbox.findUnique({
+    //     where: { emailAddress: message.to },
+    //   });
 
-      const sendOptions = {
-        gmail: gmail,
-        from: `${savedEmail.Message.Thread.Team.name} <${
-          inbox?.emailAddress || message.to
-        }>`,
-        to: `${message.fromRaw}`,
-        subject: "Thanks for emailing us!",
-        html: [
-          "<p>We'll get back to you shortly...</p>",
-          "",
-          `<p>✉️🔐 Need to send us a secure message? ${secureURL}</p>`,
-          `<p> - ${savedEmail.Message.Thread.Team.name}</p>`,
-        ],
-      };
-      console.log("sendOptions", sendOptions);
-      await sendEmailThroughGmail(sendOptions);
-    }
+    //   const sendOptions = {
+    //     gmail: gmail,
+    //     from: `${savedEmail.Message.Thread.Team.name} <${
+    //       toInbox?.emailAddress || message.to
+    //     }>`,
+    //     to: `${message.fromRaw}`,
+    //     subject: "Thanks for emailing us!",
+    //     html: [
+    //       "<p>We'll get back to you shortly...</p>",
+    //       "",
+    //       `<p>✉️🔐 Need to send us a secure message? ${secureURL}</p>`,
+    //       `<p> - ${savedEmail.Message.Thread.Team.name}</p>`,
+    //     ],
+    //   };
+    //   console.log("sendOptions", sendOptions);
+    // }
 
     return savedEmail.id;
   } catch (e) {
