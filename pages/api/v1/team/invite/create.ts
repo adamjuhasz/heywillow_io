@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
-import sendPostmarkEmail from "server/sendPostmarkEmail";
+import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
 
 export interface Body {
   teamId: number;

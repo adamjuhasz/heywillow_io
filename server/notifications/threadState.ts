@@ -2,7 +2,7 @@ import { NotificationType, ThreadStateType } from "@prisma/client";
 import { defaultTo } from "lodash";
 
 import { prisma } from "utils/prisma";
-import sendPostmarkEmail from "server/sendPostmarkEmail";
+import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
 
 export default async function threadStateNotification(

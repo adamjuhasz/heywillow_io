@@ -3,7 +3,7 @@ import { defaultTo, mapValues } from "lodash";
 
 import { prisma } from "utils/prisma";
 // import createSecureThreadLink from "server/createSecureLink";
-import sendPostmarkEmail from "server/sendPostmarkEmail";
+import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
 import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";

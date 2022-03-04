@@ -2,7 +2,7 @@ import { defaultTo, uniqBy } from "lodash";
 import { NotificationType } from "@prisma/client";
 
 import { prisma } from "utils/prisma";
-import sendPostmarkEmail from "server/sendPostmarkEmail";
+import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
 import detectMention from "server/notifications/utils/detectMention";
 import matchMention from "server/notifications/utils/matchMention";
 import notificationDefaults from "shared/notifications/defaults";
