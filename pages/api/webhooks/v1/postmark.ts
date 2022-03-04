@@ -28,7 +28,19 @@ async function handler(
   }
 
   const body: Models.InboundMessageDetails = req.body;
-  logger.info("postmark email incoming", mapValues(body, toJSONable));
+  logger.info("postmark email incoming", {
+    keys: Object.keys(body).join(", "),
+    FromFull: mapValues(body.FromFull, toJSONable),
+    ToFull: toJSONable(body.ToFull),
+    To: body.To || null,
+    OriginalRecipient: body.OriginalRecipient || null,
+    Subject: body.Subject || null,
+    MailboxHash: body.MailboxHash || null,
+    MessageStream: body.MessageStream || null,
+    TextBody: body.TextBody || null,
+    HtmlBody: body.HtmlBody || null,
+    StrippedTextReply: body.StrippedTextReply || null,
+  });
 
   res.status(200).json({});
 }
