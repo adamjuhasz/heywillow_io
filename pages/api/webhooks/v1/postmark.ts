@@ -5,7 +5,7 @@ import { mapValues } from "lodash";
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
 
-export default apiHandler({ get: handler });
+export default apiHandler({ post: handler });
 
 async function handler(
   req: NextApiRequest,
