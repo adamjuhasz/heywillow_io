@@ -617,16 +617,33 @@ export default function Vercel(): JSX.Element {
         <div className="mx-auto grid w-full max-w-4xl grid-cols-1 space-y-4 px-4 md:grid-cols-6 md:space-y-0 md:px-0">
           <div className="col-span-1 flex flex-col md:col-span-2">
             <div className="font-medium text-zinc-100">Guides</div>
-            <div className="">Setting up email forwarding</div>
+            {/* <div className="">Setting up email forwarding</div> */}
           </div>
 
           <div className="col-span-1 flex flex-col md:col-span-2">
             <div className="font-medium text-zinc-100">Resources</div>
-            <div className="">Front vs Willow</div>
+            {/* <div className="">Front vs Willow</div>
             <div className="">Zendesk vs Willow</div>
             <div className="">Hiver vs Willow</div>
             <div className="">Gmail collaborative inbox vs Willow</div>
             <div className="">Help scout vs Willow</div>
+            <div className="">Drift vs Willow</div>
+            <div className="">Kustomer vs Willow</div>
+            <div className="">Freshdesk vs Willow</div>
+            <div className="">Intercom vs Willow</div>
+            <div className="">Gladly vs Willow</div>
+            <div className="">Podium vs Willow</div>
+            <div className="">Richpanel vs Willow</div>
+            <div className="">Respond.io vs Willow</div>
+            <div className="">Reekon vs Willow</div>
+            <div className="">Help Crunch vs Willow</div>
+            <div className="">Desky vs Willow</div>
+            <div className="">Help Ninja vs Willow</div>
+            <div className="">Groove vs Willow</div>
+            <div className="">Helpdesk.com vs Willow</div>
+            <div className="">Help scout vs Willow</div>
+            <div className="">Engage vs Willow</div>
+            <div className="">Labi Desk vs Willow</div> */}
           </div>
 
           <div className="col-span-1 flex flex-col md:col-span-2">
