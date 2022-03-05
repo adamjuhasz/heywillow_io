@@ -1,4 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { mapValues } from "lodash";
+
+import { logger, toJSONable } from "utils/logger";
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
 import apiHandler from "server/apiHandler";
@@ -22,16 +25,17 @@ async function handler(
 ) {
   //create a new team
 
-  console.log("create team");
+  logger.info("create team", {});
 
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   if (user === null) {
+    logger.warn("Bad auth cookie", {});
     return res.status(403).send({ error: "Bad auth cookie" });
   }
 
   const body = req.body as CreateBody;
-  console.log("body", body);
+  logger.info("body", { body: toJSONable(body) });
 
   try {
     const teamCreated = await prisma.teamMember.create({
@@ -51,11 +55,13 @@ async function handler(
         Team: true,
       },
     });
-    console.log("teamCreated", teamCreated);
+    logger.info("teamCreated", {
+      teamCreated: mapValues(teamCreated, toJSONable),
+    });
 
     return res.json({ teamId: Number(teamCreated.Team.id) });
   } catch (e) {
-    console.error(e);
+    logger.error("Could not create team", { error: toJSONable(e) });
     return res.status(409).json({ error: "Namespace exists" });
   }
 }
