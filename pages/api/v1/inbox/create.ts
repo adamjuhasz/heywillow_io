@@ -189,6 +189,12 @@ async function handler(
       return res.status(500).json({ error: "Could not create domain" });
     }
 
+    if (domainCreate.bodyUsed) {
+      logger.error(
+        "Body already used for /domains",
+        mapValues(domainCreate, toJSONable)
+      );
+    }
     const domainBody = (await domainCreate.json()) as PostmarkDomain;
     logger.info("Created domain", mapValues(domainBody, toJSONable));
 

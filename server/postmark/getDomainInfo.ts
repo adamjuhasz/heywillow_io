@@ -50,7 +50,8 @@ export async function processPMResponse(serverCreate: Response) {
       throw { error: "Got 404" };
 
     case 422: {
-      const errorBody = (await serverCreate.json()) as {
+      logger.error("Got 422 response from postmark", {});
+      const errorBody = (await serverCreate.clone().json()) as {
         ErrorCode: number;
         Message: string;
       };

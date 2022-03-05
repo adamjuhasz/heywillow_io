@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -17,6 +17,11 @@ export default function CreateTeam(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { addToast } = useContext(ToastContext);
+
+  useEffect(() => {
+    router.prefetch("/a/[namespace]/settings/team/connect");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -46,7 +51,10 @@ export default function CreateTeam(): JSX.Element {
               try {
                 setLoading(true);
                 await createTeam({ name, namespace });
-                router.push(`/a/${namespace}/settings/team/connect`);
+                router.push({
+                  pathname: "/a/[namespace]/settings/team/connect",
+                  query: { namespace },
+                });
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               } catch (e: any) {
                 setError(true);
