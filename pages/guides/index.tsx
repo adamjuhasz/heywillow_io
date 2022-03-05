@@ -5,6 +5,7 @@ interface StaticProps {
   allPostsData: { id: string; date: string; title: string }[];
 }
 
+// eslint-disable-next-line require-await
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
   return {

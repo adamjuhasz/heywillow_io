@@ -31,7 +31,7 @@ export default async function handler(
 
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
-  logger.info("New message to add", {
+  void logger.info("New message to add", {
     requestId: (req.headers["x-vercel-id"] as string) || null,
     user: user?.id || null,
     text: body.text,
@@ -58,7 +58,7 @@ export default async function handler(
   });
 
   if (teamMember === null) {
-    logger.error("Can't access team member", {
+    void logger.error("Can't access team member", {
       requestId: (req.headers["x-vercel-id"] as string) || null,
       teamId: Number(currentThread.teamId),
       profileId: user.id,
@@ -71,7 +71,7 @@ export default async function handler(
     sender: { type: "member", memberId: Number(teamMember.id) },
   });
 
-  logger.info("adding internal message", {
+  void logger.info("adding internal message", {
     requestId: (req.headers["x-vercel-id"] as string) || null,
     user: user.id,
     teamMember: Number(teamMember.id),

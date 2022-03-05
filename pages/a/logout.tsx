@@ -10,7 +10,7 @@ export default function LogoutPage(): JSX.Element {
   const client = useSupabase();
 
   useEffect(() => {
-    client?.auth.signOut().then(async ({ error }) => {
+    void client?.auth.signOut().then(async ({ error }) => {
       if (error) {
         console.error(error);
       }

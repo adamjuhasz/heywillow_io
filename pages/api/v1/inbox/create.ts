@@ -31,12 +31,12 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseBody | { error: string }>
 ) {
-  logger.info("Creating inbox", {});
+  void logger.info("Creating inbox", {});
 
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   if (user === null) {
-    logger.warn("Bad auth cookie", {});
+    void logger.warn("Bad auth cookie", {});
     return res.status(403).send({ error: "Bad auth cookie" });
   }
 
@@ -49,7 +49,7 @@ async function handler(
     include: { Team: { include: { Namespace: true } } },
   });
   if (teamMember === null) {
-    logger.error("Tried to make an inbox for another team", {
+    void logger.error("Tried to make an inbox for another team", {
       user: user.id,
       teamId: body.teamId,
       email: body.emailAddress,
@@ -81,9 +81,9 @@ async function handler(
     }),
   });
   try {
-    processPMResponse(serverCreate);
+    await processPMResponse(serverCreate);
   } catch (e) {
-    logger.error("Caught error creating server", {
+    void logger.error("Caught error creating server", {
       namespace: namespace,
       inboundURL: inboundURL,
     });
@@ -151,7 +151,7 @@ async function handler(
   try {
     await createSignature(body.emailAddress, teamMember.Team.name);
   } catch (e) {
-    logger.error("Caught error creating signature", {
+    void logger.error("Caught error creating signature", {
       email: body.emailAddress,
       teamName: teamMember.Team.name,
     });
@@ -167,7 +167,7 @@ async function handler(
       const domainBody = await createPostmarkDomain(domain, teamMember.Team.id);
       return res.status(200).json(returnDomainInfo(domainBody));
     } catch (e) {
-      logger.error("Caught error creating domain", {
+      void logger.error("Caught error creating domain", {
         domain: domain,
         teamId: Number(teamMember.Team.id),
       });
@@ -178,11 +178,11 @@ async function handler(
       const domainBody = await getPostmarkDomainInfo(
         existingDomain.postmarkDomainId
       );
-      logger.info("Existing domain", mapValues(domainBody, toJSONable));
+      void logger.info("Existing domain", mapValues(domainBody, toJSONable));
 
       return res.status(200).json(returnDomainInfo(domainBody));
     } catch (e) {
-      logger.error("Caught error getting domain info", {
+      void logger.error("Caught error getting domain info", {
         postmarkDomainId: existingDomain.postmarkDomainId,
       });
       return res.status(500).json({ error: "Could not get domain info" });
@@ -219,7 +219,7 @@ async function createSignature(emailAddress: string, teamName: string) {
     }),
   });
 
-  processPMResponse(signatureCreate);
+  await processPMResponse(signatureCreate);
 
   return signatureCreate;
 }
@@ -238,16 +238,16 @@ async function createPostmarkDomain(domain: string, teamId: number | bigint) {
     }),
   });
 
-  processPMResponse(domainCreate);
+  await processPMResponse(domainCreate);
 
   if (domainCreate.bodyUsed) {
-    logger.error(
+    void logger.error(
       "Body already used for /domains",
       mapValues(domainCreate, toJSONable)
     );
   }
   const domainBody = (await domainCreate.json()) as PostmarkDomain;
-  logger.info("Created domain", mapValues(domainBody, toJSONable));
+  void logger.info("Created domain", mapValues(domainBody, toJSONable));
 
   await prisma.postmarkDomain.create({
     data: {

@@ -38,7 +38,7 @@ export const UserContextProvider = ({
     setSession(supabaseSession);
     setUser(supabaseSession === null ? null : supabaseSession?.user);
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(
-      async (_event, stateChangeSession) => {
+      (_event, stateChangeSession) => {
         setSession(stateChangeSession);
         setUser(stateChangeSession?.user ?? null);
         console.log("user", stateChangeSession?.user);

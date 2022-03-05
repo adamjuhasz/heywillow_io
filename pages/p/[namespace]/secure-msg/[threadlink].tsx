@@ -167,7 +167,7 @@ export default function ThreadId(props: ServerSideProps) {
                   console.error(res.status);
                   throw new Error(`Request error ${res.status}`);
               }
-              router.replace(router.asPath);
+              void router.replace(router.asPath);
             } catch (e) {
               console.error(e);
               alert("Error sending message, try again please");

@@ -60,7 +60,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
           switch (res.status) {
             case 200:
               console.log("got cookie, routing");
-              route();
+              void route();
               break;
 
             default:
@@ -88,7 +88,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
         // Send session to /api/auth route to set the auth cookie.
         // NOTE: this is only needed if you're doing SSR (getServerSideProps)!
         if (event === "SIGNED_IN" && session !== null) {
-          getAuthCookie(controller.signal, event, session);
+          await getAuthCookie(controller.signal, event, session);
         }
       }
     );
@@ -109,7 +109,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
     const session = supabase.auth.session();
     if (session !== null) {
       const controller = new AbortController();
-      getAuthCookie(controller.signal, "SIGNED_IN", session);
+      void getAuthCookie(controller.signal, "SIGNED_IN", session);
     }
   }, [supabase, getAuthCookie]);
 

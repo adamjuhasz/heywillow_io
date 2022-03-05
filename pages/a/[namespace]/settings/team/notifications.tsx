@@ -126,7 +126,7 @@ export default function NotificationSettingsPage(): JSX.Element {
                             return;
                           }
 
-                          changePref({
+                          void changePref({
                             channel: channel,
                             enabled: value,
                             teamMemberId: teamMemberId.id,

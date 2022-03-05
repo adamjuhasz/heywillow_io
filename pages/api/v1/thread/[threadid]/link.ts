@@ -43,7 +43,7 @@ async function getSecureLink(
     thread.aliasEmailId
   );
 
-  logger.info("Secure link accessed", { secureLink });
+  void logger.info("Secure link accessed", { secureLink });
 
   res.json({
     absoluteLink: secureLink,

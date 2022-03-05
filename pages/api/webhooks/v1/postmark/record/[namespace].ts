@@ -11,7 +11,7 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, never> | { error: string }>
 ) {
-  logger.info("Record from postmark", {
+  void logger.info("Record from postmark", {
     body: mapValues(
       req.body as Models.OpenEvent | Models.ClickEvent,
       toJSONable

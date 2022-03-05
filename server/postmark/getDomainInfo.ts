@@ -27,7 +27,7 @@ async function getPostmarkDomainInfo(domainId: number) {
     }
   );
 
-  processPMResponse(domainGet);
+  await processPMResponse(domainGet);
 
   const domainBody = (await domainGet.json()) as PostmarkDomain;
   return domainBody;
@@ -39,23 +39,23 @@ export async function processPMResponse(serverCreate: Response) {
       return;
 
     case 401:
-      logger.error(
+      void logger.error(
         "Unauthorized Missing or incorrect API token in header.",
         {}
       );
       throw new Error("Got 401");
 
     case 404:
-      logger.error("Request Too Large", {});
+      void logger.error("Request Too Large", {});
       throw new Error("Got 404");
 
     case 422: {
-      logger.error("Got 422 response from postmark", {});
+      void logger.error("Got 422 response from postmark", {});
       const errorBody = (await serverCreate.clone().json()) as {
         ErrorCode: number;
         Message: string;
       };
-      logger.error(
+      void logger.error(
         "Unprocessable Entity -- https://postmarkapp.com/developer/api/overview#error-codes",
         mapValues(errorBody, toJSONable)
       );
@@ -63,28 +63,28 @@ export async function processPMResponse(serverCreate: Response) {
     }
 
     case 429:
-      logger.error(
+      void logger.error(
         "Rate Limit Exceeded. We have detected that you are making requests at a rate that exceeds acceptable use of the API, you should reduce the rate at which you query the API. If you have specific rate requirements, please contact support to request a rate increase.",
         {}
       );
       throw new Error("Got 429");
 
     case 500:
-      logger.error(
+      void logger.error(
         "Internal Server. Error This is an issue with Postmark's servers processing your request. In most cases the message is lost during the process, and we are notified so that we can investigate the issue.",
         {}
       );
       throw new Error("Got 500");
 
     case 503:
-      logger.error(
+      void logger.error(
         "Service Unavailable. During planned service outages, Postmark API services will return this HTTP response and associated JSON body.",
         {}
       );
       throw new Error("Got 503");
 
     default:
-      logger.error(`Unknown error of  ${serverCreate.status}`, {});
+      void logger.error(`Unknown error of  ${serverCreate.status}`, {});
       throw new Error(`Got ${serverCreate.status}`);
   }
 }

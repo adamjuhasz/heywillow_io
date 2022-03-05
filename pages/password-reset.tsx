@@ -63,7 +63,7 @@ export default function PasswordReset(): JSX.Element {
                       password: password,
                     });
                   if (updateUserError === null) {
-                    router.push("/a/auth");
+                    void router.push("/a/auth");
                     setDisabled(false);
                   } else {
                     setError(updateUserError.message);

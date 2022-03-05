@@ -28,7 +28,7 @@ async function handler(
 ) {
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
   if (user === null) {
-    logger.warn("Bad auth cookie", {});
+    void logger.warn("Bad auth cookie", {});
     return res.status(403).send({ error: "Bad auth cookie" });
   }
 
@@ -40,7 +40,7 @@ async function handler(
   });
 
   if (teams === null) {
-    logger.warn("No team found", mapValues(body, toJSONable));
+    void logger.warn("No team found", mapValues(body, toJSONable));
     return res.status(404).send({ error: "Bad team found" });
   }
 

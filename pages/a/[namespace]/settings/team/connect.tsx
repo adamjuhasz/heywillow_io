@@ -114,8 +114,8 @@ export default function ConnectInbox(): JSX.Element {
                 setLoading(false);
                 setTimeout(async () => {
                   // wait XXXms for supabase to catch up
-                  mutateDomains();
-                  mutateInboxes();
+                  void mutateDomains();
+                  void mutateInboxes();
                 }, 200);
               }
             }}

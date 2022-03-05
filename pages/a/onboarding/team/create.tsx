@@ -19,7 +19,7 @@ export default function CreateTeam(): JSX.Element {
   const { addToast } = useContext(ToastContext);
 
   useEffect(() => {
-    router.prefetch("/a/[namespace]/settings/team/connect");
+    void router.prefetch("/a/[namespace]/settings/team/connect");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -51,7 +51,7 @@ export default function CreateTeam(): JSX.Element {
               try {
                 setLoading(true);
                 await createTeam({ name, namespace });
-                router.push({
+                void router.push({
                   pathname: "/a/[namespace]/settings/team/connect",
                   query: { namespace },
                 });

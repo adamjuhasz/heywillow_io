@@ -21,7 +21,7 @@ export default function Vercel(): JSX.Element {
 
   useEffect(() => {
     if (hashType?.[1] === "recovery") {
-      router.replace({
+      void router.replace({
         pathname: "/password-reset",
         query: { access_token: accessToken?.[1] },
       });

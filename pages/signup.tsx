@@ -43,7 +43,7 @@ export default function SignUpPage(): JSX.Element {
     }
 
     if ((session.expires_in || -1) > 0) {
-      router.replace(redirectPath);
+      void router.replace(redirectPath);
     }
   }, [session, router]);
 

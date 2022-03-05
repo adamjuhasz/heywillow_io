@@ -112,7 +112,7 @@ export default function ThreadViewer() {
 
   const refreshComment = async (commentId: number) => {
     await Promise.allSettled([mutateThread(), mutateThreads()]);
-    router.replace({
+    void router.replace({
       query: { ...router.query, comment: commentId },
     });
   };
@@ -194,7 +194,7 @@ export default function ThreadViewer() {
                   setTimeout(async () => {
                     await Promise.allSettled([mutateThread(), mutateThreads()]);
                     if (comment) {
-                      router.replace({
+                      void router.replace({
                         pathname: "/a/[namespace]/thread/[threadid]",
                         query: {
                           ...router.query,
@@ -309,7 +309,7 @@ export default function ThreadViewer() {
                   }
                   try {
                     await changeThreadState(threadNum, { state: "done" });
-                    router.push({
+                    void router.push({
                       pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
@@ -342,7 +342,7 @@ export default function ThreadViewer() {
                       state: "snoozed",
                       snoozeDate: addDays(new Date(), 1).toISOString(),
                     });
-                    router.push({
+                    void router.push({
                       pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
@@ -375,7 +375,7 @@ export default function ThreadViewer() {
                       state: "snoozed",
                       snoozeDate: addDays(new Date(), 3).toISOString(),
                     });
-                    router.push({
+                    void router.push({
                       pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
@@ -408,7 +408,7 @@ export default function ThreadViewer() {
                       state: "snoozed",
                       snoozeDate: addDays(new Date(), 7).toISOString(),
                     });
-                    router.push({
+                    void router.push({
                       pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });
@@ -441,7 +441,7 @@ export default function ThreadViewer() {
                       state: "snoozed",
                       snoozeDate: addMinutes(new Date(), 5).toISOString(),
                     });
-                    router.push({
+                    void router.push({
                       pathname: "/a/[namespace]/workspace",
                       query: router.query,
                     });

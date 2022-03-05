@@ -28,7 +28,7 @@ export default function TeamPicker(): JSX.Element {
 
   useEffect(() => {
     if (validTeams?.length === 1) {
-      router.push({
+      void router.push({
         pathname: "/a/[namespace]/workspace",
         query: { namespace: validTeams[0].Namespace.namespace },
       });

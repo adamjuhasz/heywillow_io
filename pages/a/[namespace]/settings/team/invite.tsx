@@ -65,7 +65,7 @@ export default function InviteTeammates(): JSX.Element {
               );
 
               await Promise.allSettled(createdInvites);
-              mutate(); // Grab new invites
+              void mutate(); // Grab new invites
 
               setLoading(false);
               setEmails([""]);

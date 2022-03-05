@@ -27,7 +27,7 @@ export default function Attachment({
             console.error(url.error);
             return;
           }
-          router.push(url.data?.signedURL as string);
+          void router.push(url.data?.signedURL as string);
         }
       }}
     >

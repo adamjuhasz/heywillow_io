@@ -28,7 +28,7 @@ async function handler(
   }
 
   const body: Models.InboundMessageDetails = req.body;
-  logger.info("postmark email incoming", {
+  void logger.info("postmark email incoming", {
     keys: Object.keys(body).join(", "),
     FromFull: mapValues(body.FromFull, toJSONable),
     ToFull: toJSONable(body.ToFull),
