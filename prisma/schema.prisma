@@ -92,19 +92,24 @@ model Inbox {
 }
 
 model PostmarkServerToken {
-  inboxId BigInt @id
-  token   String
+  inboxId   BigInt   @id
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  token String
 
   Inbox Inbox @relation(fields: [inboxId], references: [id], onDelete: Cascade)
 }
 
 model PostmarkDomain {
-  domain String @id
-  teamId BigInt
+  domain    String   @id
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  teamId    BigInt
 
   postmarkDomainId Int
 
-  Team Team @relation(fields: [teamId], references: [id])
+  Team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
 model AliasEmail {

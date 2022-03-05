@@ -44,6 +44,9 @@ export function ToastProvider(props: PropsWithChildren<unknown>): JSX.Element {
     const int = setInterval(() => {
       const now = new Date();
       const newToasts = toasts.filter((t) => t.expiresAt > now);
+      if (newToasts.length === toasts.length) {
+        return;
+      }
       setToasts(newToasts);
     }, 100);
 
@@ -164,7 +167,7 @@ function ToastDisplay({ index, ...props }: ToastDisplayProps) {
         className,
       ].join(" ")}
     >
-      {props.toast.toast.string} - {index}
+      {props.toast.toast.string}
     </Transition>
   );
 }

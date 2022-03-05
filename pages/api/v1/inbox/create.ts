@@ -6,6 +6,10 @@ import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
+import getPostmarkDomainInfo, {
+  PostmarkDomain,
+  processPMResponse,
+} from "server/postmark/getDomainInfo";
 
 export interface RequestBody {
   emailAddress: string;
@@ -20,18 +24,6 @@ export type ResponseBody = {
   ReturnPathDomainVerified: boolean;
   ReturnPathDomainCNAMEValue: string;
 };
-
-interface PostmarkDomain {
-  DKIMVerified: boolean;
-  DKIMHost: string;
-  DKIMTextValue: string;
-  DKIMPendingHost: string;
-  DKIMPendingTextValue: string;
-  ReturnPathDomain: string;
-  ReturnPathDomainVerified: boolean;
-  ReturnPathDomainCNAMEValue: string;
-  ID: string;
-}
 
 export default apiHandler({ post: handler });
 
@@ -89,9 +81,9 @@ async function handler(
     }),
   });
   try {
-    processPMResponse(serverCreate, res);
+    processPMResponse(serverCreate);
   } catch (e) {
-    return;
+    return res.status(500).json({ error: "Could no create postmark server" });
   }
 
   const createServerResponse = (await serverCreate.json()) as {
@@ -151,6 +143,29 @@ async function handler(
     },
   });
 
+  // create a sender signature
+
+  const signatureCreate = await fetch(`https://api.postmarkapp.com/senders`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
+    },
+    body: JSON.stringify({
+      FromEmail: body.emailAddress,
+      Name: teamMember.Team.name,
+      ReplyToEmail: body.emailAddress,
+      ConfirmationPersonalNote: `Adam from Willow here!\n\nPostmark is the email service we use behind the scenes to send emails for Willow. All of your emails will come from ${body.emailAddress}, so Postmark needs to confirm that email address first. That's what this email is all about.`,
+    }),
+  });
+
+  try {
+    processPMResponse(signatureCreate);
+  } catch (e) {
+    return res.status(500).json({ error: "Could not create sender sig" });
+  }
+
   // create a domain
   const existingDomain = await prisma.postmarkDomain.findFirst({
     where: { domain: domain, teamId: teamMember.teamId },
@@ -169,36 +184,34 @@ async function handler(
       }),
     });
     try {
-      processPMResponse(domainCreate, res);
+      processPMResponse(domainCreate);
     } catch (e) {
-      return;
+      return res.status(500).json({ error: "Could not create domain" });
     }
 
     const domainBody = (await domainCreate.json()) as PostmarkDomain;
     logger.info("Created domain", mapValues(domainBody, toJSONable));
 
+    await prisma.postmarkDomain.create({
+      data: {
+        domain: domain,
+        postmarkDomainId: domainBody.ID,
+        Team: { connect: { id: teamMember.Team.id } },
+      },
+    });
+
     return res.status(200).json(returnDomainInfo(domainBody));
   } else {
-    const domainGet = await fetch(
-      `https://api.postmarkapp.com/domains/${existingDomain.postmarkDomainId}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
-        },
-      }
-    );
     try {
-      processPMResponse(domainGet, res);
+      const domainBody = await getPostmarkDomainInfo(
+        existingDomain.postmarkDomainId
+      );
+      logger.info("Existing domain", mapValues(domainBody, toJSONable));
+
+      return res.status(200).json(returnDomainInfo(domainBody));
     } catch (e) {
-      return;
+      return res.status(500).json({ error: "Could not get domain info" });
     }
-
-    const domainBody = (await domainGet.json()) as PostmarkDomain;
-    logger.info("Existing domain", mapValues(domainBody, toJSONable));
-
-    return res.status(200).json(returnDomainInfo(domainBody));
   }
 }
 
@@ -210,60 +223,3 @@ const returnDomainInfo = (domainBody: PostmarkDomain): ResponseBody => ({
   ReturnPathDomainCNAMEValue: domainBody.ReturnPathDomainCNAMEValue,
   ReturnPathDomainVerified: domainBody.ReturnPathDomainVerified,
 });
-
-async function processPMResponse(
-  serverCreate: Response,
-  res: NextApiResponse<{ error: string }>
-) {
-  switch (serverCreate.status) {
-    case 401:
-      logger.error(
-        "Unauthorized Missing or incorrect API token in header.",
-        {}
-      );
-      res.status(500).json({ error: "Got 401" });
-      throw { error: "Got 401" };
-
-    case 404:
-      logger.error("Request Too Large", {});
-      res.status(500).json({ error: "Got 404" });
-      throw { error: "Got 404" };
-
-    case 422: {
-      const errorBody = (await serverCreate.json()) as {
-        ErrorCode: number;
-        Message: string;
-      };
-      logger.error(
-        "Unprocessable Entity -- https://postmarkapp.com/developer/api/overview#error-codes",
-        mapValues(errorBody, toJSONable)
-      );
-      res.status(500).json({ error: "Got 422" });
-      throw { error: "Got 422" };
-    }
-
-    case 429:
-      logger.error(
-        "Rate Limit Exceeded. We have detected that you are making requests at a rate that exceeds acceptable use of the API, you should reduce the rate at which you query the API. If you have specific rate requirements, please contact support to request a rate increase.",
-        {}
-      );
-      res.status(500).json({ error: "Got 429" });
-      throw { error: "Got 429" };
-
-    case 500:
-      logger.error(
-        "Internal Server. Error This is an issue with Postmark's servers processing your request. In most cases the message is lost during the process, and we are notified so that we can investigate the issue.",
-        {}
-      );
-      res.status(500).json({ error: "Got 500" });
-      throw { error: "Got 500" };
-
-    case 503:
-      logger.error(
-        "Service Unavailable. During planned service outages, Postmark API services will return this HTTP response and associated JSON body.",
-        {}
-      );
-      res.status(500).json({ error: "Got 503" });
-      throw { error: "Got 503" };
-  }
-}
