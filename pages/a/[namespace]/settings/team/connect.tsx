@@ -428,8 +428,8 @@ function DomainViewer({
                   <div className="mb-1 flex items-center justify-between">
                     <div className="text-zinc-100">
                       DKIM{" "}
-                      <span className="ml-2 rounded-full bg-yellow-500 px-2 py-0.5 text-xs text-black">
-                        Recommended
+                      <span className="ml-2 rounded-full bg-blue-500 px-2 py-0.5 text-xs text-white">
+                        Required
                       </span>
                     </div>
                     <div>
