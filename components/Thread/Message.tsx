@@ -83,7 +83,6 @@ export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
                 if (props.onMouseEnter) {
                   props.onMouseEnter(e);
                 }
-                props.onMouseEnter;
               }}
               onMouseLeave={props.onMouseLeave}
               ref={ref}

@@ -22,20 +22,20 @@ interface ToastTypeStored {
   toast: ToastType;
 }
 
-interface ToastContext {
+interface IToastContext {
   addToast: (t: ToastType, timeout?: number) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ToastContext = createContext<ToastContext>(undefined as any);
+const ToastContext = createContext<IToastContext>(undefined as any);
 export default ToastContext;
 
-interface InternalContext {
+interface IInternalContext {
   removeToast: (id: string) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const InternalContext = createContext<InternalContext>(undefined as any);
+const InternalContext = createContext<IInternalContext>(undefined as any);
 
 export function ToastProvider(props: PropsWithChildren<unknown>): JSX.Element {
   const [toasts, setToasts] = useState<ToastTypeStored[]>([]);

@@ -24,8 +24,6 @@ export default function TeamPicker(): JSX.Element {
             nonAccepted.findIndex((invite) => invite.teamId === t.id) === -1
         );
 
-  console;
-
   useEffect(() => {
     if (validTeams?.length === 1) {
       void router.push({
