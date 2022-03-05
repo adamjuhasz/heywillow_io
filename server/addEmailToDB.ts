@@ -110,7 +110,7 @@ export default async function addEmailToDB(
                       teamId: inbox.Team.id,
                       aliasEmailId: thisAlias.id,
                       ThreadState: { create: { state: "open" } },
-                      gmailInboxId: inboxId,
+                      inboxId: inboxId,
                     },
                   },
             Alias: { connect: { id: thisAlias.id } },

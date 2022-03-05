@@ -4,7 +4,7 @@ import useSWR from "swr";
 
 import {
   SupabaseAliasEmail,
-  SupabaseGmailInbox,
+  SupabaseInbox,
   SupabaseMessage,
   SupabaseThread,
   SupabaseThreadState,
@@ -19,7 +19,7 @@ export type FetchThread = SupabaseThread & {
     AliasEmail: SupabaseAliasEmail | null;
   })[];
   AliasEmail: SupabaseAliasEmail;
-  GmailInbox: SupabaseGmailInbox;
+  Inbox: SupabaseInbox;
 };
 
 export async function getThreads(supabase: SupabaseClient, teamId: number) {
@@ -30,7 +30,7 @@ export async function getThreads(supabase: SupabaseClient, teamId: number) {
     *,
     ThreadState(*),
     AliasEmail!Thread_aliasEmailId_fkey(*),
-    GmailInbox(*),
+    Inbox(*),
     Message!Message_threadId_fkey ( 
       *, 
       AliasEmail(*),

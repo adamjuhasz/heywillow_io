@@ -13,14 +13,14 @@ import LinkBar, { Link } from "components/Settings/LinkBar";
 import Avatar from "components/Avatar";
 import AppContainer from "components/App/Container";
 
-export default function ConnectGmailInbox(): JSX.Element {
+export default function ConnectInbox(): JSX.Element {
   const teamId = useGetTeamId();
   const { data: inboxes } = useGetInboxes(teamId);
 
   return (
     <>
       <Head>
-        <title>Connect Gmail</title>
+        <title>Connect Email</title>
       </Head>
 
       <SettingsHeader />
@@ -31,7 +31,7 @@ export default function ConnectGmailInbox(): JSX.Element {
 
         <div className="grow space-y-6">
           <SettingsBox
-            title="Connect Gmail account"
+            title="Connect email account"
             explainer="Connect your teams shared inbox. This is the account at which you receive customer support emails."
             button="Connect"
             warning={
@@ -98,6 +98,6 @@ export default function ConnectGmailInbox(): JSX.Element {
   );
 }
 
-ConnectGmailInbox.getLayout = function getLayout(page: ReactElement) {
+ConnectInbox.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };

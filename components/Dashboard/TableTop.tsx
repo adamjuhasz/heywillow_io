@@ -11,7 +11,7 @@ interface MiniAlias {
   emailAddress: string;
 }
 
-interface MiniGmail {
+interface MiniInbox {
   emailAddress: string;
 }
 
@@ -28,7 +28,7 @@ interface MiniMessage {
 
 export type FetchResponse = MiniThread & {
   AliasEmail: MiniAlias;
-  GmailInbox: MiniGmail;
+  Inbox: MiniInbox;
   Message: MiniMessage[];
 };
 
@@ -79,7 +79,7 @@ function Card({ t }: { t: FetchResponse }) {
                   {t.AliasEmail.emailAddress}
                 </div>
                 <div className="truncate text-xs text-zinc-500">
-                  {t.GmailInbox.emailAddress}
+                  {t.Inbox.emailAddress}
                 </div>
               </div>
             </div>

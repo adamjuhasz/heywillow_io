@@ -119,7 +119,7 @@ export interface SupabaseTeam {
   namespaceId: number;
 }
 
-export interface SupabaseGmailInbox {
+export interface SupabaseInbox {
   id: number;
   createdAt: string;
   updatedAt: string;

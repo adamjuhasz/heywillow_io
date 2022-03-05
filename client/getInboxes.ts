@@ -2,12 +2,12 @@ import { useDebugValue } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import { SupabaseGmailInbox } from "types/supabase";
+import { SupabaseInbox } from "types/supabase";
 import { useSupabase } from "components/UserContext";
 
 export async function getInbox(supabase: SupabaseClient, teamId: number) {
   const res = await supabase
-    .from<SupabaseGmailInbox>("GmailInbox")
+    .from<SupabaseInbox>("Inbox")
     .select("*")
     .eq("teamId", teamId);
 
