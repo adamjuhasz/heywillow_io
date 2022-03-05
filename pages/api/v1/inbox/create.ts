@@ -83,6 +83,10 @@ async function handler(
   try {
     processPMResponse(serverCreate);
   } catch (e) {
+    logger.error("Caught error creating server", {
+      namespace: namespace,
+      inboundURL: inboundURL,
+    });
     return res.status(500).json({ error: "Could no create postmark server" });
   }
 
@@ -144,25 +148,13 @@ async function handler(
   });
 
   // create a sender signature
-
-  const signatureCreate = await fetch(`https://api.postmarkapp.com/senders`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
-    },
-    body: JSON.stringify({
-      FromEmail: body.emailAddress,
-      Name: teamMember.Team.name,
-      ReplyToEmail: body.emailAddress,
-      ConfirmationPersonalNote: `Adam from Willow here!\n\nPostmark is the email service we use behind the scenes to send emails for Willow. All of your emails will come from ${body.emailAddress}, so Postmark needs to confirm that email address first. That's what this email is all about.`,
-    }),
-  });
-
   try {
-    processPMResponse(signatureCreate);
+    await createSignature(body.emailAddress, teamMember.Team.name);
   } catch (e) {
+    logger.error("Caught error creating signature", {
+      email: body.emailAddress,
+      teamName: teamMember.Team.name,
+    });
     return res.status(500).json({ error: "Could not create sender sig" });
   }
 
@@ -171,42 +163,16 @@ async function handler(
     where: { domain: domain, teamId: teamMember.teamId },
   });
   if (existingDomain === null) {
-    const domainCreate = await fetch(`https://api.postmarkapp.com/domains`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
-      },
-      body: JSON.stringify({
-        Name: `${domain}`,
-        ReturnPathDomain: `pmbounces.${domain}`,
-      }),
-    });
     try {
-      processPMResponse(domainCreate);
+      const domainBody = await createPostmarkDomain(domain, teamMember.Team.id);
+      return res.status(200).json(returnDomainInfo(domainBody));
     } catch (e) {
+      logger.error("Caught error creating domain", {
+        domain: domain,
+        teamId: Number(teamMember.Team.id),
+      });
       return res.status(500).json({ error: "Could not create domain" });
     }
-
-    if (domainCreate.bodyUsed) {
-      logger.error(
-        "Body already used for /domains",
-        mapValues(domainCreate, toJSONable)
-      );
-    }
-    const domainBody = (await domainCreate.json()) as PostmarkDomain;
-    logger.info("Created domain", mapValues(domainBody, toJSONable));
-
-    await prisma.postmarkDomain.create({
-      data: {
-        domain: domain,
-        postmarkDomainId: domainBody.ID,
-        Team: { connect: { id: teamMember.Team.id } },
-      },
-    });
-
-    return res.status(200).json(returnDomainInfo(domainBody));
   } else {
     try {
       const domainBody = await getPostmarkDomainInfo(
@@ -216,6 +182,9 @@ async function handler(
 
       return res.status(200).json(returnDomainInfo(domainBody));
     } catch (e) {
+      logger.error("Caught error getting domain info", {
+        postmarkDomainId: existingDomain.postmarkDomainId,
+      });
       return res.status(500).json({ error: "Could not get domain info" });
     }
   }
@@ -229,3 +198,64 @@ const returnDomainInfo = (domainBody: PostmarkDomain): ResponseBody => ({
   ReturnPathDomainCNAMEValue: domainBody.ReturnPathDomainCNAMEValue,
   ReturnPathDomainVerified: domainBody.ReturnPathDomainVerified,
 });
+
+async function createSignature(emailAddress: string, teamName: string) {
+  const signatureCreate = await fetch(`https://api.postmarkapp.com/senders`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
+    },
+    body: JSON.stringify({
+      FromEmail: emailAddress,
+      Name: teamName,
+      ReplyToEmail: emailAddress,
+      ConfirmationPersonalNote: [
+        "Adam from Willow here!",
+        `Postmark is the email service we use behind the scenes to send emails for Willow. All of your emails will come from ${emailAddress}, so Postmark needs to confirm that email address first.`,
+        "That's what this email is all about.",
+      ].join("\n\n"),
+    }),
+  });
+
+  processPMResponse(signatureCreate);
+
+  return signatureCreate;
+}
+
+async function createPostmarkDomain(domain: string, teamId: number | bigint) {
+  const domainCreate = await fetch(`https://api.postmarkapp.com/domains`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
+    },
+    body: JSON.stringify({
+      Name: `${domain}`,
+      ReturnPathDomain: `pmbounces.${domain}`,
+    }),
+  });
+
+  processPMResponse(domainCreate);
+
+  if (domainCreate.bodyUsed) {
+    logger.error(
+      "Body already used for /domains",
+      mapValues(domainCreate, toJSONable)
+    );
+  }
+  const domainBody = (await domainCreate.json()) as PostmarkDomain;
+  logger.info("Created domain", mapValues(domainBody, toJSONable));
+
+  await prisma.postmarkDomain.create({
+    data: {
+      domain: domain,
+      postmarkDomainId: domainBody.ID,
+      Team: { connect: { id: teamId } },
+    },
+  });
+
+  return domainBody;
+}

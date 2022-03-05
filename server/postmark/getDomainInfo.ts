@@ -43,11 +43,11 @@ export async function processPMResponse(serverCreate: Response) {
         "Unauthorized Missing or incorrect API token in header.",
         {}
       );
-      throw { error: "Got 401" };
+      throw new Error("Got 401");
 
     case 404:
       logger.error("Request Too Large", {});
-      throw { error: "Got 404" };
+      throw new Error("Got 404");
 
     case 422: {
       logger.error("Got 422 response from postmark", {});
@@ -59,7 +59,7 @@ export async function processPMResponse(serverCreate: Response) {
         "Unprocessable Entity -- https://postmarkapp.com/developer/api/overview#error-codes",
         mapValues(errorBody, toJSONable)
       );
-      throw { error: "Got 422" };
+      throw new Error("Got 422");
     }
 
     case 429:
@@ -67,24 +67,24 @@ export async function processPMResponse(serverCreate: Response) {
         "Rate Limit Exceeded. We have detected that you are making requests at a rate that exceeds acceptable use of the API, you should reduce the rate at which you query the API. If you have specific rate requirements, please contact support to request a rate increase.",
         {}
       );
-      throw { error: "Got 429" };
+      throw new Error("Got 429");
 
     case 500:
       logger.error(
         "Internal Server. Error This is an issue with Postmark's servers processing your request. In most cases the message is lost during the process, and we are notified so that we can investigate the issue.",
         {}
       );
-      throw { error: "Got 500" };
+      throw new Error("Got 500");
 
     case 503:
       logger.error(
         "Service Unavailable. During planned service outages, Postmark API services will return this HTTP response and associated JSON body.",
         {}
       );
-      throw { error: "Got 503" };
+      throw new Error("Got 503");
 
     default:
       logger.error(`Unknown error of  ${serverCreate.status}`, {});
-      throw { error: `Got ${serverCreate.status}` };
+      throw new Error(`Got ${serverCreate.status}`);
   }
 }
