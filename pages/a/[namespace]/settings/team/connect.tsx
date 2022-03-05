@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useContext, useState } from "react";
 import Head from "next/head";
 import { formatDistanceToNowStrict } from "date-fns";
 
@@ -12,10 +12,16 @@ import useGetInboxes from "client/getInboxes";
 import LinkBar, { Link } from "components/Settings/LinkBar";
 import Avatar from "components/Avatar";
 import AppContainer from "components/App/Container";
+import ToastContext from "components/Toast";
+import Loading from "components/Loading";
+import { RequestBody, ResponseBody } from "pages/api/v1/inbox/create";
 
 export default function ConnectInbox(): JSX.Element {
   const teamId = useGetTeamId();
-  const { data: inboxes } = useGetInboxes(teamId);
+  const { data: inboxes, mutate } = useGetInboxes(teamId);
+  const [emailAddress, setEmailAddress] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { addToast } = useContext(ToastContext);
 
   return (
     <>
@@ -33,26 +39,64 @@ export default function ConnectInbox(): JSX.Element {
           <SettingsBox
             title="Connect email account"
             explainer="Connect your teams shared inbox. This is the account at which you receive customer support emails."
-            button="Connect"
-            warning={
-              <div>
-                <div className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2 py-0.5 text-black">
-                  beta
-                </div>{" "}
-                During our beta we&apos;ll need to whitelist your gmail, email
-                it to{" "}
-                <a
-                  className=" text-zinc-100 underline decoration-2 underline-offset-4"
-                  href="mailto:help@heywillow.io"
-                >
-                  help@heywillow.io
-                </a>
-              </div>
-            }
-            onSubmit={() => {
-              alert("Noop now");
+            button={loading ? <Loading className="h-4 w-4" /> : "Connect"}
+            disabled={loading}
+            onSubmit={async () => {
+              setLoading(true);
+              try {
+                if (teamId === undefined) {
+                  throw new Error("no team id");
+                }
+                addToast({
+                  type: "active",
+                  string: "Adding inbox, this may take 5 - 10 sec",
+                });
+                const body: RequestBody = {
+                  emailAddress: emailAddress,
+                  teamId: teamId,
+                };
+                const res = await fetch("/api/v1/inbox/create", {
+                  method: "POST",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(body),
+                });
+
+                switch (res.status) {
+                  case 200:
+                    break;
+
+                  default:
+                    console.error(res);
+                    throw new Error(`Status is ${res.status}`);
+                }
+
+                const responseBody: ResponseBody = await res.json();
+                console.log(responseBody);
+                await mutate();
+              } catch (e) {
+                console.error(e);
+                addToast({ type: "error", string: "Error connecting email" });
+              } finally {
+                setLoading(false);
+              }
             }}
-          />
+          >
+            <div className="text-sm">Email address</div>
+            <input
+              id="EmailAddress"
+              name="EmailAddress"
+              type="email"
+              autoComplete="email"
+              value={emailAddress}
+              onChange={(e) => setEmailAddress(e.target.value)}
+              required
+              className="block w-72 appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm"
+              placeholder="hi@stealth.ai"
+            />
+          </SettingsBox>
 
           <div className="flex w-full flex-col">
             <LinkBar>

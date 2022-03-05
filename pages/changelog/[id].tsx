@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { format } from "date-fns";
 
-import { getAllPostIds, getPostData } from "static/changelog";
+import { getAllPostIds, getPostData } from "static-build/changelog";
 import LandingPageHeader from "components/LandingPage/Header";
 
 export async function getStaticPaths() {

@@ -12,11 +12,13 @@ export interface RequestBody {
   teamId: number;
 }
 
+export type ResponseBody = Record<string, never>;
+
 export default apiHandler({ post: handler });
 
 async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Record<string, never> | { error: string }>
+  res: NextApiResponse<ResponseBody | { error: string }>
 ) {
   logger.info("Creating inbox", {});
 
@@ -142,7 +144,7 @@ async function handler(
       FromEmail: body.emailAddress,
       Name: teamMember.Team.name,
       ReplyToEmail: body.emailAddress,
-      ConfirmationPersonalNote: `Hey there!\n\nAdam from Willow here! Postmark is the email service we use behind the scenes to send emails via Willow. All of your emails will come from ${body.emailAddress}, but we need you to confirm that email address with Postmark first. That's what this email is all about.`,
+      ConfirmationPersonalNote: `Hey there!\n\nAdam from Willow here! Postmark is the email service we use behind the scenes to send emails for Willow. All of your emails will come from ${body.emailAddress}, so we need you to confirm that email address with Postmark first. That's what this email is all about.`,
     }),
   });
   try {

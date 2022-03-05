@@ -12,7 +12,8 @@ import useTimeout from "hooks/useTimeout";
 
 type ToastType =
   | { type: "string"; string: string }
-  | { type: "error"; string: string };
+  | { type: "error"; string: string }
+  | { type: "active"; string: string };
 
 interface ToastTypeStored {
   id: string;
@@ -157,6 +158,8 @@ function ToastDisplay({ index, ...props }: ToastDisplayProps) {
         "min-h-20 right-0 flex w-[420px] items-center justify-start rounded-lg border p-[24px]  transition-all duration-[500ms]",
         props.toast.toast.type === "error"
           ? "border-transparent bg-red-500 text-white shadow-md shadow-red-500/50"
+          : props.toast.toast.type === "active"
+          ? "border-transparent bg-blue-500 text-white shadow-md shadow-blue-500/50"
           : "border-zinc-600 bg-black text-white shadow-md shadow-black/50",
         className,
       ].join(" ")}

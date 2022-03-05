@@ -1,4 +1,4 @@
-import { getSortedPostsData } from "static/changelog";
+import { getSortedPostsData } from "static-build/changelog";
 
 interface StaticProps {
   allPostsData: { id: string; date: string; title: string }[];
