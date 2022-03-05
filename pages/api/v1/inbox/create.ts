@@ -99,45 +99,8 @@ async function handler(
   const serverToken = createServerResponse.ApiTokens[0];
 
   const serverPostmark = new Postmark.ServerClient(serverToken);
-  await serverPostmark.createWebhook(
-    new Postmark.Models.CreateWebhookRequest(
-      `https://heywillow.io/api/webhooks/v1/postmark/record/${namespace}`,
-      {
-        Open: { Enabled: true },
-        Click: { Enabled: true },
-        Delivery: { Enabled: true },
-        Bounce: { Enabled: true },
-        SpamComplaint: { Enabled: true },
-        SubscriptionChange: { Enabled: true },
-      },
-      {
-        Username: process.env.POSTMARK_WEBHOOK?.split(":")[0] || "",
-        Password: process.env.POSTMARK_WEBHOOK?.split(":")[1] || "",
-      },
-      undefined,
-      "outbound"
-    )
-  );
-
-  await serverPostmark.createWebhook(
-    new Postmark.Models.CreateWebhookRequest(
-      `https://heywillow.io/api/webhooks/v1/postmark/record/${namespace}`,
-      {
-        Open: { Enabled: true },
-        Click: { Enabled: true },
-        Delivery: { Enabled: true },
-        Bounce: { Enabled: true },
-        SpamComplaint: { Enabled: true },
-        SubscriptionChange: { Enabled: true },
-      },
-      {
-        Username: process.env.POSTMARK_WEBHOOK?.split(":")[0] || "",
-        Password: process.env.POSTMARK_WEBHOOK?.split(":")[1] || "",
-      },
-      undefined,
-      "broadcast"
-    )
-  );
+  await createWebhook(serverPostmark, namespace, "outbound");
+  await createWebhook(serverPostmark, namespace, "broadcast");
 
   await prisma.inbox.create({
     data: {
@@ -147,7 +110,24 @@ async function handler(
     },
   });
 
-  // create a sender signature
+  // create a domain if needed
+  const existingDomain = await prisma.postmarkDomain.findFirst({
+    where: { domain: domain, teamId: teamMember.teamId },
+  });
+  if (existingDomain === null) {
+    try {
+      await createPostmarkDomain(domain, teamMember.Team.id);
+      // create a sender signature
+    } catch (e) {
+      void logger.error("Caught error creating domain", {
+        domain: domain,
+        teamId: Number(teamMember.Team.id),
+      });
+      return res.status(500).json({ error: "Could not create domain" });
+    }
+  }
+
+  //create sender sig, mi\ust be after domain creation
   try {
     await createSignature(body.emailAddress, teamMember.Team.name);
   } catch (e) {
@@ -158,35 +138,26 @@ async function handler(
     return res.status(500).json({ error: "Could not create sender sig" });
   }
 
-  // create a domain
-  const existingDomain = await prisma.postmarkDomain.findFirst({
+  const mustExistDomain = await prisma.postmarkDomain.findFirst({
     where: { domain: domain, teamId: teamMember.teamId },
   });
-  if (existingDomain === null) {
-    try {
-      const domainBody = await createPostmarkDomain(domain, teamMember.Team.id);
-      return res.status(200).json(returnDomainInfo(domainBody));
-    } catch (e) {
-      void logger.error("Caught error creating domain", {
-        domain: domain,
-        teamId: Number(teamMember.Team.id),
-      });
-      return res.status(500).json({ error: "Could not create domain" });
-    }
-  } else {
-    try {
-      const domainBody = await getPostmarkDomainInfo(
-        existingDomain.postmarkDomainId
-      );
-      void logger.info("Existing domain", mapValues(domainBody, toJSONable));
 
-      return res.status(200).json(returnDomainInfo(domainBody));
-    } catch (e) {
-      void logger.error("Caught error getting domain info", {
-        postmarkDomainId: existingDomain.postmarkDomainId,
-      });
-      return res.status(500).json({ error: "Could not get domain info" });
-    }
+  if (mustExistDomain === null) {
+    return res.status(500).json({ error: "Could not find domain info" });
+  }
+
+  try {
+    const domainBody = await getPostmarkDomainInfo(
+      mustExistDomain.postmarkDomainId
+    );
+    void logger.info("Existing domain", mapValues(domainBody, toJSONable));
+
+    return res.status(200).json(returnDomainInfo(domainBody));
+  } catch (e) {
+    void logger.error("Caught error getting domain info", {
+      postmarkDomainId: mustExistDomain.postmarkDomainId,
+    });
+    return res.status(500).json({ error: "Could not get domain info" });
   }
 }
 
@@ -258,4 +229,30 @@ async function createPostmarkDomain(domain: string, teamId: number | bigint) {
   });
 
   return domainBody;
+}
+
+async function createWebhook(
+  serverPostmark: Postmark.ServerClient,
+  namespace: string,
+  stream: string
+) {
+  return serverPostmark.createWebhook(
+    new Postmark.Models.CreateWebhookRequest(
+      `https://heywillow.io/api/webhooks/v1/postmark/record/${namespace}`,
+      {
+        Open: { Enabled: true },
+        Click: { Enabled: true },
+        Delivery: { Enabled: true },
+        Bounce: { Enabled: true },
+        SpamComplaint: { Enabled: true },
+        SubscriptionChange: { Enabled: true },
+      },
+      {
+        Username: process.env.POSTMARK_WEBHOOK?.split(":")[0] || "",
+        Password: process.env.POSTMARK_WEBHOOK?.split(":")[1] || "",
+      },
+      undefined,
+      stream
+    )
+  );
 }
