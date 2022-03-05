@@ -12,7 +12,26 @@ export interface RequestBody {
   teamId: number;
 }
 
-export type ResponseBody = Record<string, never>;
+export type ResponseBody = {
+  DKIMVerified: boolean;
+  DKIMHost: string;
+  DKIMTextValue: string;
+  ReturnPathDomain: string;
+  ReturnPathDomainVerified: boolean;
+  ReturnPathDomainCNAMEValue: string;
+};
+
+interface PostmarkDomain {
+  DKIMVerified: boolean;
+  DKIMHost: string;
+  DKIMTextValue: string;
+  DKIMPendingHost: string;
+  DKIMPendingTextValue: string;
+  ReturnPathDomain: string;
+  ReturnPathDomainVerified: boolean;
+  ReturnPathDomainCNAMEValue: string;
+  ID: string;
+}
 
 export default apiHandler({ post: handler });
 
@@ -30,6 +49,7 @@ async function handler(
   }
 
   const body = req.body as RequestBody;
+  const [, domain] = body.emailAddress.split("@");
 
   // get teamMember
   const teamMember = await prisma.teamMember.findUnique({
@@ -131,33 +151,65 @@ async function handler(
     },
   });
 
-  // create a sender signature
-
-  const signatureCreate = await fetch(`https://api.postmarkapp.com/senders`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
-    },
-    body: JSON.stringify({
-      FromEmail: body.emailAddress,
-      Name: teamMember.Team.name,
-      ReplyToEmail: body.emailAddress,
-      ConfirmationPersonalNote: `Hey there!\n\nAdam from Willow here! Postmark is the email service we use behind the scenes to send emails for Willow. All of your emails will come from ${body.emailAddress}, so we need you to confirm that email address with Postmark first. That's what this email is all about.`,
-    }),
+  // create a domain
+  const existingDomain = await prisma.postmarkDomain.findFirst({
+    where: { domain: domain, teamId: teamMember.teamId },
   });
-  try {
-    processPMResponse(signatureCreate, res);
-  } catch (e) {
-    return;
+  if (existingDomain === null) {
+    const domainCreate = await fetch(`https://api.postmarkapp.com/domains`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
+      },
+      body: JSON.stringify({
+        Name: `${domain}`,
+        ReturnPathDomain: `pmbounces.${domain}`,
+      }),
+    });
+    try {
+      processPMResponse(domainCreate, res);
+    } catch (e) {
+      return;
+    }
+
+    const domainBody = (await domainCreate.json()) as PostmarkDomain;
+    logger.info("Created domain", mapValues(domainBody, toJSONable));
+
+    return res.status(200).json(returnDomainInfo(domainBody));
+  } else {
+    const domainGet = await fetch(
+      `https://api.postmarkapp.com/domains/${existingDomain.postmarkDomainId}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
+        },
+      }
+    );
+    try {
+      processPMResponse(domainGet, res);
+    } catch (e) {
+      return;
+    }
+
+    const domainBody = (await domainGet.json()) as PostmarkDomain;
+    logger.info("Existing domain", mapValues(domainBody, toJSONable));
+
+    return res.status(200).json(returnDomainInfo(domainBody));
   }
-
-  const sigBody = await signatureCreate.json();
-  logger.info("Created signature", mapValues(sigBody, toJSONable));
-
-  res.status(200).json({});
 }
+
+const returnDomainInfo = (domainBody: PostmarkDomain): ResponseBody => ({
+  DKIMHost: domainBody.DKIMPendingHost || domainBody.DKIMHost,
+  DKIMTextValue: domainBody.DKIMPendingTextValue || domainBody.DKIMTextValue,
+  DKIMVerified: domainBody.DKIMVerified,
+  ReturnPathDomain: domainBody.ReturnPathDomain,
+  ReturnPathDomainCNAMEValue: domainBody.ReturnPathDomainCNAMEValue,
+  ReturnPathDomainVerified: domainBody.ReturnPathDomainVerified,
+});
 
 async function processPMResponse(
   serverCreate: Response,

@@ -105,36 +105,40 @@ export default function ConnectInbox(): JSX.Element {
               </Link>
             </LinkBar>
 
-            <div className="mt-4 rounded-md border border-zinc-600 bg-black">
-              {(inboxes || []).map((i, idx) => (
-                <>
-                  {idx === 0 ? (
-                    <></>
-                  ) : (
-                    <div className="h-[1px] w-full bg-zinc-600" />
-                  )}
-                  <div
-                    key={i.id}
-                    className="flex h-16 items-center justify-between p-4"
-                  >
-                    <div className="flex items-center">
-                      <Avatar str={i.emailAddress} className="mr-2 h-8 w-8" />
-                      <div className="flex flex-col">
-                        <div className="text-sm font-light">
-                          {i.emailAddress}
-                        </div>
-                        <div className="text-xs font-normal text-zinc-500">
-                          Created{" "}
-                          {formatDistanceToNowStrict(new Date(i.createdAt), {
-                            addSuffix: true,
-                          })}
+            {inboxes === undefined || inboxes.length === 0 ? (
+              <></>
+            ) : (
+              <div className="mt-4 rounded-md border border-zinc-600 bg-black">
+                {(inboxes || []).map((i, idx) => (
+                  <>
+                    {idx === 0 ? (
+                      <></>
+                    ) : (
+                      <div className="h-[1px] w-full bg-zinc-600" />
+                    )}
+                    <div
+                      key={i.id}
+                      className="flex h-16 items-center justify-between p-4"
+                    >
+                      <div className="flex items-center">
+                        <Avatar str={i.emailAddress} className="mr-2 h-8 w-8" />
+                        <div className="flex flex-col">
+                          <div className="text-sm font-light">
+                            {i.emailAddress}
+                          </div>
+                          <div className="text-xs font-normal text-zinc-500">
+                            Created{" "}
+                            {formatDistanceToNowStrict(new Date(i.createdAt), {
+                              addSuffix: true,
+                            })}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </>
-              ))}
-            </div>
+                  </>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </AppContainer>

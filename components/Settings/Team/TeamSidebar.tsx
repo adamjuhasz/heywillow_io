@@ -23,7 +23,7 @@ export default function TeamSettingsSidebar(): JSX.Element {
       </SidebarLink>
 
       <SidebarLink href="/a/[namespace]/settings/team/connect">
-        Link Gmail{" "}
+        Link email{" "}
         {inboxCount === 0 ? (
           <div className="ml-2 inline-flex h-full items-center">
             <div className="inline-block h-2 w-2 rounded-full bg-red-500" />

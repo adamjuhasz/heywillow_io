@@ -15,14 +15,15 @@ model Team {
   name        String
   namespaceId BigInt   @unique
 
-  Namespace     Namespace       @relation(fields: [namespaceId], references: [id], onDelete: SetNull)
-  Alias         AliasEmail[]
-  Attachment    Attachment[]
-  EncryptedText EncryptedText[]
-  Inboxes       Inbox[]
-  TeamInvite    TeamInvite[]
-  Members       TeamMember[]
-  Thread        Thread[]
+  Namespace      Namespace        @relation(fields: [namespaceId], references: [id], onDelete: SetNull)
+  Alias          AliasEmail[]
+  Attachment     Attachment[]
+  EncryptedText  EncryptedText[]
+  Inboxes        Inbox[]
+  TeamInvite     TeamInvite[]
+  Members        TeamMember[]
+  Thread         Thread[]
+  PostmarkDomain PostmarkDomain[]
 }
 
 model Namespace {
@@ -95,6 +96,15 @@ model PostmarkServerToken {
   token   String
 
   Inbox Inbox @relation(fields: [inboxId], references: [id], onDelete: Cascade)
+}
+
+model PostmarkDomain {
+  domain String @id
+  teamId BigInt
+
+  postmarkDomainId Int
+
+  Team Team @relation(fields: [teamId], references: [id])
 }
 
 model AliasEmail {
