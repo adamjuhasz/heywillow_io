@@ -113,10 +113,12 @@ model PostmarkDomain {
 }
 
 model AliasEmail {
-  id           BigInt   @id @default(autoincrement())
-  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  teamId    BigInt
+
   emailAddress String
-  teamId       BigInt
+  aliasName    String?
 
   team       Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Messages   Message[]
@@ -150,17 +152,20 @@ model Message {
 }
 
 model EmailMessage {
-  id              BigInt   @id @default(autoincrement())
-  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
   from            String
   to              String
-  sourceMessageId String   @unique
+  sourceMessageId String @unique
   subject         String
   textBody        String
   htmlBody        String
   raw             Json
   emailMessageId  String
-  messageId       BigInt
+
+  // FD
+  messageId BigInt
 
   Message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
 }

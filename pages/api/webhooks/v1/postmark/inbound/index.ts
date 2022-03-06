@@ -4,6 +4,7 @@ import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
+import textToSlate from "server/textToSlate";
 
 export default apiHandler({ post: handler });
 
@@ -42,6 +43,10 @@ async function handler(
     StrippedTextReply: body.StrippedTextReply || null,
     MessageID: body.MessageID,
     Attachments: (body.Attachments || []).length,
+  });
+
+  void logger.info("slate version", {
+    slate: mapValues(textToSlate(body.TextBody), toJSONable) as never,
   });
 
   res.status(200).json({});

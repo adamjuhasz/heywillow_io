@@ -1,9 +1,9 @@
 import * as Postmark from "postmark";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 
-interface Options {
+export interface Options {
   to: string;
   from: string;
   subject: string;
@@ -22,12 +22,12 @@ export default async function sendPostmarkEmailAsTeam({
 }: Options) {
   const postmark = new Postmark.Client(token);
 
-  const email = {
+  const email: Postmark.Models.Message = {
     From: from,
     To: to,
     Subject: subject,
     HtmlBody: htmlBody ? htmlBody.join("\r\n") : undefined,
-    textBody: textBody ? textBody.join("\r\n") : undefined,
+    TextBody: textBody ? textBody.join("\r\n") : undefined,
     MessageStream: "outbound",
   };
   if (process.env.NODE_ENV === "production") {
@@ -36,13 +36,13 @@ export default async function sendPostmarkEmailAsTeam({
     if (res.ErrorCode === 0) {
       return res;
     } else {
-      logger.error("Could not send", {
+      await logger.error("Could not send", {
         response: mapValues(res, toJSONable),
         email: mapValues(email, toJSONable),
       });
     }
   } else {
-    logger.info("Did not send", mapValues(email, toJSONable));
+    await logger.info("Did not send", mapValues(email, toJSONable));
   }
 
   return null;

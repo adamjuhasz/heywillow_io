@@ -1,11 +1,17 @@
 import { Prisma } from "@prisma/client";
 import { decode } from "base64-arraybuffer";
+import mapValues from "lodash/mapValues";
 
 import { prisma } from "utils/prisma";
 import messageNotification from "server/notifications/message";
 import { serviceSupabase } from "server/supabase";
-// import createSecureThreadLink from "server/createSecureLink";
+import createSecureThreadLink from "server/createSecureLink";
 import changeThreadStatus from "server/changeThreadStatus";
+import { ParagraphElement } from "types/slate";
+import { logger, toJSONable } from "utils/logger";
+import sendPostmarkEmailAsTeam, {
+  Options,
+} from "./postmark/sendPostmarkEmailAsTeam";
 
 export interface AttachmentData {
   data: string;
@@ -16,26 +22,31 @@ export interface AttachmentData {
   part: string;
 }
 
-export interface GmailMessage {
-  body: string;
+export interface EmailMessage {
+  // for Message table
+  text: ParagraphElement[];
   subject: string;
-  from: string;
+
+  //for EmailMessage table
+  fromEmail: string;
+  toEmail: string;
+  textBody: string;
+  htmlBody: string;
+  raw: Record<string, string>;
+  // EmailMessage metadata
+  sourceMessageId: string;
+  emailMessageId: string;
+
+  // for AliasEmail
   fromName: string;
-  fromRaw: string;
-  to: string;
-  toName: string;
-  toRaw: string;
-  datetime: string;
-  messageId: string;
-  googleId: string;
   attachments: AttachmentData[];
 }
 
 export default async function addEmailToDB(
   inboxId: number,
-  message: GmailMessage
+  message: EmailMessage
 ): Promise<bigint> {
-  const aliasEmail = message.from;
+  const aliasEmail = message.fromEmail;
 
   const inbox = await prisma.inbox.findUnique({
     where: { id: inboxId },
@@ -50,11 +61,15 @@ export default async function addEmailToDB(
     where: {
       teamId_emailAddress: { teamId: inbox.Team.id, emailAddress: aliasEmail },
     },
-    update: {},
-    create: { emailAddress: aliasEmail, teamId: inbox.Team.id },
+    update: { aliasName: message.fromName },
+    create: {
+      emailAddress: aliasEmail,
+      teamId: inbox.Team.id,
+      aliasName: message.fromName,
+    },
   });
 
-  console.log("thisAlias", thisAlias);
+  await logger.info("thisAlias", mapValues(thisAlias, toJSONable));
 
   const currentThread = await prisma.thread.findFirst({
     where: {
@@ -67,7 +82,7 @@ export default async function addEmailToDB(
       ThreadState: { select: { state: true }, orderBy: { createdAt: "desc" } },
     },
   });
-  console.log("currentThread", currentThread);
+  await logger.info("currentThread", mapValues(currentThread, toJSONable));
 
   if (currentThread !== null) {
     await prisma.thread.update({
@@ -76,31 +91,27 @@ export default async function addEmailToDB(
     });
 
     const currState = currentThread.ThreadState[0];
-    console.log("currState", currState);
+    await logger.info("currState", currState);
 
     await changeThreadStatus({ state: "open", threadId: currentThread.id });
   }
 
-  const rawToSave = { ...message };
-  const attachments = rawToSave.attachments.map((a) => ({ ...a, data: "" }));
-  rawToSave.attachments = attachments;
-
   try {
     const savedEmail = await prisma.emailMessage.create({
       data: {
-        from: message.fromRaw,
-        to: message.toRaw,
-        sourceMessageId: message.googleId,
-        emailMessageId: message.messageId,
+        from: message.fromEmail,
+        to: message.toEmail,
+        sourceMessageId: message.sourceMessageId,
+        emailMessageId: message.emailMessageId,
         subject: message.subject,
-        textBody: message.body,
-        htmlBody: message.body,
-        raw: rawToSave as unknown as Prisma.InputJsonObject,
+        textBody: message.textBody,
+        htmlBody: message.htmlBody,
+        raw: {} as unknown as Prisma.InputJsonObject,
         Message: {
           create: {
             type: "email",
             direction: "incoming",
-            text: [{ text: message.body }],
+            text: message.text as unknown as Prisma.InputJsonObject,
             subject: message.subject,
             Thread:
               currentThread !== null
@@ -120,8 +131,8 @@ export default async function addEmailToDB(
                   filename: a.filename,
                   mimeType: a.mimeType,
                   teamId: inbox.Team.id,
-                  idempotency: `${message.googleId}-${a.part}`,
-                  location: `attachments/${inbox.Team.id}/${message.googleId}/${a.part}/${a.filename}`,
+                  idempotency: `${message.sourceMessageId}-${a.part}`,
+                  location: `attachments/${inbox.Team.id}/${message.sourceMessageId}/${a.part}/${a.filename}`,
                 })),
               },
             },
@@ -138,7 +149,7 @@ export default async function addEmailToDB(
       },
     });
 
-    console.log("savedEmail", savedEmail);
+    await logger.info("savedEmail", mapValues(savedEmail, toJSONable));
 
     if (savedEmail.Message !== null) {
       await messageNotification(savedEmail.Message.id);
@@ -149,43 +160,68 @@ export default async function addEmailToDB(
         return serviceSupabase.storage
           .from("attachments")
           .upload(
-            `${inbox.Team.id}/${message.googleId}/${a.part}/${a.filename}`,
+            `${inbox.Team.id}/${message.sourceMessageId}/${a.part}/${a.filename}`,
             decode(a.data),
             { contentType: a.mimeType, cacheControl: "604800", upsert: false }
           );
       })
     );
 
-    // if (currentThread === null && savedEmail.Message !== null) {
-    //   const secureURL = await createSecureThreadLink(
-    //     savedEmail.Message.Thread.id,
-    //     thisAlias.id
-    //   );
+    if (currentThread === null && savedEmail.Message !== null) {
+      const secureURL = await createSecureThreadLink(
+        savedEmail.Message.Thread.id,
+        thisAlias.id
+      );
 
-    //   const toInbox = await prisma.inbox.findUnique({
-    //     where: { emailAddress: message.to },
-    //   });
+      const toInbox = await prisma.inbox.findUnique({
+        where: { emailAddress: message.toEmail },
+      });
 
-    //   const sendOptions = {
-    //     gmail: gmail,
-    //     from: `${savedEmail.Message.Thread.Team.name} <${
-    //       toInbox?.emailAddress || message.to
-    //     }>`,
-    //     to: `${message.fromRaw}`,
-    //     subject: "Thanks for emailing us!",
-    //     html: [
-    //       "<p>We'll get back to you shortly...</p>",
-    //       "",
-    //       `<p>✉️🔐 Need to send us a secure message? ${secureURL}</p>`,
-    //       `<p> - ${savedEmail.Message.Thread.Team.name}</p>`,
-    //     ],
-    //   };
-    //   console.log("sendOptions", sendOptions);
-    // }
+      if (toInbox === null) {
+        await logger.error("No inbox found", { emailAddress: message.toEmail });
+        throw new Error("No inbox found");
+      }
+
+      const fromEmailAddress: string = message.toEmail;
+      const fromName: string = savedEmail.Message.Thread.Team.name;
+      const emailWithName = `${fromName} <${fromEmailAddress}>`;
+
+      const token = await prisma.postmarkServerToken.findUnique({
+        where: { inboxId: toInbox.id },
+      });
+
+      if (token === null) {
+        await logger.error("No token found", { inboxId: Number(toInbox.id) });
+        throw new Error("No token found");
+      }
+
+      const sendOptions: Options = {
+        from: emailWithName,
+        to: `${message.fromEmail}`,
+        subject: "Thanks for emailing us!",
+        htmlBody: [
+          "<p>We'll get back to you shortly...</p>",
+          "",
+          `<p>✉️🔐 Need to send us a secure message? Use this link: <a href="${secureURL}">Secure messaging</a></p>`,
+          `<p> - ${savedEmail.Message.Thread.Team.name}</p>`,
+        ],
+        textBody: [
+          "We'll get back to you shortly...",
+          "",
+          `✉️🔐 Need to send us a secure message? ${secureURL}`,
+          `- ${savedEmail.Message.Thread.Team.name}`,
+        ],
+        token: token.token,
+      };
+      await logger.info("sendOptions", mapValues(sendOptions, toJSONable));
+      await sendPostmarkEmailAsTeam(sendOptions);
+    }
 
     return savedEmail.id;
   } catch (e) {
-    console.error("Error with savedEmail", e);
+    await logger.error("Error with savedEmail", {
+      error: (e as Error).toString(),
+    });
     throw e;
   }
 }
