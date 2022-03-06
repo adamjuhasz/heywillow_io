@@ -29,7 +29,7 @@ export interface EmailMessage {
 
   //for EmailMessage table
   fromEmail: string;
-  toEmail: string;
+  toEmail: string[];
   textBody: string;
   htmlBody: string;
   raw: Record<string, string>;
@@ -43,13 +43,12 @@ export interface EmailMessage {
 }
 
 export default async function addEmailToDB(
-  inboxId: number,
   message: EmailMessage
 ): Promise<bigint> {
   const aliasEmail = message.fromEmail;
 
-  const inbox = await prisma.inbox.findUnique({
-    where: { id: inboxId },
+  const inbox = await prisma.inbox.findFirst({
+    where: { emailAddress: { in: message.toEmail } },
     include: { Team: true },
   });
 
@@ -100,7 +99,7 @@ export default async function addEmailToDB(
     const savedEmail = await prisma.emailMessage.create({
       data: {
         from: message.fromEmail,
-        to: message.toEmail,
+        to: inbox.emailAddress,
         sourceMessageId: message.sourceMessageId,
         emailMessageId: message.emailMessageId,
         subject: message.subject,
@@ -121,7 +120,7 @@ export default async function addEmailToDB(
                       teamId: inbox.Team.id,
                       aliasEmailId: thisAlias.id,
                       ThreadState: { create: { state: "open" } },
-                      inboxId: inboxId,
+                      inboxId: inbox.id,
                     },
                   },
             Alias: { connect: { id: thisAlias.id } },
@@ -173,25 +172,16 @@ export default async function addEmailToDB(
         thisAlias.id
       );
 
-      const toInbox = await prisma.inbox.findUnique({
-        where: { emailAddress: message.toEmail },
-      });
-
-      if (toInbox === null) {
-        await logger.error("No inbox found", { emailAddress: message.toEmail });
-        throw new Error("No inbox found");
-      }
-
-      const fromEmailAddress: string = message.toEmail;
+      const fromEmailAddress: string = inbox.emailAddress;
       const fromName: string = savedEmail.Message.Thread.Team.name;
       const emailWithName = `${fromName} <${fromEmailAddress}>`;
 
       const token = await prisma.postmarkServerToken.findUnique({
-        where: { inboxId: toInbox.id },
+        where: { inboxId: inbox.id },
       });
 
       if (token === null) {
-        await logger.error("No token found", { inboxId: Number(toInbox.id) });
+        await logger.error("No token found", { inboxId: Number(inbox.id) });
         throw new Error("No token found");
       }
 

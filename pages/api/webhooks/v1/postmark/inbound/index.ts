@@ -5,6 +5,7 @@ import mapValues from "lodash/mapValues";
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
 import textToSlate from "server/textToSlate";
+import addEmailToDB from "server/addEmailToDB";
 
 export default apiHandler({ post: handler });
 
@@ -45,8 +46,28 @@ async function handler(
     Attachments: (body.Attachments || []).length,
   });
 
+  const slated = textToSlate(body.TextBody);
+
   await logger.info("slate version", {
-    slate: mapValues(textToSlate(body.TextBody), toJSONable) as never,
+    slate: toJSONable(slated),
+  });
+
+  await logger.info("headers", {
+    headers: toJSONable(body.Headers) as never,
+  });
+
+  await addEmailToDB({
+    text: slated,
+    subject: body.Subject,
+    fromEmail: body.FromFull.Email,
+    toEmail: body.ToFull.map((tf) => tf.Email),
+    textBody: body.TextBody,
+    htmlBody: body.HtmlBody,
+    raw: {},
+    sourceMessageId: body.MessageID,
+    emailMessageId: "",
+    fromName: body.FromFull.Name,
+    attachments: [],
   });
 
   res.status(200).json({});
