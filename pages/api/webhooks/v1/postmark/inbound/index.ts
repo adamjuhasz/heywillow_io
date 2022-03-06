@@ -52,9 +52,7 @@ async function handler(
     slate: toJSONable(slated),
   });
 
-  await logger.info("headers", {
-    headers: toJSONable(body.Headers) as never,
-  });
+  const messageID = body.Headers.find((h) => h.Name === "Message-Id");
 
   await addEmailToDB({
     text: slated,
@@ -65,7 +63,7 @@ async function handler(
     htmlBody: body.HtmlBody,
     raw: {},
     sourceMessageId: body.MessageID,
-    emailMessageId: "",
+    emailMessageId: messageID?.Value || "",
     fromName: body.FromFull.Name,
     attachments: [],
   });
