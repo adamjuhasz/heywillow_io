@@ -29,7 +29,7 @@ async function handler(
 
   const body: Models.InboundMessageDetails = req.body;
   // FromName, MessageStream, From, FromFull, To, ToFull, Cc, CcFull, Bcc, BccFull, OriginalRecipient, Subject, MessageID, ReplyTo, MailboxHash, Date, TextBody, HtmlBody, StrippedTextReply, Tag, Headers, Attachments'
-  void logger.info("postmark email incoming", {
+  await logger.info("postmark email incoming", {
     keys: Object.keys(body).join(", "),
     FromFull: mapValues(body.FromFull, toJSONable),
     ToFull: toJSONable(body.ToFull),

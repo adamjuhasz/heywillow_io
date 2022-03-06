@@ -29,7 +29,7 @@ async function handler(
   }
 
   const body: Models.InboundMessageDetails = req.body;
-  void logger.info("postmark email incoming", {
+  await logger.info("postmark email incoming", {
     keys: Object.keys(body).join(", "),
     FromFull: mapValues(body.FromFull, toJSONable),
     ToFull: toJSONable(body.ToFull),
@@ -45,7 +45,7 @@ async function handler(
     Attachments: (body.Attachments || []).length,
   });
 
-  void logger.info("slate version", {
+  await logger.info("slate version", {
     slate: mapValues(textToSlate(body.TextBody), toJSONable) as never,
   });
 

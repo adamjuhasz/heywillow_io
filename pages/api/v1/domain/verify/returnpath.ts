@@ -24,17 +24,17 @@ async function handler(
 ) {
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
   if (user === null) {
-    void logger.warn("Bad auth cookie", {});
+    await logger.warn("Bad auth cookie", {});
     return res.status(403).send({ error: "Bad auth cookie" });
   }
 
   const body = req.body as RequestBody;
-  void logger.info("Verifying return path", { domain: body.domain });
+  await logger.info("Verifying return path", { domain: body.domain });
   const pmDomain = await prisma.postmarkDomain.findUnique({
     where: { domain: body.domain },
   });
   if (pmDomain === null) {
-    void logger.error("Missing domain name", { domain: body.domain });
+    await logger.error("Missing domain name", { domain: body.domain });
     return res.status(404).send({ error: "Unknown domain" });
   }
 
@@ -53,7 +53,7 @@ async function handler(
 
   const domainBody = (await domainVerify.json()) as PostmarkDomain;
 
-  void logger.info(
+  await logger.info(
     "Return path verify results",
     mapValues(domainBody, toJSONable)
   );

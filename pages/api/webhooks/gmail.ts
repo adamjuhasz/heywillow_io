@@ -22,7 +22,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<unknown>
 ) {
-  void logger.info("/api/webhooks/gmail", {
+  await logger.info("/api/webhooks/gmail", {
     requestId: req.headers["x-vercel-id"] as string,
     body: req.body,
   });
@@ -32,13 +32,13 @@ export default async function handler(
     "utf-8"
   );
 
-  void logger.info("decodedData", {
+  await logger.info("decodedData", {
     requestId: req.headers["x-vercel-id"] as string,
     decodedData,
   });
 
   const push = JSON.parse(decodedData) as PushNotification;
-  void logger.info("push", {
+  await logger.info("push", {
     requestId: req.headers["x-vercel-id"] as string,
     push: mapValues(push, toJSONable),
   });

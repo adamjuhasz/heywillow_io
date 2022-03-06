@@ -25,17 +25,17 @@ async function handler(
 ) {
   //create a new team
 
-  void logger.info("create team", {});
+  await logger.info("create team", {});
 
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   if (user === null) {
-    void logger.warn("Bad auth cookie", {});
+    await logger.warn("Bad auth cookie", {});
     return res.status(403).send({ error: "Bad auth cookie" });
   }
 
   const body = req.body as CreateBody;
-  void logger.info("body", { body: toJSONable(body) });
+  await logger.info("body", { body: toJSONable(body) });
 
   try {
     const teamCreated = await prisma.teamMember.create({
@@ -55,13 +55,13 @@ async function handler(
         Team: true,
       },
     });
-    void logger.info("teamCreated", {
+    await logger.info("teamCreated", {
       teamCreated: mapValues(teamCreated, toJSONable),
     });
 
     return res.json({ teamId: Number(teamCreated.Team.id) });
   } catch (e) {
-    void logger.error("Could not create team", { error: toJSONable(e) });
+    await logger.error("Could not create team", { error: toJSONable(e) });
     return res.status(409).json({ error: "Namespace exists" });
   }
 }

@@ -11,11 +11,12 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, never> | { error: string }>
 ) {
-  void logger.info("Record from postmark", {
+  await logger.info("Record from postmark", {
     body: mapValues(
       req.body as Models.OpenEvent | Models.ClickEvent,
       toJSONable
     ),
   });
+
   res.status(200).json({});
 }

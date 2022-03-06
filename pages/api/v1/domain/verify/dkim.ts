@@ -24,7 +24,7 @@ async function handler(
 ) {
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
   if (user === null) {
-    void logger.warn("Bad auth cookie", {});
+    await logger.warn("Bad auth cookie", {});
     return res.status(403).send({ error: "Bad auth cookie" });
   }
 
@@ -33,7 +33,7 @@ async function handler(
     where: { domain: domain },
   });
   if (pmDomain === null) {
-    void logger.error("Missing domain name", { domain });
+    await logger.error("Missing domain name", { domain });
     return res.status(404).send({ error: "Unknown domain" });
   }
 
@@ -52,7 +52,7 @@ async function handler(
 
   const domainBody = (await domainVerify.json()) as PostmarkDomain;
 
-  void logger.info("DKIM verify results", mapValues(domainBody, toJSONable));
+  await logger.info("DKIM verify results", mapValues(domainBody, toJSONable));
 
   res.json(domainBody);
 }
