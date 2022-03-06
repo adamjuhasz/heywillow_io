@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
+import isNil from "lodash/isNil";
 
 import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
@@ -30,7 +31,7 @@ export default function Login(): JSX.Element {
   const redirectPath = "/a/auth";
 
   useEffect(() => {
-    if (session === null || session === undefined) {
+    if (isNil(session)) {
       return;
     }
   }, [session, router]);
@@ -63,7 +64,7 @@ export default function Login(): JSX.Element {
                   const redirectTo = `${document.location.origin}${redirectPath}`;
                   console.log("redirectTo", redirectTo);
 
-                  if (client === null || client === undefined) {
+                  if (isNil(client)) {
                     setError("Error with login provider");
                     return;
                   }

@@ -2,7 +2,7 @@
 import { ArrowCircleUpIcon } from "@heroicons/react/outline";
 import { SupabaseComment } from "types/supabase";
 import type { MessageDirection } from "@prisma/client";
-import { uniqBy } from "lodash";
+import uniqBy from "lodash/uniqBy";
 
 import { Body, Return } from "pages/api/v1/comment/add";
 import Avatar from "components/Avatar";

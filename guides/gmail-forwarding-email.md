@@ -15,7 +15,7 @@ Author: "Adam Juhasz"
 8. Click the verification link in the thread.
 9. Back in your Gmail account, select the “Forward a copy of incoming mail to…” option and select your forwarding address from the drop-down menu.
 10. Select the action you’d like your messages to take from the drop-down menu. You can choose to keep Gmail’s copy of the message in your inbox, or you can send it automatically to All Mail or Trash. You might want to keep a copy of inbound email in Gmail.
-11. Click Save Changes.
+11. Click Save Changes on the bottom of the screen.
 
 ## Need more help?
 

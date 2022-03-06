@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import isNil from "lodash/isNil";
 
 import { useSupabase } from "components/UserContext";
 // import { useUser } from "components/UserContext";
@@ -113,6 +114,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
     }
   }, [supabase, getAuthCookie]);
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     if (eCode !== null) {
       if (eDesc !== null) {
@@ -126,7 +128,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
     let nodeJSTimeout: NodeJS.Timeout | undefined;
     if (props.timeout === true) {
       nodeJSTimeout = setTimeout(async () => {
-        if (supabase === null || supabase === undefined) {
+        if (isNil(supabase)) {
           return;
         }
         const session = supabase.auth.session();

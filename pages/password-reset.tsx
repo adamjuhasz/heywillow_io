@@ -5,6 +5,7 @@ import { XIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
+import isNil from "lodash/isNil";
 
 import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
@@ -53,7 +54,7 @@ export default function PasswordReset(): JSX.Element {
                   e.preventDefault();
                   setDisabled(true);
 
-                  if (client === null || client === undefined) {
+                  if (isNil(client)) {
                     setError("Error with login provider");
                     return;
                   }

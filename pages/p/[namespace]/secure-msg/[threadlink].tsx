@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { isArray } from "lodash";
+import isArray from "lodash/isArray";
 import { MessageDirection, Prisma, PrismaClient } from "@prisma/client";
 
 import { Body } from "pages/api/public/v1/message/secure";
@@ -172,8 +172,6 @@ export default function ThreadId(props: ServerSideProps) {
               console.error(e);
               alert("Error sending message, try again please");
             }
-
-            return;
           }}
         />
       </div>

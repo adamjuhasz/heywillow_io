@@ -1,7 +1,7 @@
-import { defaultTo } from "lodash";
+import defaultTo from "lodash/defaultTo";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { serviceSupabase } from "server/supabase";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { addInternalMessage } from "server/addInternal";
 import { prisma } from "utils/prisma";

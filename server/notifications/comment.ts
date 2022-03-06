@@ -1,4 +1,5 @@
-import { defaultTo, uniqBy } from "lodash";
+import uniqBy from "lodash/uniqBy";
+import defaultTo from "lodash/defaultTo";
 import { NotificationType } from "@prisma/client";
 
 import { prisma } from "utils/prisma";
@@ -84,9 +85,9 @@ export default async function commentNotification(commentId: bigint) {
         return;
       }
 
-      const commentId = Number(comment.id);
+      const fromDBCommentId = Number(comment.id);
       const domain = process.env.DOMAIN;
-      const link = `https://${domain}/a/${namespace}/thread/${threadId}?comment=${commentId}`;
+      const link = `https://${domain}/a/${namespace}/thread/${threadId}?comment=${fromDBCommentId}`;
 
       await sendPostmarkEmail({
         to: tm.Profile.email || "",

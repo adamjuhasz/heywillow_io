@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
@@ -46,12 +46,11 @@ async function handler(
 
   const requests = teams.PostmarkDomain.map(async (d) => {
     const r = await getPostmarkDomainInfo(d.postmarkDomainId);
-    const enhanced = {
+    return {
       ...r,
       createdAt: d.createdAt.toISOString(),
       domain: d.domain,
     };
-    return enhanced;
   });
 
   const results = await Promise.allSettled(requests);

@@ -1,5 +1,6 @@
 import { NotificationType } from "@prisma/client";
-import { defaultTo, mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
+import defaultTo from "lodash/defaultTo";
 
 import { prisma } from "utils/prisma";
 // import createSecureThreadLink from "server/createSecureLink";
@@ -8,10 +9,11 @@ import notificationDefaults from "../../shared/notifications/defaults";
 import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";
 import { logger, toJSONable } from "utils/logger";
-import { SlateText } from "types/Slate";
+import { SlateText } from "types/slate";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export default async function messageNotification(messageId: bigint) {
-  logger.info("messageNotification", { messageId: Number(messageId) });
+  void logger.info("messageNotification", { messageId: Number(messageId) });
 
   const message = await prisma.message.findUnique({
     where: { id: messageId },
@@ -34,7 +36,7 @@ export default async function messageNotification(messageId: bigint) {
   });
 
   if (message === null) {
-    logger.error("messageNotification message not found", {
+    void logger.error("messageNotification message not found", {
       messageId: Number(messageId),
     });
     throw new Error("Message not found");
@@ -61,7 +63,7 @@ export default async function messageNotification(messageId: bigint) {
   const ourEmails = message.Thread.Team.Inboxes.map((i) => i.emailAddress);
   const namespace = message.Thread.Team.Namespace.namespace;
 
-  logger.info("messageNotification ready to generate", {
+  void logger.info("messageNotification ready to generate", {
     messageId: Number(messageId),
     thisType,
     shortText,
@@ -93,7 +95,7 @@ export default async function messageNotification(messageId: bigint) {
         threadId: message.threadId,
         type: thisType,
       };
-      logger.info("messageNotification create InApp", {
+      void logger.info("messageNotification create InApp", {
         messageId: Number(messageId),
         data: mapValues(data, toJSONable),
       });
@@ -109,7 +111,7 @@ export default async function messageNotification(messageId: bigint) {
 
     if (emailPref === true) {
       if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
-        logger.info("messageNotification was going to send to self", {
+        void logger.info("messageNotification was going to send to self", {
           messageId: Number(messageId),
           ourEmails: JSON.stringify(ourEmails),
           tm: mapValues(tm, toJSONable),
@@ -131,7 +133,7 @@ export default async function messageNotification(messageId: bigint) {
         ],
       };
 
-      logger.info("messageNotification create Email", {
+      void logger.info("messageNotification create Email", {
         messageId: Number(messageId),
         data: mapValues(data, toJSONable),
       });

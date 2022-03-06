@@ -15,6 +15,7 @@ type AppPropsWithLayout = AppProps & {
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  // eslint-disable-next-line no-secrets/no-secrets
   usePostHog("phc_5i7tJM8Uoz14akX81DF6PXpr2IB1BefrJ7bxPoppS6i", {
     api_host: "https://app.posthog.com",
     loaded: (posthog) => {

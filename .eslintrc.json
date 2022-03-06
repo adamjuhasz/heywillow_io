@@ -1,12 +1,14 @@
 {
   "parser": "@typescript-eslint/parser",
   "parserOptions": { "project": "tsconfig.json" },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "sonarjs", "lodash", "no-secrets"],
   "extends": [
     "eslint:recommended",
     "next/core-web-vitals",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:sonarjs/recommended",
+    "plugin:lodash/recommended"
   ],
   "rules": {
     "sort-imports": [
@@ -35,7 +37,17 @@
     "@typescript-eslint/no-magic-numbers": ["off"],
     "@typescript-eslint/no-loop-func": ["error"],
     "@typescript-eslint/no-loss-of-precision": ["error"],
-    "@typescript-eslint/no-implied-eval": ["error"]
+    "@typescript-eslint/no-implied-eval": ["error"],
+    "sonarjs/no-duplicate-string": ["off"],
+    "sonarjs/no-small-switch": ["off"],
+    "lodash/prefer-lodash-method": ["off"],
+    "lodash/prop-shorthand": ["off"],
+    "lodash/prefer-some": ["warn"],
+    "lodash/prefer-includes": ["warn"],
+    "no-secrets/no-secrets": ["error", { "ignoreContent": "^https" }],
+    "@typescript-eslint/switch-exhaustiveness-check": ["error"],
+    "no-param-reassign": ["error"],
+    "no-var": ["error"]
   },
   "globals": { "JSX": "readonly", "NodeJS": "readonly" }
 }

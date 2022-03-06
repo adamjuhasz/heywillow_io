@@ -1,7 +1,7 @@
 const hashCode = (s?: string) =>
   (s || "").split("").reduce((a, b) => {
-    a = (a << 5) - a + b.charCodeAt(0);
-    return a & a;
+    const x: number = (a << 5) - a + b.charCodeAt(0);
+    return x & x;
   }, 0);
 
 interface Props {

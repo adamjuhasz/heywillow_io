@@ -1,4 +1,4 @@
-import { defaultTo } from "lodash";
+import defaultTo  from "lodash/defaultTo";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { addInternalMessage } from "server/addInternal";

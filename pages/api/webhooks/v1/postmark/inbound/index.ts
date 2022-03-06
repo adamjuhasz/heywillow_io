@@ -1,6 +1,6 @@
 import { Models } from "postmark";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
@@ -40,6 +40,8 @@ async function handler(
     TextBody: body.TextBody || null,
     HtmlBody: body.HtmlBody || null,
     StrippedTextReply: body.StrippedTextReply || null,
+    MessageID: body.MessageID,
+    Attachments: (body.Attachments || []).length,
   });
 
   res.status(200).json({});

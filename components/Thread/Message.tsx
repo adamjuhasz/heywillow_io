@@ -1,6 +1,6 @@
 import { MouseEventHandler, forwardRef } from "react";
 import { format } from "date-fns";
-import { defaultTo } from "lodash";
+import defaultTo from "lodash/defaultTo";
 import { MessageDirection } from "@prisma/client";
 
 import { SupabaseAttachment, SupabaseComment } from "types/supabase";
@@ -10,6 +10,7 @@ import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";
 import Redacted from "components/Redacted";
 
+// eslint-disable-next-line no-secrets/no-secrets
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
 
 export type MyMessageType = {

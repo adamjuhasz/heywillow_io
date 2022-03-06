@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 import { prisma } from "utils/prisma";

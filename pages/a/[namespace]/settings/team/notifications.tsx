@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import Head from "next/head";
 import type { NotificationChannel, NotificationType } from "@prisma/client";
 import { Switch } from "@headlessui/react";
-import { defaultTo } from "lodash";
+import defaultTo from "lodash/defaultTo";
 
 import AppLayout from "layouts/app";
 import SettingsHeader from "components/Settings/Header";

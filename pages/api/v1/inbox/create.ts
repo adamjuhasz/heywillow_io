@@ -1,6 +1,6 @@
 import * as Postmark from "postmark";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";

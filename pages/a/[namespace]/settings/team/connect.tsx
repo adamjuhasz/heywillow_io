@@ -8,7 +8,7 @@ import {
 } from "react";
 import Head from "next/head";
 import { formatDistanceToNowStrict } from "date-fns";
-import { defaultTo } from "lodash";
+import defaultTo from "lodash/defaultTo";
 import {
   CheckCircleIcon,
   ClipboardCopyIcon,
@@ -257,6 +257,7 @@ function DomainViewer({
 
   return (
     <div className="mt-4 rounded-md border border-zinc-600 bg-black text-zinc-400">
+      {/* eslint-disable-next-line sonarjs/cognitive-complexity */}
       {(domains || []).map((d, idx) => {
         const dkimHostname =
           d.DKIMPendingHost !== "" ? d.DKIMPendingHost : d.DKIMHost;

@@ -1,6 +1,6 @@
 import { Models } from "postmark";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
@@ -28,6 +28,7 @@ async function handler(
   }
 
   const body: Models.InboundMessageDetails = req.body;
+  // FromName, MessageStream, From, FromFull, To, ToFull, Cc, CcFull, Bcc, BccFull, OriginalRecipient, Subject, MessageID, ReplyTo, MailboxHash, Date, TextBody, HtmlBody, StrippedTextReply, Tag, Headers, Attachments'
   void logger.info("postmark email incoming", {
     keys: Object.keys(body).join(", "),
     FromFull: mapValues(body.FromFull, toJSONable),
@@ -40,6 +41,8 @@ async function handler(
     TextBody: body.TextBody || null,
     HtmlBody: body.HtmlBody || null,
     StrippedTextReply: body.StrippedTextReply || null,
+    MessageID: body.MessageID,
+    Attachments: (body.Attachments || []).length,
   });
 
   res.status(200).json({});

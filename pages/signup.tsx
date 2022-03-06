@@ -11,6 +11,7 @@ import Link from "next/link";
 import WillowLogo from "components/Logo";
 import { Switch } from "@headlessui/react";
 import Head from "next/head";
+import isNil from "lodash/isNil";
 
 import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
@@ -38,7 +39,7 @@ export default function SignUpPage(): JSX.Element {
   const redirectPath = "/a/auth";
 
   useEffect(() => {
-    if (session === null || session === undefined) {
+    if (isNil(session)) {
       return;
     }
 
@@ -87,7 +88,7 @@ export default function SignUpPage(): JSX.Element {
                       console.error(e);
                     }
 
-                    if (client === null || client === undefined) {
+                    if (isNil(client)) {
                       setError("Supabase login provider missing");
                       return;
                     }

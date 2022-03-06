@@ -68,8 +68,6 @@ export function ToastProvider(props: PropsWithChildren<unknown>): JSX.Element {
               timeout: timeout,
             },
           ]);
-
-          return;
         },
       }}
     >

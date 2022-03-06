@@ -36,6 +36,8 @@
     "remark": "^14.0.2",
     "remark-gfm": "^3.0.1",
     "remark-html": "^15.0.1",
+    "slate": "^0.73.1",
+    "slate-hyperscript": "^0.67.0",
     "swr": "^1.2.2"
   },
   "devDependencies": {
@@ -50,6 +52,9 @@
     "autoprefixer": "^10.4.2",
     "eslint": "8.10.0",
     "eslint-config-next": "12.1.0",
+    "eslint-plugin-lodash": "^7.4.0",
+    "eslint-plugin-no-secrets": "^0.8.9",
+    "eslint-plugin-sonarjs": "^0.12.0",
     "jest": "^27.5.1",
     "postcss": "^8.4.7",
     "prettier": "^2.5.1",

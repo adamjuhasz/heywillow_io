@@ -24,7 +24,7 @@ import {
   shift,
   useFloating,
 } from "@floating-ui/react-dom";
-import { defaultTo } from "lodash";
+import defaultTo from "lodash/defaultTo";
 
 import AppLayout from "layouts/app";
 import useGetThread, { ThreadFetch } from "client/getThread";
