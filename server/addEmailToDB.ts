@@ -203,7 +203,6 @@ export default async function addEmailToDB(
         ],
         token: token.token,
       };
-      await logger.info("sendOptions", mapValues(sendOptions, toJSONable));
       await sendPostmarkEmailAsTeam(sendOptions);
     }
 

@@ -5,7 +5,7 @@ import mapValues from "lodash/mapValues";
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
 import textToSlate from "server/textToSlate";
-import addEmailToDB from "server/addEmailToDB";
+import addEmailToDB, { EmailMessage } from "server/addEmailToDB";
 
 export default apiHandler({ post: handler });
 
@@ -54,7 +54,7 @@ async function handler(
 
   const messageID = body.Headers.find((h) => h.Name === "Message-Id");
 
-  await addEmailToDB({
+  const message: EmailMessage = {
     text: slated,
     subject: body.Subject,
     fromEmail: body.FromFull.Email,
@@ -66,7 +66,11 @@ async function handler(
     emailMessageId: messageID?.Value || "",
     fromName: body.FromFull.Name,
     attachments: [],
-  });
+  };
+
+  await logger.info("message", { message: mapValues(message, toJSONable) });
+
+  await addEmailToDB(message);
 
   res.status(200).json({});
 }
