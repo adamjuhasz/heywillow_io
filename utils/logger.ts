@@ -1,6 +1,11 @@
 import { Logtail } from "@logtail/node";
-import { Context, ContextKey, ILogtailLog } from "@logtail/types";
-import { isDate, isPlainObject, mapValues } from "lodash";
+import { Context, ContextKey, ILogtailLog, LogLevel } from "@logtail/types";
+import isDate from "lodash/isDate";
+import isPlainObject from "lodash/isPlainObject";
+import mapValues from "lodash/mapValues";
+import isNumber from "lodash/isNumber";
+import isString from "lodash/isString";
+import isBoolean from "lodash/isBoolean";
 
 export type { Context };
 
@@ -34,19 +39,20 @@ export function toJSONable(val: unknown, _key?: string): ContextKey | Context {
     return val.toISOString();
   }
 
+  // eslint-disable-next-line lodash/prefer-lodash-typecheck
   if (typeof val === "bigint") {
     return Number(val);
   }
 
-  if (typeof val === "number") {
+  if (isNumber(val)) {
     return val;
   }
 
-  if (typeof val === "string") {
+  if (isString(val)) {
     return val;
   }
 
-  if (typeof val === "boolean") {
+  if (isBoolean(val)) {
     return val;
   }
 
@@ -74,8 +80,7 @@ export function toJSONable(val: unknown, _key?: string): ContextKey | Context {
   }
 
   try {
-    const j = JSON.stringify(val);
-    return j;
+    return JSON.stringify(val);
   } catch (e) {
     console.error("Could not json", e);
   }
@@ -87,16 +92,16 @@ async function logToConsole(log: ILogtailLog): Promise<ILogtailLog> {
   const { level, dt, message, ...obj } = log;
 
   switch (level) {
-    case "error":
+    case LogLevel.Error:
       console.error(dt, message, obj);
       break;
 
-    case "info":
-    case "warn":
+    case LogLevel.Info:
+    case LogLevel.Warn:
       console.log(dt, message, obj);
       break;
 
-    case "debug":
+    case LogLevel.Debug:
       if (process.env.NODE_ENV === "production") {
         break;
       } else {
@@ -113,7 +118,10 @@ export const logger: Logger =
   (() => {
     if (process.env.NODE_ENV === "production") {
       console.log("starting up Logtail");
-      const logtail = new Logtail(process.env.LOGTAIL_TOKEN as string);
+      const logtail = new Logtail(process.env.LOGTAIL_TOKEN as string, {
+        batchInterval: 5,
+        syncMax: 500,
+      });
       logtail.use(logToConsole);
       logtail
         .debug("Starting logtail")

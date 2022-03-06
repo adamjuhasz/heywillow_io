@@ -48,10 +48,6 @@ async function handler(
 
   const slated = textToSlate(body.TextBody);
 
-  await logger.info("slate version", {
-    slate: toJSONable(slated),
-  });
-
   const messageID = body.Headers.find((h) => h.Name === "Message-Id");
 
   const message: EmailMessage = {
