@@ -3,10 +3,15 @@ import { ArrowCircleUpIcon } from "@heroicons/react/outline";
 import { SupabaseComment } from "types/supabase";
 import type { MessageDirection } from "@prisma/client";
 import uniqBy from "lodash/uniqBy";
+import TextareaAutosize from "react-textarea-autosize";
+import { FormEvent, useContext, useRef, useState } from "react";
+import isMatch from "lodash/isMatch";
 
 import { Body, Return } from "pages/api/v1/comment/add";
 import Avatar from "components/Avatar";
 import slateToText from "shared/slate/slateToText";
+import Loading from "components/Loading";
+import ToastContext from "components/Toast";
 
 interface Props {
   messageId: number;
@@ -26,7 +31,55 @@ interface Props {
 }
 
 export default function CommentBox(props: Props) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [loading, setLoading] = useState(false);
+  const { addToast } = useContext(ToastContext);
+
   const commentators = uniqBy(props.comments, (c) => c.authorId);
+
+  const submitForm = async (e: FormEvent<unknown>) => {
+    e.preventDefault();
+
+    if (formRef.current === null) {
+      console.error("Can't submit form due to formRef being null");
+      return;
+    }
+
+    setLoading(true);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const elements = formRef.current.elements as any;
+    const body: Body = {
+      messageId: props.messageId,
+      text: (elements.comment as HTMLInputElement).value,
+      teamId: props.teamId,
+    };
+    const res = await fetch("/api/v1/comment/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    setLoading(false);
+
+    switch (res.status) {
+      case 200: {
+        const responseBody = (await res.json()) as Return;
+        if (props.mutate) {
+          props.mutate(responseBody.id);
+        }
+        elements.comment.value = "";
+        addToast({ type: "string", string: "Comment added" });
+        break;
+      }
+
+      default:
+        addToast({ type: "error", string: "Could not save comment" });
+        break;
+    }
+  };
 
   return (
     <div
@@ -84,60 +137,41 @@ export default function CommentBox(props: Props) {
                 ? `${c.TeamMember.Profile.firstName} ${c.TeamMember.Profile.lastName}`
                 : c.TeamMember.Profile.email}
             </div>
-            <div className="rounded-lg border-2 border-yellow-300 border-opacity-20 bg-yellow-100 bg-opacity-10 px-2 py-2 text-xs text-yellow-50">
+            <div className="my-0.5 rounded-lg bg-yellow-100 bg-opacity-10 px-2 py-2 text-xs text-yellow-50">
               <HighlightMentions str={slateToText(c.text).join("\n\n")} />
             </div>
           </div>
         ))}
         <form
           className="relative mt-2 w-full px-2"
-          onSubmit={async (e) => {
-            e.preventDefault();
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const elements = e.currentTarget.elements as any;
-            const body: Body = {
-              messageId: props.messageId,
-              text: (elements.comment as HTMLInputElement).value,
-              teamId: props.teamId,
-            };
-            const res = await fetch("/api/v1/comment/add", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(body),
-            });
-
-            switch (res.status) {
-              case 200: {
-                const responseBody = (await res.json()) as Return;
-                if (props.mutate) {
-                  props.mutate(responseBody.id);
-                }
-                elements.comment.value = "";
-                return;
-              }
-
-              default:
-                alert("Could not save comment");
-            }
-          }}
+          onSubmit={submitForm}
+          ref={formRef}
         >
-          <input
-            type="text"
+          <TextareaAutosize
             name="comment"
             id="comment"
             required
-            className="focus:border-1 block w-full min-w-0 flex-grow rounded-md border-yellow-300 bg-zinc-900 text-xs focus:border-yellow-300 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
             placeholder="Comment internally"
+            className="focus:border-1 block w-full min-w-0 flex-grow rounded-md border-yellow-300 bg-zinc-900 pr-6 text-xs focus:border-yellow-300 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+            onKeyDown={(e) => {
+              if (
+                isMatch(e, { key: "Enter", shiftKey: false, altKey: false })
+              ) {
+                void submitForm(e);
+              }
+            }}
           />
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+
+          <div className="absolute inset-y-0 right-0 flex items-end py-2 pr-3">
             <button type="submit">
-              <ArrowCircleUpIcon
-                className="h-5 w-5 text-yellow-500"
-                aria-hidden="true"
-              />
+              {loading ? (
+                <Loading className="h-4 w-4 text-yellow-500" />
+              ) : (
+                <ArrowCircleUpIcon
+                  className="h-5 w-5 text-yellow-500"
+                  aria-hidden="true"
+                />
+              )}
             </button>
           </div>
         </form>
