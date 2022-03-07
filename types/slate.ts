@@ -19,8 +19,3 @@ export type ParagraphElement = {
   type: "paragraph";
   children: NonEmptyArray<SlateText | LineElement | MaskedElement>;
 };
-
-export type BlockElement = {
-  type: "block";
-  children: NonEmptyArray<ParagraphElement>;
-};

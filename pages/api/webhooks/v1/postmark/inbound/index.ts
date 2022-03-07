@@ -4,7 +4,7 @@ import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
-import textToSlate from "server/textToSlate";
+import textToSlate from "server/slate/textToSlate";
 import addEmailToDB, { EmailMessage } from "server/addEmailToDB";
 import { prisma } from "utils/prisma";
 

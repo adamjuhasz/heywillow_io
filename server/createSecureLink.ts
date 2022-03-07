@@ -27,7 +27,7 @@ export default async function createSecureThreadLink(
     },
   });
 
-  logger.info("threadLink", {
+  void logger.info("threadLink", {
     threadId: Number(threadId),
     aliasId: Number(aliasId),
     threadLink: Number(threadLink),
@@ -38,7 +38,7 @@ export default async function createSecureThreadLink(
   const host = `${process.env.PROTOCOL}://${process.env.DOMAIN}`;
 
   const secureURL = `${host}/p/${namespace}/secure-msg/${encodedTL}`;
-  logger.info("secureURL", {
+  void logger.info("secureURL", {
     threadId: Number(threadId),
     aliasId: Number(aliasId),
     threadLink: Number(threadLink),

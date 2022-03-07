@@ -1,5 +1,5 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import { defaultTo } from "lodash";
+import defaultTo from "lodash/defaultTo";
 
 import { errorHandler } from "server/errorHandler";
 import { logger } from "utils/logger";
@@ -9,7 +9,10 @@ type Handler = Record<string, NextApiHandler>;
 export function apiHandler(handler: Handler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const method = defaultTo(req.method?.toLowerCase(), "");
-    logger.info("Incoming request", { method, url: defaultTo(req.url, null) });
+    void logger.info("Incoming request", {
+      method,
+      url: defaultTo(req.url, null),
+    });
 
     // check handler supports HTTP method
     if (!handler[method])

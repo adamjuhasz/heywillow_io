@@ -22,11 +22,9 @@ export default async function changeThreadStatus({
 
   console.log("changeThreadStatus currentState", currentState);
 
-  if (currentState !== null) {
-    if (currentState.state === state) {
-      console.log("changeThreadStatus no changes needed");
-      return currentState;
-    }
+  if (currentState !== null && currentState.state === state) {
+    console.log("changeThreadStatus no changes needed");
+    return currentState;
   }
 
   const newState = await prisma.threadState.create({

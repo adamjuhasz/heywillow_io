@@ -3,17 +3,21 @@ import mapValues from "lodash/mapValues";
 import defaultTo from "lodash/defaultTo";
 
 import { prisma } from "utils/prisma";
-// import createSecureThreadLink from "server/createSecureLink";
+import createSecureThreadLink from "server/createSecureLink";
 import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
 import unwrapRFC2822 from "shared/rfc2822unwrap";
 import applyMaybe from "shared/applyMaybe";
 import { logger, toJSONable } from "utils/logger";
 import { SlateText } from "types/slate";
+import sendPostmarkEmailAsTeam, {
+  Options,
+} from "server/postmark/sendPostmarkEmailAsTeam";
+import slateToText, { SlateInput } from "server/slate/slateToText";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default async function messageNotification(messageId: bigint) {
-  void logger.info("messageNotification", { messageId: Number(messageId) });
+  await logger.info("messageNotification", { messageId: Number(messageId) });
 
   const message = await prisma.message.findUnique({
     where: { id: messageId },
@@ -36,7 +40,7 @@ export default async function messageNotification(messageId: bigint) {
   });
 
   if (message === null) {
-    void logger.error("messageNotification message not found", {
+    await logger.error("messageNotification message not found", {
       messageId: Number(messageId),
     });
     throw new Error("Message not found");
@@ -63,7 +67,7 @@ export default async function messageNotification(messageId: bigint) {
   const ourEmails = message.Thread.Team.Inboxes.map((i) => i.emailAddress);
   const namespace = message.Thread.Team.Namespace.namespace;
 
-  void logger.info("messageNotification ready to generate", {
+  await logger.info("messageNotification ready to generate", {
     messageId: Number(messageId),
     thisType,
     shortText,
@@ -95,7 +99,7 @@ export default async function messageNotification(messageId: bigint) {
         threadId: message.threadId,
         type: thisType,
       };
-      void logger.info("messageNotification create InApp", {
+      await logger.info("messageNotification create InApp", {
         messageId: Number(messageId),
         data: mapValues(data, toJSONable),
       });
@@ -111,7 +115,7 @@ export default async function messageNotification(messageId: bigint) {
 
     if (emailPref === true) {
       if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
-        void logger.info("messageNotification was going to send to self", {
+        await logger.error("messageNotification was going to send to self", {
           messageId: Number(messageId),
           ourEmails: JSON.stringify(ourEmails),
           tm: mapValues(tm, toJSONable),
@@ -133,7 +137,7 @@ export default async function messageNotification(messageId: bigint) {
         ],
       };
 
-      void logger.info("messageNotification create Email", {
+      await logger.info("messageNotification create Email", {
         messageId: Number(messageId),
         data: mapValues(data, toJSONable),
       });
@@ -143,54 +147,54 @@ export default async function messageNotification(messageId: bigint) {
   });
 
   // respond back to the end user
-  // if (message.direction === "outgoing") {
-  //   logger.info("messageNotification sending to end-user", {
-  //     messageId: Number(messageId),
-  //   });
-  //   const inbox = message.Thread.Team.Inboxes[0];
-  //   const inboxId = inbox.id;
-  //   const gmail = await createAuthedGmail(Number(inboxId));
-  //   const body =
-  //     message.InternalMessage?.body ||
-  //     applyMaybe(unwrapRFC2822, message.EmailMessage?.body);
+  if (message.direction === "outgoing") {
+    await logger.info("messageNotification sending to end-user", {
+      messageId: Number(messageId),
+    });
 
-  //   const secureURL = await createSecureThreadLink(
-  //     message.Thread.id,
-  //     message.Thread.Alias.id
-  //   );
+    const inbox = message.Thread.Team.Inboxes[0];
+    const token = await prisma.postmarkServerToken.findUnique({
+      where: { inboxId: inbox.id },
+    });
+    const body = message.text;
 
-  //   if (body) {
-  //     const data = {
-  //       gmail: gmail,
-  //       from: inbox.emailAddress,
-  //       to: message.Thread.Alias.emailAddress,
-  //       subject: `New message from ${message.Thread.Team.name}`,
-  //       html: [
-  //         ...body
-  //           .replace(/\r\n/g, "\n")
-  //           .split("\n")
-  //           .map((t) => `<p>${t}</p>`),
-  //         `<p>Need to talk securely? ${secureURL}</p>`,
-  //         `<p> -${message.Thread.Team.name}</p>`,
-  //       ],
-  //     };
+    if (token === null) {
+      await logger.error("No token found", { inboxId: Number(inbox.id) });
+      throw new Error("No token found");
+    }
 
-  //     logger.info("messageNotification sending to end-user", {
-  //       messageId: Number(messageId),
-  //       inbox: mapValues(inbox, toJSONable),
-  //       inboxId: Number(inboxId),
-  //       data: mapValues({ ...data, gmail: null }, toJSONable),
-  //     });
-  //     await sendEmailThroughGmail(data);
-  //   } else {
-  //     logger.error("messageNotification no body to send to end user", {
-  //       messageId: Number(messageId),
-  //       body: toJSONable(body, ""),
-  //       inbox: mapValues(inbox, toJSONable),
-  //       message: mapValues(message, toJSONable),
-  //     });
-  //   }
-  // }
+    const secureURL = await createSecureThreadLink(
+      message.Thread.id,
+      message.Thread.Alias.id
+    );
+
+    const textBody = [
+      ...slateToText(message.text as unknown as SlateInput),
+      `Need to email us securely? ${secureURL}`,
+    ];
+
+    if (body) {
+      const sendOptions: Options = {
+        from: inbox.emailAddress,
+        to: message.Thread.Alias.emailAddress,
+        subject: "Thanks for emailing us!",
+        htmlBody: textBody.map((s) => `<p>${s}</p>`),
+        textBody: textBody,
+        token: token.token,
+      };
+      await logger.info("messageNotification sending to end-user", {
+        textBody: textBody,
+      });
+      await sendPostmarkEmailAsTeam(sendOptions);
+    } else {
+      await logger.error("messageNotification no body to send to end user", {
+        messageId: Number(messageId),
+        body: toJSONable(body, ""),
+        inbox: mapValues(inbox, toJSONable),
+        message: mapValues(message, toJSONable),
+      });
+    }
+  }
 
   await Promise.allSettled(generatedNotifications);
 }

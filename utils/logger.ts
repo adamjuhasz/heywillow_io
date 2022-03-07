@@ -7,8 +7,8 @@ import isString from "lodash/isString";
 import isBoolean from "lodash/isBoolean";
 import isArray from "lodash/isArray";
 
-type JSONValue = string | number | boolean | null;
-type JSON = (JSON | JSONValue)[] | { [key: string]: JSON | JSONValue };
+export type JSONValue = string | number | boolean | null;
+export type JSON = (JSON | JSONValue)[] | { [key: string]: JSON | JSONValue };
 
 interface Logger {
   debug: (msg: string, obj: JSON) => Promise<unknown>;

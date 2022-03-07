@@ -1,5 +1,5 @@
 import { postmark } from "utils/postmark";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 
@@ -30,13 +30,13 @@ export default async function sendPostmarkEmail({
     if (res.ErrorCode === 0) {
       return res;
     } else {
-      logger.error("Could not send", {
+      await logger.error("Could not send using postmark", {
         response: mapValues(res, toJSONable),
         email: mapValues(email, toJSONable),
       });
     }
   } else {
-    logger.info("Did not send", mapValues(email, toJSONable));
+    await logger.info("Did not send", mapValues(email, toJSONable));
   }
 
   return null;

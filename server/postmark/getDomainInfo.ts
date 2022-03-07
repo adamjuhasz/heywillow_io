@@ -1,4 +1,4 @@
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 
@@ -29,8 +29,7 @@ async function getPostmarkDomainInfo(domainId: number) {
 
   await processPMResponse(domainGet);
 
-  const domainBody = (await domainGet.json()) as PostmarkDomain;
-  return domainBody;
+  return (await domainGet.json()) as PostmarkDomain;
 }
 
 export async function processPMResponse(serverCreate: Response) {

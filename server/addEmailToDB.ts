@@ -8,7 +8,7 @@ import { serviceSupabase } from "server/supabase";
 import createSecureThreadLink from "server/createSecureLink";
 import changeThreadStatus from "server/changeThreadStatus";
 import { ParagraphElement } from "types/slate";
-import { logger, toJSONable } from "utils/logger";
+import { JSON, logger, toJSONable } from "utils/logger";
 import sendPostmarkEmailAsTeam, {
   Options,
 } from "./postmark/sendPostmarkEmailAsTeam";
@@ -32,7 +32,7 @@ export interface EmailMessage {
   toEmail: string[];
   textBody: string;
   htmlBody: string;
-  raw: Record<string, string>;
+  raw: JSON;
   // EmailMessage metadata
   sourceMessageId: string;
   emailMessageId: string;
@@ -152,6 +152,10 @@ export default async function addEmailToDB(
 
     if (savedEmail.Message !== null) {
       await messageNotification(savedEmail.Message.id);
+    } else {
+      await logger.error("savedEmail.Message was null", {
+        message: mapValues(message, toJSONable),
+      });
     }
 
     await Promise.allSettled(
