@@ -91,7 +91,7 @@ const logToLogtail = async (
   const res = await fetch("https://in.logtail.com", {
     method: "POST",
     headers: {
-      "Content-Type": "application/msgpack",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.LOGTAIL_TOKEN as string}`,
       "User-Agent": "logtail-js(node)",
     },
