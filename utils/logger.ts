@@ -1,4 +1,4 @@
-import { Context, ContextKey, LogLevel } from "@logtail/types";
+import { LogLevel } from "@logtail/types";
 import isDate from "lodash/isDate";
 import isPlainObject from "lodash/isPlainObject";
 import mapValues from "lodash/mapValues";
@@ -6,8 +6,6 @@ import isNumber from "lodash/isNumber";
 import isString from "lodash/isString";
 import isBoolean from "lodash/isBoolean";
 import isArray from "lodash/isArray";
-
-export type { Context };
 
 type JSONValue = string | number | boolean | null;
 type JSON = (JSON | JSONValue)[] | { [key: string]: JSON | JSONValue };
@@ -56,13 +54,7 @@ export function toJSONable(val: unknown, _key?: string): JSON | JSONValue {
   }
 
   if (isArray(val)) {
-    return val.reduce(
-      (a, v, idx) => ({
-        ...a,
-        [`${idx}`.padStart(3, "0")]: mapValues(v),
-      }),
-      {} as Record<string, ContextKey | Context>
-    );
+    return mapValues(val, toJSONable);
   }
 
   if (isPlainObject(val)) {
@@ -71,9 +63,10 @@ export function toJSONable(val: unknown, _key?: string): JSON | JSONValue {
   }
 
   try {
-    return JSON.stringify(val);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (val as any).toString();
   } catch (e) {
-    console.error("Could not json", e);
+    console.error("Could not stringify", e);
   }
 
   return null;
