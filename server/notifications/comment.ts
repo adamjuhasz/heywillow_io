@@ -128,21 +128,25 @@ export default async function commentNotification(commentId: bigint) {
           to: tm.Profile.email || "",
           subject: `Mentioned in a comment on Willow`,
           htmlBody: [
-            "<strong>Hello</strong>",
+            "<h1>Comment Notification</h1>",
             "",
-            `<p>A comment was added to the conversation with ${
+            `<p>A comment was added to the conversation with <strong>${
               comment.Message.Alias?.emailAddress || "customer"
-            }</p>`,
+            }</strong></p>`,
             ...commentText.map((t) => `<p>${t}</p>`),
             `<p><a href="${link}">Link to comment</a></p>`,
+            "<br>",
+            "<p> - Your friends from Willow</p>",
           ],
           textBody: [
-            "Hello",
-            `A comment was added to the conversation with ${
+            "# Comment Notification",
+            `A comment was added to the conversation with **${
               comment.Message.Alias?.emailAddress || "customer"
-            }`,
+            }**`,
             ...commentText,
             `Link: ${link}`,
+            "",
+            "- Your friends from Willow",
           ],
         };
 

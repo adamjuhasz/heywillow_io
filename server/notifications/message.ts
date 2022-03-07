@@ -153,16 +153,22 @@ export default async function messageNotification(messageId: bigint) {
         to: tm.Profile.email || "",
         subject: shortText,
         htmlBody: [
-          "<strong>Message Notification</strong><br>",
-          subject ? `<p>${subject}</p>` : "",
+          "<h1>Message Notification</h1>",
+          subject ? `<h2>Subject: <strong>${subject}</strong></h2>` : "",
+          "<strong>Body of message:</strong>",
           ...bodyOfMessage.map((t) => `<p>${t}</p>`),
           `<p><a href="https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}">Link to thread</a></p>`,
+          "<br>",
+          "<p> - Your friends from Willow</p>",
         ],
         textBody: [
-          "Message Notification",
-          subject ? subject : "",
-          ...bodyOfMessage,
+          "# Message Notification",
+          subject ? `## Subject: **subject**` : "",
+          "Body of message:",
+          ...bodyOfMessage.map((t) => `> ${t}`),
           `Link: https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}`,
+          "",
+          "- Your friends from Willow",
         ],
       };
 

@@ -129,14 +129,18 @@ export default async function threadStateNotification(
           to: tm.Profile?.email || "",
           subject: `Thread un-snoozed for ${thread.Alias.emailAddress}`,
           htmlBody: [
-            "<strong>Thread Notification</strong>",
-            "Thread un-snoozed",
+            "<h1>Thread Notification</h1>",
+            "<h2>Thread un-snoozed</h2>",
             `<p><a href="https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}">Link to thread</a></p>`,
+            "<br>",
+            "<p> - Your friends from Willow</p>",
           ],
           textBody: [
-            "Thread Notification",
-            "Thread un-snoozed",
+            "# Thread Notification",
+            "## Thread un-snoozed",
             `Link: https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}`,
+            "",
+            "- Your friends from Willow",
           ],
         };
 
