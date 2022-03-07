@@ -13,20 +13,20 @@ export const prisma: PrismaClient =
   (() => {
     const localClient = new PrismaClient({
       log: [
-        { level: "query", emit: "event" },
+        // { level: "query", emit: "event" },
         { level: "error", emit: "stdout" },
         { level: "warn", emit: "stdout" },
       ],
     });
 
-    localClient.$on("query", (e) => {
-      void logger.debug(`Query ${e.query}`, {
-        duration: e.duration,
-        query: e.query,
-        params: e.params,
-        target: e.target,
-      });
-    });
+    // localClient.$on("query", (e) => {
+    //   void logger.debug(`Query ${e.query}`, {
+    //     duration: e.duration,
+    //     query: e.query,
+    //     params: e.params,
+    //     target: e.target,
+    //   });
+    // });
 
     localClient.$use(async (params, next) => {
       const before = Date.now();

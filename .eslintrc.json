@@ -48,7 +48,8 @@
     "@typescript-eslint/switch-exhaustiveness-check": ["error"],
     "no-param-reassign": ["error"],
     "no-var": ["error"],
-    "sonarjs/prefer-immediate-return": ["off"]
+    "sonarjs/prefer-immediate-return": ["off"],
+    "@typescript-eslint/explicit-function-return-type": ["off"]
   },
   "globals": { "JSX": "readonly", "NodeJS": "readonly" }
 }

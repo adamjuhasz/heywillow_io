@@ -85,9 +85,25 @@ export default async function messageNotification(messageId: bigint) {
       },
     });
 
+    await logger.info(`Preferences for ${tm.Profile.email}`, {
+      preferences: preferences.map((p) => ({
+        channel: p.channel,
+        enabled: p.enabled,
+      })),
+    });
+
     const inAppPref: boolean = defaultTo(
       preferences.find((p) => p.channel === "InApp")?.enabled,
       notificationDefaults[thisType]["InApp"]
+    );
+
+    await logger.info(
+      `${thisType} inAppPref ${tm.Profile.email} ${inAppPref ? "On" : "Off"}`,
+      {
+        teamMemberId: Number(tm.id),
+        preference: inAppPref,
+        type: "inAppPref",
+      }
     );
 
     if (inAppPref === true) {
@@ -98,10 +114,12 @@ export default async function messageNotification(messageId: bigint) {
         threadId: message.threadId,
         type: thisType,
       };
+
       await logger.info("messageNotification create InApp", {
         messageId: Number(messageId),
         data: mapValues(data, toJSONable),
       });
+
       await prisma.notification.create({
         data: data,
       });
@@ -110,6 +128,15 @@ export default async function messageNotification(messageId: bigint) {
     const emailPref: boolean = defaultTo(
       preferences.find((p) => p.channel === "Email")?.enabled,
       notificationDefaults[thisType]["Email"]
+    );
+
+    await logger.info(
+      `${thisType} emailPref ${tm.Profile.email} ${emailPref ? "On" : "Off"}`,
+      {
+        teamMemberId: Number(tm.id),
+        preference: emailPref,
+        type: "emailPref",
+      }
     );
 
     if (emailPref === true) {

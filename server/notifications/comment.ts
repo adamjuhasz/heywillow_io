@@ -12,6 +12,7 @@ import { logger } from "utils/logger";
 import slateToText from "shared/slate/slateToText";
 import { ParagraphElement } from "types/slate";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export default async function commentNotification(commentId: bigint) {
   const comment = await prisma.comment.findUnique({
     where: { id: commentId },
@@ -65,9 +66,25 @@ export default async function commentNotification(commentId: bigint) {
       },
     });
 
+    await logger.info(`Preferences for ${tm.Profile.email}`, {
+      preferences: preferences.map((p) => ({
+        channel: p.channel,
+        enabled: p.enabled,
+      })),
+    });
+
     const inAppPref: boolean = defaultTo(
       preferences.find((p) => p.channel === "InApp")?.enabled,
       notificationDefaults[thisType]["InApp"]
+    );
+
+    await logger.info(
+      `${thisType} inAppPref ${tm.Profile.email} ${inAppPref ? "On" : "Off"}`,
+      {
+        teamMemberId: Number(tm.id),
+        preference: inAppPref,
+        type: "inAppPref",
+      }
     );
 
     if (inAppPref === true) {
@@ -87,39 +104,50 @@ export default async function commentNotification(commentId: bigint) {
       notificationDefaults[thisType]["Email"]
     );
 
+    await logger.info(
+      `${thisType} emailPref ${tm.Profile.email} ${emailPref ? "On" : "Off"}`,
+      {
+        teamMemberId: Number(tm.id),
+        preference: emailPref,
+        type: "emailPref",
+      }
+    );
+
     if (emailPref === true) {
       if (some(ourEmails, (e) => e === tm.Profile.email)) {
-        console.log("Was going to send to self");
-        return;
+        await logger.error("CommentMentioned - Was going to send to self", {
+          ourEmails: ourEmails,
+          ProfileEmail: tm.Profile.email,
+        });
+      } else {
+        const fromDBCommentId = Number(comment.id);
+        const domain = process.env.DOMAIN;
+        const link = `https://${domain}/a/${namespace}/thread/${threadId}?comment=${fromDBCommentId}`;
+
+        const options: Options = {
+          to: tm.Profile.email || "",
+          subject: `Mentioned in a comment on Willow`,
+          htmlBody: [
+            "<strong>Hello</strong>",
+            "",
+            `<p>A comment was added to the conversation with ${
+              comment.Message.Alias?.emailAddress || "customer"
+            }</p>`,
+            ...commentText.map((t) => `<p>${t}</p>`),
+            `<p><a href="${link}">Link to comment</a></p>`,
+          ],
+          textBody: [
+            "Hello",
+            `A comment was added to the conversation with ${
+              comment.Message.Alias?.emailAddress || "customer"
+            }`,
+            ...commentText,
+            `Link: ${link}`,
+          ],
+        };
+
+        await sendPostmarkEmail(options);
       }
-
-      const fromDBCommentId = Number(comment.id);
-      const domain = process.env.DOMAIN;
-      const link = `https://${domain}/a/${namespace}/thread/${threadId}?comment=${fromDBCommentId}`;
-
-      const options: Options = {
-        to: tm.Profile.email || "",
-        subject: `Mentioned in a comment on Willow`,
-        htmlBody: [
-          "<strong>Hello</strong>",
-          "",
-          `<p>A comment was added to the conversation with ${
-            comment.Message.Alias?.emailAddress || "customer"
-          }</p>`,
-          ...commentText.map((t) => `<p>${t}</p>`),
-          `<p><a href="${link}">Link to comment</a></p>`,
-        ],
-        textBody: [
-          "Hello",
-          `A comment was added to the conversation with ${
-            comment.Message.Alias?.emailAddress || "customer"
-          }`,
-          ...commentText,
-          `Link: ${link}`,
-        ],
-      };
-
-      await sendPostmarkEmail(options);
     }
   });
 

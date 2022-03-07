@@ -71,9 +71,25 @@ export default async function threadStateNotification(
       },
     });
 
+    await logger.info(`Preferences for ${tm.Profile.email}`, {
+      preferences: preferences.map((p) => ({
+        channel: p.channel,
+        enabled: p.enabled,
+      })),
+    });
+
     const inAppPref: boolean = defaultTo(
       preferences.find((p) => p.channel === "InApp")?.enabled,
       notificationDefaults[thisType]["InApp"]
+    );
+
+    await logger.info(
+      `${thisType} inAppPref ${tm.Profile.email} ${inAppPref ? "On" : "Off"}`,
+      {
+        teamMemberId: Number(tm.id),
+        preference: inAppPref,
+        type: "inAppPref",
+      }
     );
 
     if (inAppPref === true) {
@@ -93,31 +109,39 @@ export default async function threadStateNotification(
       notificationDefaults[thisType]["Email"]
     );
 
+    await logger.info(
+      `${thisType} emailPref ${tm.Profile.email} ${emailPref ? "On" : "Off"}`,
+      {
+        teamMemberId: Number(tm.id),
+        preference: emailPref,
+        type: "emailPref",
+      }
+    );
+
     if (emailPref === true) {
       if (some(ourEmails, (e) => e === tm.Profile.email)) {
         await logger.error("Was going to send to self", {
           ourEmails,
           ProfileEmail: tm.Profile.email,
         });
-        return;
+      } else {
+        const options: Options = {
+          to: tm.Profile?.email || "",
+          subject: `Thread un-snoozed for ${thread.Alias.emailAddress}`,
+          htmlBody: [
+            "<strong>Thread Notification</strong>",
+            "Thread un-snoozed",
+            `<p><a href="https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}">Link to thread</a></p>`,
+          ],
+          textBody: [
+            "Thread Notification",
+            "Thread un-snoozed",
+            `Link: https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}`,
+          ],
+        };
+
+        await sendPostmarkEmail(options);
       }
-
-      const options: Options = {
-        to: tm.Profile?.email || "",
-        subject: `Thread un-snoozed for ${thread.Alias.emailAddress}`,
-        htmlBody: [
-          "<strong>Thread Notification</strong>",
-          "Thread un-snoozed",
-          `<p><a href="https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}">Link to thread</a></p>`,
-        ],
-        textBody: [
-          "Thread Notification",
-          "Thread un-snoozed",
-          `Link: https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}`,
-        ],
-      };
-
-      await sendPostmarkEmail(options);
     }
   });
 

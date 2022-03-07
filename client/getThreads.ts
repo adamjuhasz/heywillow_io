@@ -18,7 +18,10 @@ export type FetchThread = SupabaseThread & {
   Inbox: SupabaseInbox;
 };
 
-export async function getThreads(supabase: SupabaseClient, teamId: number) {
+export async function getThreads(
+  supabase: SupabaseClient,
+  teamId: number
+): Promise<FetchThread[]> {
   const res = await supabase
     .from<FetchThread>("Thread")
     .select(
