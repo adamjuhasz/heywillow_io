@@ -48,7 +48,9 @@ async function handler(
 
   const slated = textToSlate(body.TextBody);
 
-  const messageID = body.Headers.find((h) => h.Name === "Message-Id");
+  const messageID = body.Headers.find(
+    (h) => h.Name.toLowerCase() === "Message-ID".toLowerCase()
+  );
 
   const message: EmailMessage = {
     text: slated,
