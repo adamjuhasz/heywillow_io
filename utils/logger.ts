@@ -133,16 +133,18 @@ export const logger: Logger =
         await logToLogtail(m, LogLevel.Debug, obj);
       },
       info: async (m, obj) => {
-        console.info(m, obj);
-        await logToLogtail(m, LogLevel.Debug, obj);
+        if (process.env.NODE_ENV === "development") {
+          console.info(m, obj);
+        }
+        await logToLogtail(m, LogLevel.Info, obj);
       },
       warn: async (m, obj) => {
         console.warn(m, obj);
-        await logToLogtail(m, LogLevel.Debug, obj);
+        await logToLogtail(m, LogLevel.Warn, obj);
       },
       error: async (m, obj) => {
         console.error(m, obj);
-        await logToLogtail(m, LogLevel.Debug, obj);
+        await logToLogtail(m, LogLevel.Error, obj);
       },
     };
     return localLogger;
