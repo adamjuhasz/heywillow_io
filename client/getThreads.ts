@@ -13,9 +13,7 @@ import { useSupabase } from "components/UserContext";
 
 export type FetchThread = SupabaseThread & {
   ThreadState: SupabaseThreadState[];
-  Message: (SupabaseMessage & {
-    AliasEmail: SupabaseAliasEmail | null;
-  })[];
+  Message: SupabaseMessage[];
   AliasEmail: SupabaseAliasEmail;
   Inbox: SupabaseInbox;
 };
@@ -29,10 +27,7 @@ export async function getThreads(supabase: SupabaseClient, teamId: number) {
     ThreadState(*),
     AliasEmail!Thread_aliasEmailId_fkey(*),
     Inbox(*),
-    Message!Message_threadId_fkey ( 
-      *, 
-      AliasEmail(*),
-    )
+    Message!Message_threadId_fkey (*)
   `
     )
     .eq("teamId", teamId)
