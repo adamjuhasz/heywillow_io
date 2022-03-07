@@ -7,8 +7,8 @@ export interface Options {
   to: string;
   from: string;
   subject: string;
-  htmlBody?: string[];
-  textBody?: string[];
+  htmlBody: string[];
+  textBody: string[];
   token: string;
 }
 
@@ -26,8 +26,8 @@ export default async function sendPostmarkEmailAsTeam({
     From: from,
     To: to,
     Subject: subject,
-    HtmlBody: htmlBody ? htmlBody.join("\r\n") : undefined,
-    TextBody: textBody ? textBody.join("\r\n") : undefined,
+    HtmlBody: htmlBody.join("\r\n"),
+    TextBody: textBody.join("\r\n"),
     MessageStream: "outbound",
   };
   if (process.env.NODE_ENV === "production") {

@@ -56,7 +56,12 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
         "I need to remove myself because me and my partner is not working or living together please remove my information and I need to receive any bank statements or anything else to see if he has been receiving money from me",
       text: [
         {
-          text: `I need to remove myself because me and my partner is not working or living together please remove my information and I need to receive any bank statements or anything else to see if he has been receiving money from me \n\n\nTamria Rhoden-Anglin`,
+          type: "paragraph",
+          children: [
+            {
+              text: `I need to remove myself because me and my partner is not working or living together please remove my information and I need to receive any bank statements or anything else to see if he has been receiving money from me \n\n\nTamria Rhoden-Anglin`,
+            },
+          ],
         },
       ],
       Comment: [],
@@ -96,7 +101,12 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
       subject: "",
       text: [
         {
-          text: `Hey Tameria!\n\nWe don't have an account for this email. What email did you sign up with?\n\n-Adam`,
+          type: "paragraph",
+          children: [
+            {
+              text: `Hey Tameria!\n\nWe don't have an account for this email. What email did you sign up with?\n\n-Adam`,
+            },
+          ],
         },
       ],
       Comment: [],
@@ -131,7 +141,12 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
       subject: "",
       text: [
         {
-          text: `tamria717@icloud.com, tamria66@icloud.com, tamria11@icloud.com, tamria.rhoden@gmail.com.\n\nPlease let me know the outcome and Thanks So Much For Your Help;\n\nTamria Rhoden-Anglin`,
+          type: "paragraph",
+          children: [
+            {
+              text: `tamria717@icloud.com, tamria66@icloud.com, tamria11@icloud.com, tamria.rhoden@gmail.com.\n\nPlease let me know the outcome and Thanks So Much For Your Help;\n\nTamria Rhoden-Anglin`,
+            },
+          ],
         },
       ],
       Comment: [
@@ -140,14 +155,32 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
           authorId: 1,
           createdAt: new Date().toISOString(),
           messageId: 3,
-          text: "@Mike can you handle this?",
+          text: [
+            {
+              type: "paragraph",
+              children: [
+                {
+                  text: "@Mike can you handle this?",
+                },
+              ],
+            },
+          ],
         },
         {
           id: 32,
           authorId: 2,
           createdAt: new Date().toISOString(),
           messageId: 3,
-          text: "@Adam yep",
+          text: [
+            {
+              type: "paragraph",
+              children: [
+                {
+                  text: "@Adam yep",
+                },
+              ],
+            },
+          ],
         },
       ],
     },
@@ -176,7 +209,12 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
       subject: null,
       text: [
         {
-          text: `You will need to email us from each email. We can’t give out account details to unknown people.\n\n-Mike`,
+          type: "paragraph",
+          children: [
+            {
+              text: `You will need to email us from each email. We can’t give out account details to unknown people.\n\n-Mike`,
+            },
+          ],
         },
       ],
       Comment: [
@@ -185,7 +223,16 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
           authorId: 1,
           createdAt: new Date().toISOString(),
           messageId: 4,
-          text: "@Mike thanks!",
+          text: [
+            {
+              type: "paragraph",
+              children: [
+                {
+                  text: "@Mike thanks!",
+                },
+              ],
+            },
+          ],
         },
       ],
     },

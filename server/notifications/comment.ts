@@ -1,12 +1,16 @@
 import uniqBy from "lodash/uniqBy";
 import defaultTo from "lodash/defaultTo";
+import some from "lodash/some";
 import { NotificationType } from "@prisma/client";
 
 import { prisma } from "utils/prisma";
-import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
+import sendPostmarkEmail, { Options } from "server/postmark/sendPostmarkEmail";
 import detectMention from "server/notifications/utils/detectMention";
 import matchMention from "server/notifications/utils/matchMention";
 import notificationDefaults from "shared/notifications/defaults";
+import { logger } from "utils/logger";
+import slateToText from "shared/slate/slateToText";
+import { ParagraphElement } from "types/slate";
 
 export default async function commentNotification(commentId: bigint) {
   const comment = await prisma.comment.findUnique({
@@ -31,8 +35,12 @@ export default async function commentNotification(commentId: bigint) {
     throw new Error("Comment not found");
   }
 
-  const mentions = detectMention(comment.text);
-  console.log("mentions", mentions);
+  const commentText = slateToText(
+    comment.text as unknown as ParagraphElement[]
+  );
+
+  const mentions = detectMention(commentText.join("\n"));
+  void logger.info("mentions", { mentions });
 
   const teamMembers = comment.Author.Team.Members;
   const mentioned = uniqBy(
@@ -80,7 +88,7 @@ export default async function commentNotification(commentId: bigint) {
     );
 
     if (emailPref === true) {
-      if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
+      if (some(ourEmails, (e) => e === tm.Profile.email)) {
         console.log("Was going to send to self");
         return;
       }
@@ -89,21 +97,29 @@ export default async function commentNotification(commentId: bigint) {
       const domain = process.env.DOMAIN;
       const link = `https://${domain}/a/${namespace}/thread/${threadId}?comment=${fromDBCommentId}`;
 
-      await sendPostmarkEmail({
+      const options: Options = {
         to: tm.Profile.email || "",
         subject: `Mentioned in a comment on Willow`,
         htmlBody: [
-          "<strong>Hello</strong><br>",
+          "<strong>Hello</strong>",
+          "",
           `<p>A comment was added to the conversation with ${
             comment.Message.Alias?.emailAddress || "customer"
           }</p>`,
-          ...comment.text
-            .replace(/\r\n/g, "\n")
-            .split("\n")
-            .map((t) => `<p>${t}</p>`),
-          `<p>${link}</p>`,
+          ...commentText.map((t) => `<p>${t}</p>`),
+          `<p><a href="${link}">Link to comment</a></p>`,
         ],
-      });
+        textBody: [
+          "Hello",
+          `A comment was added to the conversation with ${
+            comment.Message.Alias?.emailAddress || "customer"
+          }`,
+          ...commentText,
+          `Link: ${link}`,
+        ],
+      };
+
+      await sendPostmarkEmail(options);
     }
   });
 

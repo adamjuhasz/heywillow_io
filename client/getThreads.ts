@@ -14,8 +14,6 @@ import { useSupabase } from "components/UserContext";
 export type FetchThread = SupabaseThread & {
   ThreadState: SupabaseThreadState[];
   Message: (SupabaseMessage & {
-    text: { text: string }[];
-    subject: null | string;
     AliasEmail: SupabaseAliasEmail | null;
   })[];
   AliasEmail: SupabaseAliasEmail;
@@ -44,7 +42,9 @@ export async function getThreads(supabase: SupabaseClient, teamId: number) {
 
   if (res.error !== null) {
     console.error(res.error);
-    throw res.error;
+    throw new Error(
+      `Error getting thread ${res.error.code} - ${res.error.details}`
+    );
   }
 
   const filtered = res.data.filter((t) => t.ThreadState[0].state === "open");

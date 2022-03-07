@@ -1,10 +1,13 @@
 import { NotificationType, ThreadStateType } from "@prisma/client";
-import { defaultTo } from "lodash";
+import defaultTo from "lodash/defaultTo";
+import some from "lodash/some";
 
 import { prisma } from "utils/prisma";
-import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
+import sendPostmarkEmail, { Options } from "server/postmark/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
+import { logger } from "utils/logger";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export default async function threadStateNotification(
   threadId: number | bigint
 ) {
@@ -43,12 +46,11 @@ export default async function threadStateNotification(
     thisType = undefined;
   }
 
-  console.log(
-    "currentState, previousState, NotificationType",
+  await logger.info("currentState, previousState, NotificationType", {
     currentState,
     previousState,
-    thisType
-  );
+    thisType: thisType ? thisType : "NULL",
+  });
 
   if (thisType === undefined) {
     return;
@@ -92,20 +94,30 @@ export default async function threadStateNotification(
     );
 
     if (emailPref === true) {
-      if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
-        console.log("Was going to send to self");
+      if (some(ourEmails, (e) => e === tm.Profile.email)) {
+        await logger.error("Was going to send to self", {
+          ourEmails,
+          ProfileEmail: tm.Profile.email,
+        });
         return;
       }
 
-      await sendPostmarkEmail({
+      const options: Options = {
         to: tm.Profile?.email || "",
         subject: `Thread un-snoozed for ${thread.Alias.emailAddress}`,
         htmlBody: [
-          "<strong>Thread Notification</strong><br>",
+          "<strong>Thread Notification</strong>",
           "Thread un-snoozed",
-          `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
+          `<p><a href="https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}">Link to thread</a></p>`,
         ],
-      });
+        textBody: [
+          "Thread Notification",
+          "Thread un-snoozed",
+          `Link: https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}`,
+        ],
+      };
+
+      await sendPostmarkEmail(options);
     }
   });
 

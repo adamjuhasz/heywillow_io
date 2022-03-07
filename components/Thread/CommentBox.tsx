@@ -6,6 +6,7 @@ import uniqBy from "lodash/uniqBy";
 
 import { Body, Return } from "pages/api/v1/comment/add";
 import Avatar from "components/Avatar";
+import slateToText from "shared/slate/slateToText";
 
 interface Props {
   messageId: number;
@@ -84,7 +85,7 @@ export default function CommentBox(props: Props) {
                 : c.TeamMember.Profile.email}
             </div>
             <div className="rounded-lg border-2 border-yellow-300 border-opacity-20 bg-yellow-100 bg-opacity-10 px-2 py-2 text-xs text-yellow-50">
-              <HighlightMentions str={c.text} />
+              <HighlightMentions str={slateToText(c.text).join("\n\n")} />
             </div>
           </div>
         ))}

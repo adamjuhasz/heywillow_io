@@ -1,14 +1,13 @@
 import { MouseEventHandler, forwardRef } from "react";
 import { format } from "date-fns";
-import defaultTo from "lodash/defaultTo";
 import { MessageDirection } from "@prisma/client";
 
 import { SupabaseAttachment, SupabaseComment } from "types/supabase";
 import Avatar from "components/Avatar";
 import Attachment from "components/Thread/Attachment";
-import unwrapRFC2822 from "shared/rfc2822unwrap";
-import applyMaybe from "shared/applyMaybe";
 import Redacted from "components/Redacted";
+import { ParagraphElement } from "types/slate";
+import slateToText from "shared/slate/slateToText";
 
 // eslint-disable-next-line no-secrets/no-secrets
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
@@ -17,7 +16,7 @@ export type MyMessageType = {
   direction: MessageDirection;
   createdAt: string;
   id: number;
-  text: { text: string }[];
+  text: ParagraphElement[];
   subject: null | string;
 } & {
   AliasEmail: { emailAddress: string } | null;
@@ -34,13 +33,8 @@ interface InterfaceProps {
 
 export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
   function Message(props, ref) {
-    const formattedEmail = applyMaybe(
-      unwrapRFC2822,
-      props.text.map((t) => t.text).join("\r\n\r\n")
-    );
+    const bodyText: string = slateToText(props.text).join("\n\n");
 
-    let bodyText: string = defaultTo(formattedEmail, "");
-    bodyText = bodyText.replace(/\r\n/g, "\n");
     const author: string =
       props.AliasEmail?.emailAddress ||
       props.TeamMember?.Profile.email ||

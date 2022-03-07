@@ -6,6 +6,7 @@ import type {
   TeamInviteStatus,
   ThreadStateType,
 } from "@prisma/client";
+import { ParagraphElement } from "./slate";
 
 export interface SupabaseMessage {
   id: number;
@@ -17,7 +18,7 @@ export interface SupabaseMessage {
   threadId: number;
   aliasId: number | null;
   teamMemberId: number | null;
-  text: { text: string }[];
+  text: ParagraphElement[];
   subject: null | string;
 }
 
@@ -33,7 +34,7 @@ export interface SupabaseComment {
   id: number;
   createdAt: string;
   messageId: number;
-  text: string;
+  text: ParagraphElement[];
   authorId: number;
 }
 

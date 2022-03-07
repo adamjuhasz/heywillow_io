@@ -4,8 +4,8 @@ import Link from "next/link";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
 
-import unwrapRFC2822 from "shared/rfc2822unwrap";
-import applyMaybe from "shared/applyMaybe";
+import { ParagraphElement } from "types/slate";
+import slateToText from "shared/slate/slateToText";
 
 interface MiniAlias {
   emailAddress: string;
@@ -22,7 +22,7 @@ interface MiniThread {
 }
 
 interface MiniMessage {
-  text: { text: string }[];
+  text: ParagraphElement[];
   subject: null | string;
 }
 
@@ -53,12 +53,8 @@ function Card({ t }: { t: FetchResponse }) {
 
   const lastMessage = t.Message.reverse()[0];
 
-  const unwrappedBody = applyMaybe(
-    unwrapRFC2822,
-    lastMessage.text.map((txt) => txt.text).join("\r\n\r\n")
-  );
+  const preview: string = slateToText(lastMessage.text).join("\n");
 
-  const preview = unwrappedBody || "";
   return (
     <Link
       href={{

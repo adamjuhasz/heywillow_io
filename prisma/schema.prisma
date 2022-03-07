@@ -43,7 +43,6 @@ model TeamMember {
   Profile         Profile        @relation(fields: [profileId], references: [id], onDelete: SetNull)
   Team            Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Comment         Comment[]
-  CommentTag      CommentTag[]
   Message         Message[]
   Notifications   Notification[] @relation("for")
   TeamInvite      TeamInvite[]
@@ -205,23 +204,12 @@ model Comment {
   id        BigInt   @id @default(autoincrement())
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   messageId BigInt
-  text      String
+  text      Json
   authorId  BigInt
 
   Author       TeamMember     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   Message      Message        @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  CommentTag   CommentTag[]
   Notification Notification[]
-}
-
-model CommentTag {
-  commentId    BigInt
-  teamMemberId BigInt
-
-  Comment Comment    @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  Tagged  TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
-
-  @@id([commentId, teamMemberId])
 }
 
 model Notification {

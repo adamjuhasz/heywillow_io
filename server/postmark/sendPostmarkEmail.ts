@@ -3,11 +3,11 @@ import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
 
-interface Options {
+export interface Options {
   to: string;
   subject: string;
-  htmlBody?: string[];
-  textBody?: string[];
+  htmlBody: string[];
+  textBody: string[];
 }
 
 export default async function sendPostmarkEmail({
@@ -20,8 +20,8 @@ export default async function sendPostmarkEmail({
     From: "notifications@heywillow.io",
     To: to,
     Subject: subject,
-    HtmlBody: htmlBody ? htmlBody.join("\r\n") : undefined,
-    textBody: textBody ? textBody.join("\r\n") : undefined,
+    HtmlBody: htmlBody.join("\r\n"),
+    textBody: textBody.join("\r\n"),
     MessageStream: "outbound",
   };
   if (process.env.NODE_ENV === "production") {

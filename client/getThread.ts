@@ -20,8 +20,6 @@ export type ThreadFetch = SupabaseThread & {
     Comment: (SupabaseComment & { TeamMember: { Profile: SupabaseProfile } })[];
     TeamMember: { Profile: SupabaseProfile } | null;
     Attachment: SupabaseAttachment[];
-    text: { text: string }[];
-    subject: string | null;
   })[];
 };
 
@@ -51,7 +49,9 @@ export async function getThread(supabase: SupabaseClient, threadId: number) {
 
   if (res.error !== null) {
     console.error(res.error);
-    throw res.error;
+    throw new Error(
+      `Error getting thread ${res.error.code} - ${res.error.details}`
+    );
   }
 
   console.log("Thread", threadId, res.data);

@@ -1,19 +1,20 @@
 import { NotificationType } from "@prisma/client";
 import mapValues from "lodash/mapValues";
 import defaultTo from "lodash/defaultTo";
+import some from "lodash/some";
 
 import { prisma } from "utils/prisma";
 import createSecureThreadLink from "server/createSecureLink";
-import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
+import sendPostmarkEmail, {
+  Options as NotificationOptions,
+} from "server/postmark/sendPostmarkEmail";
 import notificationDefaults from "../../shared/notifications/defaults";
-import unwrapRFC2822 from "shared/rfc2822unwrap";
-import applyMaybe from "shared/applyMaybe";
 import { logger, toJSONable } from "utils/logger";
-import { SlateText } from "types/slate";
+import { ParagraphElement } from "types/slate";
 import sendPostmarkEmailAsTeam, {
-  Options,
+  Options as TeamOptions,
 } from "server/postmark/sendPostmarkEmailAsTeam";
-import slateToText, { SlateInput } from "server/slate/slateToText";
+import slateToText, { SlateInput } from "shared/slate/slateToText";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default async function messageNotification(messageId: bigint) {
@@ -50,11 +51,9 @@ export default async function messageNotification(messageId: bigint) {
     message.direction === "incoming"
       ? `New message from ${message.Thread.Alias.emailAddress}`
       : `New message sent to ${message.Thread.Alias.emailAddress}`;
-  const bodyOfMessage =
-    applyMaybe(
-      unwrapRFC2822,
-      (message.text as any as SlateText[]).map((t) => t.text).join("/r/n/r/n")
-    ) || "Unknown";
+  const bodyOfMessage = slateToText(
+    message.text as unknown as ParagraphElement
+  );
   const subject = message.subject;
   const threadId = Number(message.threadId);
 
@@ -114,7 +113,7 @@ export default async function messageNotification(messageId: bigint) {
     );
 
     if (emailPref === true) {
-      if (ourEmails.findIndex((e) => e === tm.Profile.email) !== -1) {
+      if (some(ourEmails, (e) => e === tm.Profile.email)) {
         await logger.error("messageNotification was going to send to self", {
           messageId: Number(messageId),
           ourEmails: JSON.stringify(ourEmails),
@@ -123,17 +122,20 @@ export default async function messageNotification(messageId: bigint) {
         return;
       }
 
-      const data = {
+      const data: NotificationOptions = {
         to: tm.Profile.email || "",
         subject: shortText,
         htmlBody: [
           "<strong>Message Notification</strong><br>",
           subject ? `<p>${subject}</p>` : "",
-          ...bodyOfMessage
-            .replace(/\r\n/g, "\n")
-            .split("\n")
-            .map((t) => `<p>${t}</p>`),
-          `<p>https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}</p>`,
+          ...bodyOfMessage.map((t) => `<p>${t}</p>`),
+          `<p><a href="https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}">Link to thread</a></p>`,
+        ],
+        textBody: [
+          "Message Notification",
+          subject ? subject : "",
+          ...bodyOfMessage,
+          `Link: https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}`,
         ],
       };
 
@@ -174,7 +176,7 @@ export default async function messageNotification(messageId: bigint) {
     ];
 
     if (body) {
-      const sendOptions: Options = {
+      const sendOptions: TeamOptions = {
         from: inbox.emailAddress,
         to: message.Thread.Alias.emailAddress,
         subject: "Thanks for emailing us!",

@@ -1,8 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { serviceSupabase } from "server/supabase";
+import type { Prisma } from "@prisma/client";
 
 import { prisma } from "utils/prisma";
 import commentNotification from "server/notifications/comment";
+import textToSlate from "shared/slate/textToSlate";
+import { logger } from "utils/logger";
 
 export interface Body {
   messageId: number;
@@ -28,10 +31,11 @@ export default async function handler(
   }
 
   const body = req.body as Body;
+  const slateText = textToSlate(body.text);
 
   const comment = await prisma.comment.create({
     data: {
-      text: body.text,
+      text: slateText as unknown as Prisma.InputJsonArray,
       Message: { connect: { id: body.messageId } },
       Author: {
         connect: {
@@ -39,10 +43,14 @@ export default async function handler(
         },
       },
     },
-    include: { Message: true, CommentTag: true },
+    include: { Message: true },
   });
 
-  console.log("comment", comment);
+  void logger.info("comment", {
+    comment: { id: Number(comment.id) },
+    message: { id: Number(comment.Message.id) },
+  });
+
   await commentNotification(comment.id);
 
   res.json({ id: Number(comment.id) });

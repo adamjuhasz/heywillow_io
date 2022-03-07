@@ -38,9 +38,8 @@ import useGetSecureThreadLink from "client/getSecureThreadLink";
 import changeThreadState from "client/changeThreadState";
 import postNewMessage from "client/postNewMessage";
 import CommentBox from "components/Thread/CommentBox";
-import unwrapRFC2822 from "shared/rfc2822unwrap";
-import applyMaybe from "shared/applyMaybe";
 import ToastContext from "components/Toast";
+import slateToText from "shared/slate/slateToText";
 
 export default function ThreadViewer() {
   const [scrolled, setScrolled] = useState(false);
@@ -576,12 +575,7 @@ function MessagePrinter(props: MessagePrinterProps) {
     return autoUpdate(refs.reference.current, refs.floating.current, update);
   }, [refs.reference, refs.floating, update]);
 
-  const unwrappedEmail = applyMaybe(
-    unwrapRFC2822,
-    props.message.text.map((t) => t.text).join("\r\n\r\n")
-  );
-
-  const text = defaultTo(unwrappedEmail, "");
+  const text: string = slateToText(props.message.text).join("\n\n");
 
   // absolute bottom-[calc(100%_-_10px)] // props.message.direction === "incoming" ? "-right-4" : "-right-6",
   return (
