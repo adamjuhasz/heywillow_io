@@ -28,6 +28,14 @@ export default async function sendPostmarkEmail({
     const res = await postmark.sendEmail(email);
 
     if (res.ErrorCode === 0) {
+      await logger.info(`Sent email with Postmark to ${to} - ${subject}`, {
+        to,
+        subject,
+        textBody,
+        MessageID: res.MessageID,
+        ErrorCode: res.ErrorCode,
+        SubmittedAt: res.SubmittedAt,
+      });
       return res;
     } else {
       await logger.error("Could not send using postmark", {
