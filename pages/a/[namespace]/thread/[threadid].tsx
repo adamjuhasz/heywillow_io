@@ -18,8 +18,8 @@ import {
 } from "@heroicons/react/outline";
 import { addDays, addMinutes, formatDistanceToNowStrict } from "date-fns";
 import {
+  autoUpdate,
   flip,
-  getScrollParents,
   offset,
   shift,
   useFloating,
@@ -572,22 +572,8 @@ function MessagePrinter(props: MessagePrinterProps) {
       return;
     }
 
-    const parents = [
-      ...getScrollParents(refs.reference.current),
-      ...getScrollParents(refs.floating.current),
-    ];
-
-    parents.forEach((parent) => {
-      parent.addEventListener("scroll", update);
-      parent.addEventListener("resize", update);
-    });
-
-    return () => {
-      parents.forEach((parent) => {
-        parent.removeEventListener("scroll", update);
-        parent.removeEventListener("resize", update);
-      });
-    };
+    // Only call this when the floating element is rendered
+    return autoUpdate(refs.reference.current, refs.floating.current, update);
   }, [refs.reference, refs.floating, update]);
 
   const unwrappedEmail = applyMaybe(

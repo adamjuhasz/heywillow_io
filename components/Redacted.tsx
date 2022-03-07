@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
+  autoUpdate,
   flip,
-  getScrollParents,
   offset,
   shift,
   useFloating,
@@ -26,22 +26,8 @@ export default function Redacted({ str }: { str: string }): JSX.Element {
       return;
     }
 
-    const parents = [
-      ...getScrollParents(refs.reference.current),
-      ...getScrollParents(refs.floating.current),
-    ];
-
-    parents.forEach((parent) => {
-      parent.addEventListener("scroll", update);
-      parent.addEventListener("resize", update);
-    });
-
-    return () => {
-      parents.forEach((parent) => {
-        parent.removeEventListener("scroll", update);
-        parent.removeEventListener("resize", update);
-      });
-    };
+    // Only call this when the floating element is rendered
+    return autoUpdate(refs.reference.current, refs.floating.current, update);
   }, [refs.reference, refs.floating, update]);
 
   const panRegex = /\d{4}-\d{4}-\d{4}-\d{4}/g;
