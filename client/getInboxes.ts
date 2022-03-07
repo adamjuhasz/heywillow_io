@@ -13,7 +13,9 @@ export async function getInbox(supabase: SupabaseClient, teamId: number) {
 
   if (res.error !== null) {
     console.error(res.error);
-    throw res.error;
+    throw new Error(
+      `Error getting thread ${res.error.code} - ${res.error.details}`
+    );
   }
 
   console.log("Inboxes", res.data);

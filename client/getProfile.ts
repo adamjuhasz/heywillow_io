@@ -16,7 +16,9 @@ export async function getProfile(supabase: SupabaseClient, userId: string) {
 
   if (res.error !== null) {
     console.error(res.error);
-    throw res.error;
+    throw new Error(
+      `Error getting thread ${res.error.code} - ${res.error.details}`
+    );
   }
 
   console.log("TeamInvite", res.data);

@@ -47,7 +47,8 @@
     "no-secrets/no-secrets": ["error", { "ignoreContent": "^https" }],
     "@typescript-eslint/switch-exhaustiveness-check": ["error"],
     "no-param-reassign": ["error"],
-    "no-var": ["error"]
+    "no-var": ["error"],
+    "sonarjs/prefer-immediate-return": ["off"]
   },
   "globals": { "JSX": "readonly", "NodeJS": "readonly" }
 }

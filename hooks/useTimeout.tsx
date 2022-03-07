@@ -14,7 +14,9 @@ export default function useTimeout(
 
   const set = useCallback(() => {
     ready.current = false;
-    timeout.current && clearTimeout(timeout.current);
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
 
     timeout.current = setTimeout(() => {
       ready.current = true;
@@ -24,7 +26,9 @@ export default function useTimeout(
 
   const clear = useCallback(() => {
     ready.current = null;
-    timeout.current && clearTimeout(timeout.current);
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
   }, []);
 
   // update ref when function changes

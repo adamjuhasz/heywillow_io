@@ -14,8 +14,10 @@ async function changeNotificationPreference(
     .upsert({ ...options });
 
   if (error) {
-    console.error("error");
-    throw error;
+    console.error("error", error);
+    throw new Error(
+      `Error with NotificationPreference ${error.code} - ${error.details}`
+    );
   }
 
   return data;

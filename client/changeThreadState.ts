@@ -3,7 +3,7 @@ import { Body, Return } from "pages/api/v1/thread/[threadid]/state";
 export default async function changeThreadState(
   threadId: number,
   options: Body
-) {
+): Promise<Return> {
   const res = await fetch(`/api/v1/thread/${threadId}/state`, {
     method: "POST",
     headers: {

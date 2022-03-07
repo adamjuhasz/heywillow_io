@@ -5,7 +5,7 @@ export interface Options {
 }
 
 export default async function acceptInvite(options: Options) {
-  const body: Body = {
+  const requestBody: Body = {
     inviteId: options.inviteId,
   };
 
@@ -14,7 +14,7 @@ export default async function acceptInvite(options: Options) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(requestBody),
   });
 
   switch (res.status) {

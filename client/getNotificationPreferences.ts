@@ -14,7 +14,9 @@ export async function getNotificationPreferences(supabase: SupabaseClient) {
 
   if (res.error !== null) {
     console.error(res.error);
-    throw res.error;
+    throw new Error(
+      `Error getting thread ${res.error.code} - ${res.error.details}`
+    );
   }
 
   console.log("NotificationPreferences", res.data);

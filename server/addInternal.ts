@@ -1,6 +1,6 @@
 import { prisma } from "utils/prisma";
 import { MessageDirection } from "@prisma/client";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 import messageNotification from "server/notifications/message";
 import { logger, toJSONable } from "utils/logger";
@@ -42,7 +42,7 @@ export async function addInternalMessage(
     },
   });
 
-  logger.info("addInternalMessage newMessage", {
+  await logger.info("addInternalMessage newMessage", {
     threadId,
     direction,
     message: mapValues(message, toJSONable),

@@ -18,7 +18,9 @@ async function changeProfile(
 
   if (error) {
     console.error("error");
-    throw error;
+    throw new Error(
+      `Error with NotificationPreference ${error.code} - ${error.details}`
+    );
   }
 
   return data;

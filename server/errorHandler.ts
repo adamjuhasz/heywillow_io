@@ -1,7 +1,8 @@
 import type { NextApiResponse } from "next";
+import isString from "lodash/isString";
 
 export function errorHandler(err: string | Error, res: NextApiResponse) {
-  if (typeof err === "string") {
+  if (isString(err)) {
     // custom application error
     const is404 = err.toLowerCase().endsWith("not found");
     const statusCode = is404 ? 404 : 400;

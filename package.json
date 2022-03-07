@@ -7,7 +7,7 @@
     "vercel-build": "prisma generate && yarn run vercel-migrate && next build",
     "vercel-migrate": "if [ -n \"$MIGRATION_DATABASE\" ]; then DATABASE=$MIGRATION_DATABASE prisma migrate deploy; else echo 'Skipping migration. No $MIGRATION_DATABASE'; fi",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint && eslint . --ext .tsx,.ts",
     "test": "jest"
   },
   "dependencies": {

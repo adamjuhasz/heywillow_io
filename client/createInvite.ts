@@ -6,7 +6,7 @@ interface Options {
 }
 
 export default async function createInvite(options: Options) {
-  const body: Body = {
+  const requestBody: Body = {
     teamId: options.teamId,
     inviteeEmail: options.email,
   };
@@ -16,7 +16,7 @@ export default async function createInvite(options: Options) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(requestBody),
   });
 
   switch (res.status) {

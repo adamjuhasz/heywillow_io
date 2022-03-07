@@ -32,7 +32,8 @@ export default async function createTeam(options: Options) {
 
     default: {
       const returnBody = { status: res.status };
-      throw returnBody;
+      console.error(res.url, returnBody);
+      throw new Error(`Got response with status ${res.status}`);
     }
   }
 }
