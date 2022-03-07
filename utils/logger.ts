@@ -1,4 +1,3 @@
-import { LogLevel } from "@logtail/types";
 import isDate from "lodash/isDate";
 import isPlainObject from "lodash/isPlainObject";
 import mapValues from "lodash/mapValues";
@@ -6,6 +5,13 @@ import isNumber from "lodash/isNumber";
 import isString from "lodash/isString";
 import isBoolean from "lodash/isBoolean";
 import isArray from "lodash/isArray";
+
+declare enum LogLevel {
+  Debug = "debug",
+  Info = "info",
+  Warn = "warn",
+  Error = "error",
+}
 
 export type JSONValue = string | number | boolean | null;
 export type JSON = (JSON | JSONValue)[] | { [key: string]: JSON | JSONValue };
