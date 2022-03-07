@@ -205,7 +205,7 @@ async function createPostmarkDomain(domain: string, teamId: number | bigint) {
     },
     body: JSON.stringify({
       Name: `${domain}`,
-      ReturnPathDomain: `pmbounces.${domain}`,
+      ReturnPathDomain: `willow.${domain}`,
     }),
   });
 

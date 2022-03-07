@@ -134,6 +134,8 @@ export const logger: Logger =
       info: async (m, obj) => {
         if (process.env.NODE_ENV === "development") {
           console.info(m, obj);
+        } else if (process.env.NODE_ENV === "production") {
+          console.info(m);
         }
         await logToLogtail(m, LogLevel.Info, obj);
       },
