@@ -33,7 +33,7 @@ interface InterfaceProps {
 
 export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
   function Message(props, ref) {
-    const bodyText: string = slateToText(props.text).join("\n\n");
+    const bodyText: string = slateToText(props.text).join("\n");
 
     const author: string =
       props.AliasEmail?.emailAddress ||
