@@ -88,28 +88,37 @@ const logToLogtail = async (
     return;
   }
 
-  const res = await fetch("https://in.logtail.com", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.LOGTAIL_TOKEN as string}`,
-      "User-Agent": "logtail-js(node)",
-    },
-    body: JSON.stringify({
-      level: level,
-      dt: new Date().toISOString(),
-      message: message,
-      ...(isArray(context) ? { context: context } : context),
-    }),
-  });
-  switch (res.status) {
-    case 200:
-      return;
+  try {
+    const before = Date.now();
 
-    default: {
-      const body = await res.text();
-      console.error("Got response from", res.status, body);
+    const res = await fetch("https://in.logtail.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.LOGTAIL_TOKEN as string}`,
+        "User-Agent": "logtail-js(node)",
+      },
+      body: JSON.stringify({
+        level: level,
+        dt: new Date().toISOString(),
+        message: message,
+        ...(isArray(context) ? { context: context } : context),
+      }),
+    });
+    const after = Date.now();
+    console.log(`Logtail took ${after - before}ms`);
+
+    switch (res.status) {
+      case 202:
+        return;
+
+      default: {
+        const body = await res.text();
+        console.error("Got response from", res.status, body);
+      }
     }
+  } catch (e) {
+    console.error("Error logging", e, message, level, context);
   }
 };
 

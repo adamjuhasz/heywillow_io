@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { logger, toJSONable } from "utils/logger";
-import { mapValues } from "lodash";
+import mapValues from "lodash/mapValues";
 
 declare global {
   // allow global `var` declarations
@@ -20,7 +20,7 @@ export const prisma: PrismaClient =
     });
 
     localClient.$on("query", (e) => {
-      logger.debug(`Query ${e.query}`, {
+      void logger.debug(`Query ${e.query}`, {
         duration: e.duration,
         query: e.query,
         params: e.params,
@@ -35,7 +35,7 @@ export const prisma: PrismaClient =
 
       const after = Date.now();
 
-      logger.info(
+      void logger.info(
         `Query ${params.model}.${params.action} (Transaction? ${
           params.runInTransaction ? "Yes" : "No"
         }) took ${after - before}ms`,
