@@ -8,6 +8,6 @@ declare global {
 
 export const postmark: postmarkImport.ServerClient =
   global.postmark ||
-  new postmarkImport.Client(process.env.POSTMARK_SERVER_API_TOKEN || "");
+  new postmarkImport.Client(process.env.POSTMARK_SERVER_API_TOKEN as string);
 
 if (process.env.NODE_ENV !== "production") global.postmark = postmark;
