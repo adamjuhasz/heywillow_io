@@ -1,5 +1,4 @@
-import { Logtail } from "@logtail/node";
-import { Context, ContextKey, ILogtailLog, LogLevel } from "@logtail/types";
+import { Context, ContextKey, LogLevel } from "@logtail/types";
 import isDate from "lodash/isDate";
 import isPlainObject from "lodash/isPlainObject";
 import mapValues from "lodash/mapValues";
@@ -10,23 +9,14 @@ import isArray from "lodash/isArray";
 
 export type { Context };
 
+type JSONValue = string | number | boolean | null;
+type JSON = (JSON | JSONValue)[] | { [key: string]: JSON | JSONValue };
+
 interface Logger {
-  debug: (
-    msg: string,
-    obj: Record<string, Context | ContextKey>
-  ) => Promise<unknown>;
-  info: (
-    msg: string,
-    obj: Record<string, Context | ContextKey>
-  ) => Promise<unknown>;
-  warn: (
-    msg: string,
-    obj: Record<string, Context | ContextKey>
-  ) => Promise<unknown>;
-  error: (
-    msg: string,
-    obj: Record<string, Context | ContextKey>
-  ) => Promise<unknown>;
+  debug: (msg: string, obj: JSON) => Promise<unknown>;
+  info: (msg: string, obj: JSON) => Promise<unknown>;
+  warn: (msg: string, obj: JSON) => Promise<unknown>;
+  error: (msg: string, obj: JSON) => Promise<unknown>;
 }
 
 declare global {
@@ -35,7 +25,7 @@ declare global {
   var logger: Logger | undefined;
 }
 
-export function toJSONable(val: unknown, _key?: string): ContextKey | Context {
+export function toJSONable(val: unknown, _key?: string): JSON | JSONValue {
   if (isDate(val)) {
     return val.toISOString();
   }
@@ -89,60 +79,64 @@ export function toJSONable(val: unknown, _key?: string): ContextKey | Context {
   return null;
 }
 
-async function logToConsole(log: ILogtailLog): Promise<ILogtailLog> {
-  const { level, dt, message, ...obj } = log;
-
-  switch (level) {
-    case LogLevel.Error:
-      console.error(dt, message, obj);
-      break;
-
-    case LogLevel.Info:
-    case LogLevel.Warn:
-      console.log(dt, message, obj);
-      break;
-
-    case LogLevel.Debug:
-      if (process.env.NODE_ENV === "production") {
-        break;
-      } else {
-        console.debug(dt, message, obj);
-      }
-      break;
+const logToLogtail = async (
+  message: string,
+  level: LogLevel,
+  context: JSON
+) => {
+  if (process.env.NODE_ENV !== "production") {
+    return;
   }
 
-  return log;
-}
+  const res = await fetch("https://in.logtail.com", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/msgpack",
+      Authorization: `Bearer ${process.env.LOGTAIL_TOKEN as string}`,
+      "User-Agent": "logtail-js(node)",
+    },
+    body: JSON.stringify({
+      level: level,
+      dt: new Date().toISOString(),
+      message: message,
+      ...(isArray(context) ? { context: context } : context),
+    }),
+  });
+  switch (res.status) {
+    case 200:
+      return;
+
+    default: {
+      const body = await res.text();
+      console.error("Got response from", res.status, body);
+    }
+  }
+};
 
 export const logger: Logger =
   global.logger ||
   (() => {
-    if (process.env.NODE_ENV === "production") {
-      console.log("starting up Logtail");
-      const logtail = new Logtail(process.env.LOGTAIL_TOKEN as string, {
-        batchInterval: 5,
-        syncMax: 500,
-      });
-      logtail.use(logToConsole);
-      logtail
-        .debug("Starting logtail")
-        .then(() => {
-          console.log("logging ok");
-        })
-        .catch((e) => {
-          console.error("logging failed", e);
-        });
-
-      return logtail;
-    } else {
-      const localLogger: Logger = {
-        debug: async (m, obj) => console.debug(m, obj),
-        info: async (m, obj) => console.info(m, obj),
-        warn: async (m, obj) => console.warn(m, obj),
-        error: async (m, obj) => console.error(m, obj),
-      };
-      return localLogger;
-    }
+    const localLogger: Logger = {
+      debug: async (m, obj) => {
+        if (process.env.NODE_ENV === "development") {
+          console.debug(m, obj);
+        }
+        await logToLogtail(m, LogLevel.Debug, obj);
+      },
+      info: async (m, obj) => {
+        console.info(m, obj);
+        await logToLogtail(m, LogLevel.Debug, obj);
+      },
+      warn: async (m, obj) => {
+        console.warn(m, obj);
+        await logToLogtail(m, LogLevel.Debug, obj);
+      },
+      error: async (m, obj) => {
+        console.error(m, obj);
+        await logToLogtail(m, LogLevel.Debug, obj);
+      },
+    };
+    return localLogger;
   })();
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
