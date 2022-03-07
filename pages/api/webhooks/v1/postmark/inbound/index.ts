@@ -6,12 +6,15 @@ import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
 import textToSlate from "server/textToSlate";
 import addEmailToDB, { EmailMessage } from "server/addEmailToDB";
+import { prisma } from "utils/prisma";
 
 export default apiHandler({ post: handler });
 
 async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Record<string, never> | { error: string }>
+  res: NextApiResponse<
+    Record<string, never> | { error: string } | { status: string }
+  >
 ) {
   if (
     !req.headers.authorization ||
@@ -72,6 +75,17 @@ async function handler(
     sourceMessageId: body.MessageID,
     // FromFull: mapValues(body.FromFull, toJSONable),
   });
+
+  const existingEmail = await prisma.emailMessage.findUnique({
+    where: { sourceMessageId: body.MessageID },
+  });
+
+  if (existingEmail !== null) {
+    await logger.error("Found email already", {
+      sourceMessageId: body.MessageID,
+    });
+    return res.status(201).json({ status: "already created" });
+  }
 
   await addEmailToDB(message);
 
