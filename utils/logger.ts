@@ -6,6 +6,7 @@ import mapValues from "lodash/mapValues";
 import isNumber from "lodash/isNumber";
 import isString from "lodash/isString";
 import isBoolean from "lodash/isBoolean";
+import isArray from "lodash/isArray";
 
 export type { Context };
 
@@ -64,7 +65,7 @@ export function toJSONable(val: unknown, _key?: string): ContextKey | Context {
     return null;
   }
 
-  if (Array.isArray(val)) {
+  if (isArray(val)) {
     return val.reduce(
       (a, v, idx) => ({
         ...a,

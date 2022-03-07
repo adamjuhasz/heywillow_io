@@ -64,7 +64,12 @@ async function handler(
     attachments: [],
   };
 
-  await logger.info("message", { message: mapValues(message, toJSONable) });
+  await logger.info("message", {
+    emailMessageId: messageID?.Value || "None found",
+    toFull: JSON.stringify(body.ToFull),
+    sourceMessageId: body.MessageID,
+    // FromFull: mapValues(body.FromFull, toJSONable),
+  });
 
   await addEmailToDB(message);
 
