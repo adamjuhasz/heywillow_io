@@ -243,7 +243,7 @@ function InboxViewer({ inboxes, namespace }: InboxProps) {
                 <div className="flex flex-col">
                   <div className="text-sm font-light">{i.emailAddress}</div>
                   <div className="text-xs font-normal text-zinc-500">
-                    forward to:{" "}
+                    forward emails to:{" "}
                     <button
                       className="inline hover:text-zinc-100"
                       onClick={async () => {
