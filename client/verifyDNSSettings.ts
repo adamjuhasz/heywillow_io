@@ -8,7 +8,12 @@ export default async function verifyDNSSettings(
   setting: DNSSetting
 ) {
   const body: VerifyDKIM | VerifyRP = { domain: domain };
-  const normalized = setting === "DKIM" ? "dkim" : "returnpath";
+  const normalized =
+    setting === "DKIM"
+      ? "dkim"
+      : setting === "ReturnPath"
+      ? "returnpath"
+      : "ERROR";
 
   const res = await fetch(`/api/v1/domain/verify/${normalized}`, {
     method: "POST",
