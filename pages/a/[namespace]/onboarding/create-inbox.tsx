@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -7,14 +7,19 @@ import OnboardingHeader from "components/Onboarding/Header";
 import SettingsBox from "components/Settings/Box/Box";
 import Loading from "components/Loading";
 import AppContainer from "components/App/Container";
+import useGetTeamId from "client/getTeamId";
+import createInbox from "client/createInbox";
+import ToastContext from "components/Toast";
 
 const nextOnboardingStep = "/a/[namespace]/onboarding/setup-dns";
 
 export default function CreateTeam(): JSX.Element {
+  const { addToast } = useContext(ToastContext);
   const [error] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const router = useRouter();
+  const teamId = useGetTeamId();
 
   useEffect(() => {
     void router.prefetch(nextOnboardingStep);
@@ -56,12 +61,36 @@ export default function CreateTeam(): JSX.Element {
                 "Link inbox"
               )
             }
-            onSubmit={() => {
+            onSubmit={async () => {
               setLoading(true);
-              void router.replace({
-                pathname: nextOnboardingStep,
-                query: router.query,
-              });
+              if (teamId === undefined) {
+                addToast({
+                  type: "error",
+                  string: "Could not find team, please email help@heywillow.io",
+                });
+                throw new Error("no team id");
+              }
+              try {
+                addToast({
+                  type: "active",
+                  string: "Adding inbox, this may take 5 - 10 sec",
+                });
+
+                const responseBody = await createInbox(teamId, email);
+
+                console.log("Created inbox", responseBody);
+                setEmail("");
+
+                await router.replace({
+                  pathname: nextOnboardingStep,
+                  query: router.query,
+                });
+              } catch (e) {
+                console.error(e);
+                addToast({ type: "error", string: "Error connecting email" });
+              } finally {
+                setLoading(false);
+              }
             }}
           >
             <label htmlFor="email" className="text-base">

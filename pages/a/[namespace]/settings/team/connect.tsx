@@ -29,11 +29,11 @@ import AppContainer from "components/App/Container";
 import ToastContext from "components/Toast";
 import Loading from "components/Loading";
 import useGetDomain from "client/getDomains";
-import type { RequestBody, ResponseBody } from "pages/api/v1/inbox/create";
 import type { SupabaseInbox } from "types/supabase";
 import type { PostmarkResponse } from "pages/api/v1/domain/get";
 import useGetTeams from "client/getTeams";
 import verifyDNS from "client/verifyDNSSettings";
+import createInbox from "client/createInbox";
 
 type Tabs = "Inboxes" | "Domains";
 
@@ -85,29 +85,9 @@ export default function ConnectInbox(): JSX.Element {
                   type: "active",
                   string: "Adding inbox, this may take 5 - 10 sec",
                 });
-                const body: RequestBody = {
-                  emailAddress: emailAddress,
-                  teamId: teamId,
-                };
-                const res = await fetch("/api/v1/inbox/create", {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(body),
-                });
 
-                switch (res.status) {
-                  case 200:
-                    break;
+                const responseBody = await createInbox(teamId, emailAddress);
 
-                  default:
-                    console.error(res);
-                    throw new Error(`Status is ${res.status}`);
-                }
-
-                const responseBody: ResponseBody = await res.json();
                 console.log("Created inbox", responseBody);
                 setEmailAddress("");
               } catch (e) {
