@@ -2,7 +2,7 @@ import { test } from "@playwright/test";
 
 test("test", async ({ page }) => {
   // Go to http://localhost:3000/
-  await page.goto("https://heywillow.io" || "http://localhost:3000/");
+  await page.goto("http://localhost:3000/");
 
   await page.screenshot({
     path: "test-results/landing-page.png",
