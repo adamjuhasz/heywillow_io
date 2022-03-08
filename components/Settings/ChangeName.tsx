@@ -1,32 +1,47 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import SettingsBox from "components/Settings/Box/Box";
 import useGetProfile from "client/getProfile";
 import useChangeProfile from "client/changeProfile";
+import Loading from "components/Loading";
+import ToastContext from "components/Toast";
 
 export default function ChangeName(): JSX.Element {
-  const { data: profile, isValidating } = useGetProfile();
+  const { addToast } = useContext(ToastContext);
+  const { data: profile } = useGetProfile();
   const [firstName, setFirstName] = useState(profile?.firstName || "");
   const [lastName, setLastName] = useState(profile?.lastName || "");
+  const [loading, setLoading] = useState(false);
 
   const changeProfile = useChangeProfile();
 
   return (
     <SettingsBox
-      disabled={isValidating}
+      disabled={loading}
       title="Personal information"
       explainer={<div className="h-[1px] w-full bg-zinc-600" />}
-      button="Change"
+      button={loading ? <Loading className="h-5 w-5 text-white" /> : "Change"}
       onSubmit={async () => {
         if (profile === undefined) {
           console.error("Error loading profile");
           return;
         }
-        await changeProfile({
-          firstName: firstName,
-          lastName: lastName,
-          id: profile.id,
-        });
+
+        setLoading(true);
+
+        try {
+          await changeProfile({
+            firstName: firstName,
+            lastName: lastName,
+            id: profile.id,
+          });
+          addToast({ type: "error", string: "Name changed" });
+        } catch (e) {
+          console.error(e);
+          addToast({ type: "error", string: "Error: Could not change name" });
+        } finally {
+          setLoading(false);
+        }
       }}
     >
       <div className="text-sm">First name</div>
