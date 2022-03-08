@@ -43,3 +43,7 @@ yarn-error.log*
 
 # Fly
 fly
+
+# Playwright
+test-results/
+playwright-report/
