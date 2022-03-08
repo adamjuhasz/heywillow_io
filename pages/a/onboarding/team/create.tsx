@@ -10,6 +10,8 @@ import Loading from "components/Loading";
 import AppContainer from "components/App/Container";
 import ToastContext from "components/Toast";
 
+const nextOnboardingStep = "/a/[namespace]/onboarding/create-inbox";
+
 export default function CreateTeam(): JSX.Element {
   const [name, setName] = useState("");
   const [namespace, setNamespace] = useState("");
@@ -19,7 +21,7 @@ export default function CreateTeam(): JSX.Element {
   const { addToast } = useContext(ToastContext);
 
   useEffect(() => {
-    void router.prefetch("/a/[namespace]/settings/team/connect");
+    void router.prefetch(nextOnboardingStep);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -31,7 +33,7 @@ export default function CreateTeam(): JSX.Element {
 
       <OnboardingHeader />
 
-      <AppContainer className="mt-14 flex">
+      <AppContainer className="my-14 flex">
         <div className="grow space-y-6">
           <SettingsBox
             error={error}
@@ -51,8 +53,8 @@ export default function CreateTeam(): JSX.Element {
               try {
                 setLoading(true);
                 await createTeam({ name, namespace });
-                void router.push({
-                  pathname: "/a/[namespace]/settings/team/connect",
+                void router.replace({
+                  pathname: nextOnboardingStep,
                   query: { namespace },
                 });
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any

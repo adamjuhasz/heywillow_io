@@ -7,7 +7,9 @@ interface Props {
 export default function AppContainer(props: PropsWithChildren<Props>) {
   return (
     <div
-      className={`mx-auto max-w-5xl ${props.className ? props.className : ""}`}
+      className={`mx-auto max-w-5xl px-2 lg:px-0 ${
+        props.className ? props.className : ""
+      }`}
     >
       {props.children}
     </div>
