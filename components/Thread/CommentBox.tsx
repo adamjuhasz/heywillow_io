@@ -4,7 +4,7 @@ import { SupabaseComment } from "types/supabase";
 import type { MessageDirection } from "@prisma/client";
 import uniqBy from "lodash/uniqBy";
 import TextareaAutosize from "react-textarea-autosize";
-import { FormEvent, useContext, useRef, useState } from "react";
+import { FormEvent, useContext, useMemo, useRef, useState } from "react";
 import isMatch from "lodash/isMatch";
 
 import { Body, Return } from "pages/api/v1/comment/add";
@@ -12,6 +12,9 @@ import Avatar from "components/Avatar";
 import slateToText from "shared/slate/slateToText";
 import Loading from "components/Loading";
 import ToastContext from "components/Toast";
+import useGetTeamMembers from "client/getTeamMembers";
+import useGetTeamId from "client/getTeamId";
+import useGetTeams from "client/getTeams";
 
 interface Props {
   messageId: number;
@@ -30,10 +33,66 @@ interface Props {
   id?: string;
 }
 
+interface UserDBEntry {
+  id: string;
+  display: string;
+  description?: string;
+  matchers: string[];
+  avatar?: string;
+}
+
 export default function CommentBox(props: Props) {
   const formRef = useRef<HTMLFormElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [loading, setLoading] = useState(false);
+  const [newComment, setComment] = useState("");
+  const [tag, setTag] = useState<string | null>(null);
   const { addToast } = useContext(ToastContext);
+  const teamId = useGetTeamId();
+  const { data: teams } = useGetTeams();
+  const { data: teamMembers } = useGetTeamMembers(teamId);
+
+  const thisTeam = (teams || []).find((t) => t.id === teamId);
+  const userDB: UserDBEntry[] = useMemo(
+    () => [
+      ...(thisTeam
+        ? [
+            {
+              id: thisTeam.Namespace.namespace,
+              display: thisTeam.name,
+              description: `Notify all of ${thisTeam.name}`,
+              matchers: [thisTeam.Namespace.namespace, thisTeam.name],
+            },
+          ]
+        : []),
+      ...(teamMembers || []).map((tm) => ({
+        id: tm.Profile.email.split("@")[0],
+        display:
+          tm.Profile.firstName !== null && tm.Profile.lastName !== null
+            ? `${tm.Profile.firstName} ${tm.Profile.lastName}`
+            : tm.Profile.email,
+        description:
+          tm.Profile.firstName !== null && tm.Profile.lastName !== null
+            ? tm.Profile.email
+            : undefined,
+        avatar: tm.Profile.email,
+        matchers: [
+          tm.Profile.email,
+          ...(tm.Profile.firstName !== null && tm.Profile.lastName !== null
+            ? [`${tm.Profile.firstName} ${tm.Profile.lastName}`]
+            : []),
+        ],
+      })),
+    ],
+    [thisTeam, teamMembers]
+  );
+
+  const dbMatch =
+    tag === null
+      ? null
+      : userDB
+          .filter((db) => db.matchers.filter((m) => m.includes(tag)).length > 0)
+          .slice(0, 4);
 
   const commentators = uniqBy(props.comments, (c) => c.authorId);
 
@@ -48,10 +107,9 @@ export default function CommentBox(props: Props) {
     setLoading(true);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const elements = formRef.current.elements as any;
     const body: Body = {
       messageId: props.messageId,
-      text: (elements.comment as HTMLInputElement).value,
+      text: newComment,
       teamId: props.teamId,
     };
     const res = await fetch("/api/v1/comment/add", {
@@ -70,7 +128,7 @@ export default function CommentBox(props: Props) {
         if (props.mutate) {
           props.mutate(responseBody.id);
         }
-        elements.comment.value = "";
+        setComment("");
         addToast({ type: "string", string: "Comment added" });
         break;
       }
@@ -155,6 +213,21 @@ export default function CommentBox(props: Props) {
             name="comment"
             id="comment"
             required
+            ref={textAreaRef}
+            value={newComment}
+            onChange={(e) => {
+              const totalText = e.target.value;
+              setComment(totalText);
+
+              const wordList = totalText.split(" ");
+              const lastWord = wordList.slice(-1)[0];
+              if (lastWord.charAt(0) === "@") {
+                const currentTag = lastWord.slice(1);
+                setTag(currentTag);
+              } else {
+                setTag(null);
+              }
+            }}
             placeholder="Comment internally"
             className="focus:border-1 block w-full min-w-0 flex-grow rounded-md border-yellow-300 bg-zinc-900 pr-6 text-xs focus:border-yellow-300 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
             onKeyDown={(e) => {
@@ -163,9 +236,60 @@ export default function CommentBox(props: Props) {
               ) {
                 void submitForm(e);
               }
+
+              if (e.key === "@") {
+                setTag("");
+              }
+              if (e.key == " ") {
+                setTag(null);
+              }
             }}
           />
-
+          {dbMatch === null ? (
+            <></>
+          ) : (
+            <div className="absolute bottom-[calc(100%_+_2px)] left-4 flex w-80 flex-col rounded-lg border border-zinc-600 bg-black/25 text-zinc-100 shadow-lg shadow-black backdrop-blur-md">
+              {dbMatch.map((match) => (
+                <div key={match.id} className="px-1 py-1">
+                  <button
+                    className="h-14 w-full"
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const words = newComment.split(" ");
+                      const allButLast = words.slice(0, -1);
+                      setComment(`${allButLast.join(" ")} @${match.id} `);
+                      setTag(null);
+                      if (textAreaRef.current !== null) {
+                        textAreaRef.current.focus();
+                      }
+                    }}
+                  >
+                    <div className="flex h-full w-full  rounded-md px-2 py-1 hover:bg-zinc-800">
+                      {match.avatar ? (
+                        <div className="mr-2 flex h-full shrink-0 items-center">
+                          <Avatar
+                            str={match.avatar}
+                            className="h-7 w-7 rounded-full"
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      <div className="flex h-full grow flex-col items-start justify-center  ">
+                        {match.display}
+                        {match.description ? (
+                          <div className="text-xs text-zinc-400">
+                            {match.description}
+                          </div>
+                        ) : undefined}
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="absolute inset-y-0 right-0 flex items-end py-2 pr-3">
             <button type="submit">
               {loading ? (
