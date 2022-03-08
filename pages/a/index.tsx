@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { ReactElement, useEffect } from "react";
+
+import AppLayout from "layouts/app";
 
 export default function NamespaceIndex() {
   const router = useRouter();
@@ -9,4 +11,10 @@ export default function NamespaceIndex() {
       query: router.query,
     });
   }, [router]);
+
+  return <></>;
 }
+
+NamespaceIndex.getLayout = function getLayout(page: ReactElement) {
+  return <AppLayout>{page}</AppLayout>;
+};
