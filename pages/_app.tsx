@@ -1,8 +1,8 @@
 import "styles/globals.css";
 
-import { ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import type { AppProps } from "next/app";
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { usePostHog } from "next-use-posthog";
 import PageLoading from "components/PageLoading";
 

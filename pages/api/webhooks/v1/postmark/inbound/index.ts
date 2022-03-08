@@ -1,4 +1,4 @@
-import { Models } from "postmark";
+import type { Models } from "postmark";
 import type { NextApiRequest, NextApiResponse } from "next";
 import mapValues from "lodash/mapValues";
 
@@ -7,6 +7,7 @@ import { apiHandler } from "server/apiHandler";
 import textToSlate from "shared/slate/textToSlate";
 import addEmailToDB, { EmailMessage } from "server/addEmailToDB";
 import { prisma } from "utils/prisma";
+import emailWithoutHash from "server/postmark/emailWithoutHash";
 
 export default apiHandler({ post: handler });
 
@@ -33,21 +34,23 @@ async function handler(
   }
 
   const body: Models.InboundMessageDetails = req.body;
-  await logger.info("postmark email incoming", {
-    keys: Object.keys(body).join(", "),
-    FromFull: mapValues(body.FromFull, toJSONable),
-    ToFull: toJSONable(body.ToFull),
-    To: body.To || null,
-    OriginalRecipient: body.OriginalRecipient || null,
-    Subject: body.Subject || null,
-    MailboxHash: body.MailboxHash || null,
-    MessageStream: body.MessageStream || null,
-    TextBody: body.TextBody || null,
-    HtmlBody: body.HtmlBody || null,
-    StrippedTextReply: body.StrippedTextReply || null,
-    MessageID: body.MessageID,
-    Attachments: (body.Attachments || []).length,
-  });
+  await logger.info(
+    `postmark email incoming from ${body.From} for ${body.To} with subject ${body.Subject}`,
+    {
+      keys: Object.keys(body).join(", "),
+      FromFull: mapValues(body.FromFull, toJSONable),
+      ToFull: toJSONable(body.ToFull),
+      To: body.To || null,
+      OriginalRecipient: body.OriginalRecipient || null,
+      Subject: body.Subject || null,
+      MailboxHash: body.MailboxHash || null,
+      MessageStream: body.MessageStream || null,
+      TextBody: body.TextBody || null,
+      StrippedTextReply: body.StrippedTextReply || null,
+      MessageID: body.MessageID,
+      Attachments: (body.Attachments || []).length,
+    }
+  );
 
   const slated = textToSlate(body.TextBody);
 
@@ -59,7 +62,7 @@ async function handler(
     text: slated,
     subject: body.Subject,
     fromEmail: body.FromFull.Email,
-    toEmail: body.ToFull.map((tf) => tf.Email),
+    toEmail: body.ToFull.map(emailWithoutHash),
     textBody: body.TextBody,
     htmlBody: body.HtmlBody,
     raw: {},

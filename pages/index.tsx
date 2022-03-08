@@ -1,13 +1,16 @@
 import Link from "next/link";
 import Head from "next/head";
-import { CSSProperties, PropsWithChildren, useEffect } from "react";
-import {
-  ArrowNarrowRightIcon,
-  CheckCircleIcon,
-  PlusCircleIcon,
-} from "@heroicons/react/solid";
-import { ChipIcon, ClockIcon, UserAddIcon } from "@heroicons/react/outline";
+import { useEffect } from "react";
+import type { CSSProperties, PropsWithChildren } from "react";
 import { useRouter } from "next/router";
+
+// split out to help tree shaking
+import ArrowNarrowRightIcon from "@heroicons/react/solid/ArrowNarrowRightIcon";
+import CheckCircleIcon from "@heroicons/react/solid/CheckCircleIcon";
+import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
+import ChipIcon from "@heroicons/react/outline/ChipIcon";
+import ClockIcon from "@heroicons/react/outline/ClockIcon";
+import UserAddIcon from "@heroicons/react/outline/UserAddIcon";
 
 import LandingPageHeader from "components/LandingPage/Header";
 

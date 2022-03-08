@@ -53,7 +53,14 @@ export default async function addEmailToDB(
   });
 
   if (inbox === null) {
-    throw new Error("Inbox not found");
+    await logger.error("Inbox not found", {
+      fromEmail: message.fromEmail,
+      toEmail: message.toEmail,
+      sourceMessageId: message.sourceMessageId,
+      emailMessageId: message.emailMessageId,
+      fromName: message.fromName,
+    });
+    throw new Error(`Inbox not found -- ${message.toEmail}`);
   }
 
   const thisAlias = await prisma.aliasEmail.upsert({

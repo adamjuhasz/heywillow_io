@@ -39,10 +39,14 @@ async function handler(
     MailboxHash: body.MailboxHash || null,
     MessageStream: body.MessageStream || null,
     TextBody: body.TextBody || null,
-    HtmlBody: body.HtmlBody || null,
     StrippedTextReply: body.StrippedTextReply || null,
     MessageID: body.MessageID,
     Attachments: (body.Attachments || []).length,
+  });
+
+  await logger.error("Using mocked endpoint", {
+    FromFull: mapValues(body.FromFull, toJSONable),
+    ToFull: toJSONable(body.ToFull),
   });
 
   res.status(200).json({});
