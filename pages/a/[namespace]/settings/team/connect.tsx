@@ -32,9 +32,8 @@ import useGetDomain from "client/getDomains";
 import type { RequestBody, ResponseBody } from "pages/api/v1/inbox/create";
 import type { SupabaseInbox } from "types/supabase";
 import type { PostmarkResponse } from "pages/api/v1/domain/get";
-import type { RequestBody as VerifyRP } from "pages/api/v1/domain/verify/returnpath";
-import type { RequestBody as VerifyDKIM } from "pages/api/v1/domain/verify/dkim";
 import useGetTeams from "client/getTeams";
+import verifyDNS from "client/verifyDNSSettings";
 
 type Tabs = "Inboxes" | "Domains";
 
@@ -404,28 +403,8 @@ function DomainViewer({
                         onClick={async () => {
                           setLoading(true);
                           try {
-                            const body: VerifyRP = { domain: d.domain };
-                            console.log(body);
-                            const res = await fetch(
-                              "/api/v1/domain/verify/returnpath",
-                              {
-                                method: "POST",
-                                headers: {
-                                  Accept: "application/json",
-                                  "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify(body),
-                              }
-                            );
-                            switch (res.status) {
-                              case 200:
-                                mutateDomains();
-                                break;
-
-                              default:
-                                console.error(res);
-                                throw new Error("Could not verify");
-                            }
+                            await verifyDNS(d.domain, "ReturnPath");
+                            mutateDomains();
                           } catch (e) {
                             addToast({
                               type: "error",
@@ -530,28 +509,8 @@ function DomainViewer({
                         onClick={async () => {
                           setLoading(true);
                           try {
-                            const body: VerifyDKIM = { domain: d.domain };
-                            console.log(body);
-                            const res = await fetch(
-                              "/api/v1/domain/verify/dkim",
-                              {
-                                method: "POST",
-                                headers: {
-                                  Accept: "application/json",
-                                  "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify(body),
-                              }
-                            );
-                            switch (res.status) {
-                              case 200:
-                                mutateDomains();
-                                break;
-
-                              default:
-                                console.error(res);
-                                throw new Error("Could not verify");
-                            }
+                            await verifyDNS(d.domain, "DKIM");
+                            mutateDomains();
                           } catch (e) {
                             addToast({
                               type: "error",
