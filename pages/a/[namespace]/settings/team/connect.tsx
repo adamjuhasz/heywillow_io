@@ -34,6 +34,7 @@ import type { SupabaseInbox } from "types/supabase";
 import type { PostmarkResponse } from "pages/api/v1/domain/get";
 import type { RequestBody as VerifyRP } from "pages/api/v1/domain/verify/returnpath";
 import type { RequestBody as VerifyDKIM } from "pages/api/v1/domain/verify/dkim";
+import useGetTeams from "client/getTeams";
 
 type Tabs = "Inboxes" | "Domains";
 
@@ -45,6 +46,9 @@ export default function ConnectInbox(): JSX.Element {
   const { addToast } = useContext(ToastContext);
   const [currentTab, setTab] = useState<Tabs>("Inboxes");
   const { data: domains, mutate: mutateDomains } = useGetDomain(teamId);
+  const { data: teams } = useGetTeams();
+
+  const thisTeam = (teams || []).find((t) => t.id === teamId);
 
   const justDomains: PostmarkResponse[] = defaultTo(domains, []).reduce(
     (acc, d) => (d.status === "fulfilled" ? [...acc, d.value] : acc),
@@ -178,8 +182,12 @@ export default function ConnectInbox(): JSX.Element {
             </div>
             {currentTab === "Inboxes" &&
             inboxes !== undefined &&
-            inboxes.length > 0 ? (
-              <InboxViewer inboxes={inboxes} />
+            inboxes.length > 0 &&
+            thisTeam !== undefined ? (
+              <InboxViewer
+                inboxes={inboxes}
+                namespace={thisTeam.Namespace.namespace}
+              />
             ) : currentTab === "Domains" &&
               domains !== undefined &&
               domains.length > 0 ? (
@@ -205,37 +213,57 @@ ConnectInbox.getLayout = function getLayout(page: ReactElement) {
 
 interface InboxProps {
   inboxes: SupabaseInbox[];
+  namespace: string;
 }
 
-function InboxViewer({ inboxes }: InboxProps) {
+function InboxViewer({ inboxes, namespace }: InboxProps) {
+  const { addToast } = useContext(ToastContext);
+
   return (
     <div className="mt-4 rounded-md border border-zinc-600 bg-black">
-      {(inboxes || []).map((i, idx) => (
-        <Fragment key={i.id}>
-          {idx === 0 ? (
-            <></>
-          ) : (
-            <div key={`${idx}-border`} className="h-[1px] w-full bg-zinc-600" />
-          )}
-          <div
-            key={i.id}
-            className="flex h-16 items-center justify-between p-4"
-          >
-            <div className="flex items-center">
-              <Avatar str={i.emailAddress} className="mr-2 h-8 w-8" />
-              <div className="flex flex-col">
-                <div className="text-sm font-light">{i.emailAddress}</div>
-                <div className="text-xs font-normal text-zinc-500">
-                  Created{" "}
-                  {formatDistanceToNowStrict(new Date(i.createdAt), {
-                    addSuffix: true,
-                  })}
+      {(inboxes || []).map((i, idx) => {
+        const forwardEmail = `${namespace}+${i.id}@inbound.heywillow.io`;
+
+        return (
+          <Fragment key={i.id}>
+            {idx === 0 ? (
+              <></>
+            ) : (
+              <div
+                key={`${idx}-border`}
+                className="h-[1px] w-full bg-zinc-600"
+              />
+            )}
+            <div
+              key={i.id}
+              className="flex h-16 items-center justify-between p-4"
+            >
+              <div className="flex items-center">
+                <Avatar str={i.emailAddress} className="mr-2 h-8 w-8" />
+                <div className="flex flex-col">
+                  <div className="text-sm font-light">{i.emailAddress}</div>
+                  <div className="text-xs font-normal text-zinc-500">
+                    forward to:{" "}
+                    <button
+                      className="inline hover:text-zinc-100"
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(forwardEmail);
+                        addToast({
+                          type: "string",
+                          string: "Email address copied to clipboard",
+                        });
+                      }}
+                    >
+                      {forwardEmail}{" "}
+                      <ClipboardCopyIcon className="-mt-0.5 inline h-3 w-3" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </Fragment>
-      ))}
+          </Fragment>
+        );
+      })}
     </div>
   );
 }
