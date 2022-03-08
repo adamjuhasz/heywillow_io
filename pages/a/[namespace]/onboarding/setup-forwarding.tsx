@@ -14,7 +14,7 @@ import useGetInboxes from "client/getInboxes";
 import type { SupabaseInbox } from "types/supabase";
 import ToastContext from "components/Toast";
 
-const nextOnboardingStep = "/a/[namespace]/onboarding/setup-forwarding";
+const nextOnboardingStep = "/a/[namespace]";
 
 export default function CreateTeam(): JSX.Element {
   const { addToast } = useContext(ToastContext);
@@ -52,7 +52,10 @@ export default function CreateTeam(): JSX.Element {
             }
             onSubmit={() => {
               setLoading(true);
-              void router.replace(nextOnboardingStep);
+              void router.replace({
+                pathname: nextOnboardingStep,
+                query: router.query,
+              });
             }}
           >
             {inbox === undefined ? (
