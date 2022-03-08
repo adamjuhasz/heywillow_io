@@ -14,7 +14,7 @@ import useGetInboxes from "client/getInboxes";
 import type { SupabaseInbox } from "types/supabase";
 import ToastContext from "components/Toast";
 
-const nextOnboardingStep = "/a/[namespace]";
+const nextOnboardingStep = "/a/[namespace]/workspace";
 
 export default function CreateTeam(): JSX.Element {
   const { addToast } = useContext(ToastContext);
