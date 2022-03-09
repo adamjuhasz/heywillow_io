@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Inbox, Team } from "@prisma/client";
 import { decode } from "base64-arraybuffer";
 import mapValues from "lodash/mapValues";
 
@@ -30,6 +30,7 @@ export interface EmailMessage {
   //for EmailMessage table
   fromEmail: string;
   toEmail: string[];
+  toEmailHash: string[];
   textBody: string;
   htmlBody: string;
   raw: JSON;
@@ -42,17 +43,46 @@ export interface EmailMessage {
   attachments: AttachmentData[];
 }
 
+type InboxInfo = Inbox & {
+  Team: Team;
+};
+
+async function findInbox(emails: string[], hash: string[]): Promise<InboxInfo> {
+  const inbox = await prisma.inbox.findFirst({
+    where: { emailAddress: { in: emails } },
+    include: { Team: true },
+  });
+
+  if (inbox !== null) {
+    return inbox;
+  }
+
+  const inboxHash: string | undefined = hash.filter((h) => h !== "")[0];
+  if (inboxHash === undefined) {
+    throw new Error(`Inbox not found -- ${emails.join(", ")}`);
+  }
+
+  const inboxFromHash = await prisma.inbox.findUnique({
+    where: { id: parseInt(inboxHash, 10) },
+    include: { Team: true },
+  });
+
+  if (inboxFromHash === null) {
+    throw new Error(`Inbox not found -- ${emails.join(", ")}`);
+  }
+
+  return inboxFromHash;
+}
+
 export default async function addEmailToDB(
   message: EmailMessage
 ): Promise<bigint> {
   const aliasEmail = message.fromEmail;
 
-  const inbox = await prisma.inbox.findFirst({
-    where: { emailAddress: { in: message.toEmail } },
-    include: { Team: true },
-  });
-
-  if (inbox === null) {
+  let inbox: InboxInfo;
+  try {
+    inbox = await findInbox(message.toEmail, message.toEmailHash);
+  } catch (e) {
     await logger.error("Inbox not found", {
       fromEmail: message.fromEmail,
       toEmail: message.toEmail,

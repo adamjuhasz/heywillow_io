@@ -63,6 +63,7 @@ async function handler(
     subject: body.Subject,
     fromEmail: body.FromFull.Email,
     toEmail: body.ToFull.map(emailWithoutHash),
+    toEmailHash: body.ToFull.map((email) => email.MailboxHash),
     textBody: body.TextBody,
     htmlBody: body.HtmlBody,
     raw: {},

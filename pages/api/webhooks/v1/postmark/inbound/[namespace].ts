@@ -29,20 +29,6 @@ async function handler(
 
   const body: Models.InboundMessageDetails = req.body;
   // FromName, MessageStream, From, FromFull, To, ToFull, Cc, CcFull, Bcc, BccFull, OriginalRecipient, Subject, MessageID, ReplyTo, MailboxHash, Date, TextBody, HtmlBody, StrippedTextReply, Tag, Headers, Attachments'
-  await logger.info("postmark email incoming", {
-    keys: Object.keys(body).join(", "),
-    FromFull: mapValues(body.FromFull, toJSONable),
-    ToFull: toJSONable(body.ToFull),
-    To: body.To || null,
-    OriginalRecipient: body.OriginalRecipient || null,
-    Subject: body.Subject || null,
-    MailboxHash: body.MailboxHash || null,
-    MessageStream: body.MessageStream || null,
-    TextBody: body.TextBody || null,
-    StrippedTextReply: body.StrippedTextReply || null,
-    MessageID: body.MessageID,
-    Attachments: (body.Attachments || []).length,
-  });
 
   await logger.error("Using mocked endpoint", {
     FromFull: mapValues(body.FromFull, toJSONable),
