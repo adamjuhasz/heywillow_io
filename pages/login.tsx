@@ -27,8 +27,16 @@ export default function Login(): JSX.Element {
   const [disabled, setDisabled] = useState(false);
   const [useMagicLink, setMagicLink] = useState(false);
   const [password, setPassword] = useState("");
+  const { email: queryEmail } = router.query;
 
   const redirectPath = "/a/auth";
+
+  useEffect(() => {
+    if (queryEmail && queryEmail !== "" && email === "") {
+      setEmail(queryEmail as string);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryEmail]);
 
   useEffect(() => {
     if (isNil(session)) {
