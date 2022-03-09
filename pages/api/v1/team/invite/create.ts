@@ -68,16 +68,20 @@ export default async function handler(
     to: body.inviteeEmail,
     subject: `Your invited to join ${membership.Team.name} on Willow`,
     htmlBody: [
-      `<strong>Hello</strong>`,
+      `<strong>Hello!</strong>`,
       `<br>`,
-      `<p>You're invited to join ${membership.Team.name} to help make customers super happy</p>`,
-      `<p>Log in: https://${process.env.DOMAIN}/login?email=${body.inviteeEmail}</p>`,
+      "<h1>You're invited to join a team on Willow</h1>",
+      `<p>Willow is a new customer service tool and you're invited to join the ${membership.Team.name} team to help make customers super happy</p>`,
+      `<p><a href="https://${process.env.DOMAIN}/login?email=${body.inviteeEmail}">Sign up</a></p>`,
+      `<p>More info about <a href="https://${process.env.DOMAIN}">Willow</a></p>`,
     ],
     textBody: [
       `Hello!`,
       ``,
-      `You're invited to join ${membership.Team.name} to help make customers super happy`,
-      `Log in: https://${process.env.DOMAIN}/login?email=${body.inviteeEmail}`,
+      "You're invited to join a team on Willow",
+      `Willow is a new customer service tool and you're invited to join the ${membership.Team.name} team to help make customers super happy`,
+      `Sign up: https://${process.env.DOMAIN}/login?email=${body.inviteeEmail}`,
+      `Get more info at https://${process.env.DOMAIN}`,
     ],
   });
 

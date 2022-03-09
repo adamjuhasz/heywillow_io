@@ -61,7 +61,7 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
             </Menu.Button>
           </div>
 
-          <Menu.Items className="absolute mt-0.5 w-56 origin-top-left divide-y divide-gray-100 rounded-md border border-zinc-600 bg-zinc-900 font-light text-zinc-300 shadow-lg ">
+          <Menu.Items className="absolute mt-0.5 w-56 origin-top-left divide-y divide-zinc-100 rounded-md border border-zinc-600 bg-zinc-900 font-light text-zinc-300 shadow-lg ">
             <div className="px-1 py-1 ">
               <div className="my-3 px-2 text-sm text-zinc-500">Teams</div>
               {props.teams.map((t) => (

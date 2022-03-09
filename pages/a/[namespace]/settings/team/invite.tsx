@@ -98,7 +98,7 @@ export default function InviteTeammates(): JSX.Element {
                     name={`email-${idx}`}
                     type="email"
                     placeholder="jane@stealth.ai"
-                    className="block w-full max-w-full appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 text-xs font-light placeholder-gray-400 shadow-sm placeholder:text-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full max-w-full appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 text-xs font-light placeholder-zinc-400 shadow-sm placeholder:text-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                   />
                 </div>
               ))}
