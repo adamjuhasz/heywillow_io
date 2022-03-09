@@ -1,17 +1,15 @@
-import uniqBy from "lodash/uniqBy";
 import defaultTo from "lodash/defaultTo";
 import some from "lodash/some";
 import { NotificationType } from "@prisma/client";
-import type { Profile, TeamMember } from "@prisma/client";
 
 import { prisma } from "utils/prisma";
 import sendPostmarkEmail, { Options } from "server/postmark/sendPostmarkEmail";
 import detectMention from "server/notifications/utils/detectMention";
-import matchMention from "server/notifications/utils/matchMention";
 import notificationDefaults from "shared/notifications/defaults";
 import { logger } from "utils/logger";
 import slateToText from "shared/slate/slateToText";
 import { ParagraphElement } from "types/slate";
+import getTeamMemberMentions from "server/notifications/utils/getTeamMemberMentions";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default async function commentNotification(commentId: bigint) {
@@ -47,14 +45,15 @@ export default async function commentNotification(commentId: bigint) {
   const teamMembers = comment.Author.Team.Members;
   const namespace = comment.Author.Team.Namespace.namespace;
 
-  const mentioned = getTeamsMentions(mentions, teamMembers, namespace);
+  const mentioned = getTeamMemberMentions(mentions, teamMembers, namespace);
 
-  const ourEmails = comment.Author.Team.Inboxes.map((i) => i.emailAddress);
-  const threadId = comment.Message.threadId;
   void logger.info(`${mentioned.length} mentioned teamMembers`, {
     mentioned: mentioned.map((m) => m.Profile.email),
     mentions,
   });
+
+  const ourEmails = comment.Author.Team.Inboxes.map((i) => i.emailAddress);
+  const threadId = comment.Message.threadId;
 
   const generatedNotifications = mentioned.map((tm) =>
     sendNotification(
@@ -71,31 +70,15 @@ export default async function commentNotification(commentId: bigint) {
   await Promise.allSettled(generatedNotifications);
 }
 
-type TeamMemberFetched = TeamMember & {
-  Profile: Profile;
-};
-
-function getTeamsMentions(
-  mentions: string[],
-  teamMembers: TeamMemberFetched[],
-  namespace: string
-): TeamMemberFetched[] {
-  if (mentions.length === 0) {
-    return [];
-  }
-
-  if (mentions.includes(namespace)) {
-    return teamMembers;
-  }
-
-  return uniqBy(
-    teamMembers.filter((tm) => matchMention(tm.Profile?.email || "", mentions)),
-    (tm) => tm.id
-  );
+interface TeamMemberFetched {
+  id: number | bigint;
+  Profile: {
+    email: string;
+  };
 }
 
-async function sendNotification(
-  tm: TeamMemberFetched,
+async function sendNotification<TM extends TeamMemberFetched>(
+  tm: TM,
   ourEmails: string[],
   namespace: string,
   threadId: number,
