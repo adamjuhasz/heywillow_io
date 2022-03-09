@@ -19,6 +19,7 @@ async function handler(
 ) {
   if (
     !req.headers.authorization ||
+    // eslint-disable-next-line lodash/prefer-includes
     req.headers.authorization.indexOf("Basic ") === -1
   ) {
     return res.status(401).json({ error: "No auth provided" });

@@ -15,6 +15,7 @@ import ToastContext from "components/Toast";
 import useGetTeamMembers from "client/getTeamMembers";
 import useGetTeamId from "client/getTeamId";
 import useGetTeams from "client/getTeams";
+import { useUser } from "components/UserContext";
 
 interface Props {
   messageId: number;
@@ -51,6 +52,12 @@ export default function CommentBox(props: Props) {
   const teamId = useGetTeamId();
   const { data: teams } = useGetTeams();
   const { data: teamMembers } = useGetTeamMembers(teamId);
+  const { user } = useUser();
+
+  const teamWithoutMe = useMemo(
+    () => (teamMembers || []).filter((tm) => tm.Profile.email !== user?.email),
+    [teamMembers, user]
+  );
 
   const thisTeam = (teams || []).find((t) => t.id === teamId);
   const userDB: UserDBEntry[] = useMemo(
@@ -65,7 +72,7 @@ export default function CommentBox(props: Props) {
             },
           ]
         : []),
-      ...(teamMembers || []).map((tm) => ({
+      ...teamWithoutMe.map((tm) => ({
         id: tm.Profile.email.split("@")[0].toLowerCase(),
         display:
           tm.Profile.firstName !== null && tm.Profile.lastName !== null
@@ -84,7 +91,7 @@ export default function CommentBox(props: Props) {
         ],
       })),
     ],
-    [thisTeam, teamMembers]
+    [thisTeam, teamWithoutMe]
   );
 
   const dbMatch =

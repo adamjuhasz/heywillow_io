@@ -49,7 +49,8 @@
     "no-param-reassign": ["error"],
     "no-var": ["error"],
     "sonarjs/prefer-immediate-return": ["off"],
-    "@typescript-eslint/explicit-function-return-type": ["off"]
+    "@typescript-eslint/explicit-function-return-type": ["off"],
+    "lodash/matches-prop-shorthand": ["off"]
   },
   "globals": { "JSX": "readonly", "NodeJS": "readonly" }
 }

@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import some from "lodash/some";
+
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
 import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
+import { logger } from "utils/logger";
 
 export interface Body {
   teamId: number;
@@ -20,10 +23,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<FullReturn>
 ) {
-  //create a new team
-
-  console.log(serviceSupabase.auth.api);
-
   const {
     user,
     error: cookieError,
@@ -31,7 +30,15 @@ export default async function handler(
   } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   if (user === null) {
-    console.log("Can't auth user", cookieError, token);
+    await logger.warn(
+      `Can't auth user ${cookieError?.message || "(no message)"} (${
+        cookieError?.status || '"no status"'
+      })`,
+      {
+        cookieError: cookieError ? cookieError.message : null,
+        token,
+      }
+    );
     return res.status(403).send({ error: "Bad auth cookie" });
   }
 
@@ -56,11 +63,22 @@ export default async function handler(
     include: { Team: { include: { Inboxes: true } } },
   });
 
-  console.log("invite", invite);
+  void logger.info(
+    `invited ${invite.emailAddress} to team ${invite.teamId} by ${invite.inviterId}`,
+    {
+      invite: Number(invite.id),
+      email: invite.emailAddress,
+    }
+  );
 
   const ourEmails = invite.Team.Inboxes.map((i) => i.emailAddress);
-  if (ourEmails.findIndex((e) => e === body.inviteeEmail) !== -1) {
-    console.log("Was going to send to self");
+  if (some(ourEmails, (e) => e === body.inviteeEmail)) {
+    await logger.error(
+      `Was going to send to self "${body.inviteeEmail}" is in [${ourEmails.join(
+        ", "
+      )}]`,
+      { ourEmails, inviteeEmail: body.inviteeEmail }
+    );
     return;
   }
 

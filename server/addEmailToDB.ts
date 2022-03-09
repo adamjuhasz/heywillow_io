@@ -1,4 +1,4 @@
-import { Prisma, Inbox, Team } from "@prisma/client";
+import { Inbox, Prisma, Team } from "@prisma/client";
 import { decode } from "base64-arraybuffer";
 import mapValues from "lodash/mapValues";
 
