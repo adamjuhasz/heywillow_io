@@ -112,6 +112,7 @@ const logToLogtail = async (
 
     switch (res.status) {
       case 202:
+      case 200:
         return;
 
       default: {
