@@ -88,7 +88,7 @@ const logToLogtail = async (
   }
 
   try {
-    const before = Date.now();
+    // const before = Date.now();
 
     const res = await fetch(
       "https://forward.heywillow.workers.dev/https%3A%2F%2Fin.logtail.com",
@@ -107,8 +107,8 @@ const logToLogtail = async (
         }),
       }
     );
-    const after = Date.now();
-    console.log(`Logtail took ${after - before}ms`);
+    // const after = Date.now();
+    // console.log(`Logtail took ${after - before}ms`);
 
     switch (res.status) {
       case 202:
