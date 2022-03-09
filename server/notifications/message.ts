@@ -183,10 +183,6 @@ export default async function messageNotification(messageId: bigint) {
 
   // respond back to the end user
   if (message.direction === "outgoing") {
-    await logger.info("messageNotification sending to end-user", {
-      messageId: Number(messageId),
-    });
-
     const inbox = message.Thread.Team.Inboxes[0];
     const token = await prisma.postmarkServerToken.findUnique({
       where: { inboxId: inbox.id },
@@ -209,17 +205,31 @@ export default async function messageNotification(messageId: bigint) {
     ];
 
     if (body) {
+      const firstMessageInThread = await prisma.message.findFirst({
+        where: { threadId: message.Thread.id, subject: { not: null } },
+        orderBy: { createdAt: "asc" },
+      });
       const sendOptions: TeamOptions = {
         from: inbox.emailAddress,
         to: message.Thread.Alias.emailAddress,
-        subject: "Thanks for emailing us!",
+        subject:
+          firstMessageInThread === null
+            ? `Response from ${message.Thread.Team.name}`
+            : `[${message.Thread.Team.name}] Re: ${firstMessageInThread.subject}`,
         htmlBody: textBody.map((s) => `<p>${s}</p>`),
         textBody: textBody,
         token: token.token,
       };
-      await logger.info("messageNotification sending to end-user", {
-        textBody: textBody,
-      });
+      await logger.info(
+        `messageNotification sending to ${sendOptions.to} from ${sendOptions.from} with subject "${sendOptions.subject}"`,
+        {
+          textBody: textBody,
+          subject: sendOptions.subject,
+          from: sendOptions.from,
+          to: sendOptions.to,
+          token: sendOptions.token,
+        }
+      );
       await sendPostmarkEmailAsTeam(sendOptions);
     } else {
       await logger.error("messageNotification no body to send to end user", {
