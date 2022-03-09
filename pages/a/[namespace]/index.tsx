@@ -7,7 +7,8 @@ export default function NamespaceIndex() {
   const router = useRouter();
   useEffect(() => {
     void router.replace({
-      pathname: "/a/workspace",
+      pathname: "/a/[namespace]/workspace",
+      query: router.query,
     });
   }, [router]);
 
