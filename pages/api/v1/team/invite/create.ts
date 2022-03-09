@@ -72,7 +72,7 @@ export default async function handler(
       `<br>`,
       "<h1>You're invited to join a team on Willow</h1>",
       `<p>Willow is a new customer service tool and you're invited to join the ${membership.Team.name} team to help make customers super happy</p>`,
-      `<p><a href="https://${process.env.DOMAIN}/login?email=${body.inviteeEmail}">Sign up</a></p>`,
+      `<p><a href="https://${process.env.DOMAIN}/signup?email=${body.inviteeEmail}">Sign up</a></p>`,
       `<p>More info about <a href="https://${process.env.DOMAIN}">Willow</a></p>`,
     ],
     textBody: [
@@ -80,7 +80,7 @@ export default async function handler(
       ``,
       "You're invited to join a team on Willow",
       `Willow is a new customer service tool and you're invited to join the ${membership.Team.name} team to help make customers super happy`,
-      `Sign up: https://${process.env.DOMAIN}/login?email=${body.inviteeEmail}`,
+      `Sign up: https://${process.env.DOMAIN}/signup?email=${body.inviteeEmail}`,
       `Get more info at https://${process.env.DOMAIN}`,
     ],
   });

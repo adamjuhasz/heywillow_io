@@ -26,15 +26,20 @@ export default function SignUpPage(): JSX.Element {
   const router = useRouter();
   const { email: queryEmail } = router.query;
   const [email, setEmail] = useState<string>(
-    client?.auth.session()?.user?.email ||
-      (queryEmail as string | undefined) ||
-      ""
+    client?.auth.session()?.user?.email || ""
   );
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [disabled, setDisabled] = useState(false);
   const [useMagicLink, setMagicLink] = useState(false);
+
+  useEffect(() => {
+    if (queryEmail && queryEmail !== "" && email === "") {
+      setEmail(queryEmail as string);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryEmail]);
 
   const redirectPath = "/a/auth";
 
