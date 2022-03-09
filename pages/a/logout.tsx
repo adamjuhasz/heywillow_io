@@ -27,7 +27,7 @@ export default function LogoutPage(): JSX.Element {
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
               <WillowLogo className=" h-11 w-11" />
-              <h2 className="mt-6 text-3xl font-extrabold text-zinc-100">
+              <h2 className="mt-6 text-3xl font-medium text-zinc-100">
                 Logging out
               </h2>
             </div>
