@@ -6,6 +6,10 @@ import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
 import apiHandler from "server/apiHandler";
 
+export default apiHandler({
+  post: handler,
+});
+
 export interface CreateBody {
   teamName: string;
   namespace: string;
@@ -65,7 +69,3 @@ async function handler(
     return res.status(409).json({ error: "Namespace exists" });
   }
 }
-
-export default apiHandler({
-  post: handler,
-});

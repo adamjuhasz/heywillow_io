@@ -6,6 +6,11 @@ import { prisma } from "utils/prisma";
 import commentNotification from "server/notifications/comment";
 import textToSlate from "shared/slate/textToSlate";
 import { logger } from "utils/logger";
+import apiHandler from "server/apiHandler";
+
+export default apiHandler({
+  post: handler,
+});
 
 export interface Body {
   messageId: number;
@@ -15,7 +20,7 @@ export interface Body {
 
 export type Return = { id: number };
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<
     | Return

@@ -3,6 +3,11 @@ import { Buffer } from "buffer";
 import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
+import apiHandler from "server/apiHandler";
+
+export default apiHandler({
+  post: handler,
+});
 
 interface Body {
   message: {
@@ -18,10 +23,7 @@ interface PushNotification {
   historyId: string;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<unknown>
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse<unknown>) {
   await logger.info("/api/webhooks/gmail", {
     requestId: req.headers["x-vercel-id"] as string,
     body: req.body,

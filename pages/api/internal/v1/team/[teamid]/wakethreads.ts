@@ -3,6 +3,10 @@ import { prisma } from "utils/prisma";
 import apiHandler from "server/apiHandler";
 import changeThreadStatus from "server/changeThreadStatus";
 
+export default apiHandler({
+  post: handler,
+});
+
 export interface CreateBody {
   teamName: string;
   namespace: string;
@@ -46,7 +50,3 @@ async function handler(
 
   res.json({});
 }
-
-export default apiHandler({
-  post: handler,
-});

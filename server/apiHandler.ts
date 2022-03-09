@@ -1,5 +1,6 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import defaultTo from "lodash/defaultTo";
+import { withSentry } from "@sentry/nextjs";
 
 import { errorHandler } from "server/errorHandler";
 import { logger } from "utils/logger";
@@ -20,7 +21,7 @@ export function apiHandler(handler: Handler) {
 
     try {
       // route handler
-      await handler[method](req, res);
+      await withSentry(handler[method])(req, res);
     } catch (err: unknown) {
       // global error handler
       errorHandler(err as string | Error, res);

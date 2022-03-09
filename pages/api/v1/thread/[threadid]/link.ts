@@ -5,6 +5,8 @@ import { prisma } from "utils/prisma";
 import createSecureThreadLink from "server/createSecureLink";
 import { logger } from "utils/logger";
 
+export default apiHandler({ get: getSecureLink });
+
 export interface Return {
   absoluteLink: string;
 }
@@ -49,5 +51,3 @@ async function getSecureLink(
     absoluteLink: secureLink,
   });
 }
-
-export default apiHandler({ get: getSecureLink });

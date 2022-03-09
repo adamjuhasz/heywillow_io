@@ -1,11 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ThreadStateType } from "@prisma/client";
+import apiHandler from "server/apiHandler";
 
 import { serviceSupabase } from "server/supabase";
 import { prisma } from "utils/prisma";
 import changeThreadStatus from "server/changeThreadStatus";
 
 export { ThreadStateType };
+
+export default apiHandler({
+  post: handler,
+});
 
 export type Body =
   | {
@@ -18,7 +23,7 @@ export type Body =
 
 export type Return = Record<string, string | number>;
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<
     | Return

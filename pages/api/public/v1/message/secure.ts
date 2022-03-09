@@ -4,6 +4,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { addInternalMessage } from "server/addInternal";
 import hashids from "server/hashids";
 import { prisma } from "utils/prisma";
+import apiHandler from "server/apiHandler";
+
+export default apiHandler({
+  post: handler,
+});
 
 export interface Body {
   text: string;
@@ -12,7 +17,7 @@ export interface Body {
 
 type Response = Record<string, never> | { error: string };
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
 ) {

@@ -1,6 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
+import apiHandler from "server/apiHandler";
+
+export default apiHandler({
+  post: handler,
+});
 
 export interface Body {
   inviteId: number;
@@ -10,7 +16,7 @@ export type Return = {
   teamId: number;
 };
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<
     | Return

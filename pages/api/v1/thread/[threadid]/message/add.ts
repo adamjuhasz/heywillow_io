@@ -6,6 +6,11 @@ import mapValues from "lodash/mapValues";
 import { addInternalMessage } from "server/addInternal";
 import { prisma } from "utils/prisma";
 import { logger, toJSONable } from "utils/logger";
+import apiHandler from "server/apiHandler";
+
+export default apiHandler({
+  post: handler,
+});
 
 export interface Body {
   text: string;
@@ -13,7 +18,7 @@ export interface Body {
 
 export type Return = { messageId: number };
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Return | { error: string }>
 ) {

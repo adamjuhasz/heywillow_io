@@ -1,6 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
+import apiHandler from "server/apiHandler";
+
+export default apiHandler({
+  post: handler,
+});
 
 interface TeamInfo {
   Team: {
@@ -13,14 +19,10 @@ interface Error {
   error: string;
 }
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<TeamInfo[] | Error>
 ) {
-  if (req.method !== "GET") {
-    return res.status(451).json({ error: "Bad method" });
-  }
-
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   if (user === null) {

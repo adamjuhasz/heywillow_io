@@ -3,6 +3,8 @@ import { GoTrueClient } from "@supabase/gotrue-js";
 
 import apiHandler from "server/apiHandler";
 
+export default apiHandler({ post: handler });
+
 const myCustomAuthClient = new GoTrueClient({
   url: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1`,
   headers: {
@@ -21,5 +23,3 @@ const myCustomAuthClient = new GoTrueClient({
 function handler(req: NextApiRequest, res: NextApiResponse<unknown>) {
   return myCustomAuthClient.api.setAuthCookie(req, res);
 }
-
-export default apiHandler({ post: handler });

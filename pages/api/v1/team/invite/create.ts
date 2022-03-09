@@ -5,6 +5,11 @@ import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
 import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
 import { logger } from "utils/logger";
+import apiHandler from "server/apiHandler";
+
+export default apiHandler({
+  post: handler,
+});
 
 export interface Body {
   teamId: number;
@@ -19,10 +24,7 @@ type FullReturn =
       error: string;
     };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<FullReturn>
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse<FullReturn>) {
   const {
     user,
     error: cookieError,
