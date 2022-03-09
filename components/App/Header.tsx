@@ -118,8 +118,10 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
 
             {props.teams?.length === 0 ? (
               <></>
-            ) : (
+            ) : namespace ? (
               <TopLink href="/a/[namespace]/workspace">Workspace</TopLink>
+            ) : (
+              <TopLink href="/a/workspace">Workspace</TopLink>
             )}
 
             {namespace ? (
