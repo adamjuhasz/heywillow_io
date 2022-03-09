@@ -201,7 +201,7 @@ export default async function messageNotification(messageId: bigint) {
 
     const textBody = [
       ...slateToText(message.text as unknown as SlateInput),
-      `Need to email us securely? ${secureURL}`,
+      `Need to talk to us securely? ${secureURL}`,
     ];
 
     if (body) {
