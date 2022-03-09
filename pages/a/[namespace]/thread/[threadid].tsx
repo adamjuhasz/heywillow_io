@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
+  Dispatch,
   PropsWithChildren,
   ReactElement,
+  SetStateAction,
   useContext,
   useEffect,
   useRef,
@@ -40,9 +42,11 @@ import postNewMessage from "client/postNewMessage";
 import CommentBox from "components/Thread/CommentBox";
 import ToastContext from "components/Toast";
 import slateToText from "shared/slate/slateToText";
+import Loading from "components/Loading";
 
 export default function ThreadViewer() {
   const [scrolled, setScrolled] = useState(false);
+  const [loading, setLoading] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { threadid, comment } = router.query;
@@ -246,6 +250,7 @@ export default function ThreadViewer() {
                             )
                               .trim()
                               .slice(0, 14)}
+                            ...
                           </div>
                           <div className="text-zinc-500">
                             {formatDistanceToNowStrict(new Date(t.createdAt), {
@@ -296,168 +301,46 @@ export default function ThreadViewer() {
               <div className="mt-7 text-sm font-medium text-zinc-500">
                 Modify ticket
               </div>
-              <div
-                className="-mx-1  flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-lime-800 hover:bg-opacity-30 hover:text-lime-500"
-                onClick={async () => {
-                  if (threadNum === undefined) {
-                    addToast({
-                      type: "error",
-                      string: "Not sure what thread this is",
-                    });
-                    return;
-                  }
-                  try {
-                    await changeThreadState(threadNum, { state: "done" });
-                    void router.push({
-                      pathname: "/a/[namespace]/workspace",
-                      query: router.query,
-                    });
-                  } catch (e) {
-                    console.error(e);
-                    addToast({
-                      type: "error",
-                      string: "Could not change state of thread",
-                    });
-                  }
-                }}
-              >
-                <div className="text-xs">Mark done</div>
-                <div className="">
-                  <CheckIcon className="h-4 w-4" />
+              {loading ? (
+                <div className="flex w-full items-center justify-center">
+                  <Loading className="h-4 w-4 text-zinc-500" />
                 </div>
-              </div>
-              <div
-                className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
-                onClick={async () => {
-                  if (threadNum === undefined) {
-                    addToast({
-                      type: "error",
-                      string: "Not sure what thread this is",
-                    });
-                    return;
-                  }
-                  try {
-                    await changeThreadState(threadNum, {
-                      state: "snoozed",
-                      snoozeDate: addDays(new Date(), 1).toISOString(),
-                    });
-                    void router.push({
-                      pathname: "/a/[namespace]/workspace",
-                      query: router.query,
-                    });
-                  } catch (e) {
-                    console.error(e);
-                    addToast({
-                      type: "error",
-                      string: "Could not change state of thread",
-                    });
-                  }
-                }}
-              >
-                <div className="text-xs">Snooze 1 day</div>
-                <div className="">
-                  <ClockIcon className="h-4 w-4" />
-                </div>
-              </div>
-              <div
-                className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-20 hover:text-yellow-600"
-                onClick={async () => {
-                  if (threadNum === undefined) {
-                    addToast({
-                      type: "error",
-                      string: "Not sure what thread this is",
-                    });
-                    return;
-                  }
-                  try {
-                    await changeThreadState(threadNum, {
-                      state: "snoozed",
-                      snoozeDate: addDays(new Date(), 3).toISOString(),
-                    });
-                    void router.push({
-                      pathname: "/a/[namespace]/workspace",
-                      query: router.query,
-                    });
-                  } catch (e) {
-                    console.error(e);
-                    addToast({
-                      type: "error",
-                      string: "Could not change state of thread",
-                    });
-                  }
-                }}
-              >
-                <div className="text-xs">Snooze 3 days</div>
-                <div className="">
-                  <ClockIcon className="h-4 w-4" />
-                </div>
-              </div>
-              <div
-                className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-10 hover:text-yellow-700"
-                onClick={async () => {
-                  if (threadNum === undefined) {
-                    addToast({
-                      type: "error",
-                      string: "Not sure what thread this is",
-                    });
-                    return;
-                  }
-                  try {
-                    await changeThreadState(threadNum, {
-                      state: "snoozed",
-                      snoozeDate: addDays(new Date(), 7).toISOString(),
-                    });
-                    void router.push({
-                      pathname: "/a/[namespace]/workspace",
-                      query: router.query,
-                    });
-                  } catch (e) {
-                    console.error(e);
-                    addToast({
-                      type: "error",
-                      string: "Could not change state of thread",
-                    });
-                  }
-                }}
-              >
-                <div className="text-xs">Snooze 7 days</div>
-                <div className="">
-                  <ClockIcon className="h-4 w-4" />
-                </div>
-              </div>
-              <div
-                className="-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400 hover:bg-yellow-800 hover:bg-opacity-10 hover:text-yellow-700"
-                onClick={async () => {
-                  if (threadNum === undefined) {
-                    addToast({
-                      type: "error",
-                      string: "Not sure what thread this is",
-                    });
-                    return;
-                  }
-                  try {
-                    await changeThreadState(threadNum, {
-                      state: "snoozed",
-                      snoozeDate: addMinutes(new Date(), 5).toISOString(),
-                    });
-                    void router.push({
-                      pathname: "/a/[namespace]/workspace",
-                      query: router.query,
-                    });
-                  } catch (e) {
-                    console.error(e);
-                    addToast({
-                      type: "error",
-                      string: "Could not change state of thread",
-                    });
-                  }
-                }}
-              >
-                <div className="text-xs">Snooze 5 minutes</div>
-                <div className="">
-                  <ClockIcon className="h-4 w-4" />
-                </div>
-              </div>
+              ) : (
+                <>
+                  <MarkDone
+                    threadNum={threadNum}
+                    snoozeDays={0}
+                    className="hover:bg-lime-800 hover:bg-opacity-30 hover:text-lime-500"
+                    setLoading={setLoading}
+                  />
+
+                  <SnoozeButton
+                    threadNum={threadNum}
+                    snoozeDays={1}
+                    className="hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
+                    setLoading={setLoading}
+                  />
+                  <SnoozeButton
+                    threadNum={threadNum}
+                    snoozeDays={3}
+                    className="hover:bg-yellow-800 hover:bg-opacity-20 hover:text-yellow-600"
+                    setLoading={setLoading}
+                  />
+                  <SnoozeButton
+                    threadNum={threadNum}
+                    snoozeDays={7}
+                    className="hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
+                    setLoading={setLoading}
+                  />
+
+                  <Snooze5Mins
+                    snoozeDays={0}
+                    threadNum={threadNum}
+                    className="hover:bg-pink-800 hover:bg-opacity-30 hover:text-pink-400"
+                    setLoading={setLoading}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -633,6 +516,176 @@ function MessagePrinter(props: MessagePrinterProps) {
       ) : (
         <></>
       )}
+    </div>
+  );
+}
+
+interface StateChangeProps {
+  threadNum: number | undefined;
+  snoozeDays: number;
+  className: string;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+}
+
+function SnoozeButton({
+  threadNum,
+  snoozeDays,
+  className,
+  setLoading,
+}: StateChangeProps) {
+  const { addToast } = useContext(ToastContext);
+  const router = useRouter();
+
+  return (
+    <div
+      className={[
+        "-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400",
+        className,
+      ].join(" ")}
+      onClick={async () => {
+        if (threadNum === undefined) {
+          addToast({
+            type: "error",
+            string: "Not sure what thread this is",
+          });
+          return;
+        }
+
+        try {
+          setLoading(true);
+
+          addToast({
+            type: "active",
+            string: `Snoozing thread for ${snoozeDays} days`,
+          });
+
+          await changeThreadState(threadNum, {
+            state: "snoozed",
+            snoozeDate: addDays(new Date(), snoozeDays).toISOString(),
+          });
+
+          void router.push({
+            pathname: "/a/[namespace]/workspace",
+            query: router.query,
+          });
+        } catch (e) {
+          console.error(e);
+          addToast({
+            type: "error",
+            string: "Could not change state of thread",
+          });
+          setLoading(false);
+        }
+      }}
+    >
+      <div className="text-xs">Snooze {snoozeDays} days</div>
+      <div className="">
+        <ClockIcon className="h-4 w-4" />
+      </div>
+    </div>
+  );
+}
+
+function MarkDone({ threadNum, className, setLoading }: StateChangeProps) {
+  const { addToast } = useContext(ToastContext);
+  const router = useRouter();
+
+  return (
+    <div
+      className={[
+        "-mx-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400",
+        className,
+      ].join(" ")}
+      onClick={async () => {
+        if (threadNum === undefined) {
+          addToast({
+            type: "error",
+            string: "Not sure what thread this is",
+          });
+          return;
+        }
+        try {
+          setLoading(true);
+
+          addToast({
+            type: "active",
+            string: `Marking thread as done`,
+          });
+
+          await changeThreadState(threadNum, { state: "done" });
+
+          void router.push({
+            pathname: "/a/[namespace]/workspace",
+            query: router.query,
+          });
+        } catch (e) {
+          console.error(e);
+          addToast({
+            type: "error",
+            string: "Could not change state of thread",
+          });
+          setLoading(false);
+        }
+      }}
+    >
+      <div className="text-xs">Mark done</div>
+      <div className="">
+        <CheckIcon className="h-4 w-4" />
+      </div>
+    </div>
+  );
+}
+
+function Snooze5Mins({ threadNum, className, setLoading }: StateChangeProps) {
+  const { addToast } = useContext(ToastContext);
+  const router = useRouter();
+
+  return (
+    <div
+      className={[
+        "-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400",
+        className,
+      ].join(" ")}
+      onClick={async () => {
+        if (threadNum === undefined) {
+          addToast({
+            type: "error",
+            string: "Not sure what thread this is",
+          });
+          return;
+        }
+
+        try {
+          setLoading(true);
+
+          addToast({
+            type: "active",
+            string: `Snoozing thread for 5 minutes`,
+          });
+
+          await changeThreadState(threadNum, {
+            state: "snoozed",
+            snoozeDate: addMinutes(new Date(), 5).toISOString(),
+          });
+
+          void router.push({
+            pathname: "/a/[namespace]/workspace",
+            query: router.query,
+          });
+        } catch (e) {
+          console.error(e);
+          addToast({
+            type: "error",
+            string: "Could not change state of thread",
+          });
+          setLoading(false);
+        }
+      }}
+    >
+      <div className="text-xs">Snooze 5 minutes</div>
+      <div className="">
+        <ClockIcon className="h-4 w-4" />
+      </div>
     </div>
   );
 }
