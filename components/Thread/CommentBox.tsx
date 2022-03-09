@@ -58,7 +58,7 @@ export default function CommentBox(props: Props) {
       ...(thisTeam
         ? [
             {
-              id: thisTeam.Namespace.namespace,
+              id: thisTeam.Namespace.namespace.toLowerCase(),
               display: thisTeam.name,
               description: `Notify all of ${thisTeam.name}`,
               matchers: [thisTeam.Namespace.namespace, thisTeam.name],
@@ -66,7 +66,7 @@ export default function CommentBox(props: Props) {
           ]
         : []),
       ...(teamMembers || []).map((tm) => ({
-        id: tm.Profile.email.split("@")[0],
+        id: tm.Profile.email.split("@")[0].toLowerCase(),
         display:
           tm.Profile.firstName !== null && tm.Profile.lastName !== null
             ? `${tm.Profile.firstName} ${tm.Profile.lastName}`
