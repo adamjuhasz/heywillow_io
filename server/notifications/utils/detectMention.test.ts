@@ -10,7 +10,14 @@ describe("Detect mention in comment", () => {
   });
 
   it("detects 2", () => {
-    expect(detectMention("@mike and @adam will lead the way")).toStrictEqual([
+    expect(detectMention("@mike, @adam will lead the way")).toStrictEqual([
+      "@mike",
+      "@adam",
+    ]);
+  });
+
+  it("detects 2 back to back", () => {
+    expect(detectMention("@mike @adam will lead the way")).toStrictEqual([
       "@mike",
       "@adam",
     ]);
@@ -28,5 +35,11 @@ describe("Detect mention in comment", () => {
 
   it("normalizes caps", () => {
     expect(detectMention("I agrees, @Mike")).toStrictEqual(["@mike"]);
+  });
+
+  it("accepts hyphen", () => {
+    expect(detectMention("I agrees, @Mike-perez")).toStrictEqual([
+      "@mike-perez",
+    ]);
   });
 });

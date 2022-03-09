@@ -20,8 +20,6 @@ export default async function sendPostmarkEmailAsTeam({
   textBody,
   token,
 }: Options) {
-  const postmark = new Postmark.Client(token);
-
   const email: Postmark.Models.Message = {
     From: from,
     To: to,
@@ -31,7 +29,13 @@ export default async function sendPostmarkEmailAsTeam({
     MessageStream: "outbound",
   };
   if (process.env.NODE_ENV === "production") {
+    const before = Date.now();
+
+    const postmark = new Postmark.Client(token);
     const res = await postmark.sendEmail(email);
+
+    const after = Date.now();
+    console.log(`Postmark took ${after - before}ms to send an email as team`);
 
     if (res.ErrorCode === 0) {
       await logger.info(

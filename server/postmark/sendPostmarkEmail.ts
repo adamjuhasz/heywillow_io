@@ -25,7 +25,12 @@ export default async function sendPostmarkEmail({
     MessageStream: "outbound",
   };
   if (process.env.NODE_ENV === "production") {
+    const before = Date.now();
+
     const res = await postmark.sendEmail(email);
+
+    const after = Date.now();
+    console.log(`Postmark took ${after - before}ms to send an email`);
 
     if (res.ErrorCode === 0) {
       await logger.info(`Sent email with Postmark to ${to} - ${subject}`, {

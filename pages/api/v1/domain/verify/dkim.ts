@@ -4,11 +4,9 @@ import mapValues from "lodash/mapValues";
 import { logger, toJSONable } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
 import { serviceSupabase } from "server/supabase";
-import {
-  PostmarkDomain,
-  processPMResponse,
-} from "server/postmark/getDomainInfo";
+import { PostmarkDomain } from "server/postmark/getDomainInfo";
 import { prisma } from "utils/prisma";
+import processPMResponse from "server/postmark/processPMResponse";
 
 export type { PostmarkDomain };
 

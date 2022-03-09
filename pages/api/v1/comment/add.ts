@@ -46,10 +46,13 @@ export default async function handler(
     include: { Message: true },
   });
 
-  void logger.info("comment", {
-    comment: { id: Number(comment.id) },
-    message: { id: Number(comment.Message.id) },
-  });
+  void logger.info(
+    `comment added id: ${comment.id} message: ${comment.Message.id} by ${comment.authorId}`,
+    {
+      comment: { id: Number(comment.id) },
+      message: { id: Number(comment.Message.id) },
+    }
+  );
 
   await commentNotification(comment.id);
 

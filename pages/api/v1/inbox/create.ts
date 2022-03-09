@@ -8,8 +8,8 @@ import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
 import getPostmarkDomainInfo, {
   PostmarkDomain,
-  processPMResponse,
 } from "server/postmark/getDomainInfo";
+import processPMResponse from "server/postmark/processPMResponse";
 
 export interface RequestBody {
   emailAddress: string;
