@@ -17,7 +17,7 @@ Author: "Adam Juhasz"
 10. Select the action you’d like your messages to take from the drop-down menu. You can choose to keep Gmail’s copy of the message in your inbox, or you can send it automatically to All Mail or Trash. You might want to keep a copy of inbound email in Gmail.
 11. Click Save Changes on the bottom of the screen.
 
-## Need more help?
+## Need help?
 
 ["Automatically forward Gmail messages to another account"](https://support.google.com/mail/answer/10957?fl=1) from Google Workspace Help
 

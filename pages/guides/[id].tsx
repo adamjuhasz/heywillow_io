@@ -34,6 +34,8 @@ export default function Post({
           {`
           .prose .task-list-item > [type='checkbox'] {
             border-radius: 4px;
+            margin-top: -3px;
+            margin-right: 0.25rem;
           }
         `}
         </style>

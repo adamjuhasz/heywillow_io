@@ -5,3 +5,7 @@ Author: "Adam Juhasz"
 ---
 
 ["Forward your emails"](https://support.google.com/domains/answer/3251241?hl=en) from Google Domains help
+
+## Need help?
+
+Give us a shout at [help@heywillow.io](mailto:help@heywillow.io)
