@@ -4,7 +4,7 @@ import { ReactElement } from "react";
 import AppLayout from "layouts/app";
 import GetAuthCookie from "components/GetAuthCoookie";
 
-import image from "public/images/architecture/photo-1505904267569-f02eaeb45a4c.jpg";
+import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
 
 export default function AuthPage(): JSX.Element {
   return (

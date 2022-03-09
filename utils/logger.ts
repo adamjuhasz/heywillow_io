@@ -90,20 +90,23 @@ const logToLogtail = async (
   try {
     const before = Date.now();
 
-    const res = await fetch("https://in.logtail.com", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.LOGTAIL_TOKEN as string}`,
-        "User-Agent": "logtail-js(node)",
-      },
-      body: JSON.stringify({
-        level: level,
-        dt: new Date().toISOString(),
-        message: message,
-        ...(isArray(context) ? { context: context } : context),
-      }),
-    });
+    const res = await fetch(
+      "https://forward.heywillow.workers.dev/https%3A%2F%2Fin.logtail.com",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.LOGTAIL_TOKEN as string}`,
+          "User-Agent": "logtail-js(node)",
+        },
+        body: JSON.stringify({
+          level: level,
+          dt: new Date().toISOString(),
+          message: message,
+          ...(isArray(context) ? { context: context } : context),
+        }),
+      }
+    );
     const after = Date.now();
     console.log(`Logtail took ${after - before}ms`);
 
