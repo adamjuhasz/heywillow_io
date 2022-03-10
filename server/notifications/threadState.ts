@@ -92,11 +92,34 @@ export default async function threadStateNotification(
       }
     );
 
+    let inAppText = `Thread state changed for ${thread.Alias.emailAddress}`;
+    let emailSubject = `Thread un-snoozed for ${thread.Alias.emailAddress}`;
+    let action = "state changed";
+    switch (thisType) {
+      case "ThreadAwaken":
+        inAppText = `Thread with ${thread.Alias.emailAddress} un-snoozed`;
+        emailSubject = `Thread with ${thread.Alias.emailAddress} un-snoozed`;
+        action = "un-snoozed";
+        break;
+
+      case "ThreadClosed":
+        inAppText = `Thread with ${thread.Alias.emailAddress} marked done`;
+        emailSubject = `Thread with ${thread.Alias.emailAddress} marked done`;
+        action = "marked done";
+        break;
+
+      case "CommentMentioned":
+      case "ThreadCustomerReplied":
+      case "ThreadNew":
+      case "ThreadTeamMemberReplied":
+        break;
+    }
+
     if (inAppPref === true) {
       await prisma.notification.create({
         data: {
           forMemberId: tm.id,
-          text: `Thread un-snoozed for ${thread.Alias.emailAddress}`,
+          text: inAppText,
           deliveredAt: new Date(),
           threadId: threadId,
           type: thisType,
@@ -127,17 +150,17 @@ export default async function threadStateNotification(
       } else {
         const options: Options = {
           to: tm.Profile?.email || "",
-          subject: `Thread un-snoozed for ${thread.Alias.emailAddress}`,
+          subject: emailSubject,
           htmlBody: [
             "<h1>Thread Notification</h1>",
-            "<h2>Thread un-snoozed</h2>",
+            `<h2>Thread ${action}</h2>`,
             `<p><a href="https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}">Link to thread</a></p>`,
             "<br>",
             "<p> - Your friends from Willow</p>",
           ],
           textBody: [
             "# Thread Notification",
-            "## Thread un-snoozed",
+            `## Thread ${action}`,
             `Link: https://${process.env.DOMAIN}/a/${namespace}/thread/${threadId}`,
             "",
             "- Your friends from Willow",

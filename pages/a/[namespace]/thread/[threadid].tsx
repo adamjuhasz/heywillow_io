@@ -578,7 +578,9 @@ function SnoozeButton({
         }
       }}
     >
-      <div className="text-xs">Snooze {snoozeDays} days</div>
+      <div className="text-xs">
+        Snooze {snoozeDays} day{snoozeDays === 1 ? "" : "s"}
+      </div>
       <div className="">
         <ClockIcon className="h-4 w-4" />
       </div>
