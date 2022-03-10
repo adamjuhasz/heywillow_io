@@ -65,7 +65,7 @@ export default function Post({
 
       <div
         className={[
-          "my-2 mx-auto aspect-[12/4] w-full max-w-6xl rounded-3xl bg-zinc-700 shadow-md",
+          "my-2 mx-auto aspect-[12/4] w-full max-w-6xl rounded-3xl bg-zinc-700",
           sample([
             "shadow-orange-300/30",
             "shadow-lime-300/30",
