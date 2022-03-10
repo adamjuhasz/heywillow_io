@@ -1,6 +1,6 @@
 import { MouseEventHandler, forwardRef } from "react";
-import { format } from "date-fns";
-import { MessageDirection } from "@prisma/client";
+import format from "date-fns/format";
+import type { MessageDirection } from "@prisma/client";
 
 import { SupabaseAttachment, SupabaseComment } from "types/supabase";
 import Avatar from "components/Avatar";

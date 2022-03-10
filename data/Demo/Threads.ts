@@ -1,4 +1,4 @@
-import { subDays } from "date-fns";
+import subDays from "date-fns/subDays";
 import {
   SupabaseAliasEmail,
   SupabaseAttachment,
@@ -6,6 +6,9 @@ import {
   SupabaseMessage,
   SupabaseProfile,
 } from "types/supabase";
+import type { FetchThread } from "client/getThreads";
+import type { MessageDirection, MessageType } from "@prisma/client";
+import { ParagraphElement } from "types/slate";
 
 interface DateNode {
   type: "Date";
@@ -26,6 +29,67 @@ type MessageNode = {
     Attachment: SupabaseAttachment[];
   };
 };
+
+export const message1 = {
+  Attachment: [],
+  id: 1,
+  createdAt: subDays(new Date(), 21).toISOString(),
+  type: "email" as MessageType,
+  direction: "incoming" as MessageDirection,
+  emailMessageId: null,
+  internalMessageId: null,
+  threadId: 1,
+  aliasId: null,
+  teamMemberId: null,
+  AliasEmail: {
+    id: 1,
+    createdAt: new Date().toISOString(),
+    customerId: null,
+    emailAddress: "customer@gmail.com",
+    teamId: 1,
+  },
+  subject:
+    "I need to remove myself because me and my partner is not working or living together please remove my information and I need to receive any bank statements or anything else to see if he has been receiving money from me",
+  text: [
+    {
+      type: "paragraph",
+      children: [
+        {
+          text: `I need to remove myself because me and my partner is not working or living together please remove my information and I need to receive any bank statements or anything else to see if he has been receiving money from me \n\n\nTamria Rhoden-Anglin`,
+        },
+      ],
+    } as ParagraphElement,
+  ],
+  Comment: [],
+  TeamMember: null,
+};
+
+export const threads: FetchThread[] = [
+  {
+    id: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    teamId: 0,
+    aliasEmailId: 0,
+    gmailInboxId: 0,
+    ThreadState: [],
+    Message: [message1],
+    AliasEmail: {
+      id: 1,
+      createdAt: new Date().toISOString(),
+      emailAddress: "m@g.com",
+      aliasName: "Mike Perez",
+      teamId: 0,
+    },
+    Inbox: {
+      id: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      teamId: 0,
+      emailAddress: "hi@stealth.ai",
+    },
+  },
+];
 
 const messages: (MessageNode | DateNode | ActionNode)[] = [
   {
@@ -48,8 +112,8 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
       AliasEmail: {
         id: 1,
         createdAt: new Date().toISOString(),
-        customerId: null,
         emailAddress: "customer@gmail.com",
+        aliasName: "customer",
         teamId: 1,
       },
       subject:
@@ -94,8 +158,8 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
       AliasEmail: {
         id: 1,
         createdAt: new Date().toISOString(),
-        customerId: null,
         emailAddress: "adam",
+        aliasName: "adam",
         teamId: 1,
       },
       subject: "",
@@ -134,8 +198,8 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
       AliasEmail: {
         id: 1,
         createdAt: new Date().toISOString(),
-        customerId: null,
         emailAddress: "customer@gmail.com",
+        aliasName: "customer",
         teamId: 1,
       },
       subject: "",
@@ -202,8 +266,9 @@ const messages: (MessageNode | DateNode | ActionNode)[] = [
       AliasEmail: {
         id: 1,
         createdAt: new Date().toISOString(),
-        customerId: null,
         emailAddress: "mike",
+        aliasName: "mike",
+
         teamId: 1,
       },
       subject: null,

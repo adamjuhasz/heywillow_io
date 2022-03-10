@@ -1,7 +1,7 @@
-import { ClockIcon } from "@heroicons/react/solid";
+import ClockIcon from "@heroicons/react/solid/ClockIcon";
 import Avatar from "components/Avatar";
 import Link from "next/link";
-import { formatDistanceToNowStrict } from "date-fns";
+import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 import { useRouter } from "next/router";
 
 import { ParagraphElement } from "types/slate";
@@ -34,21 +34,27 @@ export type FetchResponse = MiniThread & {
 
 interface Props {
   threads: FetchResponse[] | undefined;
+  prefix?: string;
 }
 
-export default function DashboardTableTop(props: Props) {
+export default function DashboardTableTop({ prefix = "a", ...props }: Props) {
   return (
     <div className="my-14 grid grid-cols-3 gap-x-4 gap-y-4">
       {props.threads === undefined ? (
         <></>
       ) : (
-        props.threads.map((t) => <Card key={t.id} t={t} />)
+        props.threads.map((t) => <Card key={t.id} t={t} prefix={prefix} />)
       )}
     </div>
   );
 }
 
-function Card({ t }: { t: FetchResponse }) {
+interface CardProps {
+  t: FetchResponse;
+  prefix: string;
+}
+
+function Card({ t, prefix }: CardProps) {
   const router = useRouter();
 
   const lastMessage = t.Message.reverse()[0];
@@ -58,8 +64,8 @@ function Card({ t }: { t: FetchResponse }) {
   return (
     <Link
       href={{
-        pathname: "/a/[namespace]/thread/[threadid]",
-        query: { ...router.query, threadid: t.id },
+        pathname: "/[prefix]/[namespace]/thread/[threadid]",
+        query: { ...router.query, threadid: t.id, prefix: prefix },
       }}
     >
       <a>

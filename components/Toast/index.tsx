@@ -6,11 +6,11 @@ import {
   useState,
 } from "react";
 import { Transition } from "@headlessui/react";
-import { addSeconds } from "date-fns";
+import addSeconds from "date-fns/addSeconds";
 
 import useTimeout from "hooks/useTimeout";
 
-type ToastType =
+export type ToastType =
   | { type: "string"; string: string }
   | { type: "error"; string: string }
   | { type: "active"; string: string };

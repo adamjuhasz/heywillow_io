@@ -1,6 +1,6 @@
 //inspiration from https://www.openphone.co/product/teams
-import { ArrowCircleUpIcon } from "@heroicons/react/outline";
-import { SupabaseComment } from "types/supabase";
+import ArrowCircleUpIcon from "@heroicons/react/outline/ArrowCircleUpIcon";
+import type { SupabaseComment } from "types/supabase";
 import type { MessageDirection } from "@prisma/client";
 import uniqBy from "lodash/uniqBy";
 import TextareaAutosize from "react-textarea-autosize";

@@ -1,7 +1,7 @@
 import { useDebugValue } from "react";
 import useSWR from "swr";
 
-import { Return } from "pages/api/v1/thread/[threadid]/link";
+import type { Return } from "pages/api/v1/thread/[threadid]/link";
 
 export async function getLink(threadId: number) {
   const res = await fetch(`/api/v1/thread/${threadId}/link`, {

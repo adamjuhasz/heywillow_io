@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { format } from "date-fns";
+import format from "date-fns/format";
 
 import { getAllPostIds, getPostData } from "static-build/changelog";
 import LandingPageHeader from "components/LandingPage/Header";

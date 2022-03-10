@@ -1,5 +1,5 @@
 import { forwardRef, useState } from "react";
-import { LockClosedIcon } from "@heroicons/react/solid";
+import LockClosedIcon from "@heroicons/react/solid/LockClosedIcon";
 import TextareaAutosize from "react-textarea-autosize";
 
 interface Props {

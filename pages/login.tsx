@@ -1,10 +1,8 @@
 import { Fragment, ReactElement, useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/solid";
+import CheckCircleIcon from "@heroicons/react/outline/CheckCircleIcon";
+import ExclamationCircleIcon from "@heroicons/react/outline/ExclamationCircleIcon";
+import XIcon from "@heroicons/react/solid/XIcon";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Switch } from "@headlessui/react";

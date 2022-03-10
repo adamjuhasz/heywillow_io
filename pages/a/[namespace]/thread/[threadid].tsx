@@ -1,24 +1,17 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
-  Dispatch,
   PropsWithChildren,
   ReactElement,
-  SetStateAction,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
 import Head from "next/head";
-import { ArrowLeftIcon } from "@heroicons/react/solid";
-import {
-  AnnotationIcon,
-  CheckIcon,
-  ClipboardCopyIcon,
-  ClockIcon,
-} from "@heroicons/react/outline";
-import { addDays, addMinutes, formatDistanceToNowStrict } from "date-fns";
+import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
+import AnnotationIcon from "@heroicons/react/outline/AnnotationIcon";
+import ClipboardCopyIcon from "@heroicons/react/outline/ClipboardCopyIcon";
 import {
   autoUpdate,
   flip,
@@ -26,7 +19,6 @@ import {
   shift,
   useFloating,
 } from "@floating-ui/react-dom";
-import defaultTo from "lodash/defaultTo";
 
 import AppLayout from "layouts/app";
 import useGetThread, { ThreadFetch } from "client/getThread";
@@ -36,13 +28,11 @@ import InputWithRef from "components/Input";
 import Message from "components/Thread/Message";
 import useGetTeamId from "client/getTeamId";
 import useGetAliasThreads from "client/getAliasThreads";
-import useGetSecureThreadLink from "client/getSecureThreadLink";
-import changeThreadState from "client/changeThreadState";
 import postNewMessage from "client/postNewMessage";
 import CommentBox from "components/Thread/CommentBox";
 import ToastContext from "components/Toast";
 import slateToText from "shared/slate/slateToText";
-import Loading from "components/Loading";
+import RightSidebar from "components/Thread/RightSidebar";
 
 export default function ThreadViewer() {
   const [scrolled, setScrolled] = useState(false);
@@ -52,8 +42,6 @@ export default function ThreadViewer() {
   const { threadid, comment } = router.query;
   let threadNum: number | undefined = parseInt(threadid as string, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
-
-  const { data: threadLink } = useGetSecureThreadLink(threadNum);
 
   const { data: thread, mutate: mutateThread } = useGetThread(threadNum);
   const teamId = useGetTeamId() || null;
@@ -120,6 +108,11 @@ export default function ThreadViewer() {
     });
   };
 
+  const workspace = {
+    pathname: "/a/[namespace]/workspace",
+    query: { namespace: router.query.namespace },
+  };
+
   return (
     <>
       <Head>
@@ -128,15 +121,11 @@ export default function ThreadViewer() {
 
       <AppHeaderHOC />
 
-      <AppContainer className="">
+      <AppContainer>
         <div className="flex h-[calc(100vh_-_3rem)] w-full overflow-x-hidden">
+          {/* Left side */}
           <div className="flex h-full w-[3.5rem] shrink-0 flex-col items-center pt-14">
-            <Link
-              href={{
-                pathname: "/a/[namespace]/workspace",
-                query: { namespace: router.query.namespace },
-              }}
-            >
+            <Link href={workspace}>
               <a className="block rounded-full hover:shadow-zinc-900">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
                   <ArrowLeftIcon className="h-6 w-6" />
@@ -144,6 +133,8 @@ export default function ThreadViewer() {
               </a>
             </Link>
           </div>
+
+          {/* Center */}
           <div className="flex h-full w-[calc(100%_-_3rem_-_16rem)] flex-col pt-7">
             <div className="grow overflow-x-hidden overflow-y-scroll">
               {threads ? (
@@ -181,6 +172,7 @@ export default function ThreadViewer() {
 
               <div id="thread-bottom" ref={divRef} />
             </div>
+
             <div className="shrink-0 pb-2">
               <InputWithRef
                 submit={async (t: string) => {
@@ -213,135 +205,18 @@ export default function ThreadViewer() {
               />
             </div>
           </div>
+
+          {/* Right side */}
           <div className="w-[16rem] shrink-0 px-4 py-7">
-            <div className="d-border-zinc-600 d-bg-black d-border flex min-h-[100px] flex-col rounded-md px-2 py-2">
-              {thread ? (
-                <>
-                  <div className="truncate text-sm line-clamp-1">
-                    {customerEmail}
-                  </div>
-                  <div className="text-xs text-zinc-400">
-                    Created{" "}
-                    {formatDistanceToNowStrict(new Date(thread.createdAt), {
-                      addSuffix: true,
-                    })
-                      .replace("minute", "min")
-                      .replace("second", "sec")}
-                  </div>
-                  {threads ? (
-                    <>
-                      <div className="mt-7 text-sm font-medium text-zinc-500">
-                        Threads
-                      </div>
-                      {threads.map((t) => (
-                        <div
-                          onClick={() => {
-                            scrollToID(`top-thread-${t.id}`);
-                          }}
-                          key={t.id}
-                          className="flex w-full cursor-pointer items-center justify-between text-xs text-zinc-400 hover:text-zinc-100"
-                        >
-                          <div>
-                            {defaultTo(
-                              t.Message.filter(
-                                (m) => m.subject !== null
-                              ).reverse()[0].subject,
-                              ""
-                            )
-                              .trim()
-                              .slice(0, 14)}
-                            ...
-                          </div>
-                          <div className="text-zinc-500">
-                            {formatDistanceToNowStrict(new Date(t.createdAt), {
-                              addSuffix: true,
-                            })
-                              .replace("minute", "min")
-                              .replace("second", "sec")}
-                          </div>
-                        </div>
-                      ))}
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </>
-              ) : (
-                <></>
-              )}
-              <div className="mt-7 text-sm font-medium text-zinc-500">
-                Actions
-              </div>
-              <div
-                className="flex w-full cursor-pointer items-center justify-between text-zinc-400 hover:text-zinc-100"
-                onClick={async () => {
-                  try {
-                    if (threadLink !== undefined) {
-                      await navigator.clipboard.writeText(
-                        threadLink?.absoluteLink
-                      );
-                    } else {
-                      addToast({
-                        type: "error",
-                        string: "Could not get secure link",
-                      });
-                    }
-                  } catch (e) {
-                    console.error("Can't copy", e);
-                    addToast({ type: "error", string: "Could not copy" });
-                  }
-                }}
-              >
-                <div className="text-xs">Copy secure link</div>
-                <div className="">
-                  <ClipboardCopyIcon className="h-4 w-4" />
-                </div>
-              </div>
-
-              <div className="mt-7 text-sm font-medium text-zinc-500">
-                Modify ticket
-              </div>
-              {loading ? (
-                <div className="flex w-full items-center justify-center">
-                  <Loading className="h-4 w-4 text-zinc-500" />
-                </div>
-              ) : (
-                <>
-                  <MarkDone
-                    threadNum={threadNum}
-                    snoozeDays={0}
-                    className="hover:bg-lime-800 hover:bg-opacity-30 hover:text-lime-500"
-                    setLoading={setLoading}
-                  />
-
-                  <SnoozeButton
-                    threadNum={threadNum}
-                    snoozeDays={1}
-                    className="hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
-                    setLoading={setLoading}
-                  />
-                  <SnoozeButton
-                    threadNum={threadNum}
-                    snoozeDays={3}
-                    className="hover:bg-yellow-800 hover:bg-opacity-20 hover:text-yellow-600"
-                    setLoading={setLoading}
-                  />
-                  <SnoozeButton
-                    threadNum={threadNum}
-                    snoozeDays={7}
-                    className="hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
-                    setLoading={setLoading}
-                  />
-
-                  <Snooze5Mins
-                    snoozeDays={0}
-                    threadNum={threadNum}
-                    className="hover:bg-pink-800 hover:bg-opacity-30 hover:text-pink-400"
-                    setLoading={setLoading}
-                  />
-                </>
-              )}
-            </div>
+            <RightSidebar
+              thread={thread}
+              threads={threads}
+              loading={loading}
+              setLoading={setLoading}
+              scrollToID={scrollToID}
+              threadNum={threadNum}
+              href={workspace}
+            />
           </div>
         </div>
       </AppContainer>
@@ -516,178 +391,6 @@ function MessagePrinter(props: MessagePrinterProps) {
       ) : (
         <></>
       )}
-    </div>
-  );
-}
-
-interface StateChangeProps {
-  threadNum: number | undefined;
-  snoozeDays: number;
-  className: string;
-  setLoading: Dispatch<SetStateAction<boolean>>;
-}
-
-function SnoozeButton({
-  threadNum,
-  snoozeDays,
-  className,
-  setLoading,
-}: StateChangeProps) {
-  const { addToast } = useContext(ToastContext);
-  const router = useRouter();
-
-  return (
-    <div
-      className={[
-        "-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400",
-        className,
-      ].join(" ")}
-      onClick={async () => {
-        if (threadNum === undefined) {
-          addToast({
-            type: "error",
-            string: "Not sure what thread this is",
-          });
-          return;
-        }
-
-        try {
-          setLoading(true);
-
-          addToast({
-            type: "active",
-            string: `Snoozing thread for ${snoozeDays} days`,
-          });
-
-          await changeThreadState(threadNum, {
-            state: "snoozed",
-            snoozeDate: addDays(new Date(), snoozeDays).toISOString(),
-          });
-
-          void router.push({
-            pathname: "/a/[namespace]/workspace",
-            query: router.query,
-          });
-        } catch (e) {
-          console.error(e);
-          addToast({
-            type: "error",
-            string: "Could not change state of thread",
-          });
-          setLoading(false);
-        }
-      }}
-    >
-      <div className="text-xs">
-        Snooze {snoozeDays} day{snoozeDays === 1 ? "" : "s"}
-      </div>
-      <div className="">
-        <ClockIcon className="h-4 w-4" />
-      </div>
-    </div>
-  );
-}
-
-function MarkDone({ threadNum, className, setLoading }: StateChangeProps) {
-  const { addToast } = useContext(ToastContext);
-  const router = useRouter();
-
-  return (
-    <div
-      className={[
-        "-mx-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400",
-        className,
-      ].join(" ")}
-      onClick={async () => {
-        if (threadNum === undefined) {
-          addToast({
-            type: "error",
-            string: "Not sure what thread this is",
-          });
-          return;
-        }
-        try {
-          setLoading(true);
-
-          addToast({
-            type: "active",
-            string: `Marking thread as done`,
-          });
-
-          await changeThreadState(threadNum, { state: "done" });
-
-          void router.push({
-            pathname: "/a/[namespace]/workspace",
-            query: router.query,
-          });
-        } catch (e) {
-          console.error(e);
-          addToast({
-            type: "error",
-            string: "Could not change state of thread",
-          });
-          setLoading(false);
-        }
-      }}
-    >
-      <div className="text-xs">Mark done</div>
-      <div className="">
-        <CheckIcon className="h-4 w-4" />
-      </div>
-    </div>
-  );
-}
-
-function Snooze5Mins({ threadNum, className, setLoading }: StateChangeProps) {
-  const { addToast } = useContext(ToastContext);
-  const router = useRouter();
-
-  return (
-    <div
-      className={[
-        "-mx-1 -mt-1 flex w-full cursor-pointer items-center justify-between rounded-md py-1 px-1 text-zinc-400",
-        className,
-      ].join(" ")}
-      onClick={async () => {
-        if (threadNum === undefined) {
-          addToast({
-            type: "error",
-            string: "Not sure what thread this is",
-          });
-          return;
-        }
-
-        try {
-          setLoading(true);
-
-          addToast({
-            type: "active",
-            string: `Snoozing thread for 5 minutes`,
-          });
-
-          await changeThreadState(threadNum, {
-            state: "snoozed",
-            snoozeDate: addMinutes(new Date(), 5).toISOString(),
-          });
-
-          void router.push({
-            pathname: "/a/[namespace]/workspace",
-            query: router.query,
-          });
-        } catch (e) {
-          console.error(e);
-          addToast({
-            type: "error",
-            string: "Could not change state of thread",
-          });
-          setLoading(false);
-        }
-      }}
-    >
-      <div className="text-xs">Snooze 5 minutes</div>
-      <div className="">
-        <ClockIcon className="h-4 w-4" />
-      </div>
     </div>
   );
 }
