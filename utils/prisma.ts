@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { logger, toJSONable } from "utils/logger";
 import mapValues from "lodash/mapValues";
+import { getCurrentHub } from "@sentry/nextjs"; // whatever package you're using
+
+import { logger, toJSONable } from "utils/logger";
 
 declare global {
   // allow global `var` declarations
@@ -27,6 +29,37 @@ export const prisma: PrismaClient =
     //     target: e.target,
     //   });
     // });
+
+    localClient.$use(async (params, next) => {
+      const { model, action, runInTransaction, args } = params;
+      const description = [model, action].filter(Boolean).join(".");
+      const data = {
+        model,
+        action,
+        runInTransaction,
+        args,
+      };
+
+      const scope = getCurrentHub().getScope();
+      const parentSpan = scope?.getSpan();
+      const span = parentSpan?.startChild({
+        op: "db",
+        description,
+        data,
+      });
+
+      // optional but nice
+      scope?.addBreadcrumb({
+        category: "db",
+        message: description,
+        data,
+      });
+
+      const result = await next(params);
+      span?.finish();
+
+      return result;
+    });
 
     localClient.$use(async (params, next) => {
       const before = Date.now();
