@@ -107,7 +107,9 @@ export default forwardRef<HTMLDivElement, MyMessageType & InterfaceProps>(
                 </div>
               </div>
             </div>
-            <div className={["mx-1 mt-1 text-xs font-medium"].join(" ")}>
+            <div
+              className={["mx-1 mt-1 shrink-0 text-xs font-medium"].join(" ")}
+            >
               <span className="text-zinc-600">
                 {format(new Date(props.createdAt), "p")}
               </span>

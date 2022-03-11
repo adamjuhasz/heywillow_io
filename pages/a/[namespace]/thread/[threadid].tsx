@@ -1,38 +1,29 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
-  PropsWithChildren,
   ReactElement,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
-import AnnotationIcon from "@heroicons/react/outline/AnnotationIcon";
-import ClipboardCopyIcon from "@heroicons/react/outline/ClipboardCopyIcon";
-import {
-  autoUpdate,
-  flip,
-  offset,
-  shift,
-  useFloating,
-} from "@floating-ui/react-dom";
+import sortBy from "lodash/sortBy";
 
 import AppLayout from "layouts/app";
-import useGetThread, { ThreadFetch } from "client/getThread";
+import useGetThread from "client/getThread";
 import AppHeaderHOC from "components/App/HeaderHOC";
 import AppContainer from "components/App/Container";
 import InputWithRef from "components/Input";
-import Message from "components/Thread/Message";
 import useGetTeamId from "client/getTeamId";
 import useGetAliasThreads from "client/getAliasThreads";
 import postNewMessage from "client/postNewMessage";
-import CommentBox from "components/Thread/CommentBox";
 import ToastContext from "components/Toast";
-import slateToText from "shared/slate/slateToText";
 import RightSidebar from "components/Thread/RightSidebar";
+import LoadingThread from "components/Thread/LoadingThread";
+import ThreadPrinter from "components/Thread/ThreadPrinter";
 
 export default function ThreadViewer() {
   const [scrolled, setScrolled] = useState(false);
@@ -48,6 +39,18 @@ export default function ThreadViewer() {
   const { data: threads, mutate: mutateThreads } = useGetAliasThreads(
     thread?.aliasEmailId
   );
+
+  const threadsWithThisOne = useMemo(() => {
+    if (threads === undefined) {
+      return threads;
+    }
+
+    const filtered = (threads || []).filter(
+      (t) => t.id !== parseInt((threadid as string) || "0", 10)
+    );
+
+    return sortBy(filtered, [(t) => t.createdAt]);
+  }, [threads, threadid]);
 
   useEffect(() => {
     if (comment !== undefined || scrolled) {
@@ -113,6 +116,34 @@ export default function ThreadViewer() {
     query: { namespace: router.query.namespace },
   };
 
+  const submitMessage = async (t: string) => {
+    if (threadNum === undefined) {
+      addToast({
+        type: "error",
+        string: "Don't know which thread you're sending to",
+      });
+      return;
+    }
+    const response = await postNewMessage(threadNum, { text: t });
+
+    // wait to mutate for Supabase to see the write, ~200-400ms seems to be the magic number
+    setTimeout(async () => {
+      await Promise.allSettled([mutateThread(), mutateThreads()]);
+      if (comment) {
+        void router.replace({
+          pathname: "/a/[namespace]/thread/[threadid]",
+          query: {
+            ...router.query,
+            comment: undefined,
+            message: response.messageId,
+          },
+        });
+      } else {
+        setScrolled(false);
+      }
+    }, 300);
+  };
+
   return (
     <>
       <Head>
@@ -137,8 +168,8 @@ export default function ThreadViewer() {
           {/* Center */}
           <div className="flex h-full w-[calc(100%_-_3rem_-_16rem)] flex-col pt-7">
             <div className="grow overflow-x-hidden overflow-y-scroll">
-              {threads ? (
-                threads.map((t) => (
+              {threadsWithThisOne ? (
+                threadsWithThisOne.map((t) => (
                   <ThreadPrinter
                     key={t.id}
                     subject={
@@ -151,21 +182,22 @@ export default function ThreadViewer() {
                     mutate={refreshComment}
                   />
                 ))
-              ) : thread ? (
-                <>
-                  <LoadingThread />
-                  <ThreadPrinter
-                    subject={
-                      thread?.Message.filter(
-                        (m) => m.subject !== null
-                      ).reverse()[0].subject || undefined
-                    }
-                    messages={thread?.Message}
-                    teamId={teamId}
-                    threadId={thread.id}
-                    mutate={refreshComment}
-                  />
-                </>
+              ) : (
+                <LoadingThread />
+              )}
+
+              {thread ? (
+                <ThreadPrinter
+                  subject={
+                    thread?.Message.filter(
+                      (m) => m.subject !== null
+                    ).reverse()[0].subject || undefined
+                  }
+                  messages={thread?.Message}
+                  teamId={teamId}
+                  threadId={thread.id}
+                  mutate={refreshComment}
+                />
               ) : (
                 <LoadingThread />
               )}
@@ -174,35 +206,7 @@ export default function ThreadViewer() {
             </div>
 
             <div className="shrink-0 pb-2">
-              <InputWithRef
-                submit={async (t: string) => {
-                  if (threadNum === undefined) {
-                    addToast({
-                      type: "error",
-                      string: "Don't know which thread you're sending to",
-                    });
-                    return;
-                  }
-                  const response = await postNewMessage(threadNum, { text: t });
-
-                  // wait to mutate for Supabase to see the write, ~200-400ms seems to be the magic number
-                  setTimeout(async () => {
-                    await Promise.allSettled([mutateThread(), mutateThreads()]);
-                    if (comment) {
-                      void router.replace({
-                        pathname: "/a/[namespace]/thread/[threadid]",
-                        query: {
-                          ...router.query,
-                          comment: undefined,
-                          message: response.messageId,
-                        },
-                      });
-                    } else {
-                      setScrolled(false);
-                    }
-                  }, 300);
-                }}
-              />
+              <InputWithRef submit={submitMessage} />
             </div>
           </div>
 
@@ -227,170 +231,3 @@ export default function ThreadViewer() {
 ThreadViewer.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };
-
-function LoadingThread() {
-  return (
-    <div className="mb-7 flex w-full flex-col">
-      <div
-        className={[
-          "mx-12 h-14 w-56 rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
-          "animate-pulse rounded-tl-none bg-zinc-800 text-zinc-50",
-        ].join(" ")}
-      />
-      <div
-        className={[
-          "mx-12 h-14 w-56 self-end rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
-          "animate-pulse rounded-tr-none bg-zinc-800 text-zinc-50",
-        ].join(" ")}
-      />
-      <div
-        className={[
-          "mx-12 h-14 w-56 rounded-2xl px-3 py-3 sm:min-w-[30%] sm:max-w-[60%]",
-          "animate-pulse rounded-tl-none bg-zinc-800 text-zinc-50",
-        ].join(" ")}
-      />
-    </div>
-  );
-}
-
-interface ThreadPrinterProps {
-  messages?: ThreadFetch["Message"];
-  teamId: number | null;
-  subject?: string;
-  threadId?: number;
-  mutate?: (id: number) => unknown;
-}
-
-function ThreadPrinter(props: ThreadPrinterProps) {
-  return (
-    <>
-      {props.threadId ? <div id={`top-thread-${props.threadId}`} /> : <></>}
-      {props.messages ? (
-        <>
-          {props.subject ? <SubjectLine>{props.subject}</SubjectLine> : <></>}
-          {props.messages.map((m) => (
-            <MessagePrinter
-              key={m.id}
-              message={m}
-              teamId={props.teamId}
-              mutate={props.mutate}
-            />
-          ))}
-        </>
-      ) : (
-        <LoadingThread />
-      )}
-      {props.threadId ? <div id={`bottom-thread-${props.threadId}`} /> : <></>}
-    </>
-  );
-}
-
-function SubjectLine(props: PropsWithChildren<unknown>) {
-  return (
-    <div className="flex w-full items-center">
-      <div className="h-[1px] grow bg-zinc-600" />
-      <div className="mx-2 max-w-[60%] shrink-0 text-xs line-clamp-1">
-        {props.children}
-      </div>
-      <div className="h-[1px] grow bg-zinc-600" />
-    </div>
-  );
-}
-
-interface MessagePrinterProps {
-  message: ThreadFetch["Message"][number];
-  teamId: number | null;
-  mutate?: (id: number) => unknown;
-}
-
-function MessagePrinter(props: MessagePrinterProps) {
-  const [hoveringMessage, setHoveringMessage] = useState(false);
-  const [hoveringToolbar, setHoveringToolbar] = useState(false);
-  const [showComments, setShowComments] = useState(
-    props.message.Comment.length > 0
-  );
-
-  const { addToast } = useContext(ToastContext);
-
-  const { x, y, reference, floating, strategy, update, refs } = useFloating({
-    placement: props.message.direction === "incoming" ? "top-end" : "top-start",
-    middleware: [
-      offset({
-        mainAxis: -10,
-        crossAxis: props.message.direction === "incoming" ? 20 : -20,
-      }),
-      shift(),
-      flip(),
-    ],
-  });
-
-  useEffect(() => {
-    if (!refs.reference.current || !refs.floating.current) {
-      return;
-    }
-
-    // Only call this when the floating element is rendered
-    return autoUpdate(refs.reference.current, refs.floating.current, update);
-  }, [refs.reference, refs.floating, update]);
-
-  const text: string = slateToText(props.message.text).join("\n\n");
-
-  // absolute bottom-[calc(100%_-_10px)] // props.message.direction === "incoming" ? "-right-4" : "-right-6",
-  return (
-    <div className={["relative my-3 flex w-full flex-col"].join(" ")}>
-      <Message
-        {...props.message}
-        teamId={props.teamId}
-        ref={reference}
-        onMouseEnter={() => {
-          console.log("enter");
-          setHoveringMessage(true);
-        }}
-        onMouseLeave={() => setHoveringMessage(false)}
-      ></Message>
-      <div
-        ref={floating}
-        onMouseEnter={() => setHoveringToolbar(true)}
-        onMouseLeave={() => setHoveringToolbar(false)}
-        className={[
-          "flex items-center space-x-1 rounded-full border-[1.5px] border-zinc-600 bg-zinc-800 px-0.5 py-0.5 opacity-80",
-          hoveringMessage || hoveringToolbar ? "" : " invisible",
-        ].join(" ")}
-        style={{
-          position: strategy,
-          top: y ?? "",
-          left: x ?? "",
-        }}
-      >
-        <AnnotationIcon
-          className="h-6 w-6 cursor-pointer rounded-full p-0.5 text-zinc-300 hover:bg-yellow-300 hover:text-yellow-800"
-          onClick={() => {
-            setShowComments(true);
-          }}
-        />
-        <ClipboardCopyIcon
-          className="h-6 w-6 cursor-pointer rounded-full p-0.5 text-zinc-300 hover:bg-zinc-300 hover:text-zinc-800"
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(text);
-            } catch (e) {
-              console.error("Can't copy", e);
-              addToast({ type: "error", string: "Could not copy" });
-            }
-          }}
-        />
-      </div>
-      {showComments ? (
-        <CommentBox
-          comments={props.message.Comment}
-          direction={props.message.direction}
-          messageId={Number(props.message.id)}
-          teamId={props.teamId as number}
-          mutate={props.mutate}
-        />
-      ) : (
-        <></>
-      )}
-    </div>
-  );
-}
