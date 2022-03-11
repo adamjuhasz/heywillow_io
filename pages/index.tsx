@@ -54,12 +54,12 @@ export default function Vercel(): JSX.Element {
           <div className="mx-auto mb-14 flex w-full flex-col space-x-0 space-y-4 md:w-fit md:flex-row md:space-x-6 md:space-y-0">
             <Link href="/signup">
               <a className="flex w-full items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 sm:min-w-[200px]">
-                Try it out
+                Sign up
               </a>
             </Link>
-            <Link href="mailto:yo@heywillo.io">
+            <Link href="/demo">
               <a className="flex items-center justify-center rounded-lg border-2 border-zinc-500 px-6 py-4 text-zinc-500 hover:border-zinc-100 hover:text-zinc-100 sm:min-w-[200px]">
-                Contact us
+                Explore demo
               </a>
             </Link>
           </div>
