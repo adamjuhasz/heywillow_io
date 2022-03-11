@@ -585,42 +585,17 @@ export default function Vercel(): JSX.Element {
             </div>
           </div>
         </div>
-
-        <div className="mb-14 flex w-full flex-col items-center">
-          <div className="mb-2 text-lg text-zinc-100 ">
-            Built by an awesome team
-          </div>
-          <div className="grid grid-cols-2 gap-0 text-lg text-zinc-100 sm:gap-20">
-            <div className="flex flex-col items-center justify-start ">
-              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-lime-400 text-center">
-                👨‍💻
-              </div>
-              <div className="text-center">
-                <a
-                  href="mailto:heyadam@heywillow.io"
-                  className="hover:text-zinc-100 hover:underline hover:decoration-wavy"
-                >
-                  Adam Juhasz
-                </a>
-              </div>
-              <div className="text-center">CTO</div>
-            </div>
-
-            <div className="flex flex-col items-center justify-start ">
-              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-center">
-                🐶
-              </div>
-              <div className="text-center">Zzyzx</div>
-              <div className="text-center">C(Fur)O</div>
-            </div>
-          </div>
-        </div>
       </div>
+
       <div className="flex min-h-[160px] w-full justify-between bg-black pt-7 pb-14 text-zinc-500">
         <div className="mx-auto grid w-full max-w-4xl grid-cols-1 space-y-4 px-4 md:grid-cols-6 md:space-y-0 md:px-0">
           <div className="col-span-1 flex flex-col md:col-span-2">
             <div className="font-medium text-zinc-100">Guides</div>
-            {/* <div className="">Setting up email forwarding</div> */}
+            <Link href="/guides/onboarding-checklist">
+              <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
+                Onboarding checklist
+              </a>
+            </Link>
           </div>
 
           <div className="col-span-1 flex flex-col md:col-span-2">
