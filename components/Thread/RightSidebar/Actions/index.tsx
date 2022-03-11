@@ -2,15 +2,13 @@ import { useContext } from "react";
 import ClipboardCopyIcon from "@heroicons/react/outline/ClipboardCopyIcon";
 
 import ToastContext from "components/Toast";
-import useGetSecureThreadLink from "client/getSecureThreadLink";
 
 interface Props {
-  threadNum: number | undefined;
+  threadLink: string | undefined;
 }
 
 export default function ThreadActions(props: Props) {
   const { addToast } = useContext(ToastContext);
-  const { data: threadLink } = useGetSecureThreadLink(props.threadNum);
 
   return (
     <>
@@ -19,8 +17,12 @@ export default function ThreadActions(props: Props) {
         className="flex w-full cursor-pointer items-center justify-between text-zinc-400 hover:text-zinc-100"
         onClick={async () => {
           try {
-            if (threadLink !== undefined) {
-              await navigator.clipboard.writeText(threadLink?.absoluteLink);
+            if (props.threadLink !== undefined) {
+              await navigator.clipboard.writeText(props?.threadLink);
+              addToast({
+                type: "active",
+                string: "Secure link copied to clipboard",
+              });
             } else {
               addToast({
                 type: "error",

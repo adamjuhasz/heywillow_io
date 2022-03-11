@@ -6,15 +6,21 @@ import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
 import sortBy from "lodash/sortBy";
 
 import AppLayout from "layouts/app";
-import AppHeaderHOC from "components/App/HeaderHOC";
+import StickyBase from "components/App/Header/StickyBase";
 import AppContainer from "components/App/Container";
+import HeaderContainer from "components/App/Header/HeaderContainer";
+import WillowLogo from "components/Logo";
+import TeamSelector from "components/App/Header/TeamSelector";
+import Avatar from "components/Avatar";
+import TopLink from "components/App/Header/TopLink";
 import InputWithRef from "components/Input";
 import ToastContext from "components/Toast";
 import RightSidebar from "components/Thread/RightSidebar";
 import LoadingThread from "components/Thread/LoadingThread";
 import ThreadPrinter from "components/Thread/ThreadPrinter";
 
-import { threads } from "data/Demo/Threads";
+import teams from "data/Demo/Teams";
+import threads from "data/Demo/Threads";
 
 export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
@@ -22,7 +28,7 @@ export default function ThreadViewer() {
   const router = useRouter();
   const { addToast } = useContext(ToastContext);
 
-  const { threadid } = router.query;
+  const { threadid, namespace } = router.query;
   let threadNum: number | undefined = parseInt(threadid as string, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
 
@@ -63,7 +69,41 @@ export default function ThreadViewer() {
         <title>{customerEmail ? `${customerEmail} on Willow` : "Willow"}</title>
       </Head>
 
-      <AppHeaderHOC />
+      <div className="flex justify-center bg-blue-500 py-1 text-white">
+        <div>
+          Demo data — Ready to get started?{" "}
+          <Link href="/signup">
+            <a className="underline">Sign up here</a>
+          </Link>
+        </div>
+      </div>
+
+      <StickyBase>
+        <AppContainer>
+          <HeaderContainer>
+            <div className="flex h-full items-center space-x-4 ">
+              <Link href="/">
+                <a className="flex items-center">
+                  <WillowLogo className="mr-2 h-5 w-5 shrink-0" />
+                </a>
+              </Link>
+
+              <TeamSelector
+                teams={teams}
+                activeTeam={(namespace as string) || "stealth"}
+                pathPrefix="demo"
+              />
+            </div>
+
+            <div className="flex h-full items-center space-x-4 ">
+              <Avatar str={""} className="h-6 w-6" />
+              <TopLink exact href="/signup">
+                Sign up
+              </TopLink>
+            </div>
+          </HeaderContainer>
+        </AppContainer>
+      </StickyBase>
 
       <AppContainer>
         <div className="flex h-[calc(100vh_-_3rem)] w-full overflow-x-hidden">
@@ -147,6 +187,8 @@ export default function ThreadViewer() {
               scrollToID={scrollToID}
               threadNum={threadNum}
               href={workspace}
+              changeThreadState={async () => ({})}
+              threadLink="https://heywillow.io/signup"
             />
           </div>
         </div>

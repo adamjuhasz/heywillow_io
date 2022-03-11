@@ -4,12 +4,14 @@ import { UrlObject } from "url";
 
 import ToastContext from "components/Toast";
 import { ToastType } from "components/Toast";
+import changeThreadState from "client/changeThreadState";
 
 export interface PublicProps {
   className: string;
   threadNum: number | undefined;
   setLoading: Dispatch<SetStateAction<boolean>>;
   href: UrlObject | string;
+  changeThreadState: typeof changeThreadState;
 }
 
 interface Props {

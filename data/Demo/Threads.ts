@@ -73,3 +73,5 @@ export const threads: DemoThread[] = [
     },
   },
 ];
+
+export default threads;

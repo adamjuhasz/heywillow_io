@@ -14,16 +14,12 @@ import AppLayout from "layouts/app";
 import NumberBadge from "components/App/NumberBadge";
 import { threads as demoThreads } from "data/Demo/Threads";
 import Avatar from "components/Avatar";
+import teams from "data/Demo/Teams";
 
 export default function DemoDashboard() {
   const router = useRouter();
 
   const { namespace } = router.query;
-
-  const teams = [
-    { name: "Stealth", Namespace: { namespace: "stealth" } },
-    { name: "Willow", Namespace: { namespace: "willow" } },
-  ];
 
   const threads = demoThreads;
 
@@ -37,6 +33,7 @@ export default function DemoDashboard() {
           </Link>
         </div>
       </div>
+
       <StickyBase>
         <AppContainer>
           <HeaderContainer>

@@ -26,6 +26,8 @@ import LoadingThread from "components/Thread/LoadingThread";
 import ThreadPrinter from "components/Thread/ThreadPrinter";
 import { AddComment } from "components/Thread/CommentBox";
 import { Body, Return } from "pages/api/v1/comment/add";
+import changeThreadState from "client/changeThreadState";
+import useGetSecureThreadLink from "client/getSecureThreadLink";
 
 export default function ThreadViewer() {
   const [scrolled, setScrolled] = useState(false);
@@ -41,6 +43,8 @@ export default function ThreadViewer() {
   const { data: threads, mutate: mutateThreads } = useGetAliasThreads(
     thread?.aliasEmailId
   );
+
+  const { data: threadLink } = useGetSecureThreadLink(threadNum);
 
   const threadsWithThisOne = useMemo(() => {
     if (threads === undefined) {
@@ -255,6 +259,8 @@ export default function ThreadViewer() {
               scrollToID={scrollToID}
               threadNum={threadNum}
               href={workspace}
+              changeThreadState={changeThreadState}
+              threadLink={threadLink?.absoluteLink}
             />
           </div>
         </div>

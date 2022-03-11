@@ -4,7 +4,6 @@ import ClockIcon from "@heroicons/react/outline/ClockIcon";
 import ChangeStateBase, {
   PublicProps,
 } from "components/Thread/RightSidebar/ChangeState/ChangeStateBase";
-import changeThreadState from "client/changeThreadState";
 
 export interface Props {
   snoozeDays: number;
@@ -18,7 +17,7 @@ export default function SnoozeDays(props: PublicProps & Props) {
       }`}
       icon={ClockIcon}
       action={(tn) =>
-        changeThreadState(tn, {
+        props.changeThreadState(tn, {
           state: "snoozed",
           snoozeDate: addDays(new Date(), props.snoozeDays).toISOString(),
         })

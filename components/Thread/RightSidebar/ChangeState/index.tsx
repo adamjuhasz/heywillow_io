@@ -25,6 +25,7 @@ export default function ChangeThreadState(
             className="hover:bg-lime-800 hover:bg-opacity-30 hover:text-lime-500"
             setLoading={props.setLoading}
             href={props.href}
+            changeThreadState={props.changeThreadState}
           />
 
           <SnoozeDays
@@ -33,6 +34,7 @@ export default function ChangeThreadState(
             className="hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
             setLoading={props.setLoading}
             href={props.href}
+            changeThreadState={props.changeThreadState}
           />
           <SnoozeDays
             threadNum={props.threadNum}
@@ -40,6 +42,7 @@ export default function ChangeThreadState(
             className="hover:bg-yellow-800 hover:bg-opacity-20 hover:text-yellow-600"
             setLoading={props.setLoading}
             href={props.href}
+            changeThreadState={props.changeThreadState}
           />
           <SnoozeDays
             threadNum={props.threadNum}
@@ -47,6 +50,7 @@ export default function ChangeThreadState(
             className="hover:bg-yellow-800 hover:bg-opacity-30 hover:text-yellow-400"
             setLoading={props.setLoading}
             href={props.href}
+            changeThreadState={props.changeThreadState}
           />
 
           <SnoozeMinutes
@@ -55,6 +59,7 @@ export default function ChangeThreadState(
             className="hover:bg-pink-800 hover:bg-opacity-30 hover:text-pink-400"
             setLoading={props.setLoading}
             href={props.href}
+            changeThreadState={props.changeThreadState}
           />
         </>
       )}
