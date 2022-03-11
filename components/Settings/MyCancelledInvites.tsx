@@ -1,4 +1,4 @@
-import { formatDistanceToNowStrict } from "date-fns";
+import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 
 interface Props {
   cancelled: { id: number; createdAt: string; Team: { name: string } }[];

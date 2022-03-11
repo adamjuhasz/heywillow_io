@@ -1,7 +1,7 @@
 import Head from "next/head";
-import { PlusCircleIcon } from "@heroicons/react/outline";
+import PlusCircleIcon from "@heroicons/react/outline/PlusCircleIcon";
 import { ReactElement, useState } from "react";
-import { formatDistanceToNowStrict } from "date-fns";
+import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 
 import AppLayout from "layouts/app";
 import SettingsTitle from "components/Settings/Title";

@@ -1,10 +1,8 @@
 import { Fragment, ReactElement, useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/solid";
+import CheckCircleIcon from "@heroicons/react/outline/CheckCircleIcon";
+import ExclamationCircleIcon from "@heroicons/react/outline/ExclamationCircleIcon";
+import XIcon from "@heroicons/react/solid/XIcon";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Switch } from "@headlessui/react";
@@ -16,6 +14,7 @@ import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
 import LandingPageHeader from "components/LandingPage/Header";
 import GetAuthCookie from "components/GetAuthCoookie";
+import Loading from "components/Loading";
 
 export default function Login(): JSX.Element {
   const client = useSupabase();
@@ -65,9 +64,8 @@ export default function Login(): JSX.Element {
                 action="#"
                 method="POST"
                 className="space-y-6"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  setDisabled(true);
+                onSubmit={async (event) => {
+                  event.preventDefault();
 
                   const redirectTo = `${document.location.origin}${redirectPath}`;
                   console.log("redirectTo", redirectTo);
@@ -77,19 +75,28 @@ export default function Login(): JSX.Element {
                     return;
                   }
 
-                  const { error: signInError } = await client.auth.signIn(
-                    {
-                      email,
-                      password: useMagicLink ? undefined : password,
-                    },
-                    { redirectTo }
-                  );
-                  if (signInError === null) {
-                    if (useMagicLink) {
-                      setShow(`Magic link sent to ${email}`);
+                  try {
+                    setDisabled(true);
+
+                    const { error: signInError } = await client.auth.signIn(
+                      {
+                        email,
+                        password: useMagicLink ? undefined : password,
+                      },
+                      { redirectTo }
+                    );
+
+                    if (signInError === null) {
+                      if (useMagicLink) {
+                        setShow(`Magic link sent to ${email}`);
+                      }
+                    } else {
+                      setError(signInError.message);
+                      setDisabled(false);
                     }
-                  } else {
-                    setError(signInError.message);
+                  } catch (tryError) {
+                    console.error(tryError);
+                    setError("Error with login provider");
                     setDisabled(false);
                   }
                 }}
@@ -103,6 +110,7 @@ export default function Login(): JSX.Element {
                   </label>
                   <div className="mt-1">
                     <input
+                      disabled={disabled}
                       id="email"
                       name="email"
                       type="email"
@@ -125,6 +133,7 @@ export default function Login(): JSX.Element {
                     </label>
                     <div className="mt-1">
                       <input
+                        disabled={disabled}
                         id="password"
                         name="password"
                         type="password"
@@ -142,6 +151,7 @@ export default function Login(): JSX.Element {
 
                 <Switch.Group as="div" className="flex items-center">
                   <Switch
+                    disabled={disabled}
                     checked={useMagicLink}
                     onChange={setMagicLink}
                     className={[
@@ -180,11 +190,15 @@ export default function Login(): JSX.Element {
                       "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
                     ].join(" ")}
                   >
-                    {disabled && useMagicLink
-                      ? "Sent..."
-                      : useMagicLink
-                      ? "Send magic link to email"
-                      : "Log in"}
+                    {disabled && useMagicLink ? (
+                      "Sent..."
+                    ) : disabled ? (
+                      <Loading className="h-4 w-4" />
+                    ) : useMagicLink ? (
+                      "Send magic link to email"
+                    ) : (
+                      "Log in"
+                    )}
                   </button>
                 </div>
               </form>

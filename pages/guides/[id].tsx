@@ -65,7 +65,7 @@ export default function Post({
 
       <div
         className={[
-          "my-2 mx-auto aspect-[12/4] w-full max-w-6xl rounded-3xl bg-zinc-700 shadow-md",
+          "my-2 mx-auto aspect-[12/4] w-full max-w-6xl rounded-3xl px-2 py-2",
           sample([
             "shadow-orange-300/30",
             "shadow-lime-300/30",
@@ -75,7 +75,7 @@ export default function Post({
           ]),
         ].join(" ")}
       >
-        <div className="grid h-full w-full grid-cols-12 grid-rows-4 overflow-clip rounded-3xl">
+        <div className="grid h-full w-full grid-cols-12 grid-rows-4 overflow-clip rounded-3xl bg-zinc-700">
           {Array(12 * 4)
             .fill(null)
             .map((_, idx) => (
@@ -150,7 +150,7 @@ export default function Post({
         <hr className="my-7 w-full max-w-2xl border-zinc-700" />
       </div>
 
-      <article className="prose prose-invert mx-auto max-w-4xl prose-h1:font-semibold prose-code:bg-black prose-code:p-1 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none prose-hr:mx-auto prose-hr:w-10/12 prose-hr:border-zinc-600">
+      <article className="prose prose-invert mx-auto max-w-4xl px-4 prose-h1:font-semibold prose-code:bg-black prose-code:p-1 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none prose-hr:mx-auto prose-hr:w-10/12 prose-hr:border-zinc-600">
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
       </article>
     </>

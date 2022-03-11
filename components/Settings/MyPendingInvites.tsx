@@ -1,4 +1,4 @@
-import { formatDistanceToNowStrict } from "date-fns";
+import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 
 import { Options } from "client/acceptInvite";
 import Loading from "components/Loading";

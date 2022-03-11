@@ -30,9 +30,12 @@ export default function LandingPageHeader(props: Props) {
         </div>
 
         <div className="flex items-center space-x-4 text-sm font-normal">
+          <Link href="/guides/onboarding-checklist">
+            <a className="text-zinc-500 hover:text-zinc-100 ">Try demo</a>
+          </Link>
           <Link href="mailto:help@heywillow.io">
             <a className="hidden text-zinc-500 hover:text-zinc-100 sm:block">
-              Contact
+              Contact us
             </a>
           </Link>
           <Link href="/login">

@@ -1,10 +1,8 @@
 import { Fragment, ReactElement, useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/solid";
+import CheckCircleIcon from "@heroicons/react/outline/CheckCircleIcon";
+import ExclamationCircleIcon from "@heroicons/react/outline/ExclamationCircleIcon";
+import XIcon from "@heroicons/react/solid/XIcon";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,6 +15,7 @@ import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
 import GetAuthCookie from "components/GetAuthCoookie";
+import Loading from "components/Loading";
 
 import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
 
@@ -125,6 +124,7 @@ export default function SignUpPage(): JSX.Element {
                     </label>
                     <div className="mt-1">
                       <input
+                        disabled={disabled}
                         id="email"
                         name="email"
                         type="email"
@@ -147,6 +147,7 @@ export default function SignUpPage(): JSX.Element {
                       </label>
                       <div className="mt-1">
                         <input
+                          disabled={disabled}
                           id="password"
                           name="password"
                           type="password"
@@ -164,6 +165,7 @@ export default function SignUpPage(): JSX.Element {
 
                   <Switch.Group as="div" className="flex items-center">
                     <Switch
+                      disabled={disabled}
                       checked={useMagicLink}
                       onChange={setMagicLink}
                       className={[
@@ -202,11 +204,15 @@ export default function SignUpPage(): JSX.Element {
                         "disabled:bg-indigo-300",
                       ].join(" ")}
                     >
-                      {disabled && useMagicLink
-                        ? "Sent..."
-                        : useMagicLink
-                        ? "Send magic link to email"
-                        : "Sign up"}
+                      {disabled && useMagicLink ? (
+                        "Sent..."
+                      ) : disabled ? (
+                        <Loading className="h-4 w-4" />
+                      ) : useMagicLink ? (
+                        "Send magic link to email"
+                      ) : (
+                        "Sign up"
+                      )}
                     </button>
                   </div>
                 </form>

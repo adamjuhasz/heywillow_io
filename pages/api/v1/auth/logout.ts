@@ -4,7 +4,7 @@ import { serviceSupabase } from "server/supabase";
 import apiHandler from "server/apiHandler";
 
 export default apiHandler({
-  post: handler,
+  get: handler,
 });
 
 async function handler(req: NextApiRequest, res: NextApiResponse<unknown>) {

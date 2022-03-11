@@ -1,7 +1,7 @@
 import { ReactElement, useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ClipboardCopyIcon } from "@heroicons/react/solid";
+import ClipboardCopyIcon from "@heroicons/react/solid/ClipboardCopyIcon";
 import Link from "next/link";
 
 import AppLayout from "layouts/app";

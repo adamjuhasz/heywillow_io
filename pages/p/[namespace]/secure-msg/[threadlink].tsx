@@ -128,17 +128,13 @@ export default function ThreadId(props: ServerSideProps) {
         {props.thread.map((item) => (
           <Message
             key={`${item.id}`}
-            direction={item.direction}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            text={item.text as any}
-            subject={item.subject}
-            AliasEmail={item.AliasEmail}
-            TeamMember={item.TeamMember}
-            teamId={null}
-            Comment={[]}
-            Attachment={[]}
-            id={item.id as number}
-            createdAt={item.createdAt as string}
+            message={{
+              ...item,
+              createdAt: item.createdAt as string,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              text: item.text as any,
+              Attachment: [],
+            }}
           />
         ))}
         <div ref={inputRef} />

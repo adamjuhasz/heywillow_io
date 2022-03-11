@@ -1,10 +1,10 @@
 import { forwardRef, useState } from "react";
-import { LockClosedIcon } from "@heroicons/react/solid";
+import LockClosedIcon from "@heroicons/react/solid/LockClosedIcon";
 import TextareaAutosize from "react-textarea-autosize";
 
 interface Props {
   defaultValue?: string;
-  submit: (_t: string) => Promise<void>;
+  submit: (_t: string) => Promise<unknown>;
   buttonText?: string;
   placeholder?: string;
 }

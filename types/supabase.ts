@@ -6,7 +6,7 @@ import type {
   TeamInviteStatus,
   ThreadStateType,
 } from "@prisma/client";
-import { ParagraphElement } from "./slate";
+import { ParagraphElement } from "types/slate";
 
 export interface SupabaseMessage {
   id: number;
@@ -25,8 +25,8 @@ export interface SupabaseMessage {
 export interface SupabaseAliasEmail {
   id: number;
   createdAt: string;
-  customerId: number | null;
   emailAddress: string;
+  aliasName: string;
   teamId: number;
 }
 

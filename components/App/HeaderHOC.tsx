@@ -20,6 +20,7 @@ export default function AppHeaderHOC(props: PropsWithChildren<unknown>) {
     inboxes !== undefined ? inboxes?.length : undefined;
 
   const validTeams = teams?.filter(
+    // eslint-disable-next-line lodash/prefer-some
     (t) => nonAccepted.findIndex((invite) => invite.teamId === t.id) === -1
   );
 
@@ -34,7 +35,7 @@ export default function AppHeaderHOC(props: PropsWithChildren<unknown>) {
         ) === false
           ? {
               text: "Need to connect inbox",
-              href: "/a/[namespace]/settings/team/connect",
+              pathname: "/a/[namespace]/settings/team/connect",
             }
           : undefined
       }

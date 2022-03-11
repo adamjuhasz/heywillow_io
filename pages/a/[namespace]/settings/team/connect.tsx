@@ -7,14 +7,12 @@ import {
   useState,
 } from "react";
 import Head from "next/head";
-import { formatDistanceToNowStrict } from "date-fns";
+import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 import defaultTo from "lodash/defaultTo";
-import {
-  CheckCircleIcon,
-  ClipboardCopyIcon,
-  ExternalLinkIcon,
-  MinusCircleIcon,
-} from "@heroicons/react/solid";
+import CheckCircleIcon from "@heroicons/react/solid/CheckCircleIcon";
+import ClipboardCopyIcon from "@heroicons/react/solid/ClipboardCopyIcon";
+import ExternalLinkIcon from "@heroicons/react/solid/ExternalLinkIcon";
+import MinusCircleIcon from "@heroicons/react/solid/MinusCircleIcon";
 import Link from "next/link";
 
 import AppLayout from "layouts/app";
