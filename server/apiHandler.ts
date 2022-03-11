@@ -10,7 +10,7 @@ type Handler = Record<string, NextApiHandler>;
 export function apiHandler(handler: Handler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const method = defaultTo(req.method?.toLowerCase(), "");
-    void logger.info("Incoming request", {
+    void logger.info(`Incoming request ${method.toUpperCase()} ${req.url}`, {
       method,
       url: defaultTo(req.url, null),
     });
@@ -22,6 +22,13 @@ export function apiHandler(handler: Handler) {
     try {
       // route handler
       await withSentry(handler[method])(req, res);
+      // wait for sentry `withSentry` to send data to sentry
+      await new Promise<null>((resolve) =>
+        setTimeout(() => {
+          resolve(null);
+          console.log("Waited 200ms for sentry to send data back");
+        }, 200)
+      );
     } catch (err: unknown) {
       // global error handler
       errorHandler(err as string | Error, res);
