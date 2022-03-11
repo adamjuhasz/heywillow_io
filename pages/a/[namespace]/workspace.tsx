@@ -10,7 +10,6 @@ import AppContainer from "components/App/Container";
 import NumberBadge from "components/App/NumberBadge";
 
 import useGetTeams from "client/getTeams";
-// import useGetInboxes from "client/getInboxes";
 import useGetThreads from "client/getThreads";
 
 export default function DashboardPage() {
@@ -21,7 +20,6 @@ export default function DashboardPage() {
 
   const currentTeam = teams?.find((t) => t.Namespace.namespace === namespace);
   const currentTeamId = currentTeam?.id;
-  // const { data: inboxes } = useGetInboxes(currentTeam);
 
   const { data: threads } = useGetThreads(currentTeamId);
 

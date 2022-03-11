@@ -6,24 +6,34 @@ import ThreadActions from "components/Thread/RightSidebar/Actions";
 import ThreadList from "components/Thread/RightSidebar/ThreadList";
 import AliasInfo from "components/Thread/RightSidebar/Alias/AliasInfo";
 
+export interface RightSidebarAlias {
+  aliasName: string;
+  emailAddress: string;
+  createdAt: string;
+}
+
+export interface RightSidebarThread {
+  id: number;
+  createdAt: string;
+  Message: {
+    AliasEmail: null | RightSidebarAlias;
+  }[];
+}
+
+interface MiniThread {
+  id: number;
+  createdAt: string;
+  Message: { subject: string | null }[];
+}
+
 interface Props {
   scrollToID: (id: string) => void;
   loading: boolean;
   threadNum: number | undefined;
   setLoading: Dispatch<SetStateAction<boolean>>;
   href: UrlObject | string;
-  thread:
-    | {
-        id: number;
-        createdAt: string;
-        Message: {
-          AliasEmail: null | { emailAddress: string; createdAt: string };
-        }[];
-      }
-    | undefined;
-  threads:
-    | { id: number; createdAt: string; Message: { subject: string | null }[] }[]
-    | undefined;
+  thread: RightSidebarThread | undefined;
+  threads: MiniThread[] | undefined;
 }
 
 export default function RightSidebar(props: Props) {

@@ -1,47 +1,32 @@
+import { ReactElement, useContext, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import {
-  ReactElement,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
 import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
 import sortBy from "lodash/sortBy";
 
 import AppLayout from "layouts/app";
-import useGetThread from "client/getThread";
 import AppHeaderHOC from "components/App/HeaderHOC";
 import AppContainer from "components/App/Container";
 import InputWithRef from "components/Input";
-import useGetTeamId from "client/getTeamId";
-import useGetAliasThreads from "client/getAliasThreads";
-import postNewMessage from "client/postNewMessage";
 import ToastContext from "components/Toast";
 import RightSidebar from "components/Thread/RightSidebar";
 import LoadingThread from "components/Thread/LoadingThread";
 import ThreadPrinter from "components/Thread/ThreadPrinter";
-import { AddComment } from "components/Thread/CommentBox";
-import { Body, Return } from "pages/api/v1/comment/add";
+
+import { threads } from "data/Demo/Threads";
 
 export default function ThreadViewer() {
-  const [scrolled, setScrolled] = useState(false);
   const [loading, setLoading] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { threadid, comment } = router.query;
+  const { addToast } = useContext(ToastContext);
+
+  const { threadid } = router.query;
   let threadNum: number | undefined = parseInt(threadid as string, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
 
-  const { data: thread, mutate: mutateThread } = useGetThread(threadNum);
-  const teamId = useGetTeamId() || null;
-  const { data: threads, mutate: mutateThreads } = useGetAliasThreads(
-    thread?.aliasEmailId
-  );
-
+  const thread = threads.find((t) => t.id === parseInt(threadid as string, 10));
   const threadsWithThisOne = useMemo(() => {
     if (threads === undefined) {
       return threads;
@@ -52,35 +37,7 @@ export default function ThreadViewer() {
     );
 
     return sortBy(filtered, [(t) => t.createdAt]);
-  }, [threads, threadid]);
-
-  useEffect(() => {
-    if (comment !== undefined || scrolled) {
-      return;
-    }
-
-    if (divRef.current === null) {
-      console.log("divRef is null");
-      return;
-    }
-
-    divRef.current.scrollIntoView({ behavior: "smooth" });
-    setScrolled(true);
-  }, [scrolled, comment, thread]);
-
-  useEffect(() => {
-    if (comment !== undefined || scrolled) {
-      return;
-    }
-
-    if (divRef.current === null) {
-      console.log("divRef is null");
-      return;
-    }
-
-    divRef.current.scrollIntoView({ behavior: "auto" });
-    setScrolled(true);
-  }, [scrolled, comment, threads]);
+  }, [threadid]);
 
   const scrollToID = (id: string) => {
     const element = document.getElementById(id);
@@ -92,91 +49,12 @@ export default function ThreadViewer() {
     element.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    if (comment === undefined || scrolled) {
-      return;
-    }
-
-    scrollToID(`comment-${parseInt(comment as string, 10)}`);
-    setScrolled(true);
-  }, [scrolled, comment]);
-
-  const { addToast } = useContext(ToastContext);
-
   const customerEmail = thread?.Message.filter((m) => m.AliasEmail !== null)[0]
     ?.AliasEmail?.emailAddress;
 
-  const refreshComment = async (commentId: number) => {
-    await Promise.allSettled([mutateThread(), mutateThreads()]);
-    void router.replace({
-      query: { ...router.query, comment: commentId },
-    });
-  };
-
   const workspace = {
-    pathname: "/a/[namespace]/workspace",
+    pathname: "/demo/[namespace]/workspace",
     query: { namespace: router.query.namespace },
-  };
-
-  const submitMessage = async (t: string) => {
-    if (threadNum === undefined) {
-      addToast({
-        type: "error",
-        string: "Don't know which thread you're sending to",
-      });
-      return;
-    }
-    const response = await postNewMessage(threadNum, { text: t });
-
-    // wait to mutate for Supabase to see the write, ~200-400ms seems to be the magic number
-    setTimeout(async () => {
-      await Promise.allSettled([mutateThread(), mutateThreads()]);
-      if (comment) {
-        void router.replace({
-          pathname: "/a/[namespace]/thread/[threadid]",
-          query: {
-            ...router.query,
-            comment: undefined,
-            message: response.messageId,
-          },
-        });
-      } else {
-        setScrolled(false);
-      }
-    }, 300);
-  };
-
-  const addComment: AddComment = async (data) => {
-    if (teamId === null) {
-      throw new Error("No team ID");
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const body: Body = {
-      messageId: data.messageId,
-      text: data.text,
-      teamId: teamId,
-    };
-    const res = await fetch("/api/v1/comment/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    setLoading(false);
-
-    switch (res.status) {
-      case 200: {
-        const responseBody = (await res.json()) as Return;
-        addToast({ type: "string", string: "Comment added" });
-        return responseBody.id;
-      }
-
-      default:
-        addToast({ type: "error", string: "Could not save comment" });
-        throw new Error("Could not add comment");
-    }
   };
 
   return (
@@ -213,8 +91,13 @@ export default function ThreadViewer() {
                     }
                     messages={t.Message}
                     threadId={t.id}
-                    mutate={refreshComment}
-                    addComment={addComment}
+                    mutate={() => {
+                      return;
+                    }}
+                    addComment={async () => {
+                      addToast({ type: "active", string: "Adding comment" });
+                      return 0;
+                    }}
                   />
                 ))
               ) : (
@@ -230,8 +113,13 @@ export default function ThreadViewer() {
                   }
                   messages={thread?.Message}
                   threadId={thread.id}
-                  mutate={refreshComment}
-                  addComment={addComment}
+                  mutate={() => {
+                    return;
+                  }}
+                  addComment={async () => {
+                    addToast({ type: "active", string: "Adding comment" });
+                    return 0;
+                  }}
                 />
               ) : (
                 <LoadingThread />
@@ -241,7 +129,11 @@ export default function ThreadViewer() {
             </div>
 
             <div className="shrink-0 pb-2">
-              <InputWithRef submit={submitMessage} />
+              <InputWithRef
+                submit={async () => {
+                  return;
+                }}
+              />
             </div>
           </div>
 

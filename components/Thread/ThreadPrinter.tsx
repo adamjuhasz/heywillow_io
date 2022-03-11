@@ -2,16 +2,20 @@ import { useMemo } from "react";
 import sortBy from "lodash/sortBy";
 
 import SubjectLine from "components/Thread/SubjectLine";
-import MessagePrinter from "components/Thread/MessagePrinter";
-import { ThreadFetch } from "client/getThread";
+import MessagePrinter, {
+  MessageWComments,
+} from "components/Thread/MessagePrinter";
 import LoadingThread from "components/Thread/LoadingThread";
+import { AddComment } from "components/Thread/CommentBox";
+
+export type MessageWCommentsCreated = MessageWComments & { createdAt: string };
 
 interface ThreadPrinterProps {
-  messages?: ThreadFetch["Message"];
-  teamId: number | null;
+  messages?: MessageWCommentsCreated[];
   subject?: string;
   threadId?: number;
   mutate?: (id: number) => unknown;
+  addComment: AddComment;
 }
 
 export default function ThreadPrinter(props: ThreadPrinterProps) {
@@ -33,8 +37,8 @@ export default function ThreadPrinter(props: ThreadPrinterProps) {
             <MessagePrinter
               key={m.id}
               message={m}
-              teamId={props.teamId}
               mutate={props.mutate}
+              addComment={props.addComment}
             />
           ))}
         </>

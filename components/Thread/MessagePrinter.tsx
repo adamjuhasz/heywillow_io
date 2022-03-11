@@ -9,16 +9,20 @@ import {
   useFloating,
 } from "@floating-ui/react-dom";
 
-import { ThreadFetch } from "client/getThread";
 import ToastContext from "components/Toast";
 import slateToText from "shared/slate/slateToText";
-import Message from "components/Thread/Message";
-import CommentBox from "components/Thread/CommentBox";
+import Message, { IMessage } from "components/Thread/Message";
+import CommentBox, { AddComment, IComment } from "components/Thread/CommentBox";
+
+export type MessageWComments = IMessage & {
+  id: number;
+  Comment: IComment[];
+};
 
 export interface MessagePrinterProps {
-  message: ThreadFetch["Message"][number];
-  teamId: number | null;
+  message: MessageWComments;
   mutate?: (id: number) => unknown;
+  addComment: AddComment;
 }
 
 export default function MessagePrinter(props: MessagePrinterProps) {
@@ -57,8 +61,7 @@ export default function MessagePrinter(props: MessagePrinterProps) {
   return (
     <div className={["relative my-3 flex w-full flex-col"].join(" ")}>
       <Message
-        {...props.message}
-        teamId={props.teamId}
+        message={props.message}
         ref={reference}
         onMouseEnter={() => {
           console.log("enter");
@@ -102,9 +105,9 @@ export default function MessagePrinter(props: MessagePrinterProps) {
         <CommentBox
           comments={props.message.Comment}
           direction={props.message.direction}
-          messageId={Number(props.message.id)}
-          teamId={props.teamId as number}
+          messageId={props.message.id}
           mutate={props.mutate}
+          addComment={props.addComment}
         />
       ) : (
         <></>

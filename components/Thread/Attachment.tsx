@@ -1,12 +1,19 @@
 import { useRouter } from "next/router";
 
 import { useSupabase } from "components/UserContext";
-import { SupabaseAttachment } from "types/supabase";
+
+export interface IAttachment {
+  filename: string;
+  location: string;
+}
+
+interface Props {
+  attachment: IAttachment;
+}
 
 export default function Attachment({
-  filename,
-  location,
-}: SupabaseAttachment): JSX.Element {
+  attachment: { filename, location },
+}: Props): JSX.Element {
   const supabase = useSupabase();
   const router = useRouter();
 

@@ -4,7 +4,7 @@ import TextareaAutosize from "react-textarea-autosize";
 
 interface Props {
   defaultValue?: string;
-  submit: (_t: string) => Promise<void>;
+  submit: (_t: string) => Promise<unknown>;
   buttonText?: string;
   placeholder?: string;
 }

@@ -1,37 +1,45 @@
 //inspiration from https://www.openphone.co/product/teams
 import ArrowCircleUpIcon from "@heroicons/react/outline/ArrowCircleUpIcon";
-import type { SupabaseComment } from "types/supabase";
 import type { MessageDirection } from "@prisma/client";
 import uniqBy from "lodash/uniqBy";
 import TextareaAutosize from "react-textarea-autosize";
-import { FormEvent, useContext, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import isMatch from "lodash/isMatch";
 
-import { Body, Return } from "pages/api/v1/comment/add";
 import Avatar from "components/Avatar";
 import slateToText from "shared/slate/slateToText";
 import Loading from "components/Loading";
-import ToastContext from "components/Toast";
 import useGetTeamMembers from "client/getTeamMembers";
 import useGetTeamId from "client/getTeamId";
 import useGetTeams from "client/getTeams";
 import { useUser } from "components/UserContext";
+import { ParagraphElement } from "types/slate";
+
+export interface IComment {
+  id: number;
+  authorId: number;
+  text: ParagraphElement[];
+  TeamMember: {
+    Profile: {
+      email: string;
+      firstName: string | null;
+      lastName: string | null;
+    };
+  };
+}
+
+export type AddComment = (data: {
+  messageId: number;
+  text: string;
+}) => Promise<number>;
 
 interface Props {
   messageId: number;
-  comments: (SupabaseComment & {
-    TeamMember: {
-      Profile: {
-        email: string;
-        firstName: string | null;
-        lastName: string | null;
-      };
-    };
-  })[];
+  comments: IComment[];
   direction: MessageDirection;
-  teamId: number;
   mutate?: (commentId: number) => unknown;
   id?: string;
+  addComment: AddComment;
 }
 
 interface UserDBEntry {
@@ -48,7 +56,6 @@ export default function CommentBox(props: Props) {
   const [loading, setLoading] = useState(false);
   const [newComment, setComment] = useState("");
   const [tag, setTag] = useState<string | null>(null);
-  const { addToast } = useContext(ToastContext);
   const teamId = useGetTeamId();
   const { data: teams } = useGetTeams();
   const { data: teamMembers } = useGetTeamMembers(teamId);
@@ -103,46 +110,19 @@ export default function CommentBox(props: Props) {
 
   const commentators = uniqBy(props.comments, (c) => c.authorId);
 
-  const submitForm = async (e: FormEvent<unknown>) => {
-    e.preventDefault();
-
-    if (formRef.current === null) {
-      console.error("Can't submit form due to formRef being null");
-      return;
-    }
-
-    setLoading(true);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const body: Body = {
-      messageId: props.messageId,
-      text: newComment,
-      teamId: props.teamId,
-    };
-    const res = await fetch("/api/v1/comment/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    setLoading(false);
-
-    switch (res.status) {
-      case 200: {
-        const responseBody = (await res.json()) as Return;
-        if (props.mutate) {
-          props.mutate(responseBody.id);
-        }
-        setComment("");
-        addToast({ type: "string", string: "Comment added" });
-        break;
+  const addComment = async () => {
+    try {
+      setLoading(true);
+      const commentId = await props.addComment({
+        messageId: props.messageId,
+        text: newComment,
+      });
+      if (props.mutate) {
+        props.mutate(commentId);
       }
-
-      default:
-        addToast({ type: "error", string: "Could not save comment" });
-        break;
+      setComment("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -213,7 +193,10 @@ export default function CommentBox(props: Props) {
         ))}
         <form
           className="relative mt-2 w-full px-2"
-          onSubmit={submitForm}
+          onSubmit={(e) => {
+            e.preventDefault();
+            void addComment();
+          }}
           ref={formRef}
         >
           <TextareaAutosize
@@ -241,7 +224,7 @@ export default function CommentBox(props: Props) {
               if (
                 isMatch(e, { key: "Enter", shiftKey: false, altKey: false })
               ) {
-                void submitForm(e);
+                void addComment();
               }
 
               if (e.key === "@") {
