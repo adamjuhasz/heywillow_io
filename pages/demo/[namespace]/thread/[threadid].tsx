@@ -16,7 +16,9 @@ import TopLink from "components/App/Header/TopLink";
 import InputWithRef from "components/Input";
 import ToastContext from "components/Toast";
 import RightSidebar from "components/Thread/RightSidebar";
-import MultiThreadPrinter from "components/Thread/MultiThreadPrinter";
+import MultiThreadPrinter, {
+  scrollToID,
+} from "components/Thread/MultiThreadPrinter";
 
 import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
@@ -30,8 +32,10 @@ export default function ThreadViewer() {
   let threadNum: number | undefined = parseInt(threadid as string, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
 
-  const thread = threads.find((t) => t.id === parseInt(threadid as string, 10));
-  const threadsWithThisOne = useMemo(() => {
+  const requestedThread = threads.find(
+    (t) => t.id === parseInt(threadid as string, 10)
+  );
+  const threadsWithoutRequested = useMemo(() => {
     if (threads === undefined) {
       return threads;
     }
@@ -43,18 +47,9 @@ export default function ThreadViewer() {
     return sortBy(filtered, [(t) => t.createdAt]);
   }, [threadid]);
 
-  const scrollToID = (id: string) => {
-    const element = document.getElementById(id);
-    if (element === null) {
-      console.log("element not found", element);
-      return;
-    }
-
-    element.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const customerEmail = thread?.Message.filter((m) => m.AliasEmail !== null)[0]
-    ?.AliasEmail?.emailAddress;
+  const customerEmail = requestedThread?.Message.filter(
+    (m) => m.AliasEmail !== null
+  )[0]?.AliasEmail?.emailAddress;
 
   const workspace = {
     pathname: "/demo/[namespace]/workspace",
@@ -120,8 +115,8 @@ export default function ThreadViewer() {
           <div className="flex h-full w-[calc(100%_-_3rem_-_16rem)] flex-col pt-7">
             <div className="grow overflow-x-hidden overflow-y-scroll">
               <MultiThreadPrinter
-                primaryThread={thread}
-                secondaryThreads={threadsWithThisOne}
+                primaryThread={requestedThread}
+                secondaryThreads={threadsWithoutRequested}
                 refreshComment={() => ({})}
                 addComment={async () => {
                   addToast({ type: "active", string: "Adding comment" });
@@ -143,7 +138,7 @@ export default function ThreadViewer() {
           {/* Right side */}
           <div className="w-[16rem] shrink-0 px-4 py-7">
             <RightSidebar
-              thread={thread}
+              thread={requestedThread}
               threads={threads}
               loading={loading}
               setLoading={setLoading}
