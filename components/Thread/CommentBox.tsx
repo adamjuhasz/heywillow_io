@@ -128,7 +128,7 @@ export default function CommentBox(props: Props) {
 
   return (
     <div
-      id={props.id}
+      id={`CommentBox-${props.id}`}
       className={[
         "mt-1 flex w-full",
         props.direction === "incoming" ? "ml-14 self-start" : "mr-14 self-end",

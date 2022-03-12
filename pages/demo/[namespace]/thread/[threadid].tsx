@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useMemo, useRef, useState } from "react";
+import { ReactElement, useContext, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
@@ -16,15 +16,13 @@ import TopLink from "components/App/Header/TopLink";
 import InputWithRef from "components/Input";
 import ToastContext from "components/Toast";
 import RightSidebar from "components/Thread/RightSidebar";
-import LoadingThread from "components/Thread/LoadingThread";
-import ThreadPrinter from "components/Thread/ThreadPrinter";
+import MultiThreadPrinter from "components/Thread/MultiThreadPrinter";
 
 import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
 
 export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
-  const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { addToast } = useContext(ToastContext);
 
@@ -121,51 +119,16 @@ export default function ThreadViewer() {
           {/* Center */}
           <div className="flex h-full w-[calc(100%_-_3rem_-_16rem)] flex-col pt-7">
             <div className="grow overflow-x-hidden overflow-y-scroll">
-              {threadsWithThisOne ? (
-                threadsWithThisOne.map((t) => (
-                  <ThreadPrinter
-                    key={t.id}
-                    subject={
-                      t.Message.filter((m) => m.subject !== null).reverse()[0]
-                        ?.subject || undefined
-                    }
-                    messages={t.Message}
-                    threadId={t.id}
-                    mutate={() => {
-                      return;
-                    }}
-                    addComment={async () => {
-                      addToast({ type: "active", string: "Adding comment" });
-                      return 0;
-                    }}
-                  />
-                ))
-              ) : (
-                <LoadingThread />
-              )}
-
-              {thread ? (
-                <ThreadPrinter
-                  subject={
-                    thread?.Message.filter(
-                      (m) => m.subject !== null
-                    ).reverse()[0].subject || undefined
-                  }
-                  messages={thread?.Message}
-                  threadId={thread.id}
-                  mutate={() => {
-                    return;
-                  }}
-                  addComment={async () => {
-                    addToast({ type: "active", string: "Adding comment" });
-                    return 0;
-                  }}
-                />
-              ) : (
-                <LoadingThread />
-              )}
-
-              <div id="thread-bottom" ref={divRef} />
+              <MultiThreadPrinter
+                primaryThread={thread}
+                secondaryThreads={threadsWithThisOne}
+                refreshComment={() => ({})}
+                addComment={async () => {
+                  addToast({ type: "active", string: "Adding comment" });
+                  return 0;
+                }}
+                urlQueryComment={undefined}
+              />
             </div>
 
             <div className="shrink-0 pb-2">
