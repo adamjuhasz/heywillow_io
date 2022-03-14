@@ -42,8 +42,13 @@ class MyDocument extends Document {
           <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
           <link
-            rel="stylesheet"
+            rel="preconnect"
+            href="https://use.typekit.net"
+            crossOrigin="anonymous"
+          />
+          <link
             href="https://use.typekit.net/itm2wvw.css"
+            rel="stylesheet"
           ></link>
         </Head>
         <body className="bg-zinc-900 font-[rubik] text-zinc-100">

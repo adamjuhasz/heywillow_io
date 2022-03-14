@@ -450,7 +450,10 @@ export default function Vercel(): JSX.Element {
 
         <div className="mb-14 flex flex-col">
           <div className="mx-auto h-[200px] w-[1px] bg-gradient-to-b from-transparent to-white" />
-          <h3 className="text-center text-3xl font-medium text-zinc-100 md:text-7xl">
+          <h3
+            id="pricing"
+            className="text-center text-3xl font-medium text-zinc-100 md:text-7xl"
+          >
             We hate per-seat pricing
           </h3>
           <div className="mt-7 text-center text-lg font-light text-zinc-500 md:text-2xl">
