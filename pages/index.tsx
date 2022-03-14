@@ -77,15 +77,13 @@ export default function Vercel(): JSX.Element {
 
       <div className="mx-auto max-w-4xl bg-zinc-900 px-4 text-zinc-200 lg:px-0">
         <div className="flex flex-col py-14">
-          <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:space-y-4 md:text-9xl">
-            <span className="lg:text-[100px] lg:leading-[100px]">
-              Customer service
-            </span>
+          <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:space-y-4 md:text-9xl lg:text-[100px] lg:leading-[100px]">
+            <span className="text-center ">Customer service</span>
 
-            <span className="lg:text-[100px] lg:leading-[100px]">for</span>
+            <span className="">for</span>
 
             <span>
-              <GradientText className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 lg:text-[130px] lg:leading-[130px]">
+              <GradientText className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 lg:text-[150px] lg:leading-[150px]">
                 founders
               </GradientText>
             </span>
