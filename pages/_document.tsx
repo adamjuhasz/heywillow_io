@@ -40,18 +40,8 @@ class MyDocument extends Document {
           <meta name="apple-mobile-web-app-title" content="Willow" />
           <meta name="application-name" content="Willow" />
           <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-          <link
-            rel="preconnect"
-            href="https://use.typekit.net"
-            crossOrigin="anonymous"
-          />
-          <link
-            href="https://use.typekit.net/itm2wvw.css"
-            rel="stylesheet"
-          ></link>
         </Head>
-        <body className="bg-zinc-900 font-[rubik] text-zinc-100">
+        <body className="bg-zinc-900 text-zinc-100">
           <Main />
           <NextScript />
         </body>

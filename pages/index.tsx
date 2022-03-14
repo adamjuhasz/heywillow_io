@@ -36,10 +36,46 @@ export default function Vercel(): JSX.Element {
       <Head>
         {/* eslint-disable-next-line react/no-unescaped-entities */}
         <title>See your customer's whole story</title>
+
+        {/* font-light */}
+        <link
+          rel="preload"
+          href="/fonts/rubik/rubik-latin-300-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin=""
+        />
+
+        {/* font-normal */}
+        <link
+          rel="preload"
+          href="/fonts/rubik/rubik-latin-400-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin=""
+        />
+
+        {/* font-medium */}
+        <link
+          rel="preload"
+          href="/fonts/rubik/rubik-latin-500-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin=""
+        />
+
+        {/* font-semibold */}
+        <link
+          rel="preload"
+          href="/fonts/rubik/rubik-latin-600-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin=""
+        />
       </Head>
       <LandingPageHeader />
 
-      <div className="mx-auto max-w-4xl bg-zinc-900 px-4 font-[rubik] text-zinc-200 lg:px-0">
+      <div className="mx-auto max-w-4xl bg-zinc-900 px-4 text-zinc-200 lg:px-0">
         <div className="flex flex-col py-14">
           <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:space-y-4 md:text-9xl">
             <span className="lg:text-[100px] lg:leading-[100px]">

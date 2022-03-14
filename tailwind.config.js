@@ -1,3 +1,5 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
@@ -6,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Rubik", ...defaultTheme.fontFamily.sans],
+      },
       keyframes: {
         leftRightAnim: {
           "0%": { "background-position": "0% 0%" },
