@@ -59,7 +59,7 @@ async function findInbox(emails: string[], hash: string[]): Promise<InboxInfo> {
 
   const inboxHash: string | undefined = hash.filter((h) => h !== "")[0];
   if (inboxHash === undefined) {
-    throw new Error(`Inbox not found -- ${emails.join(", ")}`);
+    throw new Error(`[${emails.join(", ")}] -- Inboxes not found`);
   }
 
   const inboxFromHash = await prisma.inbox.findUnique({
@@ -68,7 +68,7 @@ async function findInbox(emails: string[], hash: string[]): Promise<InboxInfo> {
   });
 
   if (inboxFromHash === null) {
-    throw new Error(`Inbox not found -- ${emails.join(", ")}`);
+    throw new Error(`[${emails.join(", ")}] -- Inboxes not found`);
   }
 
   return inboxFromHash;
@@ -90,7 +90,7 @@ export default async function addEmailToDB(
       emailMessageId: message.emailMessageId,
       fromName: message.fromName,
     });
-    throw new Error(`Inbox not found -- ${message.toEmail}`);
+    throw new Error(`${message.toEmail} -- Inbox not found`);
   }
 
   const thisAlias = await prisma.aliasEmail.upsert({
