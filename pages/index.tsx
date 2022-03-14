@@ -209,17 +209,30 @@ export default function Vercel(): JSX.Element {
                 <div className="flex w-full">
                   <div className="flex grow flex-col divide-y divide-yellow-400 rounded-xl border-2 border-yellow-400 bg-yellow-200 bg-opacity-40 px-4 py-2 text-sm font-light text-white">
                     <div className="py-1">
-                      <span className="font-medium">@mike</span> can we do this?
+                      <span className="rounded-md bg-black bg-opacity-20 px-1.5 py-0.5 font-medium">
+                        @mike (CX)
+                      </span>{" "}
+                      can we do this?
                     </div>
                     <div className="py-1">
-                      <span className="font-medium">@adam</span> not sure!{" "}
-                      <span className="font-medium">@Stefan</span> where are we
-                      with the transfer project? Any news from eng?
+                      <span className="rounded-md bg-black bg-opacity-20 px-1.5 py-0.5 font-medium">
+                        @adam (PROD)
+                      </span>{" "}
+                      not sure!{" "}
+                      <span className="rounded-md bg-black bg-opacity-20 px-1.5 py-0.5 font-medium">
+                        @Stefan (ENG)
+                      </span>{" "}
+                      where are we with the transfer project? Any news from eng?
                     </div>
                     <div className="py-1">
-                      <span className="font-medium">@adam</span>,{" "}
-                      <span className="font-medium">@mike</span> we&apos;re on
-                      track to release this in 2 weeks
+                      <span className="rounded-md bg-black bg-opacity-20 px-1.5 py-0.5 font-medium">
+                        @adam (PROD)
+                      </span>
+                      ,{" "}
+                      <span className="rounded-md bg-black bg-opacity-20 px-1.5 py-0.5 font-medium">
+                        @mike (CX)
+                      </span>{" "}
+                      we&apos;re on track to release this in 2 weeks
                     </div>
                   </div>
                   <div className="ml-1 -mt-2 mr-8 h-6 w-4 rounded-br-xl border-r-2 border-b-2 border-zinc-600" />
