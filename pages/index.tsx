@@ -35,7 +35,7 @@ export default function Vercel(): JSX.Element {
     <>
       <Head>
         {/* eslint-disable-next-line react/no-unescaped-entities */}
-        <title>See your customer's whole story</title>
+        <title>Customer service for founders</title>
 
         {/* font-light */}
         <link
