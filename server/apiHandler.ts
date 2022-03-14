@@ -1,6 +1,5 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import defaultTo from "lodash/defaultTo";
-import { withSentry } from "@sentry/nextjs";
 
 import { errorHandler } from "server/errorHandler";
 import { logger } from "utils/logger";
@@ -21,14 +20,7 @@ export function apiHandler(handler: Handler) {
 
     try {
       // route handler
-      await withSentry(handler[method])(req, res);
-      // wait for sentry `withSentry` to send data to sentry
-      await new Promise<null>((resolve) =>
-        setTimeout(() => {
-          resolve(null);
-          console.log("Waited 200ms for sentry to send data back");
-        }, 200)
-      );
+      await handler[method](req, res);
     } catch (err: unknown) {
       // global error handler
       errorHandler(err as string | Error, res);
