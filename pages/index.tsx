@@ -77,10 +77,8 @@ export default function Vercel(): JSX.Element {
 
       <div className="mx-auto max-w-4xl bg-zinc-900 px-4 text-zinc-200 lg:px-0">
         <div className="flex flex-col py-14">
-          <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:space-y-4 md:text-9xl lg:text-[100px] lg:leading-[100px]">
-            <span className="text-center ">Customer service</span>
-
-            <span className="">for</span>
+          <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:text-9xl lg:text-[100px] lg:leading-[100px]">
+            <span className="text-center ">Customer service for</span>
 
             <span>
               <GradientText className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 lg:text-[150px] lg:leading-[150px]">
@@ -90,22 +88,26 @@ export default function Vercel(): JSX.Element {
           </h1>
 
           <div className="mx-auto mb-14 flex w-full flex-col space-x-0 space-y-4 md:w-fit md:flex-row md:space-x-6 md:space-y-0">
-            <Link href="/signup">
+            <Link href="/demo">
               <a className="flex w-full items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 sm:min-w-[200px]">
-                Sign up
+                Explore demo
               </a>
             </Link>
-            <Link href="/demo">
-              <a className="flex items-center justify-center rounded-lg border-2 border-zinc-500 px-6 py-4 text-zinc-500 hover:border-zinc-100 hover:text-zinc-100 sm:min-w-[200px]">
-                Explore demo
+            <Link href="/signup">
+              <a className="flex items-center justify-center rounded-lg border-2 border-zinc-400 px-6 py-4 text-zinc-400 hover:border-zinc-100 hover:text-zinc-100 sm:min-w-[200px]">
+                Sign up now
               </a>
             </Link>
           </div>
 
+          <h2 className="mb-4 text-center text-xl text-zinc-500">
+            Willow is a customer service platform for founding teams.
+          </h2>
           <h2 className="text-center text-lg text-zinc-500">
-            Willow shows your customer&apos;s entire story in one place,
-            including messages, emails, in-app actions, or user events, so you
-            can provide better customer service without switching tabs.
+            {" "}
+            Share one unified helpdesk email, comment on messages to get the
+            whole team involved, and pricing based on how many people you help{" "}
+            not how many are in your team (we hate seat-based pricing).
           </h2>
         </div>
 
@@ -625,6 +627,20 @@ export default function Vercel(): JSX.Element {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="mb-14 flex w-full items-center justify-between space-x-3 md:px-10">
+          <div className="flex flex-col">
+            <div className="text-2xl font-medium">Not convinced yet?</div>
+            <div className="text-sm">
+              Explore our full fidelity demo to see how Willow works
+            </div>
+          </div>
+          <Link href="/demo">
+            <a className="flex w-fit shrink-0 grow-0 items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 sm:min-w-[200px]">
+              Explore demo
+            </a>
+          </Link>
         </div>
       </div>
 
