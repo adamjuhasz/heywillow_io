@@ -335,17 +335,17 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@floating-ui/core@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-0.6.0.tgz#bbefe8eaeaa0608509eb863189e37eef930c4204"
-  integrity sha512-chJj27Tj4q6EUgRaR5m5Va+h+N5yFMP/s3CagVMS9Ug3482jsjZMvS2kuwQQAdLV+/1zCf5uZiN1mksaLerQoA==
+"@floating-ui/core@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-0.6.1.tgz#aed861a1b6dbebadf14a9dd829ba67f4f3ae795c"
+  integrity sha512-Y30eVMcZva8o84c0HcXAtDO4BEzPJMvF6+B7x7urL2xbAqVsGJhojOyHLaoQHQYjb6OkqRq5kO+zeySycQwKqg==
 
-"@floating-ui/dom@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-0.4.0.tgz#9f81632b7c0cc7ae3a12b2b9990de14752083a36"
-  integrity sha512-sfbZCY30r2u9f6h2wBtFtvhlSLP2nUuwsj7feTvZLtxhbrVd+/43jrW1d2OHWfeqx8oUTbCQdO5Z7td9DffOkg==
+"@floating-ui/dom@^0.4.0", "@floating-ui/dom@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-0.4.1.tgz#3e164482d7f036527f65a794bdf054d2cc44fcbf"
+  integrity sha512-VAdIkn+zc4VB3pSemBk2JwjXlbVEBUbQft4V5jGpUeA9Vxd1fQD5eL3dMIMLVW003NYCOoW42JjjyBPNTpr8uQ==
   dependencies:
-    "@floating-ui/core" "^0.6.0"
+    "@floating-ui/core" "^0.6.1"
 
 "@floating-ui/react-dom@^0.6.0":
   version "0.6.0"
