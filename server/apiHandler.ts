@@ -8,7 +8,8 @@ type Handler = Record<string, NextApiHandler>;
 
 export function apiHandler(handler: Handler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
-    const method = defaultTo(req.method?.toLowerCase(), "");
+    const method = defaultTo(req.method?.toLowerCase(), "get");
+
     void logger.info(`Incoming request ${method.toUpperCase()} ${req.url}`, {
       method,
       url: defaultTo(req.url, null),
@@ -21,10 +22,17 @@ export function apiHandler(handler: Handler) {
     try {
       // route handler
       await handler[method](req, res);
+      void logger.info(`Finishing request ${method.toUpperCase()} ${req.url}`, {
+        method,
+        url: defaultTo(req.url, null),
+      });
     } catch (err: unknown) {
       // global error handler
       errorHandler(err as string | Error, res);
     }
+
+    //wait for 200ms to allow requests to finish before lambda freezes us
+    await new Promise<null>((resolve) => setTimeout(() => resolve(null), 200));
   };
 }
 

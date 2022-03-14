@@ -1,20 +1,24 @@
 import type { NextApiResponse } from "next";
 import isString from "lodash/isString";
 
-export function errorHandler(err: string | Error, res: NextApiResponse) {
-  if (isString(err)) {
-    // custom application error
-    const is404 = err.toLowerCase().endsWith("not found");
-    const statusCode = is404 ? 404 : 400;
-    return res.status(statusCode).json({ error: err });
-  }
+export function errorHandler(
+  err: string | Error,
+  res: NextApiResponse<{ error: string }>
+) {
+  const message: string = isString(err) ? err : err.message;
+  const is404 = message.toLowerCase().endsWith("not found");
+  const isError = !isString(err);
 
-  if (err.name === "UnauthorizedError") {
-    // jwt authentication error
-    return res.status(401).json({ error: "Invalid Token" });
+  if (is404) {
+    // custom application error
+    return res.status(404).json({ error: message });
   }
 
   // default to 500 server error
   console.error(err);
-  return res.status(500).json({ error: err.message });
+  if (isError) {
+    return res.status(500).json({ error: err.message });
+  } else {
+    return res.status(500).json({ error: err });
+  }
 }
