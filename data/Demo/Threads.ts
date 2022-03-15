@@ -1,14 +1,10 @@
 import subDays from "date-fns/subDays";
-import type {
-  SupabaseAliasEmail,
-  SupabaseInbox,
-  SupabaseThread,
-} from "types/supabase";
+import type { SupabaseAliasEmail, SupabaseThread } from "types/supabase";
 import type { MessageDirection } from "@prisma/client";
 import type { MessageWCommentsCreated } from "components/Thread/ThreadPrinter";
 import type { RightSidebarAlias } from "components/Thread/RightSidebar";
 import textToSlate from "shared/slate/textToSlate";
-import { janeCustomer, johnCustomer } from "./Customers";
+import { johnCustomer } from "./Customers";
 import {
   adamTeamMember,
   eileenTeamMember,
