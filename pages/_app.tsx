@@ -4,7 +4,6 @@ import "styles/rubik.css";
 import type { ReactElement, ReactNode } from "react";
 import type { AppProps } from "next/app";
 import type { NextPage } from "next";
-import Script from "next/script";
 import Head from "next/head";
 
 import PageLoading from "components/PageLoading";
