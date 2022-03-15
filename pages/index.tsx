@@ -34,8 +34,11 @@ export default function Vercel(): JSX.Element {
   return (
     <>
       <Head>
-        {/* eslint-disable-next-line react/no-unescaped-entities */}
         <title>Customer service for founders</title>
+        <meta
+          name="description"
+          content="Customer service platform tailer made for early-stage startups. See a lifetime view every message with a customer on one screen. No per-seat pricing, so get your whole team working together to fix issues."
+        />
 
         {/* font-light */}
         <link
