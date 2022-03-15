@@ -1,3 +1,5 @@
+import sortBy from "lodash/sortBy";
+
 import ThreadRow from "components/Thread/RightSidebar/ThreadList/ThreadRow";
 
 interface Props {
@@ -12,15 +14,17 @@ export default function ThreadList(props: Props) {
     return <></>;
   }
 
+  const ordered = sortBy(props.threads, ["createdAt"], ["asc"]);
+
   return (
     <>
       <div className="mt-7 text-sm font-medium text-zinc-500">Threads</div>
-      {props.threads.map((t) => (
+      {ordered.map((t) => (
         <ThreadRow
           key={t.id}
           id={t.id}
           scrollToID={props.scrollToID}
-          Message={t.Message}
+          messages={t.Message}
           createdAt={t.createdAt}
         />
       ))}

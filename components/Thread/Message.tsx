@@ -48,7 +48,11 @@ export default forwardRef<HTMLDivElement, Props>(function Message(props, ref) {
       <div className="ml-[0.25rem] flex w-[1.5rem] grow-0 flex-col">
         <div className="text-xs font-medium">&nbsp;</div>
         <Avatar
-          str={props.message.AliasEmail?.emailAddress || ""}
+          str={
+            props.message.AliasEmail?.emailAddress ||
+            props.message.TeamMember?.Profile.email ||
+            ""
+          }
           className="h-[1.5rem] w-[1.5rem]"
         />
       </div>
@@ -96,7 +100,7 @@ export default forwardRef<HTMLDivElement, Props>(function Message(props, ref) {
               ) : (
                 ""
               )}
-              <div className="flex w-full flex-col">
+              <div className="flex w-full flex-col space-y-4">
                 {bodyText.split("\n").map((b, i) => (
                   <div key={i} className="w-full">
                     <Redacted str={b} />

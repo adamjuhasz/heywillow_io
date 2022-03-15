@@ -40,12 +40,12 @@ export default function ThreadViewer() {
       return threads;
     }
 
-    const filtered = (threads || []).filter(
-      (t) => t.id !== parseInt((threadid as string) || "0", 10)
-    );
+    const filtered = threads
+      .filter((t) => t.id !== parseInt((threadid as string) || "0", 10))
+      .filter((t) => t.AliasEmail.id === requestedThread?.AliasEmail.id);
 
     return sortBy(filtered, [(t) => t.createdAt]);
-  }, [threadid]);
+  }, [threadid, requestedThread]);
 
   const customerEmail = requestedThread?.Message.filter(
     (m) => m.AliasEmail !== null
@@ -62,7 +62,7 @@ export default function ThreadViewer() {
         <title>{customerEmail ? `${customerEmail} on Willow` : "Willow"}</title>
       </Head>
 
-      <div className="flex justify-center bg-blue-500 py-1 text-white">
+      <div className="flex h-8 justify-center bg-blue-500 py-1 text-white">
         <div>
           Demo data — Ready to get started?{" "}
           <Link href="/signup">
@@ -99,7 +99,7 @@ export default function ThreadViewer() {
       </StickyBase>
 
       <AppContainer>
-        <div className="flex h-[calc(100vh_-_3rem)] w-full overflow-x-hidden">
+        <div className="flex h-[calc(100vh_-_3rem_-_2rem)] w-full overflow-x-hidden">
           {/* Left side */}
           <div className="flex h-full w-[3.5rem] shrink-0 flex-col items-center pt-14">
             <Link href={workspace}>
@@ -139,7 +139,10 @@ export default function ThreadViewer() {
           <div className="w-[16rem] shrink-0 px-4 py-7">
             <RightSidebar
               thread={requestedThread}
-              threads={threads}
+              threads={[
+                ...threadsWithoutRequested,
+                ...(requestedThread ? [requestedThread] : []),
+              ]}
               loading={loading}
               setLoading={setLoading}
               scrollToID={scrollToID}

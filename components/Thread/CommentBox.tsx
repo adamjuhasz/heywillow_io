@@ -182,7 +182,7 @@ export default function CommentBox(props: Props) {
                 ? `${c.TeamMember.Profile.firstName} ${c.TeamMember.Profile.lastName}`
                 : c.TeamMember.Profile.email}
             </div>
-            <div className="my-0.5 rounded-lg bg-yellow-100 bg-opacity-10 px-2 py-2 text-xs text-yellow-50">
+            <div className="my-0.5 space-y-2 rounded-lg bg-yellow-100 bg-opacity-10 px-2 py-2 text-xs text-yellow-50">
               {slateToText(c.text).map((p) => (
                 <p key={p}>
                   <HighlightMentions str={p} />

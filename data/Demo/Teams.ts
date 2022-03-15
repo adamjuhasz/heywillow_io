@@ -1,6 +1,6 @@
 const teams = [
-  { name: "Stealth", Namespace: { namespace: "stealth" } },
-  { name: "Willow", Namespace: { namespace: "willow" } },
+  { name: "Stealth AI", Namespace: { namespace: "stealth" } },
+  { name: "Willow Corp", Namespace: { namespace: "willow" } },
 ];
 
 export default teams;

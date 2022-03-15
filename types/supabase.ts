@@ -57,7 +57,7 @@ export interface SupabaseThread {
   updatedAt: string;
   teamId: number;
   aliasEmailId: number;
-  gmailInboxId: number;
+  inboxId: number;
 }
 
 export interface SupabaseThreadState {

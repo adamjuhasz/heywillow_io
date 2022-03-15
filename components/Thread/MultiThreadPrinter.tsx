@@ -59,10 +59,6 @@ export default function MultiThreadPrinter(props: Props) {
         props.secondaryThreads.map((t) => (
           <ThreadPrinter
             key={t.id}
-            subject={
-              t.Message.filter((m) => m.subject !== null).reverse()[0]
-                ?.subject || undefined
-            }
             messages={t.Message}
             threadId={t.id}
             mutate={props.refreshComment}
@@ -76,11 +72,6 @@ export default function MultiThreadPrinter(props: Props) {
       {props.primaryThread ? (
         <>
           <ThreadPrinter
-            subject={
-              props.primaryThread?.Message.filter(
-                (m) => m.subject !== null
-              ).reverse()[0].subject || undefined
-            }
             messages={props.primaryThread?.Message}
             threadId={props.primaryThread.id}
             mutate={props.refreshComment}

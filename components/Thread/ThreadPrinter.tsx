@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import sortBy from "lodash/sortBy";
+import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 
 import SubjectLine from "components/Thread/SubjectLine";
 import MessagePrinter, {
@@ -12,7 +13,6 @@ export type MessageWCommentsCreated = MessageWComments & { createdAt: string };
 
 interface ThreadPrinterProps {
   messages?: MessageWCommentsCreated[];
-  subject?: string;
   threadId?: number;
   mutate?: (id: number) => unknown;
   addComment: AddComment;
@@ -27,12 +27,29 @@ export default function ThreadPrinter(props: ThreadPrinterProps) {
     [props.messages]
   );
 
+  const firstMessage: MessageWCommentsCreated | undefined = sortBy(
+    props.messages,
+    ["createdAt"]
+  ).filter((m) => m.subject !== null)[0];
+  const subject = firstMessage?.subject;
+  const createdAt = firstMessage?.createdAt;
+
   return (
     <>
       {props.threadId ? <div id={`top-thread-${props.threadId}`} /> : <></>}
       {sortedMessages ? (
         <>
-          {props.subject ? <SubjectLine>{props.subject}</SubjectLine> : <></>}
+          {firstMessage ? (
+            <SubjectLine>
+              {subject} (
+              {formatDistanceToNowStrict(new Date(createdAt), {
+                addSuffix: true,
+              })}
+              )
+            </SubjectLine>
+          ) : (
+            <></>
+          )}
           {sortedMessages.map((m) => (
             <MessagePrinter
               key={m.id}

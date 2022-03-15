@@ -1,14 +1,17 @@
 import defaultTo from "lodash/defaultTo";
+import orderBy from "lodash/orderBy";
 import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 
 interface Props {
   scrollToID: (id: string) => void;
   id: number;
-  Message: { subject: string | null }[];
+  messages: { subject: string | null }[];
   createdAt: string;
 }
 
 export default function ThreadRow(props: Props) {
+  const ordered = orderBy(props.messages, ["createdAt"], ["desc"]);
+
   return (
     <div
       onClick={() => {
@@ -18,11 +21,11 @@ export default function ThreadRow(props: Props) {
     >
       <div>
         {defaultTo(
-          props.Message.filter((m) => m.subject !== null).reverse()[0].subject,
+          ordered.filter((m) => m.subject !== null).reverse()[0].subject,
           ""
         )
           .trim()
-          .slice(0, 14)}
+          .slice(0, 20)}
         ...
       </div>
       <div className="text-zinc-500">

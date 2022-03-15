@@ -25,7 +25,7 @@ export default function slateToText(element: SlateInput): string[] {
     | MaskedElement;
   switch (withChildren.type) {
     case "paragraph":
-      return [...withChildren.children.flatMap((e) => slateToText(e)), ""];
+      return [...withChildren.children.flatMap((e) => slateToText(e))];
 
     case "line":
     case "maskedtext":

@@ -1,6 +1,8 @@
 import { ReactElement } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import uniqWith from "lodash/uniqWith";
+import orderBy from "lodash/orderBy";
 
 import AppContainer from "components/App/Container";
 import StickyBase from "components/App/Header/StickyBase";
@@ -21,7 +23,10 @@ export default function DemoDashboard() {
 
   const { namespace } = router.query;
 
-  const threads = demoThreads;
+  const threads = uniqWith(
+    orderBy(demoThreads, ["createdAt"], ["desc"]),
+    (a, b) => a.aliasEmailId === b.aliasEmailId
+  );
 
   return (
     <>

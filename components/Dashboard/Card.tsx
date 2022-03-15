@@ -76,8 +76,8 @@ export default function Card({ t, prefix }: CardProps) {
           <div className="mt-1 mb-4 text-zinc-400 line-clamp-2">{preview}</div>
 
           <div className="flex items-center text-zinc-500">
-            <ClockIcon className="h-3 w-3" />
-            <div className="ml-22">
+            <ClockIcon className="mr-1 -mt-0.5 h-3 w-3" />
+            <div className="">
               {formatDistanceToNowStrict(new Date(t.createdAt))}
             </div>
           </div>
