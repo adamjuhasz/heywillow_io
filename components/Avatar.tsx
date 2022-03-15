@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from "react";
 const hashCode = (s?: string) =>
   (s || "").split("").reduce((a, b) => {
     const x: number = (a << 5) - a + b.charCodeAt(0);
@@ -72,16 +73,22 @@ const gradients = [
   "bg-gradient-at-tr from-amber-200 via-violet-600 to-sky-900",
   "bg-gradient-at-tr from-gray-300 via-fuchsia-600 to-orange-600",
 ];
-export default function Avatar({ str, className = "" }: Props): JSX.Element {
+export default function Avatar({
+  str,
+  className = "",
+  ...props
+}: PropsWithChildren<Props>): JSX.Element {
   const toPick = Math.abs(hashCode(str)) % gradients.length;
 
   return (
     <div
       className={[
-        "inline-block rounded-full",
+        "inline-flex items-center justify-center rounded-full",
         gradients[toPick],
         className,
       ].join(" ")}
-    />
+    >
+      {props.children}
+    </div>
   );
 }

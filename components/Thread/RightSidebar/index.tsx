@@ -44,13 +44,21 @@ export default function RightSidebar(props: Props) {
     (m) => m.AliasEmail !== null
   )[0]?.AliasEmail?.emailAddress;
 
+  const customerName = props.thread?.Message.filter(
+    (m) => m.AliasEmail !== null
+  )[0]?.AliasEmail?.aliasName;
+
   const customerCreatedAt = props.thread?.Message.filter(
     (m) => m.AliasEmail !== null
   )[0]?.AliasEmail?.createdAt;
 
   return (
     <div className="flex min-h-[100px] flex-col rounded-md px-2 py-2">
-      <AliasInfo customerEmail={customerEmail} createdAt={customerCreatedAt} />
+      <AliasInfo
+        customerEmail={customerEmail}
+        createdAt={customerCreatedAt}
+        customerName={customerName}
+      />
 
       <ThreadList threads={props.threads} scrollToID={props.scrollToID} />
 
