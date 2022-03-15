@@ -26,7 +26,7 @@ export interface SupabaseAliasEmail {
   id: number;
   createdAt: string;
   emailAddress: string;
-  aliasName: string;
+  aliasName: string | null;
   teamId: number;
 }
 

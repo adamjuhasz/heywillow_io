@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
-import OnboardingTableTop from "components/Dashboard/Onboarding";
+import OnboardingTableTop from "components/Workspace/Onboarding";
 import AppContainer from "components/App/Container";
 import useGetTeams from "client/getTeams";
 import useGetMyInvites from "client/getMyInvites";

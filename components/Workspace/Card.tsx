@@ -9,6 +9,7 @@ import slateToText from "shared/slate/slateToText";
 
 interface MiniAlias {
   emailAddress: string;
+  aliasName: string | null;
 }
 
 interface MiniInbox {
@@ -56,12 +57,24 @@ export default function Card({ t, prefix }: CardProps) {
           <div className="flex items-center">
             <div className="flex items-center truncate">
               <Avatar
-                str={`${t.aliasEmailId}`}
+                str={`${t.AliasEmail.emailAddress}`}
                 className="mr-2 h-8 w-8 shrink-0"
               />
               <div className="flex flex-col truncate">
-                <div className="truncate font-normal text-zinc-100">
-                  {t.AliasEmail.emailAddress}
+                <div
+                  className={[
+                    "truncate font-normal",
+                    t.AliasEmail.aliasName ? "text-zinc-400" : "text-zinc-100", //for the ellipses coloring
+                  ].join(" ")}
+                >
+                  <span className="text-zinc-100">
+                    {t.AliasEmail.aliasName || t.AliasEmail.emailAddress}
+                  </span>
+                  {t.AliasEmail.aliasName ? (
+                    <span className="text-xs text-zinc-400">{` (${t.AliasEmail.emailAddress})`}</span>
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <div className="truncate text-xs text-zinc-500">
                   {t.Inbox.emailAddress}

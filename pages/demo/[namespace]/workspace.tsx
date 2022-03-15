@@ -10,7 +10,7 @@ import TeamSelector from "components/App/Header/TeamSelector";
 import WillowLogo from "components/Logo";
 import TopLink from "components/App/Header/TopLink";
 import HeaderContainer from "components/App/Header/HeaderContainer";
-import DashboardTableTop from "components/Dashboard/TableTop";
+import DashboardTableTop from "components/Workspace/TableTop";
 import LinkBar, { Link as LinkBarLink } from "components/Settings/LinkBar";
 import AppLayout from "layouts/app";
 import NumberBadge from "components/App/NumberBadge";

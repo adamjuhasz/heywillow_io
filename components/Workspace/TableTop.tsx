@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import sortBy from "lodash/sortBy";
 
-import Card, { FetchResponse } from "components/Dashboard/Card";
+import Card, { FetchResponse } from "components/Workspace/Card";
 
 interface Props {
   threads: FetchResponse[] | undefined;

@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { UrlObject } from "url";
+import defaultTo from "lodash/defaultTo";
 
 import ChangeThreadState from "components/Thread/RightSidebar/ChangeState";
 import ThreadActions from "components/Thread/RightSidebar/Actions";
@@ -8,7 +9,7 @@ import AliasInfo from "components/Thread/RightSidebar/Alias/AliasInfo";
 import changeThreadState from "client/changeThreadState";
 
 export interface RightSidebarAlias {
-  aliasName: string;
+  aliasName: string | null;
   emailAddress: string;
   createdAt: string;
 }
@@ -44,9 +45,11 @@ export default function RightSidebar(props: Props) {
     (m) => m.AliasEmail !== null
   )[0]?.AliasEmail?.emailAddress;
 
-  const customerName = props.thread?.Message.filter(
-    (m) => m.AliasEmail !== null
-  )[0]?.AliasEmail?.aliasName;
+  const customerName = defaultTo(
+    props.thread?.Message.filter((m) => m.AliasEmail !== null)[0]?.AliasEmail
+      ?.aliasName,
+    null
+  );
 
   const customerCreatedAt = props.thread?.Message.filter(
     (m) => m.AliasEmail !== null

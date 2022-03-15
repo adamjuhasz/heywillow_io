@@ -5,7 +5,7 @@ import Avatar from "components/Avatar";
 interface Props {
   customerEmail: string | undefined;
   createdAt: string | undefined;
-  customerName: string | undefined;
+  customerName: string | null;
 }
 
 export default function AliasInfo(props: Props) {

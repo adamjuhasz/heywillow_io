@@ -4,7 +4,7 @@ import Head from "next/head";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
-import DashboardTableTop from "components/Dashboard/TableTop";
+import DashboardTableTop from "components/Workspace/TableTop";
 import LinkBar, { Link } from "components/Settings/LinkBar";
 import AppContainer from "components/App/Container";
 import NumberBadge from "components/App/NumberBadge";
