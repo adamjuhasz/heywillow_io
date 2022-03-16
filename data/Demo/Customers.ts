@@ -41,3 +41,11 @@ export const onboarding3Customer: SupabaseAliasEmail = {
   emailAddress: "onboard3@heywillow.io",
   teamId: 0,
 };
+
+export const onboarding4Customer: SupabaseAliasEmail = {
+  id: 6,
+  createdAt: subDays(new Date(), 21).toISOString(),
+  aliasName: "Fourth Onboarding",
+  emailAddress: "onboard4@heywillow.io",
+  teamId: 0,
+};

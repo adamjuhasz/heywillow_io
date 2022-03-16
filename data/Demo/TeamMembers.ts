@@ -28,3 +28,12 @@ export const saoirseTeamMember: TeamMember = {
     lastName: "McKinley (ENG)",
   },
 };
+
+export const abeoTeamMember: TeamMember = {
+  id: 4,
+  Profile: {
+    email: "abeo@stealth.ai",
+    firstName: "Abeo",
+    lastName: "Yoruba (CX)",
+  },
+};
