@@ -328,70 +328,8 @@ export default function Vercel(): JSX.Element {
 
         <div className="mb-14 flex flex-col items-center">
           <h3 className="flex flex-col items-center text-3xl font-semibold">
-            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-lime-500" />
-            <GradientText className="from bg-gradient-to-r from-lime-600 to-emerald-500">
-              Secure messaging
-            </GradientText>
-            <div className="mt-5 text-center text-3xl md:text-5xl">
-              Auto-encrypt and auto-mask incoming PII and provide a secure
-              web-based messaging solution
-            </div>
-            <div className="mt-6 flex w-full space-x-4 text-base font-normal text-zinc-500">
-              <div className="w-full text-center">
-                Never worry about collecting sensitive PII like SSNs, credit
-                card numbers, etc
-              </div>
-            </div>
-          </h3>
-
-          <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
-            <div className="w-full space-y-4 md:w-6/12 md:border-r md:border-r-lime-500">
-              <div className="flex w-full">
-                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
-                  I think I typed my SSN in wrong during sign up
-                </div>
-                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
-              </div>
-
-              <div className="flex w-full">
-                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
-                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
-                  No worries! Use{" "}
-                  <span className="cursor-pointer font-bold underline">
-                    this link
-                  </span>{" "}
-                  to securely send it to us and I can get that fixed
-                </div>
-              </div>
-
-              <div className="flex w-full">
-                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
-                  My SSN is{" "}
-                  <span className="cursor-pointer rounded-md bg-black px-1.5 py-1 text-white">
-                    SSN masked
-                  </span>
-                </div>
-                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
-              </div>
-
-              <div className="flex w-full">
-                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
-                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
-                  Fixed, your account is good to go!
-                </div>
-              </div>
-            </div>
-
-            <div className="hidden flex-col justify-between py-10 pl-3 md:flex md:w-6/12">
-              <div className=""></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-14 flex flex-col items-center">
-          <h3 className="flex flex-col items-center text-3xl font-semibold">
-            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-red-500" />
-            <GradientText className="from  bg-gradient-to-r from-pink-600 to-red-500 text-center">
+            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent to-lime-500" />
+            <GradientText className="from bg-gradient-to-r from-lime-600 to-emerald-500 text-center">
               Unified view
               <br />
               <span className="text-xs">In alpha preview</span>
@@ -485,16 +423,13 @@ export default function Vercel(): JSX.Element {
                   <ChipIcon className="h-6 w-6" />
                 </div>
                 <div className="flex w-full items-center justify-between text-xl md:text-lg">
-                  DIY
-                  <span className="ml-2 text-xs italic text-zinc-500">
-                    (in alpha)
-                  </span>
+                  Secure messaging
                 </div>
               </div>
               <div className="mt-7 text-sm font-light text-zinc-400">
-                Need to wire up your own thing? With our dev-friendly API all
-                Willow data is retrievable and we can push data in real-time to
-                your systems with our flexible webhooks
+                Auto-encrypt and auto-mask incoming PII and provide a secure
+                web-based messaging solution. Never worry about collecting
+                sensitive PII like SSNs, credit card numbers, etc
               </div>
             </div>
           </div>
