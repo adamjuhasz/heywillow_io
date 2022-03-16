@@ -385,7 +385,8 @@ export default function Vercel(): JSX.Element {
           <div className="mb-7 mt-5 text-center text-3xl md:text-5xl">
             Re-thinking customer support
           </div>
-          <div className="mb-14 grid w-full grid-cols-1 gap-y-4 md:grid-cols-3 md:gap-x-10 md:gap-y-0">
+
+          <div className="mb-14 grid w-full grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-10 md:gap-y-10">
             <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
               <div className="flex items-center">
                 <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
