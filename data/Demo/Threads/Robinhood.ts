@@ -1,4 +1,5 @@
 import subDays from "date-fns/subDays";
+import subHours from "date-fns/subHours";
 import type { MessageDirection } from "@prisma/client";
 
 import textToSlate from "shared/slate/textToSlate";
@@ -187,12 +188,19 @@ export const robinHoodThread1: DemoThread = {
   ],
   AliasEmail: johnCustomer,
   Inbox: stealthAIInbox,
-  ThreadState: [],
+  ThreadState: [
+    {
+      id: 5,
+      state: "done",
+      createdAt: subDays(new Date(), 16).toISOString(),
+      expiresAt: null,
+    },
+  ],
 };
 
 export const robinHoodThread2: DemoThread = {
   id: 2,
-  createdAt: subDays(new Date(), 3).toISOString(),
+  createdAt: subDays(new Date(), 11).toISOString(),
   updatedAt: subDays(new Date(), 3).toISOString(),
   teamId: 0,
   aliasEmailId: johnCustomer.id,
@@ -201,7 +209,7 @@ export const robinHoodThread2: DemoThread = {
     {
       Attachment: [],
       id: 1,
-      createdAt: subDays(new Date(), 3).toISOString(),
+      createdAt: subDays(new Date(), 11).toISOString(),
       direction: "incoming" as MessageDirection,
       AliasEmail: johnCustomer,
       subject: "Transfer in not working",
@@ -212,7 +220,7 @@ export const robinHoodThread2: DemoThread = {
     {
       Attachment: [],
       id: 2,
-      createdAt: subDays(new Date(), 2.9).toISOString(),
+      createdAt: subDays(new Date(), 9).toISOString(),
       direction: "outgoing",
       AliasEmail: null,
       subject: null,
@@ -283,7 +291,7 @@ export const robinHoodThread2: DemoThread = {
     {
       Attachment: [],
       id: 3,
-      createdAt: subDays(new Date(), 1.9).toISOString(),
+      createdAt: subDays(new Date(), 7).toISOString(),
       direction: "outgoing",
       AliasEmail: null,
       subject: null,
@@ -296,7 +304,7 @@ export const robinHoodThread2: DemoThread = {
     {
       Attachment: [],
       id: 4,
-      createdAt: subDays(new Date(), 1.8).toISOString(),
+      createdAt: subDays(new Date(), 5).toISOString(),
       direction: "outgoing",
       AliasEmail: null,
       subject: null,
@@ -309,7 +317,7 @@ export const robinHoodThread2: DemoThread = {
     {
       Attachment: [],
       id: 5,
-      createdAt: subDays(new Date(), 1.7).toISOString(),
+      createdAt: subDays(new Date(), 3).toISOString(),
       direction: "incoming" as MessageDirection,
       AliasEmail: johnCustomer,
       subject: "Re: [Pay Tgthr] Transfer in not working",
@@ -382,7 +390,7 @@ export const robinHoodThread2: DemoThread = {
     {
       Attachment: [],
       id: 6,
-      createdAt: subDays(new Date(), 1.9).toISOString(),
+      createdAt: subDays(new Date(), 1).toISOString(),
       direction: "outgoing",
       AliasEmail: null,
       subject: null,
@@ -393,5 +401,36 @@ export const robinHoodThread2: DemoThread = {
   ],
   AliasEmail: johnCustomer,
   Inbox: stealthAIInbox,
-  ThreadState: [],
+  ThreadState: [
+    {
+      id: 4,
+      state: "snoozed",
+      createdAt: subDays(new Date(), 8).toISOString(),
+      expiresAt: subHours(subDays(new Date(), 8), 48).toISOString(),
+    },
+    {
+      id: 3,
+      state: "snoozed",
+      createdAt: subDays(new Date(), 6).toISOString(),
+      expiresAt: subHours(subDays(new Date(), 6), 24).toISOString(),
+    },
+    {
+      id: 2,
+      state: "snoozed",
+      createdAt: subDays(new Date(), 5).toISOString(),
+      expiresAt: subHours(subDays(new Date(), 5), 1).toISOString(),
+    },
+    {
+      id: 1,
+      state: "snoozed",
+      createdAt: subDays(new Date(), 3).toISOString(),
+      expiresAt: subDays(new Date(), 2).toISOString(),
+    },
+    {
+      id: 0,
+      state: "done",
+      createdAt: subDays(new Date(), 1).toISOString(),
+      expiresAt: null,
+    },
+  ],
 };

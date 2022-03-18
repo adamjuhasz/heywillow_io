@@ -18,7 +18,7 @@ export const onboarding2ThreadOne: DemoThread = {
     {
       Attachment: [],
       id: 1,
-      createdAt: subDays(new Date(), 150).toISOString(),
+      createdAt: subDays(new Date(), 152).toISOString(),
       direction: "incoming" as MessageDirection,
       AliasEmail: onboarding2Customer,
       subject: "A Previous thread",
@@ -33,7 +33,7 @@ export const onboarding2ThreadOne: DemoThread = {
     {
       Attachment: [],
       id: 1,
-      createdAt: subDays(new Date(), 150).toISOString(),
+      createdAt: subDays(new Date(), 151).toISOString(),
       direction: "outgoing" as MessageDirection,
       AliasEmail: null,
       subject: null,
@@ -64,7 +64,20 @@ export const onboarding2ThreadOne: DemoThread = {
   ],
   AliasEmail: onboarding2Customer,
   Inbox: stealthAIInbox,
-  ThreadState: [],
+  ThreadState: [
+    {
+      id: 1,
+      state: "snoozed",
+      createdAt: subDays(new Date(), 151).toISOString(),
+      expiresAt: subDays(new Date(), 150.0).toISOString(),
+    },
+    {
+      id: 1,
+      state: "done",
+      createdAt: subDays(new Date(), 148).toISOString(),
+      expiresAt: null,
+    },
+  ],
 };
 
 export const onboarding2ThreadTwo: DemoThread = {
