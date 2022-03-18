@@ -25,47 +25,6 @@ import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
 import * as demoTeamMembers from "data/Demo/TeamMembers";
 
-// import type { GetStaticPathsResult, GetStaticPropsContext } from "next";
-// import type { ParsedUrlQuery } from "querystring";
-
-// interface Params extends ParsedUrlQuery {
-//   threadid: string;
-//   namespace: string;
-// }
-
-// export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
-//   const paths = teams.flatMap((team) =>
-//     threads.map((t) => ({
-//       params: { threadid: `${t.id}`, namespace: team.Namespace.namespace },
-//     }))
-//   );
-//   return {
-//     paths,
-//     fallback: true,
-//   };
-// }
-
-// export async function getStaticProps({
-//   params,
-// }: GetStaticPropsContext<Params>) {
-//   const threadid = (params as Params).threadid;
-//   const requestedThread = threads.find((t) => t.id === parseInt(threadid, 10));
-
-//   const threadsWithoutRequested = sortBy(
-//     threads
-//       .filter((t) => t.id !== parseInt((threadid as string) || "0", 10))
-//       .filter((t) => t.AliasEmail.id === requestedThread?.AliasEmail.id),
-//     [(t) => t.createdAt]
-//   );
-
-//   return {
-//     props: {
-//       requestedThread,
-//       threadsWithoutRequested,
-//     },
-//   };
-// }
-
 export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -189,6 +148,9 @@ export default function ThreadViewer() {
                 refreshComment={() => ({})}
                 addComment={async () => {
                   addToast({ type: "active", string: "Adding comment" });
+                  await new Promise((resolve) =>
+                    setTimeout(() => resolve(null), 1000)
+                  );
                   return 0;
                 }}
                 urlQueryComment={undefined}

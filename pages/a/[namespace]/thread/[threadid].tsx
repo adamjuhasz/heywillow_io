@@ -109,7 +109,9 @@ export default function ThreadViewer() {
     if (teamId === undefined) {
       throw new Error("No team ID");
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+    setLoading(true);
+
     const body: Body = {
       messageId: data.messageId,
       comment: data.comment,
@@ -122,8 +124,6 @@ export default function ThreadViewer() {
       },
       body: JSON.stringify(body),
     });
-
-    setLoading(false);
 
     switch (res.status) {
       case 200: {

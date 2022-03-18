@@ -9,6 +9,7 @@ import Loading from "components/Loading";
 import type { ParagraphElement } from "types/slate";
 import type { ReactEditor, UserDBEntry } from "components/Comments/TextEntry";
 import DisplayComment from "components/Comments/Display";
+import slateToText from "shared/slate/slateToText";
 
 import dynamic from "next/dynamic";
 const CommentTextEntry = dynamic(
@@ -58,18 +59,27 @@ export default function CommentBox(props: Props) {
     { type: "paragraph", children: [{ text: "" }] },
   ]);
 
+  const textContents = slateToText(value).join("");
+  const formDisabled = loading || textContents === "";
+
   const commentators = uniqBy(props.comments, (c) => c.authorId);
 
   const addComment = async () => {
+    if (formDisabled) {
+      return;
+    }
+
     try {
       setLoading(true);
       const commentId = await props.addComment({
         messageId: props.messageId,
         comment: value,
       });
+
       if (props.mutate) {
         props.mutate(commentId);
       }
+
       const newValue: ParagraphElement[] = [
         { type: "paragraph", children: [{ text: "" }] },
       ];
@@ -167,10 +177,11 @@ export default function CommentBox(props: Props) {
               void addComment();
             }}
             editorRef={editorRef}
+            submitting={loading}
           />
 
           <div className="absolute inset-y-0 right-0 flex items-end py-2 pr-3">
-            <button type="submit">
+            <button disabled={formDisabled} type="submit">
               {loading ? (
                 <Loading className="h-4 w-4 text-yellow-500" />
               ) : (

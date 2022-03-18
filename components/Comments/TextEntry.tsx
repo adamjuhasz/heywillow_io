@@ -29,6 +29,7 @@ interface Props {
   setValue: React.Dispatch<React.SetStateAction<ParagraphElement[]>>;
   submitComment: () => void;
   editorRef: React.MutableRefObject<ReactEditor | undefined>;
+  submitting: boolean;
 }
 
 export default function CommentTextEntry({ submitComment, ...props }: Props) {
@@ -171,8 +172,13 @@ export default function CommentTextEntry({ submitComment, ...props }: Props) {
         setTarget(null);
       }}
     >
-      <div className="relative">
+      <div
+        className={["relative", props.submitting ? "animate-pulse" : ""].join(
+          " "
+        )}
+      >
         <Editable
+          disabled={props.submitting}
           className="focus:border-1 block w-full min-w-0 flex-grow rounded-md border border-yellow-300 bg-zinc-900 py-2 pl-2 pr-6 text-xs leading-5 focus:border-yellow-300 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
           renderElement={renderElement}
           onKeyDown={onKeyDown}
