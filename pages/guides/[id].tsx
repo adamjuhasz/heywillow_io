@@ -1,4 +1,8 @@
-import { GetStaticPathsResult, GetStaticPropsContext } from "next";
+import {
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from "next";
 import { ParsedUrlQuery } from "querystring";
 import Head from "next/head";
 import format from "date-fns/format";
@@ -15,13 +19,13 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
   const paths = getAllPostIds();
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }
 
 export async function getStaticProps({
   params,
-}: GetStaticPropsContext<Params>) {
+}: GetStaticPropsContext<Params>): Promise<GetStaticPropsResult<Props>> {
   const postData = await getPostData((params as Params).id);
 
   return {
@@ -50,11 +54,11 @@ const colors = [
   "bg-rose-300",
 ];
 
-export default function Post({
-  postData,
-}: {
+interface Props {
   postData: Record<string, string>;
-}) {
+}
+
+export default function Post({ postData }: Props) {
   return (
     <>
       <Head>
