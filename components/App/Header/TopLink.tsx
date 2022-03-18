@@ -8,6 +8,7 @@ interface TopLinkProps {
   href: string;
   exact?: boolean;
   activePath?: string;
+  className?: string;
 }
 
 export default function TopLink({
@@ -24,7 +25,9 @@ export default function TopLink({
 
   return (
     <Link href={{ pathname: props.href, query: router.query }} passHref>
-      <TopLinkBase isActive={isActive}>{props.children}</TopLinkBase>
+      <TopLinkBase isActive={isActive} className={props.className}>
+        {props.children}
+      </TopLinkBase>
     </Link>
   );
 }

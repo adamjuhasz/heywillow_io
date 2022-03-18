@@ -42,10 +42,10 @@ export default function DemoDashboard() {
       <StickyBase>
         <AppContainer>
           <HeaderContainer>
-            <div className="flex h-full items-center space-x-4 ">
+            <div className="flex h-full items-center sm:space-x-1 ">
               <Link href="/">
-                <a className="flex items-center">
-                  <WillowLogo className="mr-2 h-5 w-5 shrink-0" />
+                <a className="hidden shrink-0 items-center sm:flex">
+                  <WillowLogo className="h-5 w-5 shrink-0" />
                 </a>
               </Link>
 
