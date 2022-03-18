@@ -20,6 +20,6 @@ export default function slateToText(element: SlateInput): string[] {
       return [withChildren.children.flatMap((e) => slateToText(e)).join("")];
 
     case "mention":
-      return [withChildren.displayText];
+      return [`@${withChildren.displayText}`];
   }
 }
