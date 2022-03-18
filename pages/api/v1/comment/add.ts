@@ -4,9 +4,9 @@ import type { Prisma } from "@prisma/client";
 
 import { prisma } from "utils/prisma";
 import commentNotification from "server/notifications/comment";
-import textToSlate from "shared/slate/textToSlate";
 import { logger } from "utils/logger";
 import apiHandler from "server/apiHandler";
+import { ParagraphElement } from "types/slate";
 
 export default apiHandler({
   post: handler,
@@ -14,7 +14,7 @@ export default apiHandler({
 
 export interface Body {
   messageId: number;
-  text: string;
+  comment: ParagraphElement[];
   teamId: number;
 }
 
@@ -36,11 +36,10 @@ async function handler(
   }
 
   const body = req.body as Body;
-  const slateText = textToSlate(body.text);
 
   const comment = await prisma.comment.create({
     data: {
-      text: slateText as unknown as Prisma.InputJsonArray,
+      text: body.comment as unknown as Prisma.InputJsonArray,
       Message: { connect: { id: body.messageId } },
       Author: {
         connect: {

@@ -13,6 +13,7 @@ import ToastContext from "components/Toast";
 import slateToText from "shared/slate/slateToText";
 import Message, { IMessage } from "components/Thread/Message";
 import CommentBox, { AddComment, IComment } from "components/Thread/CommentBox";
+import type { UserDBEntry } from "components/Comments/TextEntry";
 
 export type MessageWComments = IMessage & {
   id: number;
@@ -23,6 +24,7 @@ export interface MessagePrinterProps {
   message: MessageWComments;
   mutate?: (id: number) => unknown;
   addComment: AddComment;
+  teamMemberList: UserDBEntry[];
 }
 
 export default function MessagePrinter(props: MessagePrinterProps) {
@@ -108,6 +110,7 @@ export default function MessagePrinter(props: MessagePrinterProps) {
           messageId={props.message.id}
           mutate={props.mutate}
           addComment={props.addComment}
+          teamMemberList={props.teamMemberList}
         />
       ) : (
         <></>

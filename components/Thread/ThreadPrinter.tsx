@@ -8,6 +8,7 @@ import MessagePrinter, {
 } from "components/Thread/MessagePrinter";
 import LoadingThread from "components/Thread/LoadingThread";
 import { AddComment } from "components/Thread/CommentBox";
+import type { UserDBEntry } from "components/Comments/TextEntry";
 
 export type MessageWCommentsCreated = MessageWComments & { createdAt: string };
 
@@ -16,6 +17,7 @@ interface ThreadPrinterProps {
   threadId?: number;
   mutate?: (id: number) => unknown;
   addComment: AddComment;
+  teamMemberList: UserDBEntry[];
 }
 
 export default function ThreadPrinter(props: ThreadPrinterProps) {
@@ -56,6 +58,7 @@ export default function ThreadPrinter(props: ThreadPrinterProps) {
               message={m}
               mutate={props.mutate}
               addComment={props.addComment}
+              teamMemberList={props.teamMemberList}
             />
           ))}
         </>

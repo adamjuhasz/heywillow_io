@@ -4,11 +4,10 @@ import { NotificationType } from "@prisma/client";
 
 import { prisma } from "utils/prisma";
 import sendPostmarkEmail, { Options } from "server/postmark/sendPostmarkEmail";
-import detectMention from "server/notifications/utils/detectMention";
 import notificationDefaults from "shared/notifications/defaults";
 import { logger } from "utils/logger";
 import slateToText from "shared/slate/slateToText";
-import { ParagraphElement } from "types/slate";
+import { MentionElement, ParagraphElement } from "types/slate";
 import getTeamMemberMentions from "server/notifications/utils/getTeamMemberMentions";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -35,22 +34,37 @@ export default async function commentNotification(commentId: bigint) {
     throw new Error("Comment not found");
   }
 
-  const commentText = slateToText(
-    comment.text as unknown as ParagraphElement[]
+  const commentText = comment.text as unknown as ParagraphElement[];
+  const mentions = commentText.flatMap(
+    (p) =>
+      p.children.filter((c) => {
+        if ("type" in c) {
+          switch (c.type) {
+            case "mention":
+              return true;
+          }
+        }
+
+        return false;
+      }) as MentionElement[]
   );
 
-  const mentions = detectMention(commentText.join("\n"));
-  void logger.info(`${mentions.length} mentions`, { mentions });
+  const teamMemberIds = mentions.map((m) => m.teamMemberId);
 
   const teamMembers = comment.Author.Team.Members;
   const namespace = comment.Author.Team.Namespace.namespace;
 
-  const mentioned = getTeamMemberMentions(mentions, teamMembers, namespace);
+  const mentioned = getTeamMemberMentions(teamMemberIds, teamMembers);
 
-  void logger.info(`${mentioned.length} mentioned teamMembers`, {
-    mentioned: mentioned.map((m) => m.Profile.email),
-    mentions,
-  });
+  void logger.info(
+    `${mentioned.length} mentioned [${mentions
+      .map((m) => m.displayText)
+      .join(", ")}]`,
+    {
+      mentioned: mentioned.map((m) => m.Profile.email),
+      mentions: mentions.map((m) => m.displayText),
+    }
+  );
 
   const ourEmails = comment.Author.Team.Inboxes.map((i) => i.emailAddress);
   const threadId = comment.Message.threadId;
@@ -63,7 +77,7 @@ export default async function commentNotification(commentId: bigint) {
       Number(threadId),
       Number(comment.id),
       comment.Message.Alias?.emailAddress,
-      commentText
+      slateToText(commentText)
     )
   );
 

@@ -19,9 +19,11 @@ import RightSidebar from "components/Thread/RightSidebar";
 import MultiThreadPrinter, {
   scrollToID,
 } from "components/Thread/MultiThreadPrinter";
+import type { UserDBEntry } from "components/Comments/TextEntry";
 
 import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
+import * as demoTeamMembers from "data/Demo/TeamMembers";
 
 export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
@@ -55,6 +57,32 @@ export default function ThreadViewer() {
     pathname: "/demo/[namespace]/workspace",
     query: { namespace: router.query.namespace },
   };
+
+  const teamMembers: UserDBEntry[] = [
+    {
+      entryId: "namespace",
+      teamMemberId: 0,
+      display: "Stealth AI",
+      description: `Notify all of Stealth A`,
+      matchers: ["stealth-ai", "Stealth AI"],
+    },
+    ...[
+      demoTeamMembers.abeoTeamMember,
+      demoTeamMembers.adamTeamMember,
+      demoTeamMembers.eileenTeamMember,
+      demoTeamMembers.saoirseTeamMember,
+    ].map((tm) => ({
+      entryId: `${tm.id}`,
+      teamMemberId: tm.id,
+      display: `${tm.Profile.firstName} ${tm.Profile.lastName}`,
+      matchers: [
+        tm.Profile.email,
+        ...(tm.Profile.firstName !== null && tm.Profile.lastName !== null
+          ? [`${tm.Profile.firstName} ${tm.Profile.lastName}`]
+          : []),
+      ],
+    })),
+  ];
 
   return (
     <>
@@ -123,6 +151,7 @@ export default function ThreadViewer() {
                   return 0;
                 }}
                 urlQueryComment={undefined}
+                teamMemberList={teamMembers}
               />
             </div>
 

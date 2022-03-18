@@ -22,6 +22,10 @@ import useGetSecureThreadLink from "client/getSecureThreadLink";
 import MultiThreadPrinter, {
   scrollToID,
 } from "components/Thread/MultiThreadPrinter";
+import type { UserDBEntry } from "components/Comments/TextEntry";
+import { useUser } from "components/UserContext";
+import useGetTeams from "client/getTeams";
+import useGetTeamMembers from "client/getTeamMembers";
 
 export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
@@ -31,12 +35,17 @@ export default function ThreadViewer() {
   let threadNum: number | undefined = parseInt(threadid as string, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
 
-  const teamId = useGetTeamId() || null;
+  const { user } = useUser();
+
+  const teamId = useGetTeamId();
   const { data: requestedThread, mutate: mutateThread } =
     useGetThread(threadNum);
   const { data: aliasOtherThreads, mutate: mutateThreads } = useGetAliasThreads(
     requestedThread?.aliasEmailId
   );
+
+  const { data: teams } = useGetTeams();
+  const { data: teamMembers } = useGetTeamMembers(teamId);
 
   const { data: threadLink } = useGetSecureThreadLink(threadNum);
 
@@ -97,13 +106,13 @@ export default function ThreadViewer() {
   };
 
   const addComment: AddComment = async (data) => {
-    if (teamId === null) {
+    if (teamId === undefined) {
       throw new Error("No team ID");
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const body: Body = {
       messageId: data.messageId,
-      text: data.text,
+      comment: data.comment,
       teamId: teamId,
     };
     const res = await fetch("/api/v1/comment/add", {
@@ -128,6 +137,49 @@ export default function ThreadViewer() {
         throw new Error("Could not add comment");
     }
   };
+
+  const teamWithoutMe = useMemo(
+    () => (teamMembers || []).filter((tm) => tm.Profile.email !== user?.email),
+    [teamMembers, user]
+  );
+
+  const thisTeam = (teams || []).find((t) => t.id === teamId);
+
+  const userDB: UserDBEntry[] = useMemo(
+    () => [
+      ...(thisTeam
+        ? [
+            {
+              entryId: thisTeam.Namespace.namespace.toLowerCase(),
+              teamMemberId: 0,
+              display: thisTeam.name,
+              description: `Notify all of ${thisTeam.name}`,
+              matchers: [thisTeam.Namespace.namespace, thisTeam.name],
+            },
+          ]
+        : []),
+      ...teamWithoutMe.map((tm) => ({
+        entryId: tm.Profile.email.split("@")[0].toLowerCase(),
+        teamMemberId: tm.id,
+        display:
+          tm.Profile.firstName !== null && tm.Profile.lastName !== null
+            ? `${tm.Profile.firstName} ${tm.Profile.lastName}`
+            : tm.Profile.email,
+        description:
+          tm.Profile.firstName !== null && tm.Profile.lastName !== null
+            ? tm.Profile.email
+            : undefined,
+        avatar: tm.Profile.email,
+        matchers: [
+          tm.Profile.email,
+          ...(tm.Profile.firstName !== null && tm.Profile.lastName !== null
+            ? [`${tm.Profile.firstName} ${tm.Profile.lastName}`]
+            : []),
+        ],
+      })),
+    ],
+    [thisTeam, teamWithoutMe]
+  );
 
   return (
     <>
@@ -158,6 +210,7 @@ export default function ThreadViewer() {
               refreshComment={refreshComment}
               addComment={addComment}
               urlQueryComment={comment as string | undefined}
+              teamMemberList={userDB}
             />
 
             <div className="shrink-0 pb-2">
