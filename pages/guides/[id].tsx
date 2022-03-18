@@ -19,7 +19,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
   const paths = getAllPostIds();
   return {
     paths,
-    fallback: true,
+    fallback: false,
   };
 }
 
