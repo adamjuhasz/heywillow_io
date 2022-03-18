@@ -91,7 +91,7 @@ export default function ThreadPrinter(props: ThreadPrinterProps) {
                 teamMemberList={props.teamMemberList}
               />
             ) : (
-              <ThreadState state={node.state} />
+              <ThreadState state={node.state} key={node.state.id} />
             )
           )}
         </>

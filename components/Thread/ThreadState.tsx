@@ -40,11 +40,11 @@ export default function ThreadState(props: Props): JSX.Element {
     case "snoozed": {
       let snoozedFor = "";
       if (props.state.expiresAt !== null) {
-        const normalizedExpiresAt: string = props.state.expiresAt.includes(
-          "+00:00"
-        )
-          ? props.state.expiresAt
-          : `${props.state.expiresAt}+00:00`; // sometimes missing `+00:00` or `Z` to represent time zone
+        const normalizedExpiresAt: string =
+          props.state.expiresAt.includes("+00:00") ||
+          props.state.expiresAt.includes("Z")
+            ? props.state.expiresAt
+            : `${props.state.expiresAt}+00:00`; // sometimes missing `+00:00` or `Z` to represent time zone
         const expiredAt = new Date(normalizedExpiresAt);
         snoozedFor = `for ${formatDistanceStrict(createdAt, expiredAt)} `;
       }
