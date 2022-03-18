@@ -187,6 +187,7 @@ export const robinHoodThread1: DemoThread = {
   ],
   AliasEmail: johnCustomer,
   Inbox: stealthAIInbox,
+  ThreadState: [],
 };
 
 export const robinHoodThread2: DemoThread = {
@@ -392,4 +393,5 @@ export const robinHoodThread2: DemoThread = {
   ],
   AliasEmail: johnCustomer,
   Inbox: stealthAIInbox,
+  ThreadState: [],
 };

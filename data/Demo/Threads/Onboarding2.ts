@@ -64,6 +64,7 @@ export const onboarding2ThreadOne: DemoThread = {
   ],
   AliasEmail: onboarding2Customer,
   Inbox: stealthAIInbox,
+  ThreadState: [],
 };
 
 export const onboarding2ThreadTwo: DemoThread = {
@@ -108,4 +109,5 @@ export const onboarding2ThreadTwo: DemoThread = {
   ],
   AliasEmail: onboarding2Customer,
   Inbox: stealthAIInbox,
+  ThreadState: [],
 };

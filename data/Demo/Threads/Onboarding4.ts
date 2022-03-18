@@ -32,4 +32,5 @@ export const onboarding4ThreadOne: DemoThread = {
   ],
   AliasEmail: onboarding4Customer,
   Inbox: stealthAIInbox,
+  ThreadState: [],
 };

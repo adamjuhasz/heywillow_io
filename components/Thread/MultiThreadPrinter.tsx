@@ -3,6 +3,7 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import LoadingThread from "components/Thread/LoadingThread";
 import ThreadPrinter, {
   MessageWCommentsCreated,
+  MiniThreadState,
 } from "components/Thread/ThreadPrinter";
 import { AddComment } from "components/Thread/CommentBox";
 import useIntersectionObserver from "hooks/useIntersectionObserver";
@@ -11,6 +12,7 @@ import type { UserDBEntry } from "components/Comments/TextEntry";
 interface IThread {
   id: number;
   Message: MessageWCommentsCreated[];
+  ThreadState: MiniThreadState[];
 }
 
 interface Props {
@@ -66,6 +68,7 @@ export default function MultiThreadPrinter(props: Props) {
             mutate={props.refreshComment}
             addComment={props.addComment}
             teamMemberList={props.teamMemberList}
+            threadStates={t.ThreadState}
           />
         ))
       ) : (
@@ -80,6 +83,7 @@ export default function MultiThreadPrinter(props: Props) {
             mutate={props.refreshComment}
             addComment={props.addComment}
             teamMemberList={props.teamMemberList}
+            threadStates={props.primaryThread.ThreadState}
           />
         </>
       ) : (

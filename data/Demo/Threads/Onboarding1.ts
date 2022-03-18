@@ -84,4 +84,5 @@ export const onboarding1: DemoThread = {
   ],
   AliasEmail: onboarding1Customer,
   Inbox: stealthAIInbox,
+  ThreadState: [],
 };
