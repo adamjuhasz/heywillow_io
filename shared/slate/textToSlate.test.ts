@@ -9,15 +9,7 @@ describe("process html", () => {
     expect(
       textToSlate(
         `${paragraph1}\r\n` +
-          "\r\n" +
           `${paragraph2}\r\n` +
-          "\r\n" +
-          "\r\n" +
-          "\r\n" +
-          "This is bold line\r\n" +
-          "This is underline line\r\n" +
-          "This is italics line\r\n" +
-          "This is strikeout\r\n" +
           "\r\n" +
           "Signature below that\r\n"
       )
@@ -25,23 +17,6 @@ describe("process html", () => {
       { type: "paragraph", children: [{ text: paragraph1 }] },
       { type: "paragraph", children: [{ text: paragraph2 }] },
       { type: "paragraph", children: [{ text: "" }] },
-      {
-        type: "paragraph",
-        children: [
-          {
-            text: "This is bold line",
-          },
-          {
-            text: "This is underline line",
-          },
-          {
-            text: "This is italics line",
-          },
-          {
-            text: "This is strikeout",
-          },
-        ],
-      },
       {
         type: "paragraph",
         children: [{ text: "Signature below that" }],

@@ -27,7 +27,7 @@ export const robinHoodThread1: DemoThread = {
       AliasEmail: johnCustomer,
       subject: "Transfer stocks not cash",
       text: textToSlate(
-        `Do you support transferring securities from another brokerage to yours?\n\nThanks!\n\n- John`
+        `Do you support transferring securities from another brokerage to yours?\nThanks!\n- John`
       ),
       Comment: [
         {
@@ -98,7 +98,7 @@ export const robinHoodThread1: DemoThread = {
       AliasEmail: null,
       subject: null,
       text: textToSlate(
-        "Hey John!\n\nWe're actually just releasing this! Would you want to join the private beta? We can get that enabled and you should be good to go by tomorrow evening\n\n-Adam"
+        "Hey John!\nWe're actually just releasing this! Would you want to join the private beta? We can get that enabled and you should be good to go by tomorrow evening\n-Adam"
       ),
       Comment: [],
       TeamMember: adamTeamMember,
@@ -150,7 +150,7 @@ export const robinHoodThread1: DemoThread = {
       AliasEmail: null,
       subject: null,
       text: textToSlate(
-        "Hey John!\n\nStock transfer enabled! can you try transferring in the app?\n\n- Saoirse"
+        "Hey John!\nStock transfer enabled! can you try transferring in the app?\n- Saoirse"
       ),
       Comment: [
         {
@@ -216,7 +216,7 @@ export const robinHoodThread2: DemoThread = {
       AliasEmail: null,
       subject: null,
       text: textToSlate(
-        "Hey John!\n\nWe're looking into this and will get back to you tomorrow. Sorry for the delay...\n\n- Adam"
+        "Hey John!\nWe're looking into this and will get back to you tomorrow. Sorry for the delay...\n- Adam"
       ),
       Comment: [
         {
@@ -287,7 +287,7 @@ export const robinHoodThread2: DemoThread = {
       AliasEmail: null,
       subject: null,
       text: textToSlate(
-        "Hey John!\n\nJust an update, we're still looking into it. Sorry again!\n\n- Adam"
+        "Hey John!\nJust an update, we're still looking into it. Sorry again!\n- Adam"
       ),
       Comment: [],
       TeamMember: adamTeamMember,
@@ -300,7 +300,7 @@ export const robinHoodThread2: DemoThread = {
       AliasEmail: null,
       subject: null,
       text: textToSlate(
-        "Eileen here, CTO at Stealth.\n\nWhat OS version are you using?\n\n- Eileen"
+        "Eileen here, CTO at Stealth.\nWhat OS version are you using?\n- Eileen"
       ),
       Comment: [],
       TeamMember: eileenTeamMember,
@@ -385,9 +385,7 @@ export const robinHoodThread2: DemoThread = {
       direction: "outgoing",
       AliasEmail: null,
       subject: null,
-      text: textToSlate(
-        "Hey John!\n\nFound the bug, can you try again?\n\n- Adam"
-      ),
+      text: textToSlate("Hey John!\nFound the bug, can you try again?\n- Adam"),
       Comment: [],
       TeamMember: adamTeamMember,
     },
