@@ -35,7 +35,7 @@ export default function ChangeName(): JSX.Element {
             lastName: lastName,
             id: profile.id,
           });
-          addToast({ type: "error", string: "Name changed" });
+          addToast({ type: "string", string: "Name changed" });
         } catch (e) {
           console.error(e);
           addToast({ type: "error", string: "Error: Could not change name" });
