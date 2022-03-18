@@ -1,14 +1,11 @@
-import { NonEmptyArray, ParagraphElement } from "types/slate";
+import { ParagraphElement } from "types/slate";
 
 export default function textToSlate(text: string): ParagraphElement[] {
-  const normalized = text.replace(/\r\n/g, "\n");
-  const split = normalized.split("\n\n");
+  const normalized = text.replace(/\r\n/g, "\n").trim();
+  const split = normalized.split("\n");
 
-  return split.map((lines) => ({
+  return split.map((line) => ({
     type: "paragraph",
-    children: lines
-      .trim()
-      .split("\n")
-      .map((line) => ({ text: line.trim() })),
-  })) as NonEmptyArray<ParagraphElement>;
+    children: [{ text: line.trim() }],
+  })) as ParagraphElement[];
 }

@@ -1,7 +1,3 @@
-import uniqBy from "lodash/uniqBy";
-
-import matchMention from "server/notifications/utils/matchMention";
-
 interface MiniTeamMember {
   id: number | bigint;
   Profile: {
@@ -10,20 +6,18 @@ interface MiniTeamMember {
 }
 
 export default function getTeamMemberMentions<TM extends MiniTeamMember>(
-  mentions: string[],
-  teamMembers: TM[],
-  namespace: string
+  mentionedTeamMembers: number[],
+  teamMembers: TM[]
 ): TM[] {
-  if (mentions.length === 0) {
+  if (mentionedTeamMembers.length === 0) {
     return [];
   }
 
-  if (mentions.includes(`@${namespace}`)) {
+  if (mentionedTeamMembers.includes(0)) {
     return teamMembers;
   }
 
-  return uniqBy(
-    teamMembers.filter((tm) => matchMention(tm.Profile.email, mentions)),
-    (tm) => tm.id
+  return teamMembers.filter((tm) =>
+    mentionedTeamMembers.includes(Number(tm.id))
   );
 }

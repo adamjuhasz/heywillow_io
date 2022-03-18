@@ -19,9 +19,52 @@ import RightSidebar from "components/Thread/RightSidebar";
 import MultiThreadPrinter, {
   scrollToID,
 } from "components/Thread/MultiThreadPrinter";
+import type { UserDBEntry } from "components/Comments/TextEntry";
 
 import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
+import * as demoTeamMembers from "data/Demo/TeamMembers";
+
+// import type { GetStaticPathsResult, GetStaticPropsContext } from "next";
+// import type { ParsedUrlQuery } from "querystring";
+
+// interface Params extends ParsedUrlQuery {
+//   threadid: string;
+//   namespace: string;
+// }
+
+// export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
+//   const paths = teams.flatMap((team) =>
+//     threads.map((t) => ({
+//       params: { threadid: `${t.id}`, namespace: team.Namespace.namespace },
+//     }))
+//   );
+//   return {
+//     paths,
+//     fallback: true,
+//   };
+// }
+
+// export async function getStaticProps({
+//   params,
+// }: GetStaticPropsContext<Params>) {
+//   const threadid = (params as Params).threadid;
+//   const requestedThread = threads.find((t) => t.id === parseInt(threadid, 10));
+
+//   const threadsWithoutRequested = sortBy(
+//     threads
+//       .filter((t) => t.id !== parseInt((threadid as string) || "0", 10))
+//       .filter((t) => t.AliasEmail.id === requestedThread?.AliasEmail.id),
+//     [(t) => t.createdAt]
+//   );
+
+//   return {
+//     props: {
+//       requestedThread,
+//       threadsWithoutRequested,
+//     },
+//   };
+// }
 
 export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
@@ -55,6 +98,32 @@ export default function ThreadViewer() {
     pathname: "/demo/[namespace]/workspace",
     query: { namespace: router.query.namespace },
   };
+
+  const teamMembers: UserDBEntry[] = [
+    {
+      entryId: "namespace",
+      teamMemberId: 0,
+      display: "Stealth AI",
+      description: `Notify all of Stealth A`,
+      matchers: ["stealth-ai", "Stealth AI"],
+    },
+    ...[
+      demoTeamMembers.abeoTeamMember,
+      demoTeamMembers.adamTeamMember,
+      demoTeamMembers.eileenTeamMember,
+      demoTeamMembers.saoirseTeamMember,
+    ].map((tm) => ({
+      entryId: `${tm.id}`,
+      teamMemberId: tm.id,
+      display: `${tm.Profile.firstName} ${tm.Profile.lastName}`,
+      matchers: [
+        tm.Profile.email,
+        ...(tm.Profile.firstName !== null && tm.Profile.lastName !== null
+          ? [`${tm.Profile.firstName} ${tm.Profile.lastName}`]
+          : []),
+      ],
+    })),
+  ];
 
   return (
     <>
@@ -123,6 +192,7 @@ export default function ThreadViewer() {
                   return 0;
                 }}
                 urlQueryComment={undefined}
+                teamMemberList={teamMembers}
               />
             </div>
 

@@ -1,19 +1,26 @@
 //inspiration from https://www.openphone.co/product/teams
+import { useRef, useState } from "react";
 import ArrowCircleUpIcon from "@heroicons/react/outline/ArrowCircleUpIcon";
 import type { MessageDirection } from "@prisma/client";
 import uniqBy from "lodash/uniqBy";
-import TextareaAutosize from "react-textarea-autosize";
-import { useMemo, useRef, useState } from "react";
-import isMatch from "lodash/isMatch";
 
 import Avatar from "components/Avatar";
-import slateToText from "shared/slate/slateToText";
 import Loading from "components/Loading";
-import useGetTeamMembers from "client/getTeamMembers";
-import useGetTeamId from "client/getTeamId";
-import useGetTeams from "client/getTeams";
-import { useUser } from "components/UserContext";
-import { ParagraphElement } from "types/slate";
+import type { ParagraphElement } from "types/slate";
+import type { ReactEditor, UserDBEntry } from "components/Comments/TextEntry";
+import DisplayComment from "components/Comments/Display";
+
+import dynamic from "next/dynamic";
+const CommentTextEntry = dynamic(
+  () => import("components/Comments/TextEntry"),
+  {
+    loading: () => (
+      <div className="flex w-full items-center justify-center">
+        <Loading className="h-4 w-4 text-zinc-600" />
+      </div>
+    ),
+  }
+);
 
 export interface IComment {
   id: number;
@@ -30,7 +37,7 @@ export interface IComment {
 
 export type AddComment = (data: {
   messageId: number;
-  text: string;
+  comment: ParagraphElement[];
 }) => Promise<number>;
 
 interface Props {
@@ -40,73 +47,16 @@ interface Props {
   mutate?: (commentId: number) => unknown;
   id?: string;
   addComment: AddComment;
-}
-
-interface UserDBEntry {
-  id: string;
-  display: string;
-  description?: string;
-  matchers: string[];
-  avatar?: string;
+  teamMemberList: UserDBEntry[];
 }
 
 export default function CommentBox(props: Props) {
   const formRef = useRef<HTMLFormElement>(null);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<ReactEditor>();
   const [loading, setLoading] = useState(false);
-  const [newComment, setComment] = useState("");
-  const [tag, setTag] = useState<string | null>(null);
-  const teamId = useGetTeamId();
-  const { data: teams } = useGetTeams();
-  const { data: teamMembers } = useGetTeamMembers(teamId);
-  const { user } = useUser();
-
-  const teamWithoutMe = useMemo(
-    () => (teamMembers || []).filter((tm) => tm.Profile.email !== user?.email),
-    [teamMembers, user]
-  );
-
-  const thisTeam = (teams || []).find((t) => t.id === teamId);
-  const userDB: UserDBEntry[] = useMemo(
-    () => [
-      ...(thisTeam
-        ? [
-            {
-              id: thisTeam.Namespace.namespace.toLowerCase(),
-              display: thisTeam.name,
-              description: `Notify all of ${thisTeam.name}`,
-              matchers: [thisTeam.Namespace.namespace, thisTeam.name],
-            },
-          ]
-        : []),
-      ...teamWithoutMe.map((tm) => ({
-        id: tm.Profile.email.split("@")[0].toLowerCase(),
-        display:
-          tm.Profile.firstName !== null && tm.Profile.lastName !== null
-            ? `${tm.Profile.firstName} ${tm.Profile.lastName}`
-            : tm.Profile.email,
-        description:
-          tm.Profile.firstName !== null && tm.Profile.lastName !== null
-            ? tm.Profile.email
-            : undefined,
-        avatar: tm.Profile.email,
-        matchers: [
-          tm.Profile.email,
-          ...(tm.Profile.firstName !== null && tm.Profile.lastName !== null
-            ? [`${tm.Profile.firstName} ${tm.Profile.lastName}`]
-            : []),
-        ],
-      })),
-    ],
-    [thisTeam, teamWithoutMe]
-  );
-
-  const dbMatch =
-    tag === null
-      ? null
-      : userDB
-          .filter((db) => db.matchers.filter((m) => m.includes(tag)).length > 0)
-          .slice(0, 4);
+  const [value, setValue] = useState<ParagraphElement[]>([
+    { type: "paragraph", children: [{ text: "" }] },
+  ]);
 
   const commentators = uniqBy(props.comments, (c) => c.authorId);
 
@@ -115,12 +65,26 @@ export default function CommentBox(props: Props) {
       setLoading(true);
       const commentId = await props.addComment({
         messageId: props.messageId,
-        text: newComment,
+        comment: value,
       });
       if (props.mutate) {
         props.mutate(commentId);
       }
-      setComment("");
+      const newValue: ParagraphElement[] = [
+        { type: "paragraph", children: [{ text: "" }] },
+      ];
+      if (editorRef.current) {
+        // delete old children
+        const editor = editorRef.current;
+        const children = [...editor.children];
+        children.forEach((node) =>
+          editor.apply({ type: "remove_node", path: [0], node })
+        );
+
+        //set explicitly to new blank value
+        editor.children = newValue;
+        setValue(newValue);
+      }
     } finally {
       setLoading(false);
     }
@@ -183,11 +147,7 @@ export default function CommentBox(props: Props) {
                 : c.TeamMember.Profile.email}
             </div>
             <div className="my-0.5 space-y-2 rounded-lg bg-yellow-100 bg-opacity-10 px-2 py-2 text-xs text-yellow-50">
-              {slateToText(c.text).map((p) => (
-                <p key={p}>
-                  <HighlightMentions str={p} />
-                </p>
-              ))}
+              <DisplayComment comment={c.text} />
             </div>
           </div>
         ))}
@@ -199,87 +159,16 @@ export default function CommentBox(props: Props) {
           }}
           ref={formRef}
         >
-          <TextareaAutosize
-            name="comment"
-            id="comment"
-            required
-            ref={textAreaRef}
-            value={newComment}
-            onChange={(e) => {
-              const totalText = e.target.value;
-              setComment(totalText);
-
-              const wordList = totalText.split(" ");
-              const lastWord = wordList.slice(-1)[0];
-              if (lastWord.charAt(0) === "@") {
-                const currentTag = lastWord.slice(1);
-                setTag(currentTag);
-              } else {
-                setTag(null);
-              }
+          <CommentTextEntry
+            userList={props.teamMemberList}
+            value={value}
+            setValue={setValue}
+            submitComment={() => {
+              void addComment();
             }}
-            placeholder="Comment internally"
-            className="focus:border-1 block w-full min-w-0 flex-grow rounded-md border-yellow-300 bg-zinc-900 pr-6 text-xs focus:border-yellow-300 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
-            onKeyDown={(e) => {
-              if (
-                isMatch(e, { key: "Enter", shiftKey: false, altKey: false })
-              ) {
-                void addComment();
-              }
-
-              if (e.key === "@") {
-                setTag("");
-              }
-              if (e.key == " ") {
-                setTag(null);
-              }
-            }}
+            editorRef={editorRef}
           />
-          {dbMatch === null ? (
-            <></>
-          ) : (
-            <div className="absolute bottom-[calc(100%_+_2px)] left-4 flex w-80 flex-col rounded-lg border border-zinc-600 bg-black/25 text-zinc-100 shadow-lg shadow-black backdrop-blur-md">
-              {dbMatch.map((match) => (
-                <div key={match.id} className="px-1 py-1">
-                  <button
-                    className="h-14 w-full"
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const words = newComment.split(" ");
-                      const allButLast = words.slice(0, -1);
-                      setComment(`${allButLast.join(" ")} @${match.id} `);
-                      setTag(null);
-                      if (textAreaRef.current !== null) {
-                        textAreaRef.current.focus();
-                      }
-                    }}
-                  >
-                    <div className="flex h-full w-full  rounded-md px-2 py-1 hover:bg-zinc-800">
-                      {match.avatar ? (
-                        <div className="mr-2 flex h-full shrink-0 items-center">
-                          <Avatar
-                            str={match.avatar}
-                            className="h-7 w-7 rounded-full"
-                          />
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                      <div className="flex h-full grow flex-col items-start justify-center  ">
-                        {match.display}
-                        {match.description ? (
-                          <div className="text-xs text-zinc-400">
-                            {match.description}
-                          </div>
-                        ) : undefined}
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+
           <div className="absolute inset-y-0 right-0 flex items-end py-2 pr-3">
             <button type="submit">
               {loading ? (
@@ -296,22 +185,4 @@ export default function CommentBox(props: Props) {
       </div>
     </div>
   );
-}
-
-function HighlightMentions({ str }: { str: string }): JSX.Element {
-  const regex = /\B@([0-9a-zA-Z])*/gim;
-  const hasMention = regex.exec(str);
-
-  if (hasMention !== null) {
-    const before = str.slice(0, hasMention.index);
-    return (
-      <>
-        {before}
-        <span className="cursor-pointer font-semibold">{hasMention[0]}</span>
-        <HighlightMentions str={str.slice(regex.lastIndex)} />
-      </>
-    );
-  }
-
-  return <>{str}</>;
 }

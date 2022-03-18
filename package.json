@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
-    "vercel-build": "prisma generate && yarn run vercel-migrate && next build",
+    "build": "prisma generate && tsc --noEmit && next build",
+    "vercel-build": "prisma generate && tsc --noEmit && next build && yarn run vercel-migrate",
     "vercel-migrate": "if [ -n \"$MIGRATION_DATABASE\" ]; then DATABASE=$MIGRATION_DATABASE prisma migrate deploy; else echo 'Skipping migration. No $MIGRATION_DATABASE'; fi",
     "start": "next start",
     "lint": "next lint && eslint . --ext .tsx,.ts",
@@ -33,7 +33,7 @@
     "remark-gfm": "^3.0.1",
     "remark-html": "^15.0.1",
     "slate": "^0.75.0",
-    "slate-hyperscript": "^0.67.0",
+    "slate-react": "^0.75.0",
     "swr": "^1.2.2"
   },
   "devDependencies": {

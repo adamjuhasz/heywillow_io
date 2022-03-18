@@ -1,13 +1,8 @@
 import isArray from "lodash/isArray";
 
-import {
-  LineElement,
-  MaskedElement,
-  ParagraphElement,
-  SlateText,
-} from "types/slate";
+import { MentionElement, ParagraphElement, SlateText } from "types/slate";
 
-type SlateType = ParagraphElement | LineElement | MaskedElement | SlateText;
+type SlateType = ParagraphElement | MentionElement | SlateText;
 export type SlateInput = SlateType | SlateType[];
 
 export default function slateToText(element: SlateInput): string[] {
@@ -19,16 +14,12 @@ export default function slateToText(element: SlateInput): string[] {
     return [(element as SlateText).text];
   }
 
-  const withChildren = element as
-    | ParagraphElement
-    | LineElement
-    | MaskedElement;
+  const withChildren = element as ParagraphElement | MentionElement;
   switch (withChildren.type) {
     case "paragraph":
-      return [...withChildren.children.flatMap((e) => slateToText(e))];
+      return [withChildren.children.flatMap((e) => slateToText(e)).join("")];
 
-    case "line":
-    case "maskedtext":
-      return withChildren.children.flatMap((e) => slateToText(e));
+    case "mention":
+      return [withChildren.displayText];
   }
 }

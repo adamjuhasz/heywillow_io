@@ -1,3 +1,9 @@
+import {
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from "next";
+import { ParsedUrlQuery } from "querystring";
 import Head from "next/head";
 import format from "date-fns/format";
 import sample from "lodash/sample";
@@ -5,7 +11,11 @@ import sample from "lodash/sample";
 import { getAllPostIds, getPostData } from "static-build/guides";
 import LandingPageHeader from "components/LandingPage/Header";
 
-export async function getStaticPaths() {
+interface Params extends ParsedUrlQuery {
+  id: string;
+}
+
+export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
   const paths = getAllPostIds();
   return {
     paths,
@@ -13,8 +23,11 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: { params: { id: string } }) {
-  const postData = await getPostData(params.id);
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext<Params>): Promise<GetStaticPropsResult<Props>> {
+  const postData = await getPostData((params as Params).id);
+
   return {
     props: {
       postData,
@@ -41,11 +54,11 @@ const colors = [
   "bg-rose-300",
 ];
 
-export default function Post({
-  postData,
-}: {
+interface Props {
   postData: Record<string, string>;
-}) {
+}
+
+export default function Post({ postData }: Props) {
   return (
     <>
       <Head>

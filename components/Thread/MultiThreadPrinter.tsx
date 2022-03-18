@@ -6,6 +6,7 @@ import ThreadPrinter, {
 } from "components/Thread/ThreadPrinter";
 import { AddComment } from "components/Thread/CommentBox";
 import useIntersectionObserver from "hooks/useIntersectionObserver";
+import type { UserDBEntry } from "components/Comments/TextEntry";
 
 interface IThread {
   id: number;
@@ -18,6 +19,7 @@ interface Props {
   refreshComment: (id: number) => unknown;
   addComment: AddComment;
   urlQueryComment: string | undefined;
+  teamMemberList: UserDBEntry[];
 }
 
 export const scrollToID = (id: string) => {
@@ -63,6 +65,7 @@ export default function MultiThreadPrinter(props: Props) {
             threadId={t.id}
             mutate={props.refreshComment}
             addComment={props.addComment}
+            teamMemberList={props.teamMemberList}
           />
         ))
       ) : (
@@ -76,6 +79,7 @@ export default function MultiThreadPrinter(props: Props) {
             threadId={props.primaryThread.id}
             mutate={props.refreshComment}
             addComment={props.addComment}
+            teamMemberList={props.teamMemberList}
           />
         </>
       ) : (
