@@ -8,7 +8,7 @@ export default function RightSideMenu() {
   return (
     <>
       <Avatar str={user?.email || ""} className="h-6 w-6" />
-      <TopLink exact href="/a/logout">
+      <TopLink exact href="/a/logout" className="hidden sm:flex">
         Logout
       </TopLink>
     </>

@@ -26,11 +26,11 @@ export default function AppHeader(props: PropsWithChildren<Props>) {
     <StickyBase>
       <AppContainer>
         <HeaderContainer>
-          <div className="flex h-full items-center space-x-4 ">
+          <div className="flex h-full items-center space-x-1 lg:space-x-2 ">
             <LeftSideMenu {...props} />
           </div>
 
-          <div className="flex h-full items-center space-x-4 ">
+          <div className="flex h-full items-center sm:space-x-1 ">
             <RightSideMenu />
           </div>
         </HeaderContainer>
@@ -57,7 +57,7 @@ function LeftSideMenu(props: LeftSideMenuProps) {
 
   return (
     <>
-      <WillowLogoLink />
+      <WillowLogoLink className="hidden sm:flex" />
 
       <TeamSelector
         teams={props.teams}

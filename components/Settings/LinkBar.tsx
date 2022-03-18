@@ -10,7 +10,7 @@ export default function LinkBar(props: PropsWithChildren<Props>) {
   return (
     <div
       className={[
-        "box-border flex h-9 w-full items-center justify-start space-x-4  px-4 lg:px-0",
+        "box-border flex h-9 w-full items-center justify-start space-x-4 px-2 sm:px-4 lg:px-0",
         props.hideBorder === true ? "" : "border-b border-zinc-600",
       ].join(" ")}
     >

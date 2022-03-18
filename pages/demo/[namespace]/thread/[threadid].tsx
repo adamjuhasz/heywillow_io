@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
+import MenuIcon from "@heroicons/react/solid/MenuIcon";
+import XIcon from "@heroicons/react/solid/XIcon";
 import sortBy from "lodash/sortBy";
 
 import AppLayout from "layouts/app";
@@ -29,6 +31,7 @@ export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { addToast } = useContext(ToastContext);
+  const [showRightSidebar, setShowRightSidebar] = useState(false);
 
   const { threadid, namespace } = router.query;
   let threadNum: number | undefined = parseInt(threadid as string, 10);
@@ -84,6 +87,33 @@ export default function ThreadViewer() {
     })),
   ];
 
+  const backButton = (
+    <Link href={workspace}>
+      <a className="block rounded-full hover:shadow-zinc-900">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
+          <ArrowLeftIcon className="h-6 w-6" />
+        </div>
+      </a>
+    </Link>
+  );
+
+  const rightSideBar = (
+    <RightSidebar
+      thread={requestedThread}
+      threads={[
+        ...threadsWithoutRequested,
+        ...(requestedThread ? [requestedThread] : []),
+      ]}
+      loading={loading}
+      setLoading={setLoading}
+      scrollToID={scrollToID}
+      threadNum={threadNum}
+      href={workspace}
+      changeThreadState={async () => ({})}
+      threadLink="https://heywillow.io/signup"
+    />
+  );
+
   return (
     <>
       <Head>
@@ -102,10 +132,10 @@ export default function ThreadViewer() {
       <StickyBase>
         <AppContainer>
           <HeaderContainer>
-            <div className="flex h-full items-center space-x-4 ">
+            <div className="flex h-full items-center sm:space-x-1">
               <Link href="/">
-                <a className="flex items-center">
-                  <WillowLogo className="mr-2 h-5 w-5 shrink-0" />
+                <a className="hidden items-center sm:flex">
+                  <WillowLogo className="h-5 w-5 shrink-0" />
                 </a>
               </Link>
 
@@ -129,18 +159,29 @@ export default function ThreadViewer() {
       <AppContainer>
         <div className="flex h-[calc(100vh_-_3rem_-_2rem)] w-full overflow-x-hidden">
           {/* Left side */}
-          <div className="flex h-full w-[3.5rem] shrink-0 flex-col items-center pt-14">
-            <Link href={workspace}>
-              <a className="block rounded-full hover:shadow-zinc-900">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
-                  <ArrowLeftIcon className="h-6 w-6" />
-                </div>
-              </a>
-            </Link>
+          <div className="hidden h-full w-[3.5rem] shrink-0 flex-col items-center pt-14 md:flex">
+            {backButton}
           </div>
 
           {/* Center */}
-          <div className="flex h-full w-[calc(100%_-_3rem_-_16rem)] flex-col pt-7">
+          <div className="flex h-full w-full flex-col pt-1 sm:w-[calc(100%_-_3rem_-_11rem)] md:w-[calc(100%_-_3rem_-_16rem)] md:pt-7">
+            <div className="mb-1 flex shrink-0 items-center justify-between md:hidden">
+              {backButton}
+              <div className="sm:hidden">
+                <button
+                  className="block rounded-full hover:shadow-zinc-900"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowRightSidebar(!showRightSidebar);
+                  }}
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
+                    <MenuIcon className="h-6 w-6" />
+                  </div>
+                </button>
+              </div>
+            </div>
+
             <div className="grow overflow-x-hidden overflow-y-scroll">
               <MultiThreadPrinter
                 primaryThread={requestedThread}
@@ -168,23 +209,32 @@ export default function ThreadViewer() {
           </div>
 
           {/* Right side */}
-          <div className="w-[16rem] shrink-0 px-4 py-7">
-            <RightSidebar
-              thread={requestedThread}
-              threads={[
-                ...threadsWithoutRequested,
-                ...(requestedThread ? [requestedThread] : []),
-              ]}
-              loading={loading}
-              setLoading={setLoading}
-              scrollToID={scrollToID}
-              threadNum={threadNum}
-              href={workspace}
-              changeThreadState={async () => ({})}
-              threadLink="https://heywillow.io/signup"
-            />
+          <div className="hidden shrink-0 px-4 py-7 sm:block sm:w-[11rem] md:w-[16rem]">
+            {rightSideBar}
           </div>
         </div>
+
+        {/* Right side as floater */}
+        {showRightSidebar ? (
+          <div className="absolute right-0 top-0 h-full bg-black px-4">
+            {rightSideBar}
+            <div className="absolute top-0 left-0">
+              <button
+                className="ml-1 mt-1 block rounded-full hover:shadow-zinc-900"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowRightSidebar(!showRightSidebar);
+                }}
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
+                  <XIcon className="h-6 w-6" />
+                </div>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
       </AppContainer>
     </>
   );

@@ -4,6 +4,7 @@ interface TopLinkBaseProps {
   href?: string;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
   isActive: boolean;
+  className?: string;
 }
 
 export default forwardRef<
@@ -20,6 +21,7 @@ export default forwardRef<
         props.isActive
           ? "border-zinc-100 text-zinc-100"
           : "border-transparent text-zinc-500",
+        props.className || "",
       ].join(" ")}
     >
       {props.children}
