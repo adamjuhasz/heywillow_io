@@ -21,6 +21,7 @@ export default function TeamPicker(): JSX.Element {
       ? undefined
       : teams.filter(
           (t) =>
+            // eslint-disable-next-line lodash/prefer-some
             nonAccepted.findIndex((invite) => invite.teamId === t.id) === -1
         );
 

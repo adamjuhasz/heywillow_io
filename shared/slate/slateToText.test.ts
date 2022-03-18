@@ -74,7 +74,7 @@ describe("slateToText", () => {
             {
               type: "mention",
               teamMemberId: 1,
-              displayText: "@Adam (Eng)",
+              displayText: "Adam (Eng)",
               children: [{ text: "" }],
             },
           ],
