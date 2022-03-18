@@ -10,18 +10,7 @@ import type { ParagraphElement } from "types/slate";
 import type { ReactEditor, UserDBEntry } from "components/Comments/TextEntry";
 import DisplayComment from "components/Comments/Display";
 import slateToText from "shared/slate/slateToText";
-
-import dynamic from "next/dynamic";
-const CommentTextEntry = dynamic(
-  () => import("components/Comments/TextEntry"),
-  {
-    loading: () => (
-      <div className="flex w-full items-center justify-center">
-        <Loading className="h-4 w-4 text-zinc-600" />
-      </div>
-    ),
-  }
-);
+import CommentTextEntry from "components/Comments/TextEntry";
 
 export interface IComment {
   id: number;

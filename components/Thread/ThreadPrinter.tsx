@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import sortBy from "lodash/sortBy";
-import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 
 import SubjectLine from "components/Thread/SubjectLine";
 import MessagePrinter, {
@@ -78,13 +77,7 @@ export default function ThreadPrinter(props: ThreadPrinterProps) {
       {feed ? (
         <>
           {firstMessage ? (
-            <SubjectLine>
-              {subject} (
-              {formatDistanceToNowStrict(new Date(createdAt), {
-                addSuffix: true,
-              })}
-              )
-            </SubjectLine>
+            <SubjectLine createdAt={createdAt}>{subject}</SubjectLine>
           ) : (
             <></>
           )}
