@@ -232,7 +232,7 @@ export default async function messageNotification(messageId: bigint) {
           token: sendOptions.token,
         }
       );
-      await sendPostmarkEmailAsTeam(sendOptions);
+      await sendPostmarkEmailAsTeam(sendOptions, message.Thread.Team.id);
     } else {
       await logger.error("messageNotification no body to send to end user", {
         messageId: Number(messageId),

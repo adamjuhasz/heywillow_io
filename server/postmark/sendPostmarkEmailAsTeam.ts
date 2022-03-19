@@ -2,6 +2,7 @@ import * as Postmark from "postmark";
 import mapValues from "lodash/mapValues";
 
 import { logger, toJSONable } from "utils/logger";
+import notifyTeamOfError from "server/notifications/notifyTeamOfError";
 
 export interface Options {
   to: string;
@@ -25,14 +26,10 @@ interface PostmarkEmailResponse {
   Message: string;
 }
 
-export default async function sendPostmarkEmailAsTeam({
-  to,
-  from,
-  subject,
-  htmlBody,
-  textBody,
-  token,
-}: Options) {
+export default async function sendPostmarkEmailAsTeam(
+  { to, from, subject, htmlBody, textBody, token }: Options,
+  teamId: number | bigint
+) {
   const email: Postmark.Models.Message = {
     From: from,
     To: to,
@@ -109,6 +106,11 @@ export default async function sendPostmarkEmailAsTeam({
                   token: token,
                   notifyTeamMembers: true,
                 }
+              );
+              await notifyTeamOfError(
+                teamId,
+                "Inbox email address not confirmed",
+                `We couldn't send en email from your inbox (${from}). Why? Postmark (our email service provider) requires email addresses to be verified before they can be used as a "From" address. Please click the link in the verification email`
               );
               return null;
 

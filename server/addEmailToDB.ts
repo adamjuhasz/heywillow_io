@@ -254,7 +254,7 @@ export default async function addEmailToDB(
         ],
         token: token.token,
       };
-      await sendPostmarkEmailAsTeam(sendOptions);
+      await sendPostmarkEmailAsTeam(sendOptions, inbox.Team.id);
     }
 
     return savedEmail.id;
