@@ -86,9 +86,15 @@ async function handler(
   });
 
   if (existingEmail !== null) {
-    await logger.error("Found email already", {
-      sourceMessageId: body.MessageID,
-    });
+    await logger.error(
+      `Found email already saved to: ${body.To} from: ${body.From} subject: ${body.Subject}`,
+      {
+        sourceMessageId: body.MessageID,
+        to: body.To,
+        from: body.From,
+        subject: body.Subject,
+      }
+    );
     return res.status(201).json({ status: "already created" });
   }
 

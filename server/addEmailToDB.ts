@@ -83,13 +83,18 @@ export default async function addEmailToDB(
   try {
     inbox = await findInbox(message.toEmail, message.toEmailHash);
   } catch (e) {
-    await logger.error("Inbox not found", {
-      fromEmail: message.fromEmail,
-      toEmail: message.toEmail,
-      sourceMessageId: message.sourceMessageId,
-      emailMessageId: message.emailMessageId,
-      fromName: message.fromName,
-    });
+    await logger.error(
+      `Inbox not found to: [${message.toEmail.join(", ")}] from: ${
+        message.fromEmail
+      }`,
+      {
+        fromEmail: message.fromEmail,
+        toEmail: message.toEmail,
+        sourceMessageId: message.sourceMessageId,
+        emailMessageId: message.emailMessageId,
+        fromName: message.fromName,
+      }
+    );
     throw new Error(`${message.toEmail} -- Inbox not found`);
   }
 
@@ -190,9 +195,12 @@ export default async function addEmailToDB(
     if (savedEmail.Message !== null) {
       await messageNotification(savedEmail.Message.id);
     } else {
-      await logger.error("savedEmail.Message was null", {
-        message: mapValues(message, toJSONable),
-      });
+      await logger.error(
+        `savedEmail.Message was null from: ${message.fromEmail} to: ${inbox.emailAddress}`,
+        {
+          message: mapValues(message, toJSONable),
+        }
+      );
     }
 
     await Promise.allSettled(
@@ -222,7 +230,9 @@ export default async function addEmailToDB(
       });
 
       if (token === null) {
-        await logger.error("No token found", { inboxId: Number(inbox.id) });
+        await logger.error(`No token found for inbox ${inbox.id}`, {
+          inboxId: Number(inbox.id),
+        });
         throw new Error("No token found");
       }
 

@@ -41,7 +41,7 @@ export default async function messageNotification(messageId: bigint) {
   });
 
   if (message === null) {
-    await logger.error("messageNotification message not found", {
+    await logger.error(`messageNotification message not found ${messageId}`, {
       messageId: Number(messageId),
     });
     throw new Error("Message not found");
@@ -190,7 +190,9 @@ export default async function messageNotification(messageId: bigint) {
     const body = message.text;
 
     if (token === null) {
-      await logger.error("No token found", { inboxId: Number(inbox.id) });
+      await logger.error(`No token found inbox: ${inbox.id}`, {
+        inboxId: Number(inbox.id),
+      });
       throw new Error("No token found");
     }
 

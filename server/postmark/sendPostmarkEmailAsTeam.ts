@@ -12,6 +12,19 @@ export interface Options {
   token: string;
 }
 
+interface PostmarkAPIError {
+  ErrorCode: number;
+  Message: string;
+}
+
+interface PostmarkEmailResponse {
+  To: string;
+  SubmittedAt: string;
+  MessageID: string;
+  ErrorCode: number;
+  Message: string;
+}
+
 export default async function sendPostmarkEmailAsTeam({
   to,
   from,
@@ -31,30 +44,72 @@ export default async function sendPostmarkEmailAsTeam({
   if (process.env.NODE_ENV === "production") {
     const before = Date.now();
 
-    const postmark = new Postmark.Client(token);
-    const res = await postmark.sendEmail(email);
+    const res = await fetch("https://api.postmarkapp.com/email", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-Postmark-Server-Token": token,
+      },
+      body: JSON.stringify(email),
+    });
 
     const after = Date.now();
     console.log(`Postmark took ${after - before}ms to send an email as team`);
 
-    if (res.ErrorCode === 0) {
-      await logger.info(
-        `Sent email with Postmark to ${to} - ${subject} as ${from}`,
-        {
-          to,
-          subject,
-          textBody,
-          MessageID: res.MessageID,
-          ErrorCode: res.ErrorCode,
-          SubmittedAt: res.SubmittedAt,
+    switch (res.status) {
+      case 200: {
+        const body = (await res.json()) as PostmarkEmailResponse;
+        void logger.info(
+          `Sent email with Postmark to ${to} - ${subject} as ${from}`,
+          {
+            to,
+            subject,
+            textBody,
+            MessageID: body.MessageID,
+            ErrorCode: body.ErrorCode,
+            SubmittedAt: body.SubmittedAt,
+          }
+        );
+        return res;
+      }
+
+      case 401:
+        await logger.error(
+          `Postmark Error: Unauthorized Missing or incorrect API token in header for ${from}`,
+          { From: from, To: to, Subject: subject, token: token }
+        );
+        return null;
+
+      case 404:
+        await logger.error(
+          `Postmark Error: Request Too Large The request exceeded Postmark's size limit`,
+          { From: from, To: to, Subject: subject }
+        );
+        return null;
+
+      case 422: {
+        const body = (await res.json()) as PostmarkAPIError;
+        // eslint-disable-next-line sonarjs/no-nested-switch
+        switch (body.ErrorCode) {
+          case 401:
+            await logger.error(
+              `Postmark API: ${body.ErrorCode} — Sender signature (${from}) not confirmed You're trying to send email with a From address that doesn't have a confirmed sender signature. You can resend the confirmation email on the Sender Signatures page.`,
+              { errorCode: body.ErrorCode, message: body.Message }
+            );
+            return null;
+
+          default:
+            await logger.error(
+              `Postmark API Error: ${body.ErrorCode} — ${body.Message}`,
+              {
+                errorCode: body.ErrorCode,
+                message: body.Message,
+              }
+            );
+            return null;
         }
-      );
-      return res;
-    } else {
-      await logger.error("Could not send", {
-        response: mapValues(res, toJSONable),
-        email: mapValues(email, toJSONable),
-      });
+      }
     }
   } else {
     await logger.info("Did not send", mapValues(email, toJSONable));

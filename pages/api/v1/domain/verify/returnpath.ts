@@ -32,7 +32,9 @@ async function handler(
     where: { domain: body.domain },
   });
   if (pmDomain === null) {
-    await logger.error("Missing domain name", { domain: body.domain });
+    await logger.error(`Missing domain name ${body.domain}`, {
+      domain: body.domain,
+    });
     return res.status(404).send({ error: "Unknown domain" });
   }
 

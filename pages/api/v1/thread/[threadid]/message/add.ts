@@ -63,11 +63,14 @@ async function handler(
   });
 
   if (teamMember === null) {
-    void logger.error("Can't access team member", {
-      requestId: (req.headers["x-vercel-id"] as string) || null,
-      teamId: Number(currentThread.teamId),
-      profileId: user.id,
-    });
+    void logger.error(
+      `Can't query team member: ${currentThread.teamId} profile: ${user.id}`,
+      {
+        requestId: (req.headers["x-vercel-id"] as string) || null,
+        teamId: Number(currentThread.teamId),
+        profileId: user.id,
+      }
+    );
     return res.status(404).json({ error: "Can't access team member" });
   }
 
