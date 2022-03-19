@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import mapValues from "lodash/mapValues";
 
-import { logger, toJSONable } from "utils/logger";
+import { logger } from "utils/logger";
 import { apiHandler } from "server/apiHandler";
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
@@ -40,8 +39,15 @@ async function handler(
   });
 
   if (teams === null) {
-    await logger.warn("No team found", mapValues(body, toJSONable));
-    return res.status(404).send({ error: "Bad team found" });
+    await logger.warn(
+      `No team found with id ${body.teamId} for user ${user.id}`,
+      {
+        teamId: body.teamId,
+        profileId: user.id,
+        profileEmail: user.email || "<None>",
+      }
+    );
+    return res.status(404).send({ error: "Bad team connection" });
   }
 
   const requests = teams.PostmarkDomain.map(async (d) => {
