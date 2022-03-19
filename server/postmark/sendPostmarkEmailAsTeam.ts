@@ -95,8 +95,15 @@ export default async function sendPostmarkEmailAsTeam({
           switch (body.ErrorCode) {
             case 401:
               await logger.error(
-                `Postmark API: ${body.ErrorCode} — Sender signature (${from}) not confirmed You're trying to send email with a From address that doesn't have a confirmed sender signature. You can resend the confirmation email on the Sender Signatures page.`,
-                { errorCode: body.ErrorCode, message: body.Message }
+                `Postmark API: ${body.ErrorCode} — Sender signature (${from}) not confirmed You're trying to send email with a From address that doesn't have a confirmed sender signature.`,
+                {
+                  errorCode: body.ErrorCode,
+                  message: body.Message,
+                  From: from,
+                  To: to,
+                  Subject: subject,
+                  token: token,
+                }
               );
               return null;
 
@@ -106,16 +113,33 @@ export default async function sendPostmarkEmailAsTeam({
                 {
                   errorCode: body.ErrorCode,
                   message: body.Message,
+                  From: from,
+                  To: to,
+                  Subject: subject,
+                  token: token,
                 }
               );
               return null;
           }
         }
+
+        default:
+          await logger.error(
+            `Postmark Error: Postmark API Error: ${res.status}`,
+            { From: from, To: to, Subject: subject, token: token }
+          );
+          return null;
       }
     } catch (e) {
       await logger.error(
         `Caught fetch error to Postmark api ${(e as Error).message}`,
-        { error: toJSONable(e) }
+        {
+          error: toJSONable(e),
+          From: from,
+          To: to,
+          Subject: subject,
+          token: token,
+        }
       );
     }
   } else {
