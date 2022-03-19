@@ -99,7 +99,7 @@ export default async function sendPostmarkEmailAsTeam({
           switch (body.ErrorCode) {
             case 401:
               await logger.error(
-                `Postmark API: ${body.ErrorCode} — Sender signature (${from}) not confirmed You're trying to send email with a From address that doesn't have a confirmed sender signature.`,
+                `Postmark API: ${body.ErrorCode} — Sender signature (${from}) not confirmed`,
                 {
                   errorCode: body.ErrorCode,
                   message: body.Message,
@@ -121,6 +121,7 @@ export default async function sendPostmarkEmailAsTeam({
                   To: to,
                   Subject: subject,
                   token: token,
+                  status: res.status,
                 }
               );
               return null;
