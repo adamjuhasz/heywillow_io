@@ -56,7 +56,11 @@ export default async function sendPostmarkEmailAsTeam({
       });
 
       const after = Date.now();
-      console.log(`Postmark took ${after - before}ms to send an email as team`);
+      console.log(
+        `Postmark took ${
+          after - before
+        }ms to send an email as team; returned: ${res.status}`
+      );
 
       switch (res.status) {
         case 200: {
