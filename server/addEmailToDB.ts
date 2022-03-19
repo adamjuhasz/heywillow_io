@@ -260,7 +260,7 @@ export default async function addEmailToDB(
     return savedEmail.id;
   } catch (e) {
     await logger.error("Error with savedEmail", {
-      error: (e as Error).toString(),
+      error: (e as Error)?.toString(),
     });
     throw e;
   }

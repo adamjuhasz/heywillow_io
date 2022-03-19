@@ -138,7 +138,7 @@ export default async function sendPostmarkEmailAsTeam({
       }
     } catch (e) {
       await logger.error(
-        `Caught fetch error to Postmark api ${(e as Error).message}`,
+        `Caught fetch error to Postmark api ${(e as Error)?.message}`,
         {
           error: toJSONable(e),
           From: from,

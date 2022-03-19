@@ -65,7 +65,7 @@ async function handler(
 
     return res.json({ teamId: Number(teamCreated.Team.id) });
   } catch (e) {
-    await logger.error(`Could not create team -- ${(e as Error).error}`, {
+    await logger.error(`Could not create team -- ${(e as Error)?.error}`, {
       error: toJSONable(e),
     });
     return res.status(409).json({ error: "Namespace exists" });

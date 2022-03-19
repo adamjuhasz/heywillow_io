@@ -1,4 +1,3 @@
-import * as Postmark from "postmark";
 import type { NextApiRequest, NextApiResponse } from "next";
 import mapValues from "lodash/mapValues";
 
@@ -10,6 +9,7 @@ import getPostmarkDomainInfo, {
   PostmarkDomain,
 } from "server/postmark/getDomainInfo";
 import processPMResponse from "server/postmark/processPMResponse";
+import createPostmarkServer from "server/postmark/createServer";
 
 export interface RequestBody {
   emailAddress: string;
@@ -59,48 +59,30 @@ async function handler(
 
   // create a new server, save server token
 
-  const namespace = teamMember.Team.Namespace.namespace;
-  const inboundURL = `https://${process.env.POSTMARK_WEBHOOK}@heywillow.io/api/webhooks/v1/postmark/inbound/${teamMember.Team.Namespace.namespace}`;
-  const serverCreate = await fetch(`https://api.postmarkapp.com/servers`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Postmark-Account-Token": process.env.POSTMARK_ACCOUNT_TOKEN || "",
-    },
-    body: JSON.stringify({
-      Name: `${namespace}`,
-      Color: "Yellow",
-      SmtpApiActivated: true,
-      RawEmailEnabled: false,
-      DeliveryType: "Live",
-      InboundHookUrl: inboundURL,
-      PostFirstOpenOnly: false,
-      TrackOpens: true,
-      TrackLinks: "None",
-    }),
+  // if we have an inbox for this namespace, re-use that one
+  const existingInbox = await prisma.inbox.findFirst({
+    where: { teamId: teamMember.teamId },
+    include: { PostmarkToken: true },
   });
-  try {
-    await processPMResponse(serverCreate);
-  } catch (e) {
-    await logger.error("Caught error creating server", {
-      namespace: namespace,
-      inboundURL: inboundURL,
-    });
-    return res.status(500).json({ error: "Could no create postmark server" });
+
+  const namespace = teamMember.Team.Namespace.namespace;
+  let serverToken: string;
+  if (existingInbox !== null && existingInbox.PostmarkToken !== null) {
+    void logger.info(
+      `Re-using server token from ${existingInbox.emailAddress}`,
+      {
+        token: existingInbox.PostmarkToken.token,
+        email: existingInbox.emailAddress,
+      }
+    );
+    serverToken = existingInbox.PostmarkToken.token;
+  } else {
+    try {
+      serverToken = await createPostmarkServer(namespace);
+    } catch (e) {
+      return res.status(500).json({ error: "Could no create postmark server" });
+    }
   }
-
-  const createServerResponse = (await serverCreate.json()) as {
-    ID: number;
-    ApiTokens: string[];
-    ServerLink: string;
-    InboundAddress: string;
-  };
-  const serverToken = createServerResponse.ApiTokens[0];
-
-  const serverPostmark = new Postmark.ServerClient(serverToken);
-  await createWebhook(serverPostmark, namespace, "outbound");
-  await createWebhook(serverPostmark, namespace, "broadcast");
 
   await prisma.inbox.create({
     data: {
@@ -114,6 +96,7 @@ async function handler(
   const existingDomain = await prisma.postmarkDomain.findFirst({
     where: { domain: domain, teamId: teamMember.teamId },
   });
+
   if (existingDomain === null) {
     try {
       await createPostmarkDomain(domain, teamMember.Team.id);
@@ -127,7 +110,7 @@ async function handler(
     }
   }
 
-  //create sender sig, mi\ust be after domain creation
+  //create sender sig, must be after domain creation
   try {
     await createSignature(body.emailAddress, teamMember.Team.name);
   } catch (e) {
@@ -229,30 +212,4 @@ async function createPostmarkDomain(domain: string, teamId: number | bigint) {
   });
 
   return domainBody;
-}
-
-async function createWebhook(
-  serverPostmark: Postmark.ServerClient,
-  namespace: string,
-  stream: string
-) {
-  return serverPostmark.createWebhook(
-    new Postmark.Models.CreateWebhookRequest(
-      `https://heywillow.io/api/webhooks/v1/postmark/record/${namespace}`,
-      {
-        Open: { Enabled: true },
-        Click: { Enabled: true },
-        Delivery: { Enabled: true },
-        Bounce: { Enabled: true },
-        SpamComplaint: { Enabled: true },
-        SubscriptionChange: { Enabled: true },
-      },
-      {
-        Username: process.env.POSTMARK_WEBHOOK?.split(":")[0] || "",
-        Password: process.env.POSTMARK_WEBHOOK?.split(":")[1] || "",
-      },
-      undefined,
-      stream
-    )
-  );
 }
