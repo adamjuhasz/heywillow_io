@@ -34,7 +34,7 @@ async function handler(
   const body = req.body as RequestBody;
 
   const teams = await prisma.team.findFirst({
-    where: { id: body.teamId, Members: { every: { profileId: user.id } } },
+    where: { id: body.teamId, Members: { some: { profileId: user.id } } },
     include: { PostmarkDomain: true },
   });
 
