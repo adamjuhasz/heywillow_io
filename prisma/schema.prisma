@@ -34,11 +34,12 @@ model Namespace {
 }
 
 model TeamMember {
-  id        BigInt   @id @default(autoincrement())
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  id        BigInt     @id @default(autoincrement())
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @default(now()) @db.Timestamptz(6)
   teamId    BigInt
-  profileId String   @db.Uuid
+  profileId String     @db.Uuid
+  role      MemberRole @default(member)
 
   Profile         Profile        @relation(fields: [profileId], references: [id], onDelete: SetNull)
   Team            Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -313,4 +314,9 @@ enum ThreadStateType {
   done
   snoozed
   assigned
+}
+
+enum MemberRole {
+  owner
+  member
 }
