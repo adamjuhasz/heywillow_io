@@ -7,7 +7,7 @@ export async function getDomains(teamId: number) {
   const body: RequestBody = { teamId };
   const res = await fetch("/api/v1/domain/get", {
     method: "POST",
-    headers: { Accept: "application/json" },
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
