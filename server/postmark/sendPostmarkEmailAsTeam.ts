@@ -107,6 +107,7 @@ export default async function sendPostmarkEmailAsTeam({
                   To: to,
                   Subject: subject,
                   token: token,
+                  notifyTeamMembers: true,
                 }
               );
               return null;
