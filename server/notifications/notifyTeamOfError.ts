@@ -1,5 +1,6 @@
 import { prisma } from "utils/prisma";
 import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
+import { logger } from "utils/logger";
 
 export default async function notifyTeamOfError(
   teamId: number | bigint,
@@ -11,8 +12,18 @@ export default async function notifyTeamOfError(
     select: { role: true, Profile: { select: { email: true } } },
   });
 
-  const promises = teamMembers.map((tm) =>
-    sendPostmarkEmail({
+  const promises = teamMembers.map(async (tm) => {
+    void logger.warn(
+      `Sending Error Action Required email to ${tm.Profile.email} about ${errorName}`,
+      {
+        teamId: Number(teamId),
+        email: tm.Profile.email,
+        role: tm.role,
+        errorName: errorName,
+        errorMessage: errorMessage,
+      }
+    );
+    await sendPostmarkEmail({
       to: tm.Profile.email,
       subject: `[Willow] [Action Required] ${errorName}`,
       textBody: [
@@ -32,8 +43,8 @@ export default async function notifyTeamOfError(
         "<br>",
         `- <a href="https://heywillow.io">Willow</a>`,
       ],
-    })
-  );
+    });
+  });
 
   await Promise.allSettled(promises);
 }
