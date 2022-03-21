@@ -5,6 +5,7 @@ import { logger, toJSONable } from "utils/logger";
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
 import apiHandler from "server/apiHandler";
+import createStripeCustomer from "server/stripe/createCustomer";
 
 export default apiHandler({
   post: handler,
@@ -51,6 +52,7 @@ async function handler(
             Namespace: { create: { namespace: body.namespace } },
           },
         },
+        role: "owner",
       },
       select: {
         id: true,
@@ -59,6 +61,8 @@ async function handler(
         Team: true,
       },
     });
+    await createStripeCustomer(teamCreated.Team.id);
+
     await logger.info("teamCreated", {
       teamCreated: mapValues(teamCreated, toJSONable),
     });

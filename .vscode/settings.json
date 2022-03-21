@@ -33,6 +33,7 @@
     "Supa",
     "tailwindui",
     "threadid",
+    "typecheck",
     "Zzyzx"
   ],
   "jest.jestCommandLine": "yarn test"

@@ -48,6 +48,7 @@ async function handler(
     data: {
       Profile: { connect: { id: user.id } },
       Team: { connect: { id: invite.teamId } },
+      role: "member",
     },
     select: {
       teamId: true,
