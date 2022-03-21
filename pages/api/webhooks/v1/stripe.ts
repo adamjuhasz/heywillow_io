@@ -3,7 +3,7 @@ import { Readable } from "node:stream";
 import Stripe from "stripe";
 import isString from "lodash/isString";
 import isNumber from "lodash/isNumber";
-import Prisma from "@prisma/client";
+import type Prisma from "@prisma/client";
 
 import apiHandler from "server/apiHandler";
 import { logger } from "utils/logger";
@@ -114,11 +114,11 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
           // eslint-disable-next-line sonarjs/no-nested-switch
           switch (price.type) {
             case "one_time":
-              priceType = Prisma.PriceType.OneTime;
+              priceType = "OneTime";
               break;
 
             case "recurring":
-              priceType = Prisma.PriceType.Recurring;
+              priceType = "Recurring";
               break;
 
             default:
@@ -129,19 +129,19 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
           // eslint-disable-next-line sonarjs/no-nested-switch
           switch (price.recurring?.interval) {
             case "day":
-              priceInterval = Prisma.PriceInterval.Day;
+              priceInterval = "Day";
               break;
 
             case "month":
-              priceInterval = Prisma.PriceInterval.Month;
+              priceInterval = "Month";
               break;
 
             case "week":
-              priceInterval = Prisma.PriceInterval.Week;
+              priceInterval = "Week";
               break;
 
             case "year":
-              priceInterval = Prisma.PriceInterval.Year;
+              priceInterval = "Year";
               break;
 
             case undefined:
@@ -245,31 +245,31 @@ async function updateSubscription(subscription: Stripe.Subscription) {
   // eslint-disable-next-line sonarjs/no-nested-switch
   switch (subscription.status) {
     case "active":
-      subscriptionStatus = Prisma.SubscriptionStatus.Active;
+      subscriptionStatus = "Active";
       break;
 
     case "canceled":
-      subscriptionStatus = Prisma.SubscriptionStatus.Canceled;
+      subscriptionStatus = "Canceled";
       break;
 
     case "incomplete":
-      subscriptionStatus = Prisma.SubscriptionStatus.Incomplete;
+      subscriptionStatus = "Incomplete";
       break;
 
     case "incomplete_expired":
-      subscriptionStatus = Prisma.SubscriptionStatus.IncompleteExpired;
+      subscriptionStatus = "IncompleteExpired";
       break;
 
     case "past_due":
-      subscriptionStatus = Prisma.SubscriptionStatus.PastDue;
+      subscriptionStatus = "PastDue";
       break;
 
     case "trialing":
-      subscriptionStatus = Prisma.SubscriptionStatus.Trialing;
+      subscriptionStatus = "Trialing";
       break;
 
     case "unpaid":
-      subscriptionStatus = Prisma.SubscriptionStatus.Unpaid;
+      subscriptionStatus = "Unpaid";
       break;
   }
 
