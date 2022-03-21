@@ -72,9 +72,10 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
     await logger.error(`Stripe webhook error ${(err as Error).message}`, {
       sig: sig || "<none>",
     });
-    return res
-      .status(400)
-      .json({ error: `Webhook Error: ${(err as Error).message}` });
+    return res.status(400).json({
+      error: `Webhook Error: ${(err as Error).message}`,
+      message: (err as Error).message,
+    });
   }
 
   if (relevantEvents.has(event.type)) {
@@ -250,6 +251,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(400).json({
         error: "Webhook processing error",
         eventType: event.type,
+        errorMessage: (error as Error).message,
       });
     }
   }
@@ -262,7 +264,7 @@ async function updateSubscription(subscription: Stripe.Subscription) {
     (subscription.customer as Stripe.Customer)?.id ||
     (subscription.customer as string);
   const customer = await prisma.stripeCustomer.findUnique({
-    where: { teamId: parseInt(customerId, 10) },
+    where: { stripeCustomerId: customerId },
     rejectOnNotFound: true,
   });
 

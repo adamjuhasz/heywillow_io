@@ -317,7 +317,7 @@ model Price {
 
 model StripeCustomer {
   teamId           BigInt @id
-  stripeCustomerId String
+  stripeCustomerId String @unique
 
   Team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
