@@ -109,7 +109,13 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
 
         case "product.deleted": {
           const product = event.data.object as Stripe.Product;
-          await prisma.product.delete({ where: { id: product.id } });
+          const deleted = await prisma.product.delete({
+            where: { id: product.id },
+          });
+          await logger.info(`Delete Stripe product ${product.id}`, {
+            productId: product.id,
+            deleted: deleted.id,
+          });
           break;
         }
 
@@ -200,7 +206,14 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
 
         case "price.deleted": {
           const price = event.data.object as Stripe.Price;
-          await prisma.price.delete({ where: { id: price.id } });
+          const deleted = await prisma.price.delete({
+            where: { id: price.id },
+          });
+          await logger.info(`Delete Stripe price ${price.id}`, {
+            priceId: price.id,
+            product: JSON.stringify(price.product),
+            deleted: deleted.id,
+          });
           break;
         }
 
