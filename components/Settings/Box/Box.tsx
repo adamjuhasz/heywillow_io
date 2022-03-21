@@ -7,7 +7,7 @@ interface Props {
   title: ReactNode;
   explainer: ReactNode;
   warning?: ReactNode;
-  button: ReactNode;
+  button: ReactNode | null;
   disabled?: boolean;
   onSubmit?: FormEventHandler<HTMLFormElement>;
   error?: boolean;
@@ -39,7 +39,11 @@ export default function SettingsBox({
       </div>
 
       <SettingsBoxFooter>
-        <SettingsButton disabled={disabled}>{props.button}</SettingsButton>
+        {props.button === null ? (
+          <></>
+        ) : (
+          <SettingsButton disabled={disabled}>{props.button}</SettingsButton>
+        )}
         {props.warning !== undefined ? (
           <div className="">{props.warning}</div>
         ) : (
