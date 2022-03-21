@@ -24,6 +24,8 @@ model Team {
   Members        TeamMember[]
   Thread         Thread[]
   PostmarkDomain PostmarkDomain[]
+  Subscription   Subscription[]
+  StripeCustomer StripeCustomer[]
 }
 
 model Namespace {
@@ -277,6 +279,93 @@ model NotificationPreference {
 
   TeamMember TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
   @@id([teamMemberId, type, channel])
+}
+
+model Product {
+  id        String   @id
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  active      Boolean
+  name        String
+  description String?
+  image       String?
+  metadata    Json
+
+  Price Price[]
+}
+
+model Price {
+  id        String   @id
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  productId       String
+  active          Boolean
+  description     String?
+  unitAmount      BigInt?
+  currency        String
+  type            PriceType
+  interval        PriceInterval?
+  intervalCount   Int?
+  trialPeriodDays Int?
+  metadata        Json
+
+  Product      Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  Subscription Subscription[]
+}
+
+model StripeCustomer {
+  teamId           BigInt @id
+  stripeCustomerId String
+
+  Team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id        String   @id
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  teamId            BigInt
+  status            SubscriptionStatus
+  metadata          Json
+  priceId           String
+  quantity          Int?
+  cancelAtPeriodEnd Boolean
+
+  currentPeriodStart DateTime  @default(now()) @db.Timestamptz(6)
+  currentPeriodEnd   DateTime  @default(now()) @db.Timestamptz(6)
+  endedAt            DateTime? @db.Timestamptz(6)
+  cancelAt           DateTime? @db.Timestamptz(6)
+  canceledAt         DateTime? @db.Timestamptz(6)
+  trialStart         DateTime? @db.Timestamptz(6)
+  trialEnd           DateTime? @db.Timestamptz(6)
+
+  Team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Price Price @relation(fields: [priceId], references: [id])
+}
+
+enum PriceType {
+  OneTime
+  Recurring
+}
+
+enum PriceInterval {
+  Month
+  Year
+  Week
+  Day
+}
+
+enum SubscriptionStatus {
+  Trialing
+  Active
+  Canceled
+  Incomplete
+  IncompleteExpired
+  PastDue
+  Unpaid
 }
 
 enum NotificationType {
