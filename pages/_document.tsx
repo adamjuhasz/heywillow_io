@@ -25,7 +25,6 @@ export default function Document() {
         <meta name="apple-mobile-web-app-title" content="Willow" />
         <meta name="application-name" content="Willow" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <script defer data-domain="heywillow.io" src="/p/script.js"></script>
       </Head>
       <body className="bg-zinc-900 text-zinc-100">
         <Main />

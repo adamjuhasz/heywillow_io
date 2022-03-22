@@ -36,6 +36,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           `,
               }}
             ></script>
+            <script
+              defer
+              data-domain="heywillow.io"
+              data-api="/api/event"
+              src="/p/script.js"
+            ></script>
           </>
         ) : (
           <></>
