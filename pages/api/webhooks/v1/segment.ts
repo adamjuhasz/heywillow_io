@@ -4,11 +4,13 @@ import includes from "lodash/includes";
 import toPairs from "lodash/toPairs";
 import isString from "lodash/isString";
 import keys from "lodash/keys";
+import isNil from "lodash/isNil";
 import { Buffer } from "buffer";
 import type { Prisma } from "@prisma/client";
 
 import apiHandler from "server/apiHandler";
 import { prisma } from "utils/prisma";
+import { JSON, logger } from "utils/logger";
 
 export default apiHandler({ post: handler });
 
@@ -89,188 +91,214 @@ async function handler(
     }
   });
 
-  switch (body.type) {
-    case "track": {
-      const trackEvent = body as SegmentTrackEvent;
-      console.log(trackEvent.type, trackEvent.event);
-      if ("userId" in trackEvent) {
-        const customer = await upsertCustomer(team.Team.id, trackEvent.userId);
-        await prisma.customerEvents.create({
-          data: {
-            customerId: customer.id,
-            action: trackEvent.event,
-            properties: trackEvent.properties,
-            idempotency: trackEvent.messageId,
-          },
-        });
-        return res.status(200).json({});
-      } else {
-        return res.status(202).json({});
-      }
-      break;
-    }
-
-    case "identify": {
-      const identifyEvent = body as SegmentIdentifyEvent;
-      if ("userId" in identifyEvent) {
-        console.log(identifyEvent.type, identifyEvent.userId);
-
-        // create or retrieve customer
-        const customer = await upsertCustomer(
-          team.Team.id,
-          identifyEvent.userId
-        );
-
-        if (identifyEvent.traits !== undefined) {
-          await prisma.customer.update({
-            where: { id: customer.id },
-            data: { updatedAt: new Date() },
+  try {
+    switch (body.type) {
+      case "track": {
+        const trackEvent = body as SegmentTrackEvent;
+        console.log(trackEvent.type, trackEvent.event);
+        if ("userId" in trackEvent) {
+          const customer = await upsertCustomer(
+            team.Team.id,
+            trackEvent.userId
+          );
+          await prisma.customerEvents.create({
+            data: {
+              customerId: customer.id,
+              action: trackEvent.event,
+              properties: trackEvent.properties,
+              idempotency: trackEvent.messageId,
+            },
           });
-          await Promise.allSettled(
-            toPairs(identifyEvent.traits).map(async ([key, value]) => {
-              await prisma.customerTraits.create({
-                data: {
-                  customerId: customer.id,
-                  key: key,
-                  value: value === null ? undefined : value,
-                  idempotency: identifyEvent.messageId,
-                },
-              });
+          return res.status(200).json({});
+        } else {
+          return res.status(202).json({});
+        }
+        break;
+      }
 
-              // if we have an email, link alias email to customer
-              if (key === "email" && isString(value)) {
-                await prisma.aliasEmail.update({
-                  where: {
-                    teamId_emailAddress: {
-                      teamId: team.Team.id,
-                      emailAddress: value,
-                    },
-                  },
+      case "identify": {
+        const identifyEvent = body as SegmentIdentifyEvent;
+        if ("userId" in identifyEvent) {
+          console.log(identifyEvent.type, identifyEvent.userId);
+
+          // create or retrieve customer
+          const customer = await upsertCustomer(
+            team.Team.id,
+            identifyEvent.userId
+          );
+
+          if (identifyEvent.traits !== undefined) {
+            await prisma.customer.update({
+              where: { id: customer.id },
+              data: { updatedAt: new Date() },
+            });
+            await Promise.allSettled(
+              toPairs(identifyEvent.traits).map(async ([key, value]) => {
+                await prisma.customerTraits.create({
                   data: {
                     customerId: customer.id,
+                    key: key,
+                    value: value === null ? undefined : value,
+                    idempotency: identifyEvent.messageId,
                   },
                 });
-              }
-            })
-          );
+
+                // if we have an email, link alias email to customer
+                if (key === "email" && isString(value)) {
+                  await prisma.aliasEmail.update({
+                    where: {
+                      teamId_emailAddress: {
+                        teamId: team.Team.id,
+                        emailAddress: value,
+                      },
+                    },
+                    data: {
+                      customerId: customer.id,
+                    },
+                  });
+                }
+              })
+            );
+          }
+          return res.status(200).json({});
+        } else {
+          return res.status(202).json({});
         }
-        return res.status(200).json({});
-      } else {
-        return res.status(202).json({});
+
+        break;
       }
 
-      break;
-    }
-
-    case "alias": {
-      const aliasEvent = body as SegmentAliasEvent;
-      if ("userId" in aliasEvent) {
-        await prisma.customer.update({
-          where: {
-            teamId_userId: {
-              teamId: team.Team.id,
-              userId: aliasEvent.previousId,
+      case "alias": {
+        const aliasEvent = body as SegmentAliasEvent;
+        if ("userId" in aliasEvent) {
+          await prisma.customer.update({
+            where: {
+              teamId_userId: {
+                teamId: team.Team.id,
+                userId: aliasEvent.previousId,
+              },
             },
-          },
-          data: {
-            updatedAt: new Date(),
-          },
-        });
-        return res.status(200).json({});
-      } else {
-        return res.status(202).json({});
+            data: {
+              updatedAt: new Date(),
+            },
+          });
+          return res.status(200).json({});
+        } else {
+          return res.status(202).json({});
+        }
+        break;
       }
-      break;
-    }
 
-    case "page": {
-      const pageEvent = body as SegmentPageEvent;
-      if ("userId" in pageEvent) {
-        const customer = await upsertCustomer(team.Team.id, pageEvent.userId);
-        await prisma.customerEvents.create({
-          data: {
-            customerId: customer.id,
-            action: "Viewed Page",
-            properties: pageEvent.properties,
-            idempotency: pageEvent.messageId,
-          },
-        });
-        return res.status(200).json({});
-      } else {
-        return res.status(202).json({});
+      case "page": {
+        const pageEvent = body as SegmentPageEvent;
+        if ("userId" in pageEvent) {
+          const customer = await upsertCustomer(team.Team.id, pageEvent.userId);
+          await prisma.customerEvents.create({
+            data: {
+              customerId: customer.id,
+              action: "Viewed Page",
+              properties: pageEvent.properties,
+              idempotency: pageEvent.messageId,
+            },
+          });
+          return res.status(200).json({});
+        } else {
+          return res.status(202).json({});
+        }
+        break;
       }
-      break;
-    }
 
-    case "screen": {
-      const screenEvent = body as SegmentScreenEvent;
-      if ("userId" in screenEvent) {
-        const customer = await upsertCustomer(team.Team.id, screenEvent.userId);
-        await prisma.customerEvents.create({
-          data: {
-            customerId: customer.id,
-            action: "Viewed Screen",
-            properties: screenEvent.properties,
-            idempotency: screenEvent.messageId,
-          },
-        });
-        return res.status(200).json({});
-      } else {
-        return res.status(202).json({});
+      case "screen": {
+        const screenEvent = body as SegmentScreenEvent;
+        if ("userId" in screenEvent) {
+          const customer = await upsertCustomer(
+            team.Team.id,
+            screenEvent.userId
+          );
+          await prisma.customerEvents.create({
+            data: {
+              customerId: customer.id,
+              action: "Viewed Screen",
+              properties: screenEvent.properties,
+              idempotency: screenEvent.messageId,
+            },
+          });
+          return res.status(200).json({});
+        } else {
+          return res.status(202).json({});
+        }
+        break;
       }
-      break;
-    }
 
-    case "group": {
-      const groupEvent = body as SegmentGroupEvent;
-      if ("userId" in groupEvent) {
-        const customer = await upsertCustomer(team.Team.id, groupEvent.userId);
-        const group = await prisma.customerGroup.upsert({
-          where: {
-            teamId_groupId: {
+      case "group": {
+        const groupEvent = body as SegmentGroupEvent;
+        if ("userId" in groupEvent) {
+          const customer = await upsertCustomer(
+            team.Team.id,
+            groupEvent.userId
+          );
+          const group = await prisma.customerGroup.upsert({
+            where: {
+              teamId_groupId: {
+                teamId: team.Team.id,
+                groupId: groupEvent.groupId,
+              },
+            },
+            create: {
               teamId: team.Team.id,
               groupId: groupEvent.groupId,
             },
-          },
-          create: {
-            teamId: team.Team.id,
-            groupId: groupEvent.groupId,
-          },
-          update: { updatedAt: new Date() },
-        });
-        await prisma.customerInCustomerGroup.upsert({
-          where: {
-            customerId_customerGroupId: {
+            update: { updatedAt: new Date() },
+          });
+          await prisma.customerInCustomerGroup.upsert({
+            where: {
+              customerId_customerGroupId: {
+                customerId: customer.id,
+                customerGroupId: group.id,
+              },
+            },
+            create: {
               customerId: customer.id,
               customerGroupId: group.id,
             },
-          },
-          create: {
-            customerId: customer.id,
-            customerGroupId: group.id,
-          },
-          update: {
-            updatedAt: new Date(),
-          },
-        });
-        return res.status(200).json({});
-      } else {
-        return res.status(202).json({});
+            update: {
+              updatedAt: new Date(),
+            },
+          });
+          return res.status(200).json({});
+        } else {
+          return res.status(202).json({});
+        }
+        break;
       }
-      break;
-    }
 
-    default: {
-      const _exhaustiveCheck: never = body.type;
-      return res
-        .status(501)
-        .json({ message: `We don't support type "${_exhaustiveCheck}"` });
+      default: {
+        const _exhaustiveCheck: never = body.type;
+        return res
+          .status(501)
+          .json({ message: `We don't support type "${_exhaustiveCheck}"` });
+      }
     }
+  } catch (e) {
+    await logger.error("Could not process segment webhook", {
+      body: body as unknown as JSON,
+      teamId: Number(team.Team.id),
+      apiKey: apiKey,
+    });
+    console.error(e, body);
   }
 }
 
-const upsertCustomer = (teamId: number | bigint, userId: string) =>
-  prisma.customer.upsert({
+const upsertCustomer = async (teamId: number | bigint, userId: string) => {
+  if (isNil(teamId)) {
+    throw new Error(`teamId was nil "${teamId}"`);
+  }
+
+  if (isNil(userId)) {
+    throw new Error(`userId was nil "${userId}"`);
+  }
+
+  return prisma.customer.upsert({
     where: {
       teamId_userId: {
         teamId: teamId,
@@ -283,6 +311,7 @@ const upsertCustomer = (teamId: number | bigint, userId: string) =>
     },
     update: {},
   });
+};
 
 type Json = { [key: string]: Prisma.InputJsonValue | null };
 
