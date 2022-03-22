@@ -98,15 +98,27 @@ export default async function addEmailToDB(
     throw new Error(`${message.toEmail} -- Inbox not found`);
   }
 
+  const existingCustomer = await prisma.customerTraits.findFirst({
+    where: {
+      key: "email",
+      Customer: { teamId: inbox.Team.id },
+      value: { equals: aliasEmail },
+    },
+  });
+
   const thisAlias = await prisma.aliasEmail.upsert({
     where: {
       teamId_emailAddress: { teamId: inbox.Team.id, emailAddress: aliasEmail },
     },
-    update: { aliasName: message.fromName },
+    update: {
+      aliasName: message.fromName,
+      customerId: existingCustomer?.customerId,
+    },
     create: {
       emailAddress: aliasEmail,
       teamId: inbox.Team.id,
       aliasName: message.fromName,
+      customerId: existingCustomer?.customerId,
     },
   });
 

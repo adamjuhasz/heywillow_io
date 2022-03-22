@@ -38,7 +38,7 @@ async function postHandler(
 
   if (user === null) {
     await logger.warn("Bad auth cookie", {});
-    return res.status(403).send({ error: "Bad auth cookie" });
+    return res.status(401).send({ error: "Bad auth cookie" });
   }
 
   const team = await prisma.team.findUnique({

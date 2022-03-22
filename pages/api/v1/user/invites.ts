@@ -26,7 +26,7 @@ async function handler(
   const { user } = await serviceSupabase.auth.api.getUserByCookie(req);
 
   if (user === null) {
-    return res.status(403).send({ error: "Bad auth cookie" });
+    return res.status(401).send({ error: "Bad auth cookie" });
   }
 
   const invites = await prisma.teamInvite.findMany({
