@@ -41,7 +41,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<FullReturn>) {
         token,
       }
     );
-    return res.status(403).send({ error: "Bad auth cookie" });
+    return res.status(401).send({ error: "Bad auth cookie" });
   }
 
   const body = req.body as Body;

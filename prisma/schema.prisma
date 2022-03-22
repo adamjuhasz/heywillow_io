@@ -26,6 +26,9 @@ model Team {
   PostmarkDomain PostmarkDomain[]
   Subscription   Subscription[]
   StripeCustomer StripeCustomer[]
+  ApiKey         ApiKey[]
+  Customer       Customer[]
+  CustomerGroup  CustomerGroup[]
 }
 
 model Namespace {
@@ -122,10 +125,13 @@ model AliasEmail {
   emailAddress String
   aliasName    String?
 
+  customerId BigInt?
+
   team       Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Messages   Message[]
   Thread     Thread[]
   ThreadLink ThreadLink[]
+  Customer   Customer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
 
   @@unique([teamId, emailAddress])
 }
@@ -355,6 +361,88 @@ model Subscription {
 
   Team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Price Price @relation(fields: [priceId], references: [id])
+}
+
+model ApiKey {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  valid     Boolean
+
+  //FD
+  teamId BigInt
+
+  Team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model Customer {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  userId String
+  teamId BigInt
+
+  Team       Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  AliasEmail AliasEmail[]
+  Traits     CustomerTraits[]
+  Events     CustomerEvents[]
+  Group      CustomerInCustomerGroup[]
+
+  @@unique([teamId, userId])
+}
+
+model CustomerGroup {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+
+  groupId String
+  teamId  BigInt
+
+  Team     Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Customer CustomerInCustomerGroup[]
+  @@unique([teamId, groupId])
+}
+
+model CustomerInCustomerGroup {
+  customerId      BigInt
+  customerGroupId BigInt
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  Customer Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  Group    CustomerGroup @relation(fields: [customerGroupId], references: [id], onDelete: Cascade)
+
+  @@id([customerId, customerGroupId])
+}
+
+model CustomerTraits {
+  id          BigInt   @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  key         String
+  value       Json?
+  idempotency String?
+
+  customerId BigInt
+
+  Customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  @@unique([key, idempotency])
+}
+
+model CustomerEvents {
+  id          BigInt   @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  action      String
+  properties  Json?
+  idempotency String?  @unique
+
+  customerId BigInt
+
+  Customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 }
 
 enum PriceType {
