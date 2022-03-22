@@ -14,6 +14,7 @@ export const onboarding1: DemoThread = {
   inboxId: stealthAIInbox.id,
   Message: [
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 180).toISOString(),

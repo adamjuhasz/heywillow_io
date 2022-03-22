@@ -16,6 +16,7 @@ export const onboarding4ThreadOne: DemoThread = {
   inboxId: stealthAIInbox.id,
   Message: [
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 70).toISOString(),
@@ -31,6 +32,7 @@ export const onboarding4ThreadOne: DemoThread = {
       TeamMember: null,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 69).toISOString(),
@@ -47,6 +49,7 @@ export const onboarding4ThreadOne: DemoThread = {
       TeamMember: eileenTeamMember,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 67).toISOString(),

@@ -158,3 +158,9 @@ export interface SupabaseNotificationPreference {
   enabled: boolean;
   channel: NotificationChannel;
 }
+
+export interface SupabaseMessageError {
+  messageId: number;
+  errorName: string;
+  errorMessage: string;
+}

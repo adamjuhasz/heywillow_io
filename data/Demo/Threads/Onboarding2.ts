@@ -16,6 +16,7 @@ export const onboarding2ThreadOne: DemoThread = {
   inboxId: stealthAIInbox.id,
   Message: [
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 152).toISOString(),
@@ -31,6 +32,7 @@ export const onboarding2ThreadOne: DemoThread = {
       TeamMember: null,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 151).toISOString(),
@@ -46,6 +48,7 @@ export const onboarding2ThreadOne: DemoThread = {
       TeamMember: adamTeamMember,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 149).toISOString(),
@@ -89,6 +92,7 @@ export const onboarding2ThreadTwo: DemoThread = {
   inboxId: stealthAIInbox.id,
   Message: [
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 120).toISOString(),
@@ -105,6 +109,7 @@ export const onboarding2ThreadTwo: DemoThread = {
       TeamMember: null,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 2,
       createdAt: subDays(new Date(), 119).toISOString(),

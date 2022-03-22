@@ -7,6 +7,7 @@ import {
   SupabaseAttachment,
   SupabaseComment,
   SupabaseMessage,
+  SupabaseMessageError,
   SupabaseProfile,
   SupabaseThread,
   SupabaseThreadState,
@@ -20,6 +21,7 @@ export type ThreadFetch = SupabaseThread & {
     Comment: (SupabaseComment & { TeamMember: { Profile: SupabaseProfile } })[];
     TeamMember: { Profile: SupabaseProfile } | null;
     Attachment: SupabaseAttachment[];
+    MessageError: SupabaseMessageError[];
   })[];
 };
 
@@ -36,7 +38,8 @@ Message!Message_threadId_fkey (
   TeamMember!Message_teamMemberId_fkey(
     Profile(*)
   ),
-  Attachment(*)
+  Attachment(*),
+  MessageError(*)
 )
 `;
 

@@ -134,6 +134,7 @@ export default function ThreadId(props: ServerSideProps) {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               text: item.text as any,
               Attachment: [],
+              MessageError: [],
             }}
           />
         ))}

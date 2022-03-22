@@ -1,6 +1,7 @@
 import { MouseEventHandler, forwardRef } from "react";
 import format from "date-fns/format";
 import type { MessageDirection } from "@prisma/client";
+import ExclamationIcon from "@heroicons/react/outline/ExclamationIcon";
 
 import Avatar from "components/Avatar";
 import Attachment, { IAttachment } from "components/Thread/Attachment";
@@ -19,6 +20,7 @@ export interface IMessage {
   AliasEmail: { emailAddress: string } | null;
   TeamMember: { Profile: { email: string } } | null;
   Attachment: (IAttachment & { id: number })[];
+  MessageError: { errorName: string; errorMessage: string }[];
 }
 
 interface Props {
@@ -116,6 +118,17 @@ export default forwardRef<HTMLDivElement, Props>(function Message(props, ref) {
             </span>
           </div>
         </div>
+        {props.message.MessageError.length > 0 ? (
+          <div
+            className="my-0.5 rounded-md bg-red-900 bg-opacity-40 px-1.5 text-xs text-red-600"
+            title={props.message.MessageError[0].errorMessage}
+          >
+            <ExclamationIcon className="inline h-3 w-3" />{" "}
+            {props.message.MessageError[0].errorName}
+          </div>
+        ) : (
+          <></>
+        )}
 
         <div className="mt-1 flex space-x-1">
           {props.message.Attachment.map((a) => (

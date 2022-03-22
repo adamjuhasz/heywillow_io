@@ -21,6 +21,7 @@ export const robinHoodThread1: DemoThread = {
   inboxId: stealthAIInbox.id,
   Message: [
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 21).toISOString(),
@@ -92,6 +93,7 @@ export const robinHoodThread1: DemoThread = {
       TeamMember: null,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 2,
       createdAt: subDays(new Date(), 20).toISOString(),
@@ -105,6 +107,7 @@ export const robinHoodThread1: DemoThread = {
       TeamMember: adamTeamMember,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 3,
       createdAt: subDays(new Date(), 19).toISOString(),
@@ -144,6 +147,7 @@ export const robinHoodThread1: DemoThread = {
       TeamMember: null,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 4,
       createdAt: subDays(new Date(), 18).toISOString(),
@@ -173,6 +177,7 @@ export const robinHoodThread1: DemoThread = {
       TeamMember: saoirseTeamMember,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 5,
       createdAt: subDays(new Date(), 17).toISOString(),
@@ -207,6 +212,7 @@ export const robinHoodThread2: DemoThread = {
   inboxId: stealthAIInbox.id,
   Message: [
     {
+      MessageError: [],
       Attachment: [],
       id: 1,
       createdAt: subDays(new Date(), 11).toISOString(),
@@ -218,6 +224,7 @@ export const robinHoodThread2: DemoThread = {
       TeamMember: null,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 2,
       createdAt: subDays(new Date(), 9).toISOString(),
@@ -289,6 +296,7 @@ export const robinHoodThread2: DemoThread = {
       TeamMember: adamTeamMember,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 3,
       createdAt: subDays(new Date(), 7).toISOString(),
@@ -302,6 +310,7 @@ export const robinHoodThread2: DemoThread = {
       TeamMember: adamTeamMember,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 4,
       createdAt: subDays(new Date(), 5).toISOString(),
@@ -315,6 +324,7 @@ export const robinHoodThread2: DemoThread = {
       TeamMember: eileenTeamMember,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 5,
       createdAt: subDays(new Date(), 3).toISOString(),
@@ -388,6 +398,7 @@ export const robinHoodThread2: DemoThread = {
       TeamMember: null,
     },
     {
+      MessageError: [],
       Attachment: [],
       id: 6,
       createdAt: subDays(new Date(), 1).toISOString(),
