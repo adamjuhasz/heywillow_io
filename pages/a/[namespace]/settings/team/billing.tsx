@@ -8,7 +8,7 @@ import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsBox from "components/Settings/Box/Box";
 import SettingsHeader from "components/Settings/Header";
 import AppContainer from "components/App/Container";
-import {
+import type {
   RequestBody,
   ReturnBody,
 } from "pages/api/v1/billing/create-portal-link";
@@ -57,7 +57,7 @@ export default function TeamBilling(): JSX.Element {
   return (
     <>
       <Head>
-        <title>Create team</title>
+        <title>Change Billing</title>
       </Head>
       <SettingsHeader />
       <SettingsTitle>Team settings</SettingsTitle>

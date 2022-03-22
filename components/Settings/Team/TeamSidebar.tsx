@@ -22,6 +22,10 @@ export default function TeamSettingsSidebar(): JSX.Element {
         Team members
       </SidebarLink>
 
+      <SidebarLink href="/a/[namespace]/settings/team/apikey">
+        API Keys
+      </SidebarLink>
+
       <SidebarLink href="/a/[namespace]/settings/team/billing">
         Billing
       </SidebarLink>

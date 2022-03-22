@@ -164,3 +164,10 @@ export interface SupabaseMessageError {
   errorName: string;
   errorMessage: string;
 }
+
+export interface SupabaseAPIKey {
+  id: string;
+  valid: boolean;
+  teamId: number;
+  createdAt: string;
+}
