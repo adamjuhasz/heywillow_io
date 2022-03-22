@@ -96,7 +96,7 @@ async function handler(
       case "track": {
         const trackEvent = body as SegmentTrackEvent;
         console.log(trackEvent.type, trackEvent.event);
-        if ("userId" in trackEvent) {
+        if ("userId" in trackEvent && trackEvent.userId !== null) {
           const customer = await upsertCustomer(
             team.Team.id,
             trackEvent.userId
@@ -118,7 +118,7 @@ async function handler(
 
       case "identify": {
         const identifyEvent = body as SegmentIdentifyEvent;
-        if ("userId" in identifyEvent) {
+        if ("userId" in identifyEvent && identifyEvent.userId !== null) {
           console.log(identifyEvent.type, identifyEvent.userId);
 
           // create or retrieve customer
@@ -191,7 +191,7 @@ async function handler(
 
       case "page": {
         const pageEvent = body as SegmentPageEvent;
-        if ("userId" in pageEvent) {
+        if ("userId" in pageEvent && pageEvent.userId !== null) {
           const customer = await upsertCustomer(team.Team.id, pageEvent.userId);
           await prisma.customerEvents.create({
             data: {
@@ -210,7 +210,7 @@ async function handler(
 
       case "screen": {
         const screenEvent = body as SegmentScreenEvent;
-        if ("userId" in screenEvent) {
+        if ("userId" in screenEvent && screenEvent.userId !== null) {
           const customer = await upsertCustomer(
             team.Team.id,
             screenEvent.userId
@@ -232,7 +232,7 @@ async function handler(
 
       case "group": {
         const groupEvent = body as SegmentGroupEvent;
-        if ("userId" in groupEvent) {
+        if ("userId" in groupEvent && groupEvent.userId !== null) {
           const customer = await upsertCustomer(
             team.Team.id,
             groupEvent.userId
@@ -356,6 +356,7 @@ type SegmentCommon = SegmentCommonAnonymous | SegmentCommonUser;
 
 interface SegmentCommonAnonymous extends SegmentCommonBase {
   anonymousId: string;
+  userId: null;
 }
 
 interface SegmentCommonUser extends SegmentCommonBase {
