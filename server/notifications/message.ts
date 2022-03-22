@@ -232,7 +232,20 @@ export default async function messageNotification(messageId: bigint) {
           token: sendOptions.token,
         }
       );
-      await sendPostmarkEmailAsTeam(sendOptions, message.Thread.Team.id);
+
+      const emailResult = await sendPostmarkEmailAsTeam(
+        sendOptions,
+        message.Thread.Team.id
+      );
+      if (emailResult.error !== null) {
+        await prisma.messageError.create({
+          data: {
+            Message: { connect: { id: messageId } },
+            errorName: emailResult.error,
+            errorMessage: emailResult.message,
+          },
+        });
+      }
     } else {
       await logger.error("messageNotification no body to send to end user", {
         messageId: Number(messageId),

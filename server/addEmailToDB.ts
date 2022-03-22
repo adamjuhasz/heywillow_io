@@ -254,7 +254,19 @@ export default async function addEmailToDB(
         ],
         token: token.token,
       };
-      await sendPostmarkEmailAsTeam(sendOptions, inbox.Team.id);
+      const emailResult = await sendPostmarkEmailAsTeam(
+        sendOptions,
+        inbox.Team.id
+      );
+      if (emailResult.error !== null) {
+        await prisma.messageError.create({
+          data: {
+            Message: { connect: { id: savedEmail.Message.id } },
+            errorName: emailResult.error,
+            errorMessage: emailResult.message,
+          },
+        });
+      }
     }
 
     return savedEmail.id;

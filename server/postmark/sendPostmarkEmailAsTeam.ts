@@ -29,7 +29,9 @@ interface PostmarkEmailResponse {
 export default async function sendPostmarkEmailAsTeam(
   { to, from, subject, htmlBody, textBody, token }: Options,
   teamId: number | bigint
-) {
+): Promise<
+  { error: null; message: null } | { error: string; message: string }
+> {
   const email: Postmark.Models.Message = {
     From: from,
     To: to,
@@ -73,7 +75,7 @@ export default async function sendPostmarkEmailAsTeam(
               SubmittedAt: body.SubmittedAt,
             }
           );
-          return res;
+          return { error: null, message: null };
         }
 
         case 401:
@@ -81,14 +83,14 @@ export default async function sendPostmarkEmailAsTeam(
             `Postmark Error: Unauthorized Missing or incorrect API token in header for ${from}`,
             { From: from, To: to, Subject: subject, token: token }
           );
-          return null;
+          return { error: "Internal Error", message: "Internal Error" };
 
         case 404:
           await logger.error(
             `Postmark Error: Request Too Large The request exceeded Postmark's size limit`,
             { From: from, To: to, Subject: subject }
           );
-          return null;
+          return { error: "Internal Error", message: "Internal Error" };
 
         case 422: {
           const body = (await res.json()) as PostmarkAPIError;
@@ -112,7 +114,10 @@ export default async function sendPostmarkEmailAsTeam(
                 "Inbox email address not confirmed",
                 `We couldn't send en email from your inbox (${from}). Why? Postmark (our email service provider) requires email addresses to be verified before they can be used as a "From" address. Please click the link in the verification email`
               );
-              return null;
+              return {
+                error: "Inbox email address not confirmed",
+                message: `We couldn't send en email from your inbox (${from}). Why? Postmark (our email service provider) requires email addresses to be verified before they can be used as a "From" address. Please click the link in the verification email`,
+              };
 
             default:
               await logger.error(
@@ -127,7 +132,7 @@ export default async function sendPostmarkEmailAsTeam(
                   status: res.status,
                 }
               );
-              return null;
+              return { error: "Internal Error", message: "Internal Error" };
           }
         }
 
@@ -136,7 +141,7 @@ export default async function sendPostmarkEmailAsTeam(
             `Postmark Error: Postmark API Error: ${res.status}`,
             { From: from, To: to, Subject: subject, token: token }
           );
-          return null;
+          return { error: "Internal Error", message: "Internal Error" };
       }
     } catch (e) {
       await logger.error(
@@ -154,5 +159,5 @@ export default async function sendPostmarkEmailAsTeam(
     await logger.info("Did not send", mapValues(email, toJSONable));
   }
 
-  return null;
+  return { error: null, message: null };
 }
