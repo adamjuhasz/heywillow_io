@@ -4,13 +4,10 @@ import includes from "lodash/includes";
 import toPairs from "lodash/toPairs";
 import isString from "lodash/isString";
 import { Buffer } from "buffer";
-import HashIds from "hashids";
 import type { Prisma } from "@prisma/client";
 
 import apiHandler from "server/apiHandler";
 import { prisma } from "utils/prisma";
-
-export const hashids = new HashIds(process.env.SEGMENT_HASHIDS_SALT || "", 30);
 
 export default apiHandler({ post: handler });
 
@@ -29,10 +26,9 @@ async function handler(
     "ascii"
   );
   const [apiKey] = credentials.split(":");
-  const apiKeyId = hashids.decode(apiKey)[0];
 
   const team = await prisma.apiKey.findUnique({
-    where: { id: apiKeyId },
+    where: { id: apiKey },
     select: { Team: true, valid: true },
   });
 

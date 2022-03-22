@@ -364,7 +364,7 @@ model Subscription {
 }
 
 model ApiKey {
-  id        BigInt   @id @default(autoincrement())
+  id        String   @id
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   valid     Boolean
