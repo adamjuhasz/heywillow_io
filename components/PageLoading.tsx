@@ -1,5 +1,12 @@
 import Router from "next/router";
 import { useEffect, useState } from "react";
+import {} from "@segment/snippet";
+
+declare global {
+  // allow global `var` declarations
+  // eslint-disable-next-line no-var
+  var analytics: { page: (url: string) => void } | undefined;
+}
 
 export default function PageLoading() {
   const [loading, setLoading] = useState(false);
@@ -9,18 +16,25 @@ export default function PageLoading() {
       setLoading(true);
     };
 
-    const handleEnd = () => {
+    const handleEnd = (url: string) => {
+      setLoading(false);
+      if (window.analytics) {
+        window.analytics.page(url);
+      }
+    };
+
+    const handleError = () => {
       setLoading(false);
     };
 
     Router.events.on("routeChangeStart", handleStart);
     Router.events.on("routeChangeComplete", handleEnd);
-    Router.events.on("routeChangeError", handleEnd);
+    Router.events.on("routeChangeError", handleError);
 
     return () => {
       Router.events.off("routeChangeStart", handleStart);
       Router.events.off("routeChangeComplete", handleEnd);
-      Router.events.off("routeChangeError", handleEnd);
+      Router.events.off("routeChangeError", handleError);
     };
   });
 

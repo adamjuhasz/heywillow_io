@@ -7,8 +7,25 @@ import type { ReactElement, ReactNode } from "react";
 import type { AppProps } from "next/app";
 import type { NextPage } from "next";
 import Head from "next/head";
+import Script from "next/script";
+import * as snippet from "@segment/snippet";
 
 import PageLoading from "components/PageLoading";
+
+function renderSnippet() {
+  const opts = {
+    apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || "",
+    // note: the page option only covers SSR tracking.
+    // PageLoading.tsx is used to track other events using `window.analytics.page()`
+    page: true,
+  };
+
+  if (process.env.NODE_ENV === "development") {
+    return snippet.max(opts);
+  }
+
+  return snippet.min(opts);
+}
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -42,6 +59,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               data-api="/api/event"
               src="/p/script.js"
             ></script>
+            <Script
+              id="segment-script"
+              dangerouslySetInnerHTML={{ __html: renderSnippet() }}
+            />
           </>
         ) : (
           <></>

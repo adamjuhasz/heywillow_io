@@ -43,45 +43,48 @@ async function handler(
 
   const body = { ...req.body } as SegmentCommon;
   // Segment warns keys may not have correct case, make sure they do
+  // https://segment.com/docs/partners/subscriptions/build-webhook/
+  // Important: The casing on these fields will vary by customer, so be ready to accept any casing.
   keys(req.body).forEach((k) => {
+    const value = req.body[k];
     switch (k.toLowerCase()) {
       case "context":
-        body.context = req.body[k];
+        body.context = value;
         break;
 
       // cspell:disable-next-line
       case "messageid":
-        body.messageId = req.body[k];
+        body.messageId = value;
         break;
 
       case "type":
-        body.type = req.body[k];
+        body.type = isString(value) ? value.toLowerCase() : value;
         break;
 
       case "event":
-        (body as SegmentTrackEvent).event = req.body[k];
+        (body as SegmentTrackEvent).event = value;
         break;
 
       case "properties":
-        (body as SegmentTrackEvent).properties = req.body[k];
+        (body as SegmentTrackEvent).properties = value;
         break;
 
       case "traits":
-        (body as SegmentIdentifyEvent).traits = req.body[k];
+        (body as SegmentIdentifyEvent).traits = value;
         break;
 
       // cspell:disable-next-line
       case "previousid":
-        (body as SegmentAliasEvent).previousId = req.body[k];
+        (body as SegmentAliasEvent).previousId = value;
         break;
 
       case "name":
-        (body as SegmentPageEvent).name = req.body[k];
+        (body as SegmentPageEvent).name = value;
         break;
 
       // cspell:disable-next-line
       case "groupid":
-        (body as SegmentGroupEvent).groupId = req.body[k];
+        (body as SegmentGroupEvent).groupId = value;
         break;
     }
   });
