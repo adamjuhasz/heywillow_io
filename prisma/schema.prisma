@@ -145,12 +145,13 @@ model Message {
   subject String?
 
   // FD
-  Alias        AliasEmail?    @relation(fields: [aliasId], references: [id], onDelete: SetNull)
-  TeamMember   TeamMember?    @relation(fields: [teamMemberId], references: [id], onDelete: SetNull)
-  Thread       Thread         @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  Alias        AliasEmail?   @relation(fields: [aliasId], references: [id], onDelete: SetNull)
+  TeamMember   TeamMember?   @relation(fields: [teamMemberId], references: [id], onDelete: SetNull)
+  Thread       Thread        @relation(fields: [threadId], references: [id], onDelete: Cascade)
   Attachments  Attachment[]
   Comment      Comment[]
-  EmailMessage EmailMessage[]
+  EmailMessage EmailMessage?
+  MessageError MessageError?
 }
 
 model EmailMessage {
@@ -167,7 +168,17 @@ model EmailMessage {
   emailMessageId  String
 
   // FD
-  messageId BigInt
+  messageId BigInt @unique
+
+  Message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+}
+
+model MessageError {
+  // FD
+  messageId BigInt @id
+
+  errorName    String
+  errorMessage String
 
   Message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
 }
