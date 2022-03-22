@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import includes from "lodash/includes";
 import toPairs from "lodash/toPairs";
 import isString from "lodash/isString";
+import keys from "lodash/keys";
 import { Buffer } from "buffer";
 import type { Prisma } from "@prisma/client";
 
@@ -40,7 +41,51 @@ async function handler(
     return res.status(403).json({ message: "API Key invalid; expired key" });
   }
 
-  const body = req.body as SegmentCommon;
+  const body = { ...req.body } as SegmentCommon;
+  // Segment warns keys may not have correct case, make sure they do
+  keys(req.body).forEach((k) => {
+    switch (k.toLowerCase()) {
+      case "context":
+        body.context = req.body[k];
+        break;
+
+      // cspell:disable-next-line
+      case "messageid":
+        body.messageId = req.body[k];
+        break;
+
+      case "type":
+        body.type = req.body[k];
+        break;
+
+      case "event":
+        (body as SegmentTrackEvent).event = req.body[k];
+        break;
+
+      case "properties":
+        (body as SegmentTrackEvent).properties = req.body[k];
+        break;
+
+      case "traits":
+        (body as SegmentIdentifyEvent).traits = req.body[k];
+        break;
+
+      // cspell:disable-next-line
+      case "previousid":
+        (body as SegmentAliasEvent).previousId = req.body[k];
+        break;
+
+      case "name":
+        (body as SegmentPageEvent).name = req.body[k];
+        break;
+
+      // cspell:disable-next-line
+      case "groupid":
+        (body as SegmentGroupEvent).groupId = req.body[k];
+        break;
+    }
+  });
+
   switch (body.type) {
     case "track": {
       const trackEvent = body as SegmentTrackEvent;
