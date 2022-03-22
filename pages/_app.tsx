@@ -7,7 +7,6 @@ import type { ReactElement, ReactNode } from "react";
 import type { AppProps } from "next/app";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Script from "next/script";
 import * as snippet from "@segment/snippet";
 
 import PageLoading from "components/PageLoading";
@@ -59,7 +58,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               data-api="/api/event"
               src="/p/script.js"
             ></script>
-            <Script
+            <script
               id="segment-script"
               dangerouslySetInnerHTML={{ __html: renderSnippet() }}
             />
