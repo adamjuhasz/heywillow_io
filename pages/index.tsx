@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useEffect } from "react";
 import type { CSSProperties, PropsWithChildren } from "react";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 
 // split out to help tree shaking
 import ArrowNarrowRightIcon from "@heroicons/react/solid/ArrowNarrowRightIcon";
@@ -34,13 +35,12 @@ export default function Vercel(): JSX.Element {
 
   return (
     <>
+      <NextSeo
+        title="Customer support for founders"
+        description="Customer support platform tailer made for early-stage startups. See a lifetime view every message with a customer on one screen. No per-seat pricing, so get your whole team working together to fix issues."
+        canonical="https://heywillow.io"
+      />
       <Head>
-        <title>Customer support for founders</title>
-        <meta
-          name="description"
-          content="Customer support platform tailer made for early-stage startups. See a lifetime view every message with a customer on one screen. No per-seat pricing, so get your whole team working together to fix issues."
-        />
-
         {/* font-light */}
         <link
           rel="preload"

@@ -8,8 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import WillowLogo from "components/Logo";
 import { Switch } from "@headlessui/react";
-import Head from "next/head";
 import isNil from "lodash/isNil";
+import { NextSeo } from "next-seo";
 
 import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
@@ -54,9 +54,10 @@ export default function SignUpPage(): JSX.Element {
 
   return (
     <>
-      <Head>
-        <title>Sign up for Willow</title>
-      </Head>
+      <NextSeo
+        title="Willow Sign up"
+        description="Sign up into Willow for a better customer support experience"
+      />
 
       <GetAuthCookie redirect={redirectPath} />
 

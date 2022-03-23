@@ -6,8 +6,8 @@ import XIcon from "@heroicons/react/solid/XIcon";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Switch } from "@headlessui/react";
-import Head from "next/head";
 import isNil from "lodash/isNil";
+import { NextSeo } from "next-seo";
 
 import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
@@ -45,9 +45,10 @@ export default function Login(): JSX.Element {
 
   return (
     <>
-      <Head>
-        <title>Willow login</title>
-      </Head>
+      <NextSeo
+        title="Willow login"
+        description="Log into Willow for a better customer support experience"
+      />
 
       <LandingPageHeader />
       <GetAuthCookie redirect={redirectPath} />

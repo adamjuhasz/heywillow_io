@@ -1,7 +1,7 @@
 ---
 title: "Hello World"
 date: "2022-02-24"
-Author: "Adam Juhasz"
+author: "Adam Juhasz"
 ---
 
 # Header 1

@@ -1,7 +1,8 @@
 ---
 title: "Segment custom domain proxy using Cloudflare Workers"
+description: "Guide to setting up a custom domain proxy for Segment to improve data acquisition"
 date: "2022-03-23"
-Author: "Adam Juhasz"
+author: "Adam Juhasz"
 ---
 
 Segment's custom domains allow you to proxy Segment's Analytics.js and proxy all tracking event requests through your domain.

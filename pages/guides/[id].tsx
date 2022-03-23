@@ -7,6 +7,7 @@ import { ParsedUrlQuery } from "querystring";
 import Head from "next/head";
 import format from "date-fns/format";
 import sample from "lodash/sample";
+import { ArticleJsonLd, NextSeo } from "next-seo";
 
 import { getAllPostIds, getPostData } from "static-build/guides";
 import LandingPageHeader from "components/LandingPage/Header";
@@ -61,8 +62,29 @@ interface Props {
 export default function Post({ postData }: Props) {
   return (
     <>
+      <NextSeo
+        title={postData.title}
+        description={postData.description}
+        openGraph={{
+          title: postData.title,
+          description: postData.description,
+          url: `https://heywillow.io/guides/${postData.id}`,
+          type: "article",
+          article: {
+            publishedTime: postData.date,
+          },
+        }}
+      />
+      <ArticleJsonLd
+        type="Blog"
+        url={`https://heywillow.io/guides/${postData.id}`}
+        title={postData.title}
+        images={[]}
+        datePublished={postData.date}
+        authorName={postData.author}
+        description={postData.description}
+      />
       <Head>
-        <title>{postData.title}</title>
         <style>
           {`
           .prose .task-list-item > [type='checkbox'] {

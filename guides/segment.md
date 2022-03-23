@@ -1,7 +1,8 @@
 ---
 title: "Segment Guide"
+description: "Guide to setting up Willow with Segment"
 date: "2022-03-23"
-Author: "Adam Juhasz"
+author: "Adam Juhasz"
 ---
 
 ## title: Willow Destination

@@ -1,8 +1,9 @@
 ---
 title: "Configuring Gmail Forwarding"
+description: "Guide to forwarding emails using Gmail or Google Apps"
 date: "2022-03-05"
 updated: "2022-03-05"
-Author: "Adam Juhasz"
+author: "Adam Juhasz"
 ---
 
 1. Create an email address on your Google Apps account that you want your customers to send mail to. Once you’ve created this address and verified that it can receive email, you can configure forwarding.
