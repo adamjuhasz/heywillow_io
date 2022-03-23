@@ -34,10 +34,10 @@ export default function Vercel(): JSX.Element {
   return (
     <>
       <Head>
-        <title>Customer service for founders</title>
+        <title>Customer support for founders</title>
         <meta
           name="description"
-          content="Customer service platform tailer made for early-stage startups. See a lifetime view every message with a customer on one screen. No per-seat pricing, so get your whole team working together to fix issues."
+          content="Customer support platform tailer made for early-stage startups. See a lifetime view every message with a customer on one screen. No per-seat pricing, so get your whole team working together to fix issues."
         />
 
         {/* font-light */}
@@ -81,7 +81,7 @@ export default function Vercel(): JSX.Element {
       <div className="mx-auto max-w-4xl bg-zinc-900 px-4 text-zinc-200 lg:px-0">
         <div className="flex flex-col py-14">
           <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:text-9xl lg:text-[100px] lg:leading-[100px]">
-            <span className="text-center ">Customer service for</span>
+            <span className="text-center ">Customer support for</span>
 
             <span>
               <GradientText className="bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 lg:text-[150px] lg:leading-[150px]">
@@ -104,7 +104,7 @@ export default function Vercel(): JSX.Element {
           </div>
 
           <h2 className="mb-4 text-center text-xl text-zinc-500">
-            Willow is a customer service platform for founding teams.
+            Willow is a customer support platform for founding teams.
           </h2>
           <h2 className="text-center text-lg text-zinc-500">
             {" "}

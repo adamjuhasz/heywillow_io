@@ -76,7 +76,7 @@ export const onboarding3ThreadOne: DemoThread = {
           id: 3,
           authorId: abeoTeamMember.id,
           text: textToSlate(
-            "No more searching email, Slack, SMS and 3 other messaging platforms because you remember you discussed this issue outside your customer service tools"
+            "No more searching email, Slack, SMS and 3 other messaging platforms because you remember you discussed this issue outside your customer support tools"
           ),
           TeamMember: abeoTeamMember,
         },
