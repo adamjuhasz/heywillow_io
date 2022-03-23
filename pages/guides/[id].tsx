@@ -163,7 +163,15 @@ export default function Post({ postData }: Props) {
         <hr className="my-7 w-full max-w-2xl border-zinc-700" />
       </div>
 
-      <article className="prose prose-invert mx-auto max-w-4xl px-4 prose-h1:font-semibold prose-code:bg-black prose-code:p-1 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none prose-hr:mx-auto prose-hr:w-10/12 prose-hr:border-zinc-600">
+      <article
+        className={[
+          "prose prose-invert mx-auto max-w-4xl px-4",
+          "prose-h1:font-semibold",
+          "prose-code:bg-black prose-code:p-1 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none",
+          "prose-hr:mx-auto prose-hr:w-10/12 prose-hr:border-zinc-600",
+          "prose-pre:bg-black",
+        ].join(" ")}
+      >
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
       </article>
     </>

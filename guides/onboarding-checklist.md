@@ -50,7 +50,7 @@ DKIM (DomainKeys Identified Mail) is an email security standard designed to make
 - [Linode](https://www.linode.com/docs/platform/manager/dns-manager/#add-dns-records)
 - [SiteGround](https://www.siteground.com/kb/configure-spf-dkim-dmarc-records/)
 - [Bluehost](https://my.bluehost.com/cgi/help/559)
-- [CloudFlare](https://postmarkapp.com/videos/setting-up-dkim-custom-return-path-dmarc-in-cloudflare)
+- [Cloudflare](https://postmarkapp.com/videos/setting-up-dkim-custom-return-path-dmarc-in-cloudflare)
 - [DNS Made Easy](http://help.dnsmadeeasy.com/managed-dns/records/txt-record/)
 - [DNSimple](https://support.dnsimple.com/articles/advanced-editor/)
 - [Dreamhost](https://help.dreamhost.com/hc/en-us/articles/215414867-How-do-I-add-custom-DNS-records-#TXT_record)

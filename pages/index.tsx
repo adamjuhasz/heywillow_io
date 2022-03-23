@@ -605,6 +605,11 @@ export default function Vercel(): JSX.Element {
                 Onboarding checklist
               </a>
             </Link>
+            <Link href="/guides/segment-proxy-using-cloudflare-workers">
+              <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
+                Segment proxy using CF Workers
+              </a>
+            </Link>
           </div>
 
           <div className="col-span-1 flex flex-col md:col-span-2">
