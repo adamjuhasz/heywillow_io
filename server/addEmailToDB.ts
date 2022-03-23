@@ -83,7 +83,7 @@ export default async function addEmailToDB(
   try {
     inbox = await findInbox(message.toEmail, message.toEmailHash);
   } catch (e) {
-    await logger.error(
+    await logger.warn(
       `Inbox not found to: [${message.toEmail.join(", ")}] from: ${
         message.fromEmail
       }`,
