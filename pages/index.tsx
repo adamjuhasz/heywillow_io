@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import ArrowNarrowRightIcon from "@heroicons/react/solid/ArrowNarrowRightIcon";
 import CheckCircleIcon from "@heroicons/react/solid/CheckCircleIcon";
 import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
-import ChipIcon from "@heroicons/react/outline/ChipIcon";
+import LockClosedIcon from "@heroicons/react/outline/LockClosedIcon";
 import ClockIcon from "@heroicons/react/outline/ClockIcon";
 import UserAddIcon from "@heroicons/react/outline/UserAddIcon";
 import UserGroupIcon from "@heroicons/react/outline/UserGroupIcon";
@@ -365,7 +365,7 @@ export default function Vercel(): JSX.Element {
             <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
               <div className="flex items-center">
                 <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
-                  <ChipIcon className="h-6 w-6" />
+                  <LockClosedIcon className="h-6 w-6" />
                 </div>
                 <div className="flex w-full items-center justify-between text-xl md:text-lg">
                   Secure messaging
