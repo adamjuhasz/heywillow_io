@@ -385,8 +385,8 @@ model Customer {
 
   Team       Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
   AliasEmail AliasEmail[]
-  Traits     CustomerTraits[]
-  Events     CustomerEvents[]
+  Traits     CustomerTrait[]
+  Events     CustomerEvent[]
   Group      CustomerInCustomerGroup[]
 
   @@unique([teamId, userId])
@@ -418,7 +418,7 @@ model CustomerInCustomerGroup {
   @@id([customerId, customerGroupId])
 }
 
-model CustomerTraits {
+model CustomerTrait {
   id          BigInt   @id @default(autoincrement())
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime @default(now()) @db.Timestamptz(6)
@@ -432,7 +432,7 @@ model CustomerTraits {
   @@unique([key, idempotency])
 }
 
-model CustomerEvents {
+model CustomerEvent {
   id          BigInt   @id @default(autoincrement())
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime @default(now()) @db.Timestamptz(6)

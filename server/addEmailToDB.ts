@@ -98,7 +98,7 @@ export default async function addEmailToDB(
     throw new Error(`${message.toEmail} -- Inbox not found`);
   }
 
-  const existingCustomer = await prisma.customerTraits.findFirst({
+  const existingCustomer = await prisma.customerTrait.findFirst({
     where: {
       key: "email",
       Customer: { teamId: inbox.Team.id },

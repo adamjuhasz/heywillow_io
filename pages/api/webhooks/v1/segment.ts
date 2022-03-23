@@ -101,7 +101,7 @@ async function handler(
             team.Team.id,
             trackEvent.userId
           );
-          await prisma.customerEvents.create({
+          await prisma.customerEvent.create({
             data: {
               customerId: customer.id,
               action: trackEvent.event,
@@ -134,7 +134,7 @@ async function handler(
             });
             await Promise.allSettled(
               toPairs(identifyEvent.traits).map(async ([key, value]) => {
-                await prisma.customerTraits.create({
+                await prisma.customerTrait.create({
                   data: {
                     customerId: customer.id,
                     key: key,
@@ -193,7 +193,7 @@ async function handler(
         const pageEvent = body as SegmentPageEvent;
         if ("userId" in pageEvent && pageEvent.userId !== null) {
           const customer = await upsertCustomer(team.Team.id, pageEvent.userId);
-          await prisma.customerEvents.create({
+          await prisma.customerEvent.create({
             data: {
               customerId: customer.id,
               action: "Viewed Page",
@@ -215,7 +215,7 @@ async function handler(
             team.Team.id,
             screenEvent.userId
           );
-          await prisma.customerEvents.create({
+          await prisma.customerEvent.create({
             data: {
               customerId: customer.id,
               action: "Viewed Screen",
