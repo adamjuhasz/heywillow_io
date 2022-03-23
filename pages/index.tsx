@@ -11,6 +11,7 @@ import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import ChipIcon from "@heroicons/react/outline/ChipIcon";
 import ClockIcon from "@heroicons/react/outline/ClockIcon";
 import UserAddIcon from "@heroicons/react/outline/UserAddIcon";
+import UserGroupIcon from "@heroicons/react/outline/UserGroupIcon";
 
 import LandingPageHeader from "components/LandingPage/Header";
 
@@ -271,63 +272,6 @@ export default function Vercel(): JSX.Element {
 
         <div className="mb-14 flex flex-col items-center">
           <h3 className="flex flex-col items-center text-3xl font-semibold">
-            <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-orange-500" />
-            <GradientText className="from mt-2 bg-gradient-to-r from-orange-600 to-yellow-500">
-              Shared inbox
-            </GradientText>
-            <div className="mt-5 text-center text-3xl md:text-5xl">
-              Your entire team shares one inbox
-            </div>
-          </h3>
-
-          <div className="mt-6 flex w-full text-base font-normal text-zinc-500">
-            <div className="w-full md:w-6/12 md:border-r md:border-r-orange-500">
-              <div className="mb-4 flex w-full">
-                <div className="grow rounded-3xl rounded-br-none bg-blue-500 px-6 py-4 text-white">
-                  I need help with selling my SpaceX shares can you help?
-                  <br /> - Katy
-                </div>
-                <div className="mx-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-pink-400"></div>
-              </div>
-
-              <div className="flex w-full">
-                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-lime-400"></div>
-                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
-                  I&apos;m having engineering looking into the issue now.
-                  We&apos;ll get back to you within 20 minutes
-                  <br /> -Adam
-                </div>
-              </div>
-              <div className="mb-4 mt-0.5 w-full text-left text-xs text-zinc-400">
-                Adam (CX team)
-              </div>
-
-              <div className="flex w-full">
-                <div className="mr-3 h-10 w-10 shrink-0 grow-0 self-end rounded-full bg-teal-400"></div>
-                <div className="mr-3 grow rounded-3xl rounded-bl-none bg-indigo-500 px-6 py-4 text-white">
-                  Hey! It&apos;s mike from engineering, can you send us the logs
-                  from the app? It&apos;s on the bottom of the settings screen
-                  Thanks!
-                  <br />
-                  -Mike (CTO)
-                </div>
-              </div>
-              <div className="mt-0.5 w-full text-left text-xs text-zinc-400">
-                Mike (Engineering team)
-              </div>
-            </div>
-
-            <div className="hidden flex-col justify-between py-10 pl-3 md:flex md:w-6/12">
-              <div className="">
-                Never play middle-man again, let anyone from the tram respond to
-                make your customers happier.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-14 flex flex-col items-center">
-          <h3 className="flex flex-col items-center text-3xl font-semibold">
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent to-lime-500" />
             <GradientText className="from bg-gradient-to-r from-lime-600 to-emerald-500 text-center">
               Unified view
@@ -431,6 +375,21 @@ export default function Vercel(): JSX.Element {
                 Auto-encrypt and auto-mask incoming PII and provide a secure
                 web-based messaging solution. Never worry about collecting
                 sensitive PII like SSNs, credit card numbers, etc
+              </div>
+            </div>
+
+            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
+              <div className="flex items-center">
+                <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
+                  <UserGroupIcon className="h-6 w-6" />
+                </div>
+                <div className="flex w-full items-center justify-between text-xl md:text-lg">
+                  Shared inbox
+                </div>
+              </div>
+              <div className="mt-7 text-sm font-light text-zinc-400">
+                Your entire team shares one inbox. Never play middle-man again,
+                let anyone from the tram respond to make your customers happier.
               </div>
             </div>
           </div>
