@@ -7,6 +7,7 @@ import type {
   ThreadStateType,
 } from "@prisma/client";
 import { ParagraphElement } from "types/slate";
+import type { Prisma } from "@prisma/client";
 
 export interface SupabaseMessage {
   id: number;
@@ -170,4 +171,22 @@ export interface SupabaseAPIKey {
   valid: boolean;
   teamId: number;
   createdAt: string;
+}
+
+export interface SupabaseCustomer {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  teamId: number;
+}
+
+export interface SupabaseCustomerTrait {
+  id: number;
+  createdAt: number;
+  updatedAt: number;
+  key: string;
+  value: Prisma.JsonValue | null;
+  idempotency: string | number;
+  customerId: string;
 }

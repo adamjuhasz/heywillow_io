@@ -36,11 +36,18 @@ export default function DashboardPage() {
           <Link href="/a/[namespace]/workspace">
             <div className="flex items-center">
               Threads
-              <NumberBadge
-                count={threads?.length}
-                className="bg-blue-500 text-white"
-              />
+              {threads && threads.length > 0 ? (
+                <NumberBadge
+                  count={threads?.length}
+                  className="bg-blue-500 text-white"
+                />
+              ) : (
+                <></>
+              )}
             </div>
+          </Link>
+          <Link href="/a/[namespace]/customers">
+            <div className="flex items-center">Customers</div>
           </Link>
         </LinkBar>
       </AppHeader>
