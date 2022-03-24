@@ -54,7 +54,13 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
     return { notFound: true };
   }
 
-  const threadLinkId = hashids.decode(threadLinkHashed)[0];
+  let threadLinkId: number | bigint;
+  try {
+    threadLinkId = hashids.decode(threadLinkHashed)[0];
+  } catch (e) {
+    console.log("Thread id not a valid hashids");
+    return { notFound: true };
+  }
 
   if (threadLinkId === undefined) {
     console.log("Thread not encoded correctly");
