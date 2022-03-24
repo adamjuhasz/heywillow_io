@@ -13,6 +13,7 @@ import slateToText from "shared/slate/slateToText";
 // design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
 
 export interface IMessage {
+  id: number;
   direction: MessageDirection;
   createdAt: string;
   text: ParagraphElement[];
@@ -39,6 +40,7 @@ export default forwardRef<HTMLDivElement, Props>(function Message(props, ref) {
 
   return (
     <div
+      id={`message-${props.message.id}`}
       className={[
         "flex w-full",
         props.message.direction === "incoming" ? "self-start" : "self-end",

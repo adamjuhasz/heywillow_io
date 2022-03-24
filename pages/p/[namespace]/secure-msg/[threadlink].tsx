@@ -10,6 +10,7 @@ import Message from "components/Thread/Message";
 import Input from "components/Input";
 import hashids from "server/hashids";
 import prismaToJSON from "server/prismaToJSon";
+import type { ParagraphElement } from "types/slate";
 
 export type ChangeTypeOfKeys<
   T extends object,
@@ -53,7 +54,13 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
     return { notFound: true };
   }
 
-  const threadLinkId = hashids.decode(threadLinkHashed)[0];
+  let threadLinkId: number | bigint;
+  try {
+    threadLinkId = hashids.decode(threadLinkHashed)[0];
+  } catch (e) {
+    console.log("Thread id not a valid hashids");
+    return { notFound: true };
+  }
 
   if (threadLinkId === undefined) {
     console.log("Thread not encoded correctly");
@@ -129,10 +136,13 @@ export default function ThreadId(props: ServerSideProps) {
           <Message
             key={`${item.id}`}
             message={{
-              ...item,
+              id: Number(item.id),
+              direction: item.direction,
+              subject: item.subject,
+              AliasEmail: item.AliasEmail,
+              TeamMember: item.TeamMember,
               createdAt: item.createdAt as string,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              text: item.text as any,
+              text: item.text as unknown as ParagraphElement[],
               Attachment: [],
               MessageError: [],
             }}

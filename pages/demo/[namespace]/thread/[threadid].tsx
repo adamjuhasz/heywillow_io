@@ -1,11 +1,10 @@
-import { ReactElement, useContext, useMemo, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
 import MenuIcon from "@heroicons/react/solid/MenuIcon";
 import XIcon from "@heroicons/react/solid/XIcon";
-import sortBy from "lodash/sortBy";
 
 import AppLayout from "layouts/app";
 import StickyBase from "components/App/Header/StickyBase";
@@ -40,17 +39,9 @@ export default function ThreadViewer() {
   const requestedThread = threads.find(
     (t) => t.id === parseInt(threadid as string, 10)
   );
-  const threadsWithoutRequested = useMemo(() => {
-    if (threads === undefined) {
-      return threads;
-    }
-
-    const filtered = threads
-      .filter((t) => t.id !== parseInt((threadid as string) || "0", 10))
-      .filter((t) => t.AliasEmail.id === requestedThread?.AliasEmail.id);
-
-    return sortBy(filtered, [(t) => t.createdAt]);
-  }, [threadid, requestedThread]);
+  const threadsForThisAlias = threads.filter(
+    (t) => t.aliasEmailId === requestedThread?.aliasEmailId
+  );
 
   const customerEmail = requestedThread?.Message.filter(
     (m) => m.AliasEmail !== null
@@ -100,10 +91,7 @@ export default function ThreadViewer() {
   const rightSideBar = (
     <RightSidebar
       thread={requestedThread}
-      threads={[
-        ...threadsWithoutRequested,
-        ...(requestedThread ? [requestedThread] : []),
-      ]}
+      threads={threadsForThisAlias}
       loading={loading}
       setLoading={setLoading}
       scrollToID={scrollToID}
@@ -184,8 +172,7 @@ export default function ThreadViewer() {
 
             <div className="grow overflow-x-hidden overflow-y-scroll">
               <MultiThreadPrinter
-                primaryThread={requestedThread}
-                secondaryThreads={threadsWithoutRequested}
+                threads={threadsForThisAlias}
                 refreshComment={() => ({})}
                 addComment={async () => {
                   addToast({ type: "active", string: "Adding comment" });
@@ -196,6 +183,7 @@ export default function ThreadViewer() {
                 }}
                 urlQueryComment={undefined}
                 teamMemberList={teamMembers}
+                scrollTo={{ type: "bottom" }}
               />
             </div>
 

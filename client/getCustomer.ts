@@ -9,7 +9,10 @@ type Customer = SupabaseCustomer & {
   CustomerTrait: SupabaseCustomerTrait[];
 };
 
-export async function getCustomers(supabase: SupabaseClient, teamId: number) {
+export async function getCustomer(
+  supabase: SupabaseClient,
+  customerId: number
+) {
   const res = await supabase
     .from<Customer>("Customer")
     .select(
@@ -18,9 +21,9 @@ export async function getCustomers(supabase: SupabaseClient, teamId: number) {
       CustomerTrait(*)
       `
     )
-    .eq("teamId", teamId)
-    .order("createdAt", { ascending: false })
-    .order("createdAt", { foreignTable: "CustomerTrait", ascending: true });
+    .eq("id", customerId)
+    .order("createdAt", { foreignTable: "CustomerTrait", ascending: true })
+    .single();
 
   if (res.error !== null) {
     console.error(res.error);
@@ -32,12 +35,12 @@ export async function getCustomers(supabase: SupabaseClient, teamId: number) {
   return res.data;
 }
 
-export default function useGetCustomers(teamId: number | undefined) {
+export default function useGetCustomer(customerId: number | undefined) {
   const supabase = useSupabase();
 
   const res = useSWR(
-    () => (supabase && teamId ? `/customers/team/${teamId}` : null),
-    () => getCustomers(supabase as SupabaseClient, teamId as number),
+    () => (supabase && customerId ? `/customer/${customerId}` : null),
+    () => getCustomer(supabase as SupabaseClient, customerId as number),
     { refreshInterval: 60000 }
   );
 

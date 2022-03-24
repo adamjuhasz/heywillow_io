@@ -29,6 +29,7 @@ export interface SupabaseAliasEmail {
   emailAddress: string;
   aliasName: string | null;
   teamId: number;
+  customerId: number | null;
 }
 
 export interface SupabaseComment {

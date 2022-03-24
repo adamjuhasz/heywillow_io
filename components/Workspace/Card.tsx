@@ -51,7 +51,6 @@ export default function Card({ t, prefix }: CardProps) {
         pathname: "/[prefix]/[namespace]/thread/[threadid]",
         query: { ...router.query, threadid: t.id, prefix: prefix },
       }}
-      prefetch={true}
     >
       <a>
         <div className="col-span-1 flex h-full flex-col rounded-xl border border-zinc-600 bg-black p-6 text-sm font-light text-zinc-200 hover:border-zinc-100 hover:shadow-lg hover:shadow-black">

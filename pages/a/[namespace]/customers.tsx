@@ -12,7 +12,7 @@ import LinkBar, { Link } from "components/Settings/LinkBar";
 import NumberBadge from "components/App/NumberBadge";
 
 import useGetTeams from "client/getTeams";
-import useGetThreads from "client/getThreads";
+import useGetTeamThreads from "client/getTeamThreads";
 import useGetCustomers from "client/getCustomers";
 
 export default function CustomerList() {
@@ -24,7 +24,7 @@ export default function CustomerList() {
   const currentTeam = teams?.find((t) => t.Namespace.namespace === namespace);
   const currentTeamId = currentTeam?.id;
 
-  const { data: threads } = useGetThreads(currentTeamId);
+  const { data: threads } = useGetTeamThreads(currentTeamId);
   const { data: customers } = useGetCustomers(currentTeamId);
 
   const columns = uniq(

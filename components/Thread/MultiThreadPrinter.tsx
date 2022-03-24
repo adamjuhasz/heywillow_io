@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import LoadingThread from "components/Thread/LoadingThread";
 import ThreadPrinter, {
@@ -15,13 +15,20 @@ interface IThread {
   ThreadState: MiniThreadState[];
 }
 
+type ScrollTo =
+  | { type: "bottom" }
+  | { type: "threadTop"; threadId: number }
+  | { type: "threadBottom"; threadId: number }
+  | { type: "comment"; commentId: number }
+  | { type: "message"; messageId: number };
+
 interface Props {
-  secondaryThreads: IThread[] | undefined;
-  primaryThread: IThread | undefined;
+  threads: IThread[] | undefined;
   refreshComment: (id: number) => unknown;
   addComment: AddComment;
   urlQueryComment: string | undefined;
   teamMemberList: UserDBEntry[];
+  scrollTo: ScrollTo;
 }
 
 export const scrollToID = (id: string) => {
@@ -40,27 +47,42 @@ export default function MultiThreadPrinter(props: Props) {
   const isVisible = !!entry?.isIntersecting;
   console.log(isVisible);
 
-  const scrollToBottom = useMemo(
-    () => () => {
-      if (threadBottom.current === null) {
+  useEffect(() => {
+    if (props.threads === undefined) {
+      return;
+    }
+
+    switch (props.scrollTo.type) {
+      case "bottom":
+        if (threadBottom.current === null) {
+          return;
+        } else {
+          threadBottom.current.scrollIntoView({ behavior: "auto" });
+        }
         return;
-      }
-      console.log("scrolling to bottom");
-      threadBottom.current.scrollIntoView({ behavior: "auto" });
-    },
-    [threadBottom]
-  );
 
-  useLayoutEffect(() => {
-    scrollToBottom();
+      case "threadTop":
+        scrollToID(`thread-top-${props.scrollTo.threadId}`);
+        return;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.primaryThread, props.secondaryThreads]);
+      case "threadBottom":
+        scrollToID(`thread-bottom-${props.scrollTo.threadId}`);
+        return;
+
+      case "message":
+        scrollToID(`message-${props.scrollTo.messageId}`);
+        return;
+
+      case "comment":
+        scrollToID(`comment-${props.scrollTo.commentId}`);
+        return;
+    }
+  }, [props.threads, threadBottom, props.scrollTo]);
 
   return (
     <div className="grow overflow-x-hidden overflow-y-scroll">
-      {props.secondaryThreads ? (
-        props.secondaryThreads.map((t) => (
+      {props.threads ? (
+        props.threads.map((t) => (
           <ThreadPrinter
             key={t.id}
             messages={t.Message}
@@ -75,20 +97,6 @@ export default function MultiThreadPrinter(props: Props) {
         <LoadingThread />
       )}
 
-      {props.primaryThread ? (
-        <>
-          <ThreadPrinter
-            messages={props.primaryThread?.Message}
-            threadId={props.primaryThread.id}
-            mutate={props.refreshComment}
-            addComment={props.addComment}
-            teamMemberList={props.teamMemberList}
-            threadStates={props.primaryThread.ThreadState}
-          />
-        </>
-      ) : (
-        <LoadingThread />
-      )}
       <div id="thread-bottom" ref={threadBottom} />
     </div>
   );

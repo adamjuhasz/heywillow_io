@@ -8,6 +8,7 @@ export const johnCustomer: SupabaseAliasEmail = {
   aliasName: "John Appleseed",
   emailAddress: "johnappleseed@gmail.com",
   teamId: 0,
+  customerId: null,
 };
 
 export const janeCustomer: SupabaseAliasEmail = {
@@ -16,6 +17,7 @@ export const janeCustomer: SupabaseAliasEmail = {
   aliasName: "John Appleseed",
   emailAddress: "johnappleseed@gmail.com",
   teamId: 0,
+  customerId: null,
 };
 
 export const onboarding1Customer: SupabaseAliasEmail = {
@@ -24,6 +26,7 @@ export const onboarding1Customer: SupabaseAliasEmail = {
   aliasName: "First Onboarding",
   emailAddress: "onboard1@heywillow.io",
   teamId: 0,
+  customerId: null,
 };
 
 export const onboarding2Customer: SupabaseAliasEmail = {
@@ -32,6 +35,7 @@ export const onboarding2Customer: SupabaseAliasEmail = {
   aliasName: "Second Onboarding",
   emailAddress: "onboard2@heywillow.io",
   teamId: 0,
+  customerId: null,
 };
 
 export const onboarding3Customer: SupabaseAliasEmail = {
@@ -40,6 +44,7 @@ export const onboarding3Customer: SupabaseAliasEmail = {
   aliasName: "Third Onboarding",
   emailAddress: "onboard3@heywillow.io",
   teamId: 0,
+  customerId: null,
 };
 
 export const onboarding4Customer: SupabaseAliasEmail = {
@@ -48,4 +53,5 @@ export const onboarding4Customer: SupabaseAliasEmail = {
   aliasName: "Fourth Onboarding",
   emailAddress: "onboard4@heywillow.io",
   teamId: 0,
+  customerId: null,
 };

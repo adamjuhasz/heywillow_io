@@ -73,7 +73,7 @@ export default function ThreadPrinter(props: ThreadPrinterProps) {
 
   return (
     <>
-      {props.threadId ? <div id={`top-thread-${props.threadId}`} /> : <></>}
+      {props.threadId ? <div id={`thread-top-${props.threadId}`} /> : <></>}
       {feed ? (
         <>
           {firstMessage ? (
@@ -98,7 +98,7 @@ export default function ThreadPrinter(props: ThreadPrinterProps) {
       ) : (
         <LoadingThread />
       )}
-      {props.threadId ? <div id={`bottom-thread-${props.threadId}`} /> : <></>}
+      {props.threadId ? <div id={`thread-bottom-${props.threadId}`} /> : <></>}
     </>
   );
 }
