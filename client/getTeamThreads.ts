@@ -18,7 +18,7 @@ export type FetchThread = SupabaseThread & {
   Inbox: SupabaseInbox;
 };
 
-export async function getThreads(
+export async function getTeamThreads(
   supabase: SupabaseClient,
   teamId: number
 ): Promise<FetchThread[]> {
@@ -50,7 +50,7 @@ export async function getThreads(
   return filtered;
 }
 
-export default function useGetThreads(teamId: number | undefined) {
+export default function useGetTeamThreads(teamId: number | undefined) {
   const supabase = useSupabase();
 
   const res = useSWR(
@@ -60,7 +60,7 @@ export default function useGetThreads(teamId: number | undefined) {
         console.error("Trying to get threads without knowing teams", teamId);
         throw new Error("no Current Team");
       }
-      return getThreads(supabase as SupabaseClient, teamId);
+      return getTeamThreads(supabase as SupabaseClient, teamId);
     },
     { refreshInterval: 60000 }
   );

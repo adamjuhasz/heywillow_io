@@ -10,18 +10,21 @@ import AppContainer from "components/App/Container";
 import NumberBadge from "components/App/NumberBadge";
 
 import useGetTeams from "client/getTeams";
-import useGetTeamThreads from "client/getTeamThreads";
+import useGetCustomer from "client/getCustomer";
 
-export default function DashboardPage() {
+export default function CustomerView() {
   const router = useRouter();
 
-  const { namespace } = router.query;
+  // cspell:disable-next-line
+  const { namespace, customerid } = router.query;
   const { data: teams } = useGetTeams();
 
-  const currentTeam = teams?.find((t) => t.Namespace.namespace === namespace);
-  const currentTeamId = currentTeam?.id;
+  const customerId = customerid // cspell:disable-line
+    ? parseInt(customerid as string, 10) // cspell:disable-line
+    : (customerid as undefined); // cspell:disable-line
 
-  const { data: threads } = useGetTeamThreads(currentTeamId);
+  const currentTeam = teams?.find((t) => t.Namespace.namespace === namespace);
+  const { data: customer } = useGetCustomer(customerId);
 
   return (
     <>
@@ -59,6 +62,6 @@ export default function DashboardPage() {
   );
 }
 
-DashboardPage.getLayout = function getLayout(page: ReactElement) {
+CustomerView.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };

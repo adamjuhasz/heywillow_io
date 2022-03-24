@@ -5,73 +5,78 @@ import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
 import MenuIcon from "@heroicons/react/solid/MenuIcon";
 import XIcon from "@heroicons/react/solid/XIcon";
-import sortBy from "lodash/sortBy";
 
 import AppLayout from "layouts/app";
-import useGetThread from "client/getThread";
+
 import AppHeaderHOC from "components/App/HeaderHOC";
 import AppContainer from "components/App/Container";
 import InputWithRef from "components/Input";
-import useGetTeamId from "client/getTeamId";
-import useGetAliasThreads from "client/getAliasThreads";
-import postNewMessage from "client/postNewMessage";
 import ToastContext from "components/Toast";
 import RightSidebar from "components/Thread/RightSidebar";
-import { AddComment } from "components/Thread/CommentBox";
-import { Body, Return } from "pages/api/v1/comment/add";
-import changeThreadState from "client/changeThreadState";
-import useGetSecureThreadLink from "client/getSecureThreadLink";
 import MultiThreadPrinter, {
   scrollToID,
 } from "components/Thread/MultiThreadPrinter";
 import type { UserDBEntry } from "components/Comments/TextEntry";
 import { useUser } from "components/UserContext";
+
+import useGetTeamId from "client/getTeamId";
+import postNewMessage from "client/postNewMessage";
 import useGetTeams from "client/getTeams";
 import useGetTeamMembers from "client/getTeamMembers";
+import useGetThread, { ThreadFetch } from "client/getThread";
+import changeThreadState from "client/changeThreadState";
+import useGetSecureThreadLink from "client/getSecureThreadLink";
+import addCommentFactory from "client/addComment";
 
 export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
   const [showRightSidebar, setShowRightSidebar] = useState(false);
   const router = useRouter();
-  const { threadid, comment } = router.query;
+  const { threadid, comment, message } = router.query;
 
-  let threadNum: number | undefined = parseInt(threadid as string, 10);
-  threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
+  const threadNum: number | undefined = threadid
+    ? parseInt(threadid as string, 10)
+    : undefined;
+
+  const commentNum: number | undefined = comment
+    ? parseInt(comment as string, 10)
+    : undefined;
+
+  const messageNum: number | undefined = message
+    ? parseInt(message as string, 10)
+    : undefined;
 
   const { user } = useUser();
 
   const teamId = useGetTeamId();
-  const { data: requestedThread, mutate: mutateThread } =
-    useGetThread(threadNum);
-  const { data: aliasOtherThreads, mutate: mutateThreads } = useGetAliasThreads(
-    requestedThread?.aliasEmailId
-  );
+  const { data: allThreads, mutate: refreshAllThreads } = useGetThread({
+    threadId: threadNum,
+    aliasEmailId: undefined,
+    customerId: undefined,
+  });
 
   const { data: teams } = useGetTeams();
   const { data: teamMembers } = useGetTeamMembers(teamId);
 
   const { data: threadLink } = useGetSecureThreadLink(threadNum);
 
-  const threadsWithoutPrimary = useMemo(() => {
-    if (aliasOtherThreads === undefined) {
-      return aliasOtherThreads;
-    }
-
-    const filtered = (aliasOtherThreads || []).filter(
-      (t) => t.id !== parseInt((threadid as string) || "0", 10)
-    );
-
-    return sortBy(filtered, [(t) => t.createdAt]);
-  }, [aliasOtherThreads, threadid]);
-
   const { addToast } = useContext(ToastContext);
+
+  const requestedThread: undefined | ThreadFetch = allThreads?.find(
+    (t) => t.id === threadNum
+  );
+
+  const addComment = useMemo(
+    () => addCommentFactory(teamId, addToast, setLoading),
+    [teamId, addToast, setLoading]
+  );
 
   const customerEmail = requestedThread?.Message.filter(
     (m) => m.AliasEmail !== null
   )[0]?.AliasEmail?.emailAddress;
 
   const refreshComment = async (commentId: number) => {
-    await Promise.allSettled([mutateThread(), mutateThreads()]);
+    await refreshAllThreads();
     void router.replace({
       query: { ...router.query, comment: commentId },
     });
@@ -94,7 +99,7 @@ export default function ThreadViewer() {
 
     // wait to mutate for Supabase to see the write, ~200-400ms seems to be the magic number
     setTimeout(async () => {
-      await Promise.allSettled([mutateThread(), mutateThreads()]);
+      await refreshAllThreads();
       if (comment) {
         void router.replace({
           pathname: "/a/[namespace]/thread/[threadid]",
@@ -106,39 +111,6 @@ export default function ThreadViewer() {
         });
       }
     }, 300);
-  };
-
-  const addComment: AddComment = async (data) => {
-    if (teamId === undefined) {
-      throw new Error("No team ID");
-    }
-
-    setLoading(true);
-
-    const body: Body = {
-      messageId: data.messageId,
-      comment: data.comment,
-      teamId: teamId,
-    };
-    const res = await fetch("/api/v1/comment/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    switch (res.status) {
-      case 200: {
-        const responseBody = (await res.json()) as Return;
-        addToast({ type: "string", string: "Comment added" });
-        return responseBody.id;
-      }
-
-      default:
-        addToast({ type: "error", string: "Could not save comment" });
-        throw new Error("Could not add comment");
-    }
   };
 
   const teamWithoutMe = useMemo(
@@ -197,7 +169,7 @@ export default function ThreadViewer() {
   const rightSideBar = (
     <RightSidebar
       thread={requestedThread}
-      threads={aliasOtherThreads}
+      threads={allThreads}
       loading={loading}
       setLoading={setLoading}
       scrollToID={scrollToID}
@@ -243,12 +215,23 @@ export default function ThreadViewer() {
             </div>
 
             <MultiThreadPrinter
-              primaryThread={requestedThread}
-              secondaryThreads={threadsWithoutPrimary}
+              threads={allThreads}
               refreshComment={refreshComment}
               addComment={addComment}
               urlQueryComment={comment as string | undefined}
               teamMemberList={userDB}
+              scrollTo={
+                commentNum
+                  ? {
+                      type: "comment",
+                      commentId: commentNum,
+                    }
+                  : messageNum
+                  ? { type: "message", messageId: messageNum }
+                  : threadNum
+                  ? { type: "threadBottom", threadId: threadNum }
+                  : { type: "bottom" }
+              }
             />
 
             <div className="shrink-0 pb-2">

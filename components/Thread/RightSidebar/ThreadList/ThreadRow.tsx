@@ -15,7 +15,7 @@ export default function ThreadRow(props: Props) {
   return (
     <div
       onClick={() => {
-        props.scrollToID(`top-thread-${props.id}`);
+        props.scrollToID(`thread-top-${props.id}`);
       }}
       className="flex w-full cursor-pointer items-center justify-between text-xs text-zinc-400 hover:text-zinc-100"
     >

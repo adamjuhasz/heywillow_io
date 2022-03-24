@@ -22,7 +22,7 @@ interface ToastTypeStored {
   toast: ToastType;
 }
 
-interface IToastContext {
+export interface IToastContext {
   addToast: (t: ToastType, timeout?: number) => void;
 }
 
