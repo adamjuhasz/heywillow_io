@@ -44,14 +44,12 @@ Message!Message_threadId_fkey (
 )
 `;
 
-// what's our
-
 export async function getThread(
   supabase: SupabaseClient,
   threadId: number
-): Promise<ThreadFetch> {
+): Promise<SupabaseThread> {
   const res = await supabase
-    .from<ThreadFetch>("Thread")
+    .from<SupabaseThread>("Thread")
     .select("*")
     .eq("id", threadId)
     .single();
@@ -158,8 +156,7 @@ export default function useGetThread(search: Search) {
       getAliasEmailFromCustomer(
         supabase as SupabaseClient,
         search.customerId as number
-      ),
-    { refreshInterval: 60000 }
+      )
   );
 
   // if we have threadId, use that to get aliasId, then customer, then aliases of customer
@@ -169,8 +166,7 @@ export default function useGetThread(search: Search) {
       getAliasEmailFromThread(
         supabase as SupabaseClient,
         search.threadId as number
-      ),
-    { refreshInterval: 60000 }
+      )
   );
 
   //if we have aliasId then get customerId and all that customer's aliasIds
@@ -183,8 +179,7 @@ export default function useGetThread(search: Search) {
       getAllAllCustomerAliasesFromAlias(
         supabase as SupabaseClient,
         search.aliasEmailId as number
-      ),
-    { refreshInterval: 60000 }
+      )
   );
 
   //combine all alias ids
@@ -192,7 +187,7 @@ export default function useGetThread(search: Search) {
     ...(aliasesFromCustomer || []).map((a) => a.id),
     ...(aliasesFromThread || []).map((a) => a.id),
     ...(customerAliasesFromAlias || []).map((a) => a.id),
-  ]);
+  ]).sort();
 
   const res = useSWR(
     () =>
@@ -203,7 +198,7 @@ export default function useGetThread(search: Search) {
     { refreshInterval: 60000 }
   );
 
-  useDebugValue(res.data);
+  useDebugValue({ aliasEmailId: combinedAliasIds, data: res.data });
 
   return res;
 }
