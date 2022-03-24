@@ -232,7 +232,7 @@ export default function SignUpPage(): JSX.Element {
           <Image
             className="absolute inset-0 h-full w-full object-cover "
             src={image}
-            alt=""
+            alt="Red highlands in the ancient Bristlecone Pine Forest in the United States"
             layout="fill"
             placeholder="blur"
           />
