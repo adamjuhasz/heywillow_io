@@ -36,8 +36,8 @@ export default function Vercel(): JSX.Element {
   return (
     <>
       <NextSeo
-        title="Customer support for founders"
-        description="Customer support platform tailer made for early-stage startups. See a lifetime view every message with a customer on one screen. No per-seat pricing, so get your whole team working together to fix issues."
+        title="Customer support platform for founders"
+        description="Willow is a new customer support platform tailer made for early-stage startups. See a lifetime view every message with a customer on one screen. No per-seat pricing, so get your whole team working together to fix issues."
         canonical="https://heywillow.io"
       />
       <Head>
