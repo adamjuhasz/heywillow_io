@@ -14,9 +14,7 @@ import PageLoading from "components/PageLoading";
 function renderSnippet() {
   const opts: snippet.Options = {
     apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || "",
-    // note: the page option only covers SSR tracking.
-    // PageLoading.tsx is used to track other events using `window.analytics.page()`
-    page: true,
+    page: false,
     host: "seg.heywillow.io",
   };
 
