@@ -33,7 +33,6 @@ export async function getMyTeamMemberId(
     );
   }
 
-  console.log("TeamInvite", res.data);
   return res.data;
 }
 

@@ -6,7 +6,6 @@ import ThreadPrinter, {
   MiniThreadState,
 } from "components/Thread/ThreadPrinter";
 import { AddComment } from "components/Thread/CommentBox";
-import useIntersectionObserver from "hooks/useIntersectionObserver";
 import type { UserDBEntry } from "components/Comments/TextEntry";
 
 interface IThread {
@@ -26,7 +25,6 @@ interface Props {
   threads: IThread[] | undefined;
   refreshComment: (id: number) => unknown;
   addComment: AddComment;
-  urlQueryComment: string | undefined;
   teamMemberList: UserDBEntry[];
   scrollTo: ScrollTo;
 }
@@ -43,9 +41,6 @@ export const scrollToID = (id: string) => {
 
 export default function MultiThreadPrinter(props: Props) {
   const threadBottom = useRef<HTMLDivElement>(null);
-  const entry = useIntersectionObserver(threadBottom, {});
-  const isVisible = !!entry?.isIntersecting;
-  console.log(isVisible);
 
   useEffect(() => {
     if (props.threads === undefined) {

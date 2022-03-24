@@ -5,6 +5,7 @@ import uniq from "lodash/uniq";
 import isString from "lodash/isString";
 import isNumber from "lodash/isNumber";
 import isNil from "lodash/isNil";
+import NextLink from "next/link";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
@@ -106,15 +107,28 @@ export default function CustomerList() {
                       <tr key={customer.id} className="">
                         <td
                           className={[
-                            "whitespace-nowrap py-3 px-3 font-medium",
+                            "whitespace-nowrap py-3 px-3 font-medium hover:underline",
                             idx !== customers.length - 1
                               ? "border-b border-zinc-600"
                               : "",
                           ].join(" ")}
                         >
-                          {customer.userId.length > 12
-                            ? `${customer.userId.slice(0, 10)}...`
-                            : customer.userId}
+                          <NextLink
+                            href={{
+                              pathname:
+                                "/a/[namespace]/customer/[customerid]/thread",
+                              query: {
+                                ...router.query,
+                                customerid: customer.id,
+                              },
+                            }}
+                          >
+                            <a>
+                              {customer.userId.length > 12
+                                ? `${customer.userId.slice(0, 10)}...`
+                                : customer.userId}
+                            </a>
+                          </NextLink>
                         </td>
                         {columns.map((col) => {
                           const value = customer.CustomerTrait.find(

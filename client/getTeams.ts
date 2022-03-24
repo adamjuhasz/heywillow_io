@@ -17,7 +17,6 @@ export async function getTeams(supabase: SupabaseClient) {
     );
   }
 
-  console.log("Team", res.data);
   return res.data;
 }
 

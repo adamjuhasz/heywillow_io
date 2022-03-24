@@ -41,10 +41,8 @@ export const UserContextProvider = ({
       (_event, stateChangeSession) => {
         setSession(stateChangeSession);
         setUser(stateChangeSession?.user ?? null);
-        console.log("user", stateChangeSession?.user);
       }
     );
-    console.log("user", supabaseSession?.user);
 
     return () => {
       if (authListener !== null) {

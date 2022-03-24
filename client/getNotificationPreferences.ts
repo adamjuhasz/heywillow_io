@@ -19,7 +19,6 @@ export async function getNotificationPreferences(supabase: SupabaseClient) {
     );
   }
 
-  console.log("NotificationPreferences", res.data);
   return res.data;
 }
 

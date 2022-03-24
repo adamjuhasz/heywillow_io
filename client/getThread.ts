@@ -68,6 +68,10 @@ async function getAliasThreads(
   supabase: SupabaseClient,
   aliasIds: number[]
 ): Promise<ThreadFetch[]> {
+  if (aliasIds.length === 0) {
+    return [];
+  }
+
   const res = await supabase
     .from<ThreadFetch>("Thread")
     .select(selectQuery)
@@ -191,9 +195,7 @@ export default function useGetThread(search: Search) {
 
   const res = useSWR(
     () =>
-      supabase && combinedAliasIds.length > 0
-        ? `/threads/alias/${JSON.stringify(combinedAliasIds)}`
-        : null,
+      supabase ? `/threads/alias/${JSON.stringify(combinedAliasIds)}` : null,
     () => getAliasThreads(supabase as SupabaseClient, combinedAliasIds),
     { refreshInterval: 60000 }
   );

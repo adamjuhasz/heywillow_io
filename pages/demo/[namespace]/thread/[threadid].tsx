@@ -181,7 +181,6 @@ export default function ThreadViewer() {
                   );
                   return 0;
                 }}
-                urlQueryComment={undefined}
                 teamMemberList={teamMembers}
                 scrollTo={{ type: "bottom" }}
               />

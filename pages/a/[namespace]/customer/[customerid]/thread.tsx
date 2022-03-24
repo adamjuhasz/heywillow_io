@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { ReactElement, useContext, useMemo, useState } from "react";
 import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
 import MenuIcon from "@heroicons/react/solid/MenuIcon";
 import XIcon from "@heroicons/react/solid/XIcon";
+import last from "lodash/last";
 
 import AppLayout from "layouts/app";
 
@@ -27,37 +27,36 @@ import useGetThread, { ThreadFetch } from "client/getThread";
 import changeThreadState from "client/changeThreadState";
 import useGetSecureThreadLink from "client/getSecureThreadLink";
 import addCommentFactory from "client/addComment";
+import useGetCustomer from "client/getCustomer";
 
 export default function ThreadViewer() {
   const [loading, setLoading] = useState(false);
   const [showRightSidebar, setShowRightSidebar] = useState(false);
   const router = useRouter();
-  const { threadid, comment, message } = router.query;
+  // cspell:disable
+  const { customerid } = router.query;
 
-  const threadNum: number | undefined = threadid
-    ? parseInt(threadid as string, 10)
+  const customerNum: number | undefined = customerid
+    ? parseInt(customerid as string, 10)
     : undefined;
-
-  const commentNum: number | undefined = comment
-    ? parseInt(comment as string, 10)
-    : undefined;
-
-  const messageNum: number | undefined = message
-    ? parseInt(message as string, 10)
-    : undefined;
+  // cspell:enable
 
   const { user } = useUser();
+  const { data: customer } = useGetCustomer(customerNum);
 
   const teamId = useGetTeamId();
   const { data: allThreads, mutate: refreshAllThreads } = useGetThread({
-    threadId: threadNum,
+    threadId: undefined,
     aliasEmailId: undefined,
-    customerId: undefined,
+    customerId: customerNum,
   });
 
   const { data: teams } = useGetTeams();
   const { data: teamMembers } = useGetTeamMembers(teamId);
 
+  const threadNum: number | undefined = allThreads
+    ? last(allThreads)?.id
+    : undefined;
   const { data: threadLink } = useGetSecureThreadLink(threadNum);
 
   const { addToast } = useContext(ToastContext);
@@ -95,21 +94,11 @@ export default function ThreadViewer() {
       });
       return;
     }
-    const response = await postNewMessage(threadNum, { text: t });
+    await postNewMessage(threadNum, { text: t });
 
     // wait to mutate for Supabase to see the write, ~200-400ms seems to be the magic number
     setTimeout(async () => {
       await refreshAllThreads();
-      if (comment) {
-        void router.replace({
-          pathname: "/a/[namespace]/thread/[threadid]",
-          query: {
-            ...router.query,
-            comment: undefined,
-            message: response.messageId,
-          },
-        });
-      }
     }, 300);
   };
 
@@ -157,13 +146,17 @@ export default function ThreadViewer() {
   );
 
   const backButton = (
-    <Link href={workspaceURL}>
-      <a className="block rounded-full hover:shadow-zinc-900">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
-          <ArrowLeftIcon className="h-6 w-6" />
-        </div>
-      </a>
-    </Link>
+    <a
+      className="block rounded-full hover:shadow-zinc-900"
+      onClick={(e) => {
+        e.preventDefault();
+        router.back();
+      }}
+    >
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
+        <ArrowLeftIcon className="h-6 w-6" />
+      </div>
+    </a>
   );
 
   const rightSideBar = (
@@ -219,18 +212,7 @@ export default function ThreadViewer() {
               refreshComment={refreshComment}
               addComment={addComment}
               teamMemberList={userDB}
-              scrollTo={
-                commentNum
-                  ? {
-                      type: "comment",
-                      commentId: commentNum,
-                    }
-                  : messageNum
-                  ? { type: "message", messageId: messageNum }
-                  : threadNum
-                  ? { type: "threadBottom", threadId: threadNum }
-                  : { type: "bottom" }
-              }
+              scrollTo={{ type: "bottom" }}
             />
 
             <div className="shrink-0 pb-2">
