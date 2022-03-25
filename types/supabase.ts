@@ -184,8 +184,8 @@ export interface SupabaseCustomer {
 
 export interface SupabaseCustomerTrait {
   id: number;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
   key: string;
   value: Prisma.JsonValue | null;
   idempotency: string | number;

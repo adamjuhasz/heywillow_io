@@ -2,15 +2,14 @@ import { ReactElement } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import uniq from "lodash/uniq";
-import isString from "lodash/isString";
-import isNumber from "lodash/isNumber";
-import isNil from "lodash/isNil";
 import NextLink from "next/link";
+import isNil from "lodash/isNil";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
 import LinkBar, { Link } from "components/Settings/LinkBar";
 import NumberBadge from "components/App/NumberBadge";
+import CustomerTraitValue from "components/CustomerTrait/Value";
 
 import useGetTeams from "client/getTeams";
 import useGetTeamThreads from "client/getTeamThreads";
@@ -134,32 +133,6 @@ export default function CustomerList() {
                           const value = customer.CustomerTrait.find(
                             (ct) => ct.key === col
                           )?.value;
-                          let display = <></>;
-                          if (isNil(value)) {
-                            display = (
-                              <span className="text-xs text-zinc-700">
-                                Empty
-                              </span>
-                            );
-                          } else if (isString(value)) {
-                            display = (
-                              <span>
-                                {value.length > 12
-                                  ? `${value.slice(0, 10)}...`
-                                  : value}
-                              </span>
-                            );
-                          } else if (isNumber(value)) {
-                            display = <span>{value}</span>;
-                          } else {
-                            display = (
-                              <span className="font-mono">
-                                {JSON.stringify(value).length > 12
-                                  ? `${JSON.stringify(value).slice(0, 10)}...`
-                                  : JSON.stringify(value)}
-                              </span>
-                            );
-                          }
 
                           return (
                             <td
@@ -171,7 +144,16 @@ export default function CustomerList() {
                                   : "",
                               ].join(" ")}
                             >
-                              {display}
+                              {isNil(value) ? (
+                                <span className="text-xs text-zinc-700">
+                                  Empty
+                                </span>
+                              ) : (
+                                <CustomerTraitValue
+                                  value={value}
+                                  maxLength={10}
+                                />
+                              )}
                             </td>
                           );
                         })}

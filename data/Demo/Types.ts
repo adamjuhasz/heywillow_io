@@ -1,5 +1,5 @@
 import type { SupabaseAliasEmail, SupabaseThread } from "types/supabase";
-import type { MessageWCommentsCreated } from "components/Thread/ThreadPrinter";
+import type { MessageWCommentsCreated } from "components/Thread/MultiThreadPrinter";
 import type { RightSidebarAlias } from "components/Thread/RightSidebar";
 import { MiniThreadState } from "components/Thread/ThreadState";
 
