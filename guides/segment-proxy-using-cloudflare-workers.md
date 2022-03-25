@@ -67,7 +67,7 @@ async function handleRequest(request) {
 15. Click "Add route"
 16. Set "Route" to `seg.<yourdomain.com>/*`, Set "Zone" to `<yourdomain.com>`. Click "Add route"
 
-## Post set up
+## Segment-side set up
 
 Follow the directions listed to set up two Cloudflare workers. Once you completed those steps and verify that your proxy works for both cdn.segment.com and api.segment.io, [contact Segment Product Support](https://segment.com/help/contact/) with the following template email:
 
@@ -85,3 +85,29 @@ Double-check the source link, the Source ID, and the API proxy host to make sure
 A Segment Customer Success team member will respond that they have enabled this option for your account. When you receive this confirmation, open the source in your workspace, and navigate to Settings > Analytics.j. Update the Host Address setting from `api.segment.io/v1` to `[your proxy host]/v1`.
 
 > The Host Address field does not appear in source settings until it’s enabled by Segment Customer Success.
+
+## Post set up
+
+Once Segment has enabled the feature on your source you'll need to modify your snippet so that bundles are also requested through your proxy.
+
+### Using Segment's snippet generator
+
+```
+import * as snippet from "@segment/snippet";
+
+const opts: snippet.Options = {
+    apiKey: "", // add api write key here
+    host: "seg.yourdomain.com",
+    useHostForBundles: true, // this is so that bundles are also requested through custom domain
+  };
+
+  if (process.env.NODE_ENV === "development") {
+    return snippet.max(opts);
+  }
+
+  return snippet.min(opts);
+```
+
+### If using a manual snippet
+
+1. Add `analytics._cdn="seg.<yourdomain.com>";`.
