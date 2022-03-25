@@ -16,6 +16,7 @@ function renderSnippet() {
     apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || "",
     page: false,
     host: "seg.heywillow.io",
+    useHostForBundles: true,
   };
 
   if (process.env.NODE_ENV === "development") {
