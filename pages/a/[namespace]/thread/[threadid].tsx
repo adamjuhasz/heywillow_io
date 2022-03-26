@@ -231,6 +231,7 @@ export default function ThreadViewer() {
                   ? { type: "threadBottom", threadId: threadNum }
                   : { type: "bottom" }
               }
+              traits={[]}
             />
 
             <div className="shrink-0 pb-2">

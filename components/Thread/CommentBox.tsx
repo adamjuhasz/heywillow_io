@@ -35,7 +35,6 @@ interface Props {
   comments: IComment[];
   direction: MessageDirection;
   mutate?: (commentId: number) => unknown;
-  id?: string;
   addComment: AddComment;
   teamMemberList: UserDBEntry[];
 }
@@ -90,24 +89,16 @@ export default function CommentBox(props: Props) {
   };
 
   return (
-    <div
-      className={[
-        "mt-1 flex w-full",
-        props.direction === "incoming" ? "ml-14 self-start" : "mr-14 self-end",
-        props.direction === "incoming" ? "flex-row" : "flex-row-reverse",
-      ].join(" ")}
-    >
+    <div className={["mt-2 ml-4 flex w-full self-start"].join(" ")}>
       <div
         className={[
-          "-mt-1 h-7 w-4 border-b-2 border-zinc-500",
-          props.direction === "incoming"
-            ? "mr-1 rounded-bl-xl border-l-2"
-            : "ml-1 rounded-br-xl border-r-2",
+          "-mt-1 mr-[0.25rem] h-7 w-[1rem] rounded-bl-xl border-b-2 border-l-2 border-zinc-500",
         ].join(" ")}
       />
       <div
+        id={`comment-box-top-${props.messageId}`}
         className={[
-          "w-full max-w-[60%] rounded-xl border-2 border-zinc-200 pt-2 pb-2",
+          "w-[calc(100%_-_5em)] rounded-xl border-2 border-zinc-200 pt-[0.5rem] pb-2",
         ].join(" ")}
       >
         <div className="flex items-center border-b-2 border-zinc-200 px-2  py-1 text-sm text-zinc-500">
@@ -129,6 +120,7 @@ export default function CommentBox(props: Props) {
             {props.comments.length === 1 ? "" : "s"}
           </span>
         </div>
+
         {props.comments.map((c) => (
           <div
             key={`${c.id}`}
@@ -149,7 +141,9 @@ export default function CommentBox(props: Props) {
             </div>
           </div>
         ))}
+
         <form
+          id={`comment-box-entry-${props.messageId}`}
           className="relative mt-2 w-full px-2"
           onSubmit={(e) => {
             e.preventDefault();

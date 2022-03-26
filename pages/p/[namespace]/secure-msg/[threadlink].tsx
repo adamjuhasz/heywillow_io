@@ -146,6 +146,8 @@ export default function ThreadId(props: ServerSideProps) {
               Attachment: [],
               MessageError: [],
             }}
+            setShowComments={undefined}
+            showComments={false}
           />
         ))}
         <div ref={inputRef} />

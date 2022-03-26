@@ -1,8 +1,16 @@
+/* eslint-disable sonarjs/no-nested-switch */
 import { useEffect, useMemo, useRef } from "react";
 import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
 import type { Prisma } from "@prisma/client";
-import { format } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
+import { ChatAltIcon } from "@heroicons/react/solid";
+import { ReplyIcon } from "@heroicons/react/solid";
+import { SparklesIcon } from "@heroicons/react/solid";
+import { ClockIcon } from "@heroicons/react/solid";
+import { CheckIcon } from "@heroicons/react/solid";
+import { InboxInIcon } from "@heroicons/react/solid";
+import { DatabaseIcon } from "@heroicons/react/solid";
 
 import LoadingThread from "components/Thread/LoadingThread";
 import { AddComment } from "components/Thread/CommentBox";
@@ -62,12 +70,16 @@ type ScrollTo =
   | { type: "comment"; commentId: number }
   | { type: "message"; messageId: number };
 
+interface CommonProps {
+  addComment: AddComment;
+  refreshComment: (id: number) => unknown;
+  teamMemberList: UserDBEntry[];
+}
+
 interface Props {
   threads: IThread[] | undefined;
   traits: SupabaseCustomerTrait[] | undefined;
-  refreshComment: (id: number) => unknown;
-  addComment: AddComment;
-  teamMemberList: UserDBEntry[];
+
   scrollTo: ScrollTo;
 }
 
@@ -81,7 +93,7 @@ export const scrollToID = (id: string) => {
   element.scrollIntoView({ behavior: "smooth" });
 };
 
-export default function MultiThreadPrinter(props: Props) {
+export default function MultiThreadPrinter(props: Props & CommonProps) {
   const threadBottom = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,7 +106,7 @@ export default function MultiThreadPrinter(props: Props) {
         if (threadBottom.current === null) {
           return;
         } else {
-          threadBottom.current.scrollIntoView({ behavior: "auto" });
+          threadBottom.current.scrollIntoView({ behavior: "smooth" });
         }
         return;
 
@@ -188,51 +200,33 @@ export default function MultiThreadPrinter(props: Props) {
   return (
     <div className="grow overflow-x-hidden overflow-y-scroll">
       {props.threads ? (
-        feed.map((node): JSX.Element => {
-          switch (node.type) {
-            case "message":
-              return (
-                <MessagePrinter
-                  key={node.message.id}
-                  message={node.message}
-                  mutate={props.refreshComment}
-                  addComment={props.addComment}
-                  teamMemberList={props.teamMemberList}
-                />
-              );
-
-            case "threadState":
-              return <ThreadState key={node.state.id} state={node.state} />;
-
-            case "subjectLine":
-              return (
-                <>
-                  <div id={`thread-top-${node.threadId}`} />
-                  <SubjectLine
-                    key={`${node.createdAt}`}
-                    createdAt={node.createdAt}
-                  >
-                    {node.subject}
-                  </SubjectLine>
-                </>
-              );
-
-            case "traitChange":
-              return (
-                <div className="w-full text-xs text-zinc-500 line-clamp-1">
-                  ({format(new Date(node.createdAt), "MMM d, p")}){" "}
-                  <span className="font-mono font-semibold text-zinc-100">
-                    {node.key}
-                  </span>{" "}
-                  changed to{" "}
-                  <CustomerTraitValue
-                    value={node.value}
-                    className="break-all text-zinc-100"
-                  />
+        <>
+          {feed.map((node, idx, feedArray): JSX.Element => {
+            return (
+              <div
+                className="relative w-full"
+                key={`${node.type}-${node.createdAt}`}
+              >
+                <div className="h-2" />
+                <div className="flex items-center">
+                  <div className="shrink-0 self-start">
+                    <Icon node={node} />
+                  </div>
+                  <div className="grow">
+                    <NodePrinter node={node} {...props} />
+                  </div>
                 </div>
-              );
-          }
-        })
+                <div className="h-2" />
+                {idx !== 0 ? (
+                  <div className="absolute top-0 left-[calc(1.0rem_-_1.5px)] -z-10 h-2 w-[3px] rounded-full bg-zinc-800" />
+                ) : undefined}
+                {idx !== feedArray.length - 1 ? (
+                  <div className="absolute top-2 left-[calc(1.0rem_-_1.5px)] -z-10 h-[calc(100%_-_0.5rem)] w-[3px] bg-zinc-800" />
+                ) : undefined}
+              </div>
+            );
+          })}
+        </>
       ) : (
         <LoadingThread />
       )}
@@ -240,4 +234,166 @@ export default function MultiThreadPrinter(props: Props) {
       <div id="thread-bottom" ref={threadBottom} />
     </div>
   );
+}
+
+interface NodePrinterProps {
+  node: FeedNode;
+}
+
+function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
+  switch (node.type) {
+    case "message":
+      return (
+        <MessagePrinter
+          key={node.message.id}
+          message={node.message}
+          mutate={props.refreshComment}
+          addComment={props.addComment}
+          teamMemberList={props.teamMemberList}
+        />
+      );
+
+    case "threadState":
+      return (
+        <div className="text-xs">
+          <ThreadState key={node.state.id} state={node.state} />
+        </div>
+      );
+
+    case "subjectLine":
+      return (
+        <div className="text-xs">
+          <div id={`thread-top-${node.threadId}`} />
+          <SubjectLine key={`${node.createdAt}`} createdAt={node.createdAt}>
+            {node.subject}
+          </SubjectLine>
+        </div>
+      );
+
+    case "traitChange":
+      return (
+        <div className="text-xs text-zinc-500 line-clamp-1">
+          <span className="font-mono font-semibold text-zinc-100">
+            {node.key}
+          </span>{" "}
+          changed to{" "}
+          <CustomerTraitValue
+            value={node.value}
+            className="break-all text-zinc-100"
+          />{" "}
+          •{" "}
+          {formatDistanceToNow(new Date(node.createdAt), {
+            addSuffix: true,
+          })}
+        </div>
+      );
+  }
+}
+
+function Icon(props: NodePrinterProps) {
+  const commonClasses =
+    "mr-2 h-8 w-8 rounded-full border-[3px] border-zinc-900 ";
+
+  switch (props.node.type) {
+    case "message": {
+      switch (props.node.message.direction) {
+        case "incoming":
+          return (
+            <div
+              className={[
+                commonClasses,
+                "flex items-center justify-center bg-purple-800",
+              ].join(" ")}
+            >
+              <ChatAltIcon className="h-4 w-4 text-zinc-100" />
+            </div>
+          );
+
+        case "outgoing":
+          return (
+            <div
+              className={[
+                commonClasses,
+                "flex items-center justify-center bg-purple-800",
+              ].join(" ")}
+            >
+              <ReplyIcon className="h-4 w-4 text-zinc-100" />
+            </div>
+          );
+      }
+      break;
+    }
+
+    case "threadState": {
+      switch (props.node.state.state) {
+        case "assigned":
+        case "open":
+          return (
+            <div
+              className={[
+                commonClasses,
+                "flex items-center justify-center bg-zinc-800",
+              ].join(" ")}
+            >
+              <SparklesIcon className="h-4 w-4 text-zinc-100" />
+            </div>
+          );
+
+        case "snoozed":
+          return (
+            <div
+              className={[
+                commonClasses,
+                "flex items-center justify-center bg-yellow-600",
+              ].join(" ")}
+            >
+              <ClockIcon className="h-4 w-4 text-zinc-100" />
+            </div>
+          );
+
+        case "done":
+          return (
+            <div
+              className={[
+                commonClasses,
+                "flex items-center justify-center bg-lime-600",
+              ].join(" ")}
+            >
+              <CheckIcon className="h-4 w-4 text-zinc-100" />
+            </div>
+          );
+      }
+      break;
+    }
+
+    case "subjectLine": {
+      return (
+        <div
+          className={[
+            commonClasses,
+            "flex items-center justify-center bg-sky-500",
+          ].join(" ")}
+        >
+          <InboxInIcon className="h-4 w-4 text-zinc-100" />
+        </div>
+      );
+      break;
+    }
+
+    case "traitChange": {
+      return (
+        <div
+          className={[
+            commonClasses,
+            "flex items-center justify-center bg-zinc-800",
+          ].join(" ")}
+        >
+          <DatabaseIcon className="h-4 w-4 text-zinc-100" />
+        </div>
+      );
+      break;
+    }
+  }
+
+  return <></>;
 }

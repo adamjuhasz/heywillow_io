@@ -214,7 +214,7 @@ export const robinHoodThread2: DemoThread = {
     {
       MessageError: [],
       Attachment: [],
-      id: 1,
+      id: 6,
       createdAt: subDays(new Date(), 11).toISOString(),
       direction: "incoming" as MessageDirection,
       AliasEmail: johnCustomer,
@@ -226,7 +226,7 @@ export const robinHoodThread2: DemoThread = {
     {
       MessageError: [],
       Attachment: [],
-      id: 2,
+      id: 7,
       createdAt: subDays(new Date(), 9).toISOString(),
       direction: "outgoing",
       AliasEmail: null,
@@ -236,7 +236,7 @@ export const robinHoodThread2: DemoThread = {
       ),
       Comment: [
         {
-          id: 1,
+          id: 11,
           authorId: adamTeamMember.id,
           text: [
             {
@@ -257,7 +257,7 @@ export const robinHoodThread2: DemoThread = {
           TeamMember: adamTeamMember,
         },
         {
-          id: 2,
+          id: 12,
           authorId: eileenTeamMember.id,
           text: [
             {
@@ -278,7 +278,7 @@ export const robinHoodThread2: DemoThread = {
           TeamMember: eileenTeamMember,
         },
         {
-          id: 3,
+          id: 13,
           authorId: saoirseTeamMember.id,
           text: [
             {
@@ -298,7 +298,7 @@ export const robinHoodThread2: DemoThread = {
     {
       MessageError: [],
       Attachment: [],
-      id: 3,
+      id: 8,
       createdAt: subDays(new Date(), 7).toISOString(),
       direction: "outgoing",
       AliasEmail: null,
@@ -312,7 +312,7 @@ export const robinHoodThread2: DemoThread = {
     {
       MessageError: [],
       Attachment: [],
-      id: 4,
+      id: 9,
       createdAt: subDays(new Date(), 5).toISOString(),
       direction: "outgoing",
       AliasEmail: null,
@@ -326,7 +326,7 @@ export const robinHoodThread2: DemoThread = {
     {
       MessageError: [],
       Attachment: [],
-      id: 5,
+      id: 10,
       createdAt: subDays(new Date(), 3).toISOString(),
       direction: "incoming" as MessageDirection,
       AliasEmail: johnCustomer,
@@ -334,7 +334,7 @@ export const robinHoodThread2: DemoThread = {
       text: textToSlate("iOS 14.1"),
       Comment: [
         {
-          id: 1,
+          id: 21,
           authorId: eileenTeamMember.id,
           text: [
             {
@@ -365,7 +365,7 @@ export const robinHoodThread2: DemoThread = {
           TeamMember: eileenTeamMember,
         },
         {
-          id: 2,
+          id: 22,
           authorId: saoirseTeamMember.id,
           text: [
             {
@@ -380,7 +380,7 @@ export const robinHoodThread2: DemoThread = {
           TeamMember: saoirseTeamMember,
         },
         {
-          id: 3,
+          id: 23,
           authorId: adamTeamMember.id,
           text: [
             {
@@ -400,7 +400,7 @@ export const robinHoodThread2: DemoThread = {
     {
       MessageError: [],
       Attachment: [],
-      id: 6,
+      id: 11,
       createdAt: subDays(new Date(), 1).toISOString(),
       direction: "outgoing",
       AliasEmail: null,
@@ -414,31 +414,31 @@ export const robinHoodThread2: DemoThread = {
   Inbox: stealthAIInbox,
   ThreadState: [
     {
-      id: 4,
+      id: 94,
       state: "snoozed",
       createdAt: subDays(new Date(), 8).toISOString(),
       expiresAt: subHours(subDays(new Date(), 8), 48).toISOString(),
     },
     {
-      id: 3,
+      id: 93,
       state: "snoozed",
       createdAt: subDays(new Date(), 6).toISOString(),
       expiresAt: subHours(subDays(new Date(), 6), 24).toISOString(),
     },
     {
-      id: 2,
+      id: 92,
       state: "snoozed",
       createdAt: subDays(new Date(), 5).toISOString(),
       expiresAt: subHours(subDays(new Date(), 5), 1).toISOString(),
     },
     {
-      id: 1,
+      id: 91,
       state: "snoozed",
       createdAt: subDays(new Date(), 3).toISOString(),
       expiresAt: subDays(new Date(), 2).toISOString(),
     },
     {
-      id: 0,
+      id: 90,
       state: "done",
       createdAt: subDays(new Date(), 1).toISOString(),
       expiresAt: null,
