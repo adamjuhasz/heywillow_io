@@ -232,6 +232,7 @@ export default function ThreadViewer() {
                   : { type: "bottom" }
               }
               traits={[]}
+              events={[]}
             />
 
             <div className="shrink-0 pb-2">

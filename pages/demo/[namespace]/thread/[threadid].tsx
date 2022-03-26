@@ -184,6 +184,7 @@ export default function ThreadViewer() {
                 teamMemberList={teamMembers}
                 scrollTo={{ type: "bottom" }}
                 traits={[]}
+                events={[]}
               />
             </div>
 
