@@ -191,3 +191,12 @@ export interface SupabaseCustomerTrait {
   idempotency: string | number;
   customerId: string;
 }
+
+export interface SupabaseCustomerEvent {
+  id: number;
+  action: string;
+  createdAt: string;
+  customerId: number;
+  properties: Prisma.JsonValue | null;
+  updatedAt: string;
+}

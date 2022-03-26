@@ -210,6 +210,7 @@ export default function ThreadViewer() {
             <MultiThreadPrinter
               threads={allThreads}
               traits={customer?.CustomerTrait}
+              events={customer?.CustomerEvent}
               refreshComment={refreshComment}
               addComment={addComment}
               teamMemberList={userDB}

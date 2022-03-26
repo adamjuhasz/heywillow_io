@@ -6,7 +6,7 @@ import { MessageDirection, Prisma, PrismaClient } from "@prisma/client";
 
 import { Body } from "pages/api/public/v1/message/secure";
 
-import Message from "components/Thread/Message";
+import Message from "components/Thread/Message/FullWidth";
 import Input from "components/Input";
 import hashids from "server/hashids";
 import prismaToJSON from "server/prismaToJSon";

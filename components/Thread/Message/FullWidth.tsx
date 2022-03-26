@@ -1,30 +1,15 @@
-import { MouseEventHandler, forwardRef } from "react";
+import { MouseEventHandler } from "react";
 import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import type { MessageDirection } from "@prisma/client";
 import ExclamationIcon from "@heroicons/react/outline/ExclamationIcon";
 import AnnotationIcon from "@heroicons/react/outline/AnnotationIcon";
 
 import Avatar from "components/Avatar";
-import Attachment, { IAttachment } from "components/Thread/Attachment";
+import Attachment from "components/Thread/Attachment";
 import Redacted from "components/Redacted";
-import type { ParagraphElement } from "types/slate";
 import slateToText from "shared/slate/slateToText";
 
-// eslint-disable-next-line no-secrets/no-secrets
-// design from: https://dribbble.com/shots/16147194-Messages-Conversation-Explorations-Page
-
-export interface IMessage {
-  id: number;
-  direction: MessageDirection;
-  createdAt: string;
-  text: ParagraphElement[];
-  subject: null | string;
-  AliasEmail: { emailAddress: string } | null;
-  TeamMember: { Profile: { email: string } } | null;
-  Attachment: (IAttachment & { id: number })[];
-  MessageError: { errorName: string; errorMessage: string }[];
-}
+import { IMessage } from "./Types";
 
 interface Props {
   onMouseEnter?: MouseEventHandler<HTMLDivElement>;
@@ -34,7 +19,7 @@ interface Props {
   showComments: boolean;
 }
 
-export default forwardRef<HTMLDivElement, Props>(function Message(props, ref) {
+export default function Message(props: Props) {
   const bodyText: string = slateToText(props.message.text).join("\n");
 
   const author: string =
@@ -115,7 +100,6 @@ export default forwardRef<HTMLDivElement, Props>(function Message(props, ref) {
             }
           }}
           onMouseLeave={props.onMouseLeave}
-          ref={ref}
           className={["relative mt-3 flex w-fit items-center rounded-2xl"].join(
             " "
           )}
@@ -147,4 +131,4 @@ export default forwardRef<HTMLDivElement, Props>(function Message(props, ref) {
       </div>
     </div>
   );
-});
+}

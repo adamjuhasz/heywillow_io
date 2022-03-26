@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import Message, { IMessage } from "components/Thread/Message";
+import ChatStyleMessage from "components/Thread/Message/ChatStyle";
+import type { IMessage } from "components/Thread/Message/Types";
 import CommentBox, { AddComment, IComment } from "components/Thread/CommentBox";
 import type { UserDBEntry } from "components/Comments/TextEntry";
 import { scrollToID } from "components/Thread/MultiThreadPrinter";
@@ -33,7 +34,7 @@ export default function MessagePrinter(props: MessagePrinterProps) {
 
   return (
     <div className={["relative flex w-full flex-col"].join(" ")}>
-      <Message
+      <ChatStyleMessage
         message={props.message}
         showComments={showComments}
         setShowComments={displayComment}

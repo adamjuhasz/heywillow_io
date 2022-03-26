@@ -4,8 +4,6 @@ import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
 import type { Prisma } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
-import { ChatAltIcon } from "@heroicons/react/solid";
-import { ReplyIcon } from "@heroicons/react/solid";
 import { SparklesIcon } from "@heroicons/react/solid";
 import { ClockIcon } from "@heroicons/react/solid";
 import { CheckIcon } from "@heroicons/react/solid";
@@ -20,10 +18,21 @@ import MessagePrinter, {
 } from "components/Thread/MessagePrinter";
 import SubjectLine from "components/Thread/SubjectLine";
 import ThreadState, { MiniThreadState } from "components/Thread/ThreadState";
-import { SupabaseCustomerTrait } from "types/supabase";
 import CustomerTraitValue from "components/CustomerTrait/Value";
 
 export type MessageWCommentsCreated = MessageWComments & { createdAt: string };
+
+interface MiniTrait {
+  createdAt: string;
+  key: string;
+  value: Prisma.JsonValue | null;
+}
+
+interface MiniEvent {
+  createdAt: string;
+  action: string;
+  properties: Prisma.JsonValue | null;
+}
 
 interface IThread {
   id: number;
@@ -57,11 +66,19 @@ interface CustomerTraitNode {
   value: Prisma.JsonValue | null;
 }
 
+interface CustomerEventNode {
+  type: "event";
+  createdAt: string;
+  action: string;
+  properties: Prisma.JsonValue | null;
+}
+
 type FeedNode =
   | MessageNode
   | ThreadStateNode
   | SubjectLineNode
-  | CustomerTraitNode;
+  | CustomerTraitNode
+  | CustomerEventNode;
 
 type ScrollTo =
   | { type: "bottom" }
@@ -78,8 +95,8 @@ interface CommonProps {
 
 interface Props {
   threads: IThread[] | undefined;
-  traits: SupabaseCustomerTrait[] | undefined;
-
+  traits: MiniTrait[] | undefined;
+  events: MiniEvent[] | undefined;
   scrollTo: ScrollTo;
 }
 
@@ -138,7 +155,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
     );
 
     const threadStates: ThreadStateNode[] = (props.threads || []).flatMap((t) =>
-      t.ThreadState.map((s) => ({
+      t.ThreadState.filter((s) => s.state !== "open").map((s) => ({
         type: "threadState",
         state: s,
         createdAt: s.createdAt,
@@ -166,11 +183,19 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
       value: t.value,
     }));
 
+    const events: CustomerEventNode[] = (props.events || []).map((e) => ({
+      type: "event",
+      createdAt: e.createdAt,
+      action: e.action,
+      properties: e.properties,
+    }));
+
     const unsortedFeed: FeedNode[] = [
       ...messages,
       ...threadStates,
       ...subjects,
       ...traits,
+      ...events,
     ];
 
     // eslint-disable-next-line lodash/collection-ordering
@@ -188,12 +213,14 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
               return 2;
             case "traitChange":
               return 3;
+            case "event":
+              return 4;
           }
         },
       ],
       ["asc", "asc"]
     );
-  }, [props.threads, props.traits]);
+  }, [props.threads, props.traits, props.events]);
 
   console.log(feed);
 
@@ -204,6 +231,8 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
           {feed.map((node, idx, feedArray): JSX.Element => {
             return (
               <div
+                id={`node-${idx}/${feedArray.length}`}
+                node-type={node.type}
                 className="relative w-full"
                 key={`${node.type}-${node.createdAt}`}
               >
@@ -218,11 +247,16 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
                 </div>
                 <div className="h-2" />
                 {idx !== 0 ? (
-                  <div className="absolute top-0 left-[calc(1.0rem_-_1.5px)] -z-10 h-2 w-[3px] rounded-full bg-zinc-800" />
+                  <div className="absolute top-0 left-[calc(1.0rem_-_1.5px)] -z-10 h-2 w-[3px] bg-zinc-800" />
                 ) : undefined}
-                {idx !== feedArray.length - 1 ? (
-                  <div className="absolute top-2 left-[calc(1.0rem_-_1.5px)] -z-10 h-[calc(100%_-_0.5rem)] w-[3px] bg-zinc-800" />
-                ) : undefined}
+                <div
+                  className={[
+                    "absolute left-[calc(1.0rem_-_1.5px)] -z-10 w-[3px] bg-zinc-800",
+                    idx === feedArray.length - 1
+                      ? "top-2 h-[calc(100%_-_1.5rem)] rounded-b-full"
+                      : "top-2 h-[calc(100%_-_0.5rem)]",
+                  ].join(" ")}
+                />
               </div>
             );
           })}
@@ -255,14 +289,14 @@ function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
 
     case "threadState":
       return (
-        <div className="text-xs">
+        <div className="text-xs line-clamp-1">
           <ThreadState key={node.state.id} state={node.state} />
         </div>
       );
 
     case "subjectLine":
       return (
-        <div className="text-xs">
+        <div className="text-xs line-clamp-1">
           <div id={`thread-top-${node.threadId}`} />
           <SubjectLine key={`${node.createdAt}`} createdAt={node.createdAt}>
             {node.subject}
@@ -272,19 +306,40 @@ function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
 
     case "traitChange":
       return (
-        <div className="text-xs text-zinc-500 line-clamp-1">
-          <span className="font-mono font-semibold text-zinc-100">
-            {node.key}
-          </span>{" "}
-          changed to{" "}
+        <div className="flex items-center text-xs text-zinc-500">
+          <div className="mr-1 shrink-0 text-zinc-100">
+            <span className="font-mono font-semibold ">{node.key}</span> changed
+            to
+          </div>
           <CustomerTraitValue
             value={node.value}
-            className="break-all text-zinc-100"
-          />{" "}
-          •{" "}
-          {formatDistanceToNow(new Date(node.createdAt), {
-            addSuffix: true,
-          })}
+            className="break-all text-zinc-100 line-clamp-1"
+          />
+          <div className="ml-1 shrink-0">
+            •{" "}
+            {formatDistanceToNow(new Date(node.createdAt), {
+              addSuffix: true,
+            })}
+          </div>
+        </div>
+      );
+
+    case "event":
+      return (
+        <div className="flex items-center text-xs text-zinc-500">
+          <div className="mr-1 shrink-0  text-zinc-100">
+            <span className="font-mono font-semibold">{node.action}</span>
+          </div>
+          <CustomerTraitValue
+            value={node.properties}
+            className="break-all text-zinc-100 line-clamp-1"
+          />
+          <div className="ml-1 shrink-0">
+            •{" "}
+            {formatDistanceToNow(new Date(node.createdAt), {
+              addSuffix: true,
+            })}
+          </div>
         </div>
       );
   }
@@ -296,31 +351,7 @@ function Icon(props: NodePrinterProps) {
 
   switch (props.node.type) {
     case "message": {
-      switch (props.node.message.direction) {
-        case "incoming":
-          return (
-            <div
-              className={[
-                commonClasses,
-                "flex items-center justify-center bg-purple-800",
-              ].join(" ")}
-            >
-              <ChatAltIcon className="h-4 w-4 text-zinc-100" />
-            </div>
-          );
-
-        case "outgoing":
-          return (
-            <div
-              className={[
-                commonClasses,
-                "flex items-center justify-center bg-purple-800",
-              ].join(" ")}
-            >
-              <ReplyIcon className="h-4 w-4 text-zinc-100" />
-            </div>
-          );
-      }
+      return <div className={"mr-2 h-8 w-8 bg-transparent"}></div>;
       break;
     }
 
@@ -389,6 +420,20 @@ function Icon(props: NodePrinterProps) {
           ].join(" ")}
         >
           <DatabaseIcon className="h-4 w-4 text-zinc-100" />
+        </div>
+      );
+      break;
+    }
+
+    case "event": {
+      return (
+        <div
+          className={[
+            commonClasses,
+            "flex items-center justify-center bg-zinc-800",
+          ].join(" ")}
+        >
+          <SparklesIcon className="h-4 w-4 text-zinc-100" />
         </div>
       );
       break;

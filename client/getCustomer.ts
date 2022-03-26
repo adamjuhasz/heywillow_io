@@ -2,11 +2,16 @@ import { useDebugValue } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import { SupabaseCustomer, SupabaseCustomerTrait } from "types/supabase";
+import {
+  SupabaseCustomer,
+  SupabaseCustomerEvent,
+  SupabaseCustomerTrait,
+} from "types/supabase";
 import { useSupabase } from "components/UserContext";
 
 type Customer = SupabaseCustomer & {
   CustomerTrait: SupabaseCustomerTrait[];
+  CustomerEvent: SupabaseCustomerEvent[];
 };
 
 export async function getCustomer(
@@ -18,11 +23,13 @@ export async function getCustomer(
     .select(
       `
       *,
-      CustomerTrait(*)
+      CustomerTrait(*),
+      CustomerEvent(*)
       `
     )
     .eq("id", customerId)
     .order("createdAt", { foreignTable: "CustomerTrait", ascending: true })
+    .order("createdAt", { foreignTable: "CustomerEvent", ascending: true })
     .single();
 
   if (res.error !== null) {
