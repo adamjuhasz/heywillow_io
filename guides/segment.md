@@ -28,13 +28,13 @@ Willow supports the following methods, as specified in the [Segment Spec](/docs/
 
 ### Page
 
-Send [Page](/docs/connections/spec/page) calls to _ADD WHAT PAGE CALLS ARE USED FOR HERE_. For example:
+Send [Page](/docs/connections/spec/page) calls to Willow to see what pages a user has visited to get more context around their issues. For example:
 
 ```js
 analytics.page();
 ```
 
-Segment sends Page calls to YOURINTEGRATION as a `pageview`.
+Segment sends Page calls to Willow as a `Viewed Screen`.
 
 ### Screen
 
@@ -44,7 +44,7 @@ Send [Screen](/docs/connections/spec/screen) calls to _ADD WHAT SCREEN CALLS ARE
 [[SEGAnalytics sharedAnalytics] screen:@"Home"];
 ```
 
-Segment sends Screen calls to YOURINTEGRATION as a `screenview`.
+Segment sends Screen calls to Willow as a `Viewed Page`.
 
 ### Identify
 
@@ -56,7 +56,7 @@ analytics.identify("userId123", {
 });
 ```
 
-Segment sends Identify calls to YOURINTEGRATION as an `identify` event.
+Segment sends Identify calls to Willow as an `identify` event.
 
 ### Track
 
