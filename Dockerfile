@@ -13,6 +13,13 @@ RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM node:16-alpine AS builder
+
+# ENV Vars
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+ARG NEXT_PUBLIC_SEGMENT_WRITE_KEY
+
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
