@@ -21,23 +21,72 @@ import MultiThreadPrinter, {
   scrollToID,
 } from "components/Thread/MultiThreadPrinter";
 import type { UserDBEntry } from "components/Comments/TextEntry";
+import {
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from "next";
+import { ParsedUrlQuery } from "querystring";
+import uniqWith from "lodash/uniqWith";
+import orderBy from "lodash/orderBy";
 
 import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
 import * as demoTeamMembers from "data/Demo/TeamMembers";
 
-export default function ThreadViewer() {
+interface Params extends ParsedUrlQuery {
+  threadid: string;
+  namespace: string;
+}
+
+export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
+  const uniqThreads = uniqWith(
+    orderBy(threads, ["createdAt"], ["desc"]),
+    (a, b) => a.aliasEmailId === b.aliasEmailId
+  );
+
+  const paths: GetStaticPathsResult<Params>["paths"] = teams.flatMap((team) =>
+    uniqThreads.map((thread) => ({
+      params: { namespace: team.Namespace.namespace, threadid: `${thread.id}` },
+    }))
+  );
+
+  return {
+    paths,
+    fallback: true,
+  };
+}
+
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext<Params>): Promise<GetStaticPropsResult<Props>> {
+  return {
+    props: {
+      namespace: params?.namespace,
+    },
+  };
+}
+
+interface Props {
+  namespace?: string;
+  threadId?: string;
+}
+
+export default function ThreadViewer(props: Props) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { addToast } = useContext(ToastContext);
   const [showRightSidebar, setShowRightSidebar] = useState(false);
 
   const { threadid, namespace } = router.query;
-  let threadNum: number | undefined = parseInt(threadid as string, 10);
+
+  const threadIdNormed = props.threadId || (threadid as string);
+
+  let threadNum: number | undefined = parseInt(threadIdNormed, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
 
   const requestedThread = threads.find(
-    (t) => t.id === parseInt(threadid as string, 10)
+    (t) => t.id === parseInt(threadIdNormed, 10)
   );
   const threadsForThisAlias = threads.filter(
     (t) => t.aliasEmailId === requestedThread?.aliasEmailId
@@ -129,7 +178,11 @@ export default function ThreadViewer() {
 
               <TeamSelector
                 teams={teams}
-                activeTeam={(namespace as string) || "stealth"}
+                activeTeam={
+                  props.namespace ||
+                  (namespace as string) ||
+                  teams[0].Namespace.namespace
+                }
                 pathPrefix="demo"
               />
             </div>
