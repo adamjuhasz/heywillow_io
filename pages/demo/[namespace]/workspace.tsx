@@ -35,7 +35,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
 
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }
 
