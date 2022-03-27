@@ -63,13 +63,14 @@ export async function getStaticProps({
   return {
     props: {
       namespace: params?.namespace,
+      threadId: params?.threadid,
     },
   };
 }
 
 interface Props {
-  namespace?: string;
-  threadId?: string;
+  namespace: string | undefined;
+  threadId: string | undefined;
 }
 
 export default function ThreadViewer(props: Props) {
