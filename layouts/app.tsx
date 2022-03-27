@@ -14,11 +14,8 @@ const supabase: SupabaseClient =
   global.supabase ||
   (() => {
     const client = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL ||
-        "https://qanvnsqiglgisnwgbqpr.supabase.co",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-        // eslint-disable-next-line no-secrets/no-secrets
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNjQyOTg5OTIyLCJleHAiOjE5NTg1NjU5MjJ9.rLH4sC3AheKSRuYJWsWQq-LuI-kbLHF6JQpHtGhCTZo"
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
     );
     global.supabase = client;
     return client;
