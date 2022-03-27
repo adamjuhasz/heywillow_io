@@ -1,5 +1,4 @@
 import { ReactElement, useContext, useState } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
@@ -75,7 +74,6 @@ interface Props {
 
 export default function ThreadViewer(props: Props) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const { addToast } = useContext(ToastContext);
   const [showRightSidebar, setShowRightSidebar] = useState(false);
 
@@ -84,19 +82,14 @@ export default function ThreadViewer(props: Props) {
     (a, b) => a.aliasEmailId === b.aliasEmailId
   );
 
-  const { threadid, namespace } = router.query;
+  const threadIdNormed = props.threadId;
+  const namespaceNormed = props.namespace || teams[0].Namespace.namespace;
 
-  const threadIdNormed: string =
-    props.threadId || (threadid as string) || `${uniqThreads[0].id}`;
-  const namespaceNormed =
-    props.namespace || (namespace as string) || teams[0].Namespace.namespace;
+  let threadNum: number | undefined = parseInt(threadIdNormed || "", 10);
+  threadNum =
+    isNaN(threadNum) || threadNum <= 0 ? uniqThreads[0].id : threadNum;
 
-  let threadNum: number | undefined = parseInt(threadIdNormed, 10);
-  threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
-
-  const requestedThread = threads.find(
-    (t) => t.id === parseInt(threadIdNormed, 10)
-  );
+  const requestedThread = threads.find((t) => t.id === threadNum);
   const threadsForThisAlias = threads.filter(
     (t) => t.aliasEmailId === requestedThread?.aliasEmailId
   );
