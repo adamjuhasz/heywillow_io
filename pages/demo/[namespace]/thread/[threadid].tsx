@@ -78,9 +78,17 @@ export default function ThreadViewer(props: Props) {
   const { addToast } = useContext(ToastContext);
   const [showRightSidebar, setShowRightSidebar] = useState(false);
 
+  const uniqThreads = uniqWith(
+    orderBy(threads, ["createdAt"], ["desc"]),
+    (a, b) => a.aliasEmailId === b.aliasEmailId
+  );
+
   const { threadid, namespace } = router.query;
 
-  const threadIdNormed = props.threadId || (threadid as string);
+  const threadIdNormed: string =
+    props.threadId || (threadid as string) || `${uniqThreads[0].id}`;
+  const namespaceNormed =
+    props.namespace || (namespace as string) || teams[0].Namespace.namespace;
 
   let threadNum: number | undefined = parseInt(threadIdNormed, 10);
   threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
@@ -98,7 +106,7 @@ export default function ThreadViewer(props: Props) {
 
   const workspace = {
     pathname: "/demo/[namespace]/workspace",
-    query: { namespace: router.query.namespace },
+    query: { namespace: namespaceNormed },
   };
 
   const teamMembers: UserDBEntry[] = [
@@ -178,11 +186,7 @@ export default function ThreadViewer(props: Props) {
 
               <TeamSelector
                 teams={teams}
-                activeTeam={
-                  props.namespace ||
-                  (namespace as string) ||
-                  teams[0].Namespace.namespace
-                }
+                activeTeam={namespaceNormed}
                 pathPrefix="demo"
               />
             </div>
