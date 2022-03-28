@@ -8,18 +8,21 @@ export interface SubjectLineNode {
   subject: string;
   createdAt: string;
   threadId: number;
+  uniqKey: string;
 }
 
 export interface MessageNode {
   type: "message";
   message: MessageWCommentsCreated;
   createdAt: string;
+  uniqKey: string;
 }
 
 export interface ThreadStateNode {
   type: "threadState";
   state: MiniThreadState;
   createdAt: string;
+  uniqKey: string;
 }
 
 export interface CustomerTraitNode {
@@ -27,6 +30,7 @@ export interface CustomerTraitNode {
   createdAt: string;
   key: string;
   value: Prisma.JsonValue | null;
+  uniqKey: string;
 }
 
 export interface CustomerEventNode {
@@ -34,6 +38,7 @@ export interface CustomerEventNode {
   createdAt: string;
   action: string;
   properties: Prisma.JsonValue | null;
+  uniqKey: string;
 }
 
 export type FeedNode =

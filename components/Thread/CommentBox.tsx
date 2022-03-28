@@ -4,13 +4,16 @@ import ArrowCircleUpIcon from "@heroicons/react/outline/ArrowCircleUpIcon";
 import type { MessageDirection } from "@prisma/client";
 import uniqBy from "lodash/uniqBy";
 
-import Avatar from "components/Avatar";
 import Loading from "components/Loading";
 import type { ParagraphElement } from "types/slate";
-import type { ReactEditor, UserDBEntry } from "components/Comments/TextEntry";
-import DisplayComment from "components/Comments/Display";
+import type {
+  ReactEditor,
+  UserDBEntry,
+} from "components/Thread/Comments/TextEntry";
 import slateToText from "shared/slate/slateToText";
-import CommentTextEntry from "components/Comments/TextEntry";
+import CommentTextEntry from "components/Thread/Comments/TextEntry";
+import CommentLine from "./Comments/CommentLine";
+import CommentHeader from "./Comments/CommentHeader";
 
 export interface IComment {
   id: number;
@@ -40,7 +43,6 @@ interface Props {
 }
 
 export default function CommentBox(props: Props) {
-  const formRef = useRef<HTMLFormElement>(null);
   const editorRef = useRef<ReactEditor>();
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState<ParagraphElement[]>([
@@ -89,57 +91,50 @@ export default function CommentBox(props: Props) {
   };
 
   return (
-    <div className={["mt-2 ml-4 flex w-full self-start"].join(" ")}>
-      <div
-        className={[
-          "-mt-1 mr-[0.25rem] h-7 w-[1rem] rounded-bl-xl border-b-2 border-l-2 border-zinc-500",
-        ].join(" ")}
-      />
+    <div
+      className={[
+        "mx-12 mt-2 flex",
+        props.direction === "incoming" ? "" : "flex-row-reverse",
+      ].join(" ")}
+    >
+      {props.direction === "incoming" ? (
+        <div
+          className={[
+            "-mt-1 mr-[0.25rem] h-7 w-[1rem] shrink-0 rounded-bl-xl border-b-2 border-l-2 border-zinc-500",
+          ].join(" ")}
+        />
+      ) : (
+        <div
+          className={[
+            "-mt-1 ml-[0.25rem] h-7 w-[1rem] shrink-0 rounded-br-xl border-b-2 border-r-2 border-zinc-500",
+          ].join(" ")}
+        />
+      )}
       <div
         id={`comment-box-top-${props.messageId}`}
         className={[
-          "w-[calc(100%_-_5em)] rounded-xl border-2 border-zinc-200 pt-[0.5rem] pb-2",
+          "w-[calc(100%_-_5em)] rounded-xl border-2 border-zinc-200 pt-[0.5rem] pb-2 lg:w-[calc(80%_-_5em)]",
+          props.direction === "incoming" ? "self-start" : "self-end",
         ].join(" ")}
       >
-        <div className="flex items-center border-b-2 border-zinc-200 px-2  py-1 text-sm text-zinc-500">
-          <div className="relative z-0 flex -space-x-1 overflow-hidden">
-            {commentators.slice(0, 3).map((c, indx) => (
-              <div
-                key={indx}
-                className="m-[2px] flex items-center justify-center"
-              >
-                <Avatar
-                  str={`${c.TeamMember.Profile.email}`}
-                  className="relative z-30 inline-block h-6 w-6 rounded-full ring-2 ring-black"
-                />
-              </div>
-            ))}
-          </div>
-          <span className="ml-2">
-            {props.comments.length} internal comment
-            {props.comments.length === 1 ? "" : "s"}
-          </span>
+        <div className="flex items-center border-b-2 border-zinc-200 px-2 py-1 text-sm text-zinc-500">
+          <CommentHeader
+            comments={props.comments}
+            commentatorEmails={commentators.map(
+              (c) => c.TeamMember.Profile.email
+            )}
+          />
         </div>
 
         {props.comments.map((c) => (
-          <div
+          <CommentLine
             key={`${c.id}`}
-            id={`comment-${c.id}`}
-            className="my-2 flex flex-col px-2"
-          >
-            <div className="mx-1 flex items-center text-xs text-zinc-500">
-              <Avatar
-                className="mr-1 inline-block h-3 w-3 rounded-full"
-                str={`${c.TeamMember.Profile.email}`}
-              />
-              {c.TeamMember.Profile.firstName && c.TeamMember.Profile.lastName
-                ? `${c.TeamMember.Profile.firstName} ${c.TeamMember.Profile.lastName}`
-                : c.TeamMember.Profile.email}
-            </div>
-            <div className="my-0.5 space-y-2 rounded-lg bg-yellow-100 bg-opacity-10 px-2 py-2 text-xs text-yellow-50">
-              <DisplayComment comment={c.text} />
-            </div>
-          </div>
+            id={c.id}
+            email={c.TeamMember.Profile.email}
+            firstName={c.TeamMember.Profile.firstName}
+            lastName={c.TeamMember.Profile.lastName}
+            comment={c.text}
+          />
         ))}
 
         <form
@@ -149,7 +144,6 @@ export default function CommentBox(props: Props) {
             e.preventDefault();
             void addComment();
           }}
-          ref={formRef}
         >
           <CommentTextEntry
             userList={props.teamMemberList}

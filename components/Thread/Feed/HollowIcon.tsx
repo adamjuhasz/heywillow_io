@@ -47,7 +47,7 @@ export default function FeedIcon(props: Props) {
     case "traitChange":
     case "event": {
       return (
-        <div className={[commonClasses, "border-zinc-800"].join(" ")}></div>
+        <div className={[commonClasses, "border-zinc-400"].join(" ")}></div>
       );
       break;
     }

@@ -16,7 +16,7 @@ import RightSidebar from "components/Thread/RightSidebar";
 import MultiThreadPrinter, {
   scrollToID,
 } from "components/Thread/MultiThreadPrinter";
-import type { UserDBEntry } from "components/Comments/TextEntry";
+import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
 import { useUser } from "components/UserContext";
 
 import useGetTeamId from "client/getTeamId";

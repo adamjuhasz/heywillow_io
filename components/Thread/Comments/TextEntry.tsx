@@ -9,7 +9,7 @@ import {
 } from "slate-react";
 
 import { ElementType, MentionElement, ParagraphElement } from "types/slate";
-import CommentMention from "components/Comments/TextEntry/Mention";
+import CommentMention from "components/Thread/Comments/TextEntry/Mention";
 import Avatar from "components/Avatar";
 
 export { ReactEditor };
@@ -180,7 +180,7 @@ export default function CommentTextEntry({ submitComment, ...props }: Props) {
           className="focus:border-1 block w-full min-w-0 flex-grow rounded-md border border-yellow-300 bg-zinc-900 py-2 pl-2 pr-6 text-xs leading-5 focus:border-yellow-300 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
           renderElement={renderElement}
           onKeyDown={onKeyDown}
-          placeholder="Enter some text..."
+          placeholder="Add an internal comment"
         />
 
         {target ? (

@@ -7,7 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 
 import LoadingThread from "components/Thread/LoadingThread";
 import { AddComment } from "components/Thread/CommentBox";
-import type { UserDBEntry } from "components/Comments/TextEntry";
+import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
 import MessagePrinter from "components/Thread/MessagePrinter";
 import SubjectLine from "components/Thread/SubjectLine";
 import ThreadState, { MiniThreadState } from "components/Thread/ThreadState";
@@ -113,6 +113,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
         type: "message",
         message: m,
         createdAt: m.createdAt,
+        uniqKey: `message-${m.id}`,
       }))
     );
 
@@ -121,6 +122,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
         type: "threadState",
         state: s,
         createdAt: s.createdAt,
+        uniqKey: `thread-state-${s.id}`,
       }))
     );
 
@@ -135,6 +137,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
         subject: hasSubject[0].subject as string,
         createdAt: hasSubject[0].createdAt,
         threadId: t.id,
+        uniqKey: `thread-${t.id}`,
       };
     });
 
@@ -143,6 +146,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
       createdAt: t.createdAt,
       key: t.key,
       value: t.value,
+      uniqKey: `trait-${t.createdAt}-${t.key}`,
     }));
 
     const events: CustomerEventNode[] = (props.events || []).map((e) => ({
@@ -150,6 +154,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
       createdAt: e.createdAt,
       action: e.action,
       properties: e.properties,
+      uniqKey: `event-${e.createdAt}-${e.action}`,
     }));
 
     const unsortedFeed: FeedNode[] = [
@@ -194,7 +199,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
                 id={`node-${idx}/${feedArray.length}`}
                 node-type={node.type}
                 className="relative w-full"
-                key={`${node.type}-${node.createdAt}`}
+                key={node.uniqKey}
               >
                 <div className="h-2" />
                 <div className="flex items-center">
@@ -239,7 +244,6 @@ function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
     case "message":
       return (
         <MessagePrinter
-          key={node.message.id}
           message={node.message}
           mutate={props.refreshComment}
           addComment={props.addComment}
@@ -250,7 +254,7 @@ function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
     case "threadState":
       return (
         <div className="text-xs line-clamp-1">
-          <ThreadState key={node.state.id} state={node.state} />
+          <ThreadState state={node.state} />
         </div>
       );
 

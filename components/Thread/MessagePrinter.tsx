@@ -3,7 +3,7 @@ import { useState } from "react";
 import ChatStyleMessage from "components/Thread/Message/ChatStyle";
 import type { IMessage } from "components/Thread/Message/Types";
 import CommentBox, { AddComment, IComment } from "components/Thread/CommentBox";
-import type { UserDBEntry } from "components/Comments/TextEntry";
+import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
 import { scrollToID } from "components/Thread/MultiThreadPrinter";
 
 export type MessageWComments = IMessage & {

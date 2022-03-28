@@ -19,7 +19,7 @@ import RightSidebar from "components/Thread/RightSidebar";
 import MultiThreadPrinter, {
   scrollToID,
 } from "components/Thread/MultiThreadPrinter";
-import type { UserDBEntry } from "components/Comments/TextEntry";
+import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -32,6 +32,7 @@ import orderBy from "lodash/orderBy";
 import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
 import * as demoTeamMembers from "data/Demo/TeamMembers";
+import customerEvents from "data/Demo/CustomerEvents";
 
 interface Params extends ParsedUrlQuery {
   threadid: string;
@@ -235,7 +236,10 @@ export default function ThreadViewer(props: Props) {
                 teamMemberList={teamMembers}
                 scrollTo={{ type: "bottom" }}
                 traits={[]}
-                events={[]}
+                events={customerEvents.map((e) => ({
+                  ...e,
+                  createdAt: e.createdAt.toISOString(),
+                }))}
               />
             </div>
 
