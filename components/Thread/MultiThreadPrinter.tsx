@@ -4,23 +4,25 @@ import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
 import type { Prisma } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
-import { SparklesIcon } from "@heroicons/react/solid";
-import { ClockIcon } from "@heroicons/react/solid";
-import { CheckIcon } from "@heroicons/react/solid";
-import { InboxInIcon } from "@heroicons/react/solid";
-import { DatabaseIcon } from "@heroicons/react/solid";
 
 import LoadingThread from "components/Thread/LoadingThread";
 import { AddComment } from "components/Thread/CommentBox";
 import type { UserDBEntry } from "components/Comments/TextEntry";
-import MessagePrinter, {
-  MessageWComments,
-} from "components/Thread/MessagePrinter";
+import MessagePrinter from "components/Thread/MessagePrinter";
 import SubjectLine from "components/Thread/SubjectLine";
 import ThreadState, { MiniThreadState } from "components/Thread/ThreadState";
 import CustomerTraitValue from "components/CustomerTrait/Value";
+import FeedIcon from "components/Thread/Feed/HollowIcon";
 
-export type MessageWCommentsCreated = MessageWComments & { createdAt: string };
+import { MessageWCommentsCreated } from "./Types";
+import {
+  CustomerEventNode,
+  CustomerTraitNode,
+  FeedNode,
+  MessageNode,
+  SubjectLineNode,
+  ThreadStateNode,
+} from "./Feed/Types";
 
 interface MiniTrait {
   createdAt: string;
@@ -39,46 +41,6 @@ interface IThread {
   Message: MessageWCommentsCreated[];
   ThreadState: MiniThreadState[];
 }
-
-interface SubjectLineNode {
-  type: "subjectLine";
-  subject: string;
-  createdAt: string;
-  threadId: number;
-}
-
-interface MessageNode {
-  type: "message";
-  message: MessageWCommentsCreated;
-  createdAt: string;
-}
-
-interface ThreadStateNode {
-  type: "threadState";
-  state: MiniThreadState;
-  createdAt: string;
-}
-
-interface CustomerTraitNode {
-  type: "traitChange";
-  createdAt: string;
-  key: string;
-  value: Prisma.JsonValue | null;
-}
-
-interface CustomerEventNode {
-  type: "event";
-  createdAt: string;
-  action: string;
-  properties: Prisma.JsonValue | null;
-}
-
-type FeedNode =
-  | MessageNode
-  | ThreadStateNode
-  | SubjectLineNode
-  | CustomerTraitNode
-  | CustomerEventNode;
 
 type ScrollTo =
   | { type: "bottom" }
@@ -237,7 +199,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
                 <div className="h-2" />
                 <div className="flex items-center">
                   <div className="shrink-0 self-start">
-                    <Icon node={node} />
+                    <FeedIcon node={node} />
                   </div>
                   <div className="grow">
                     <NodePrinter node={node} {...props} />
@@ -341,102 +303,4 @@ function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
         </div>
       );
   }
-}
-
-function Icon(props: NodePrinterProps) {
-  const commonClasses =
-    "mr-2 h-8 w-8 rounded-full border-[3px] border-zinc-900 ";
-
-  switch (props.node.type) {
-    case "message": {
-      return <div className={"mr-2 h-8 w-8 bg-transparent"}></div>;
-      break;
-    }
-
-    case "threadState": {
-      switch (props.node.state.state) {
-        case "assigned":
-        case "open":
-          return (
-            <div
-              className={[
-                commonClasses,
-                "flex items-center justify-center bg-zinc-800",
-              ].join(" ")}
-            >
-              <SparklesIcon className="h-4 w-4 text-zinc-100" />
-            </div>
-          );
-
-        case "snoozed":
-          return (
-            <div
-              className={[
-                commonClasses,
-                "flex items-center justify-center bg-yellow-600",
-              ].join(" ")}
-            >
-              <ClockIcon className="h-4 w-4 text-zinc-100" />
-            </div>
-          );
-
-        case "done":
-          return (
-            <div
-              className={[
-                commonClasses,
-                "flex items-center justify-center bg-lime-600",
-              ].join(" ")}
-            >
-              <CheckIcon className="h-4 w-4 text-zinc-100" />
-            </div>
-          );
-      }
-      break;
-    }
-
-    case "subjectLine": {
-      return (
-        <div
-          className={[
-            commonClasses,
-            "flex items-center justify-center bg-sky-500",
-          ].join(" ")}
-        >
-          <InboxInIcon className="h-4 w-4 text-zinc-100" />
-        </div>
-      );
-      break;
-    }
-
-    case "traitChange": {
-      return (
-        <div
-          className={[
-            commonClasses,
-            "flex items-center justify-center bg-zinc-800",
-          ].join(" ")}
-        >
-          <DatabaseIcon className="h-4 w-4 text-zinc-100" />
-        </div>
-      );
-      break;
-    }
-
-    case "event": {
-      return (
-        <div
-          className={[
-            commonClasses,
-            "flex items-center justify-center bg-zinc-800",
-          ].join(" ")}
-        >
-          <SparklesIcon className="h-4 w-4 text-zinc-100" />
-        </div>
-      );
-      break;
-    }
-  }
-
-  return <></>;
 }
