@@ -60,13 +60,12 @@ export default function GetAuthCookie(props: Props): JSX.Element {
 
           switch (res.status) {
             case 200:
-              console.log("got cookie, routing");
               void route();
               break;
 
             default:
               console.error(res);
-              alert("Error logging you in, try ");
+              alert("Error logging you in, try again please");
               break;
           }
         } catch (e) {
@@ -82,10 +81,8 @@ export default function GetAuthCookie(props: Props): JSX.Element {
     }
 
     const controller = new AbortController();
-    console.log("onAuthStateChange");
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log(event, session);
         // Send session to /api/auth route to set the auth cookie.
         // NOTE: this is only needed if you're doing SSR (getServerSideProps)!
         if (event === "SIGNED_IN" && session !== null) {

@@ -103,7 +103,7 @@ interface Props {
 export const scrollToID = (id: string) => {
   const element = document.getElementById(id);
   if (element === null) {
-    console.log("element not found", element);
+    console.error("element not found", element);
     return;
   }
 
@@ -221,8 +221,6 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
       ["asc", "asc"]
     );
   }, [props.threads, props.traits, props.events]);
-
-  console.log(feed);
 
   return (
     <div className="grow overflow-x-hidden overflow-y-scroll">

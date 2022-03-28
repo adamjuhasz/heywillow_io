@@ -95,7 +95,9 @@ async function handler(
     switch (body.type) {
       case "track": {
         const trackEvent = body as SegmentTrackEvent;
-        console.log(trackEvent.type, trackEvent.event);
+        await logger.info(`segment ${trackEvent.type}`, {
+          event: trackEvent.event,
+        });
         if ("userId" in trackEvent && trackEvent.userId !== null) {
           const customer = await upsertCustomer(
             team.Team.id,
@@ -119,7 +121,9 @@ async function handler(
       case "identify": {
         const identifyEvent = body as SegmentIdentifyEvent;
         if ("userId" in identifyEvent && identifyEvent.userId !== null) {
-          console.log(identifyEvent.type, identifyEvent.userId);
+          await logger.info(`segment ${identifyEvent.type}`, {
+            userId: identifyEvent.userId,
+          });
 
           // create or retrieve customer
           const customer = await upsertCustomer(

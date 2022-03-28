@@ -8,6 +8,5 @@ export default apiHandler({
 });
 
 async function handler(req: NextApiRequest, res: NextApiResponse<unknown>) {
-  console.log("logout");
   serviceSupabase.auth.api.deleteAuthCookie(req, res, { redirectTo: "/" });
 }

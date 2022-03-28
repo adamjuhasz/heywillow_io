@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
   const threadLinkHashed = context.query.threadlink;
   if (threadLinkHashed === undefined || isArray(threadLinkHashed)) {
-    console.log("Thread id not in url");
+    console.error("Thread id not in url");
     return { notFound: true };
   }
 
@@ -58,12 +58,12 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   try {
     threadLinkId = hashids.decode(threadLinkHashed)[0];
   } catch (e) {
-    console.log("Thread id not a valid hashids");
+    console.error("Thread id not a valid hashids");
     return { notFound: true };
   }
 
   if (threadLinkId === undefined) {
-    console.log("Thread not encoded correctly");
+    console.error("Thread not encoded correctly");
     return { notFound: true };
   }
 
@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   });
 
   if (threadLink === null) {
-    console.log("Thread not found");
+    console.error("Thread not found");
     return { notFound: true };
   }
 

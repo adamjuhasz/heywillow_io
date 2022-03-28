@@ -1,6 +1,8 @@
 import { ThreadState, ThreadStateType } from "@prisma/client";
+
 import { prisma } from "utils/prisma";
 import threadStateNotification from "server/notifications/threadState";
+import { logger } from "utils/logger";
 
 interface Options {
   threadId: number | bigint;
@@ -20,10 +22,12 @@ export default async function changeThreadStatus({
     orderBy: { createdAt: "desc" },
   });
 
-  console.log("changeThreadStatus currentState", currentState);
+  await logger.info("changeThreadStatus currentState", {
+    currentState: currentState?.state || "<unknown>",
+  });
 
   if (currentState !== null && currentState.state === state) {
-    console.log("changeThreadStatus no changes needed");
+    await logger.info("changeThreadStatus no changes needed", {});
     return currentState;
   }
 
@@ -35,7 +39,9 @@ export default async function changeThreadStatus({
       expiresAt: expiresAt,
     },
   });
-  console.log("changeThreadStatus newState", newState);
+  await logger.info("changeThreadStatus newState", {
+    newState: newState.state,
+  });
 
   await threadStateNotification(threadId);
   return newState;

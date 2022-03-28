@@ -97,7 +97,6 @@ export default function CommentTextEntry({ submitComment, ...props }: Props) {
 
           case "Enter":
             event.preventDefault();
-            console.log(event);
             if (event.altKey || event.shiftKey) {
               submitComment();
             } else {
@@ -113,7 +112,6 @@ export default function CommentTextEntry({ submitComment, ...props }: Props) {
       } else {
         switch (event.key) {
           case "Enter":
-            console.log(event);
             if (event.altKey || event.shiftKey) {
               event.preventDefault();
               submitComment();

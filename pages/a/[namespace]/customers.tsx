@@ -31,8 +31,6 @@ export default function CustomerList() {
     (customers || []).flatMap((c) => c.CustomerTrait.map((t) => t.key))
   ).sort();
 
-  console.log(columns);
-
   return (
     <>
       <Head>

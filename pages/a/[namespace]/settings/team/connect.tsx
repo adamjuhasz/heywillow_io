@@ -84,9 +84,8 @@ export default function ConnectInbox(): JSX.Element {
                   string: "Adding inbox, this may take 5 - 10 sec",
                 });
 
-                const responseBody = await createInbox(teamId, emailAddress);
+                await createInbox(teamId, emailAddress);
 
-                console.log("Created inbox", responseBody);
                 setEmailAddress("");
               } catch (e) {
                 console.error(e);
