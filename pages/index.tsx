@@ -20,7 +20,6 @@ export default function Vercel(): JSX.Element {
   const router = useRouter();
 
   const hashType = /#.*type=([a-z]*)/.exec(router.asPath);
-  console.log(hashType);
 
   const accessToken = /#.*access_token=([^&]*)/.exec(router.asPath);
 

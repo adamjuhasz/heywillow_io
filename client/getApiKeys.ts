@@ -19,7 +19,6 @@ export async function getAPIKeys(supabase: SupabaseClient, teamId: number) {
     );
   }
 
-  console.log("ApiKey", res.data);
   return res.data;
 }
 

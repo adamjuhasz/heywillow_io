@@ -1,5 +1,4 @@
 import { ReactElement, useContext, useState } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
@@ -20,25 +19,79 @@ import RightSidebar from "components/Thread/RightSidebar";
 import MultiThreadPrinter, {
   scrollToID,
 } from "components/Thread/MultiThreadPrinter";
-import type { UserDBEntry } from "components/Comments/TextEntry";
+import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
+import {
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from "next";
+import { ParsedUrlQuery } from "querystring";
+import uniqWith from "lodash/uniqWith";
+import orderBy from "lodash/orderBy";
 
 import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
 import * as demoTeamMembers from "data/Demo/TeamMembers";
+import customerEvents from "data/Demo/CustomerEvents";
+import customers from "data/Demo/Customers";
 
-export default function ThreadViewer() {
+interface Params extends ParsedUrlQuery {
+  threadid: string;
+  namespace: string;
+}
+
+export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
+  const uniqThreads = uniqWith(
+    orderBy(threads, ["createdAt"], ["desc"]),
+    (a, b) => a.aliasEmailId === b.aliasEmailId
+  );
+
+  const paths: GetStaticPathsResult<Params>["paths"] = teams.flatMap((team) =>
+    uniqThreads.map((thread) => ({
+      params: { namespace: team.Namespace.namespace, threadid: `${thread.id}` },
+    }))
+  );
+
+  return {
+    paths,
+    fallback: true,
+  };
+}
+
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext<Params>): Promise<GetStaticPropsResult<Props>> {
+  return {
+    props: {
+      namespace: params?.namespace,
+      threadId: params?.threadid,
+    },
+  };
+}
+
+interface Props {
+  namespace: string | undefined;
+  threadId: string | undefined;
+}
+
+export default function ThreadViewer(props: Props) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const { addToast } = useContext(ToastContext);
   const [showRightSidebar, setShowRightSidebar] = useState(false);
 
-  const { threadid, namespace } = router.query;
-  let threadNum: number | undefined = parseInt(threadid as string, 10);
-  threadNum = isNaN(threadNum) || threadNum <= 0 ? undefined : threadNum;
-
-  const requestedThread = threads.find(
-    (t) => t.id === parseInt(threadid as string, 10)
+  const uniqThreads = uniqWith(
+    orderBy(threads, ["createdAt"], ["desc"]),
+    (a, b) => a.aliasEmailId === b.aliasEmailId
   );
+
+  const threadIdNormed = props.threadId;
+  const namespaceNormed = props.namespace || teams[0].Namespace.namespace;
+
+  let threadNum: number | undefined = parseInt(threadIdNormed || "", 10);
+  threadNum =
+    isNaN(threadNum) || threadNum <= 0 ? uniqThreads[0].id : threadNum;
+
+  const requestedThread = threads.find((t) => t.id === threadNum);
   const threadsForThisAlias = threads.filter(
     (t) => t.aliasEmailId === requestedThread?.aliasEmailId
   );
@@ -46,10 +99,11 @@ export default function ThreadViewer() {
   const customerEmail = requestedThread?.Message.filter(
     (m) => m.AliasEmail !== null
   )[0]?.AliasEmail?.emailAddress;
+  const customer = customers.find((c) => c.emailAddress === customerEmail);
 
   const workspace = {
     pathname: "/demo/[namespace]/workspace",
-    query: { namespace: router.query.namespace },
+    query: { namespace: namespaceNormed },
   };
 
   const teamMembers: UserDBEntry[] = [
@@ -129,7 +183,7 @@ export default function ThreadViewer() {
 
               <TeamSelector
                 teams={teams}
-                activeTeam={(namespace as string) || "stealth"}
+                activeTeam={namespaceNormed}
                 pathPrefix="demo"
               />
             </div>
@@ -181,9 +235,15 @@ export default function ThreadViewer() {
                   );
                   return 0;
                 }}
-                urlQueryComment={undefined}
                 teamMemberList={teamMembers}
                 scrollTo={{ type: "bottom" }}
+                traits={[]}
+                events={customerEvents
+                  .filter((e) => e.customerId === customer?.customerId)
+                  .map((e) => ({
+                    ...e,
+                    createdAt: e.createdAt.toISOString(),
+                  }))}
               />
             </div>
 

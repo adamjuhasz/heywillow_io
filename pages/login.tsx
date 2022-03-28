@@ -69,7 +69,6 @@ export default function Login(): JSX.Element {
                   event.preventDefault();
 
                   const redirectTo = `${document.location.origin}${redirectPath}`;
-                  console.log("redirectTo", redirectTo);
 
                   if (isNil(client)) {
                     setError("Error with login provider");

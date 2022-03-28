@@ -1,6 +1,6 @@
 import type { ThreadStateType } from "@prisma/client";
 import formatDistanceStrict from "date-fns/formatDistanceStrict";
-import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
+import formatDistanceToNow from "date-fns/formatDistanceToNowStrict";
 
 export interface MiniThreadState {
   id: number;
@@ -20,21 +20,20 @@ export default function ThreadState(props: Props): JSX.Element {
 
   switch (props.state.state) {
     case "open":
+    case "assigned":
       return <></>;
 
     case "done":
       return (
-        <div className="my-4 flex w-full items-center">
-          <div className="h-[1px] grow rounded-full bg-lime-500" />
-          <div className="mx-2 max-w-[60%] shrink-0 text-xs text-lime-500 line-clamp-1">
-            Thread marked done (
-            {formatDistanceToNowStrict(createdAt, {
+        <>
+          Thread marked done{" "}
+          <span className="text-zinc-600">
+            •{" "}
+            {formatDistanceToNow(createdAt, {
               addSuffix: true,
             })}
-            )
-          </div>
-          <div className="h-[1px] grow rounded-full bg-lime-600" />
-        </div>
+          </span>
+        </>
       );
 
     case "snoozed": {
@@ -50,21 +49,16 @@ export default function ThreadState(props: Props): JSX.Element {
       }
 
       return (
-        <div className="my-4 flex w-full items-center">
-          <div className="h-[1px] grow rounded-full bg-yellow-500" />
-          <div className="mx-2 max-w-[60%] shrink-0 rounded-full text-xs text-yellow-500 line-clamp-1">
-            Thread snoozed {snoozedFor}(
-            {formatDistanceToNowStrict(createdAt, {
+        <>
+          Thread snoozed {snoozedFor}{" "}
+          <span className="text-zinc-600">
+            •{" "}
+            {formatDistanceToNow(createdAt, {
               addSuffix: true,
             })}
-            )
-          </div>
-          <div className="h-[1px] grow bg-yellow-500" />
-        </div>
+          </span>
+        </>
       );
     }
-
-    case "assigned":
-      return <></>;
   }
 }

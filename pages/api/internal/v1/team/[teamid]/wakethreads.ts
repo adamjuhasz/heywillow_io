@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+
 import { prisma } from "utils/prisma";
 import apiHandler from "server/apiHandler";
 import changeThreadStatus from "server/changeThreadStatus";
+import { logger } from "utils/logger";
 
 export default apiHandler({
   post: handler,
@@ -29,7 +31,7 @@ async function handler(
   const teamIdStr = req.query.teamid;
   const teamId = parseInt(teamIdStr as string, 10);
 
-  console.log("Wake threads for team", teamId);
+  await logger.info("Wake threads for team", { teamId: teamId });
 
   const threadstates = await prisma.threadState.findMany({
     where: { Thread: { teamId: teamId } },
@@ -38,7 +40,9 @@ async function handler(
   });
   const snoozed = threadstates.filter((t) => t.state === "snoozed");
 
-  console.log("snoozed threads", snoozed);
+  await logger.info("snoozed threads", {
+    snoozed: snoozed.map((t) => Number(t.id)),
+  });
 
   const changes = snoozed.map((th) =>
     changeThreadStatus({ state: "open", threadId: th.threadId })
@@ -46,7 +50,7 @@ async function handler(
 
   const results = await Promise.allSettled(changes);
 
-  console.log("Wake results", results);
+  await logger.info("Wake results", { results: results.map((t) => t.status) });
 
   res.json({});
 }

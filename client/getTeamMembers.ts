@@ -23,7 +23,6 @@ export async function getTeamMembers(supabase: SupabaseClient, teamId: number) {
     );
   }
 
-  console.log("TeamInvite", res.data);
   return res.data;
 }
 

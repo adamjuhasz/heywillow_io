@@ -18,7 +18,6 @@ export async function getInbox(supabase: SupabaseClient, teamId: number) {
     );
   }
 
-  console.log("Inboxes", res.data);
   return res.data;
 }
 

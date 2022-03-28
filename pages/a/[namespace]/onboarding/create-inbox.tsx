@@ -76,9 +76,8 @@ export default function CreateTeam(): JSX.Element {
                   string: "Adding inbox, this may take 5 - 10 sec",
                 });
 
-                const responseBody = await createInbox(teamId, email);
+                await createInbox(teamId, email);
 
-                console.log("Created inbox", responseBody);
                 setEmail("");
 
                 await router.replace({

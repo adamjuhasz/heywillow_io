@@ -1,8 +1,14 @@
 import { ReactElement } from "react";
+import {
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import uniqWith from "lodash/uniqWith";
 import orderBy from "lodash/orderBy";
+import { ParsedUrlQuery } from "querystring";
 
 import AppContainer from "components/App/Container";
 import StickyBase from "components/App/Header/StickyBase";
@@ -16,12 +22,39 @@ import AppLayout from "layouts/app";
 import NumberBadge from "components/App/NumberBadge";
 import { threads as demoThreads } from "data/Demo/Threads";
 import Avatar from "components/Avatar";
-import teams from "data/Demo/Teams";
+import Teams from "data/Demo/Teams";
 
-export default function DemoDashboard() {
+interface Params extends ParsedUrlQuery {
+  namespace: string;
+}
+
+export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
+  const paths: GetStaticPathsResult<Params>["paths"] = Teams.map((t) => ({
+    params: { namespace: t.Namespace.namespace },
+  }));
+
+  return {
+    paths,
+    fallback: true,
+  };
+}
+
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext<Params>): Promise<GetStaticPropsResult<Props>> {
+  return {
+    props: {
+      namespace: params?.namespace,
+    },
+  };
+}
+
+interface Props {
+  namespace?: string;
+}
+
+export default function DemoDashboard(props: Props) {
   const router = useRouter();
-
-  const { namespace } = router.query;
 
   const threads = uniqWith(
     orderBy(demoThreads, ["createdAt"], ["desc"]),
@@ -50,8 +83,8 @@ export default function DemoDashboard() {
               </Link>
 
               <TeamSelector
-                teams={teams}
-                activeTeam={(namespace as string) || "stealth"}
+                teams={Teams}
+                activeTeam={props.namespace || Teams[0].Namespace.namespace}
                 pathPrefix="demo"
               />
             </div>

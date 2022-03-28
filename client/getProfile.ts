@@ -21,7 +21,6 @@ export async function getProfile(supabase: SupabaseClient, userId: string) {
     );
   }
 
-  console.log("TeamInvite", res.data);
   return res.data;
 }
 

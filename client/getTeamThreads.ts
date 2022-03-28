@@ -46,7 +46,6 @@ export async function getTeamThreads(
   }
 
   const filtered = res.data.filter((t) => t.ThreadState[0].state === "open");
-  console.log("Thread", filtered);
   return filtered;
 }
 
