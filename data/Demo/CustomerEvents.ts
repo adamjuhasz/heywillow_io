@@ -1,7 +1,10 @@
-import { subDays } from "date-fns";
-import { subHours } from "date-fns";
+import subDays from "date-fns/subDays";
+import subHours from "date-fns/subHours";
+
+import { onboarding5Customer } from "data/Demo/Customers";
 
 interface DemoCustomerEvent {
+  customerId: number;
   createdAt: Date;
   action: string;
   properties:
@@ -11,22 +14,38 @@ interface DemoCustomerEvent {
     | Record<string, string | boolean | number>
     | string[];
 }
-const customerEvents: DemoCustomerEvent[] = [
+const onboarding5Events: DemoCustomerEvent[] = [
   {
-    createdAt: subHours(subDays(new Date(), 2), 2),
-    action: "Viewed Page",
-    properties: { url: "https://stealth.ai/signup", name: "Sign up now" },
+    customerId: onboarding5Customer.customerId,
+    createdAt: subHours(subDays(new Date(), 1), 14),
+    action: "Application installed",
+    properties: null,
   },
   {
-    createdAt: subDays(new Date(), 2),
-    action: "Signed up",
-    properties: { marketingSubscribed: true },
-  },
-  {
-    createdAt: subDays(new Date(), 1),
+    customerId: onboarding5Customer.customerId,
+    createdAt: subHours(subDays(new Date(), 1), 13),
     action: "Viewed Screen",
-    properties: "Log in screen v2",
+    properties: { name: "Onboarding" },
+  },
+  {
+    customerId: onboarding5Customer.customerId,
+    createdAt: subHours(subDays(new Date(), 1), 12),
+    action: "Viewed Screen",
+    properties: { name: "Sign up" },
+  },
+  {
+    customerId: onboarding5Customer.customerId,
+    createdAt: subHours(subDays(new Date(), 1), 11),
+    action: "Signed up",
+    properties: { email: "example/?nospam@stealth.co", acceptTOS: true },
+  },
+  {
+    customerId: onboarding5Customer.customerId,
+    createdAt: subHours(subDays(new Date(), 1), 10),
+    action: "Error experienced - ",
+    properties: { file: "src/utils/validate/email.ts", line: 34 },
   },
 ];
 
+const customerEvents = [...onboarding5Events];
 export default customerEvents;

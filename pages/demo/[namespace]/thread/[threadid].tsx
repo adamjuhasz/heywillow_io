@@ -33,6 +33,7 @@ import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
 import * as demoTeamMembers from "data/Demo/TeamMembers";
 import customerEvents from "data/Demo/CustomerEvents";
+import customers from "data/Demo/Customers";
 
 interface Params extends ParsedUrlQuery {
   threadid: string;
@@ -98,6 +99,7 @@ export default function ThreadViewer(props: Props) {
   const customerEmail = requestedThread?.Message.filter(
     (m) => m.AliasEmail !== null
   )[0]?.AliasEmail?.emailAddress;
+  const customer = customers.find((c) => c.emailAddress === customerEmail);
 
   const workspace = {
     pathname: "/demo/[namespace]/workspace",
@@ -236,10 +238,12 @@ export default function ThreadViewer(props: Props) {
                 teamMemberList={teamMembers}
                 scrollTo={{ type: "bottom" }}
                 traits={[]}
-                events={customerEvents.map((e) => ({
-                  ...e,
-                  createdAt: e.createdAt.toISOString(),
-                }))}
+                events={customerEvents
+                  .filter((e) => e.customerId === customer?.customerId)
+                  .map((e) => ({
+                    ...e,
+                    createdAt: e.createdAt.toISOString(),
+                  }))}
               />
             </div>
 

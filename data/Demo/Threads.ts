@@ -8,12 +8,14 @@ import {
 } from "./Threads/Onboarding2";
 import { onboarding3ThreadOne } from "./Threads/Onboarding3";
 import { onboarding4ThreadOne } from "./Threads/Onboarding4";
+import { onboarding5ThreadOne } from "./Threads/Onboarding5";
 
 export const threads: DemoThread[] = [
   ...[onboarding1],
   ...[onboarding2ThreadOne, onboarding2ThreadTwo],
   ...[onboarding3ThreadOne],
   ...[onboarding4ThreadOne],
+  ...[onboarding5ThreadOne],
   ...[robinHoodThread1, robinHoodThread2],
 ];
 

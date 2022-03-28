@@ -275,10 +275,14 @@ function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
             <span className="font-mono font-semibold ">{node.key}</span> changed
             to
           </div>
-          <CustomerTraitValue
-            value={node.value}
-            className="break-all text-zinc-100 line-clamp-1"
-          />
+          {node.value === null ? (
+            <div>Deleted</div>
+          ) : (
+            <CustomerTraitValue
+              value={node.value}
+              className="break-all text-zinc-100 line-clamp-1"
+            />
+          )}
           <div className="ml-1 shrink-0">
             •{" "}
             {formatDistanceToNow(new Date(node.createdAt), {
@@ -294,10 +298,14 @@ function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
           <div className="mr-1 shrink-0  text-zinc-100">
             <span className="font-mono font-semibold">{node.action}</span>
           </div>
-          <CustomerTraitValue
-            value={node.properties}
-            className="break-all text-zinc-100 line-clamp-1"
-          />
+          {node.properties === null ? (
+            <></>
+          ) : (
+            <CustomerTraitValue
+              value={node.properties}
+              className="break-all text-zinc-100 line-clamp-1"
+            />
+          )}
           <div className="ml-1 shrink-0">
             •{" "}
             {formatDistanceToNow(new Date(node.createdAt), {
