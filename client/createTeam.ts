@@ -1,4 +1,5 @@
-import { CreateBody, CreateReturn } from "pages/api/v1/team/create";
+import type { CreateBody, CreateReturn } from "pages/api/v1/team/create";
+import { trackEvent } from "hooks/useTrackEvent";
 
 interface Options {
   name: string;
@@ -27,12 +28,18 @@ export default async function createTeam(options: Options) {
 
     case 200: {
       const returnBody = (await res.json()) as CreateReturn;
+      trackEvent("Team Created", { ...body, teamId: returnBody.teamId });
       return returnBody;
     }
 
     default: {
-      const returnBody = { status: res.status };
-      console.error(res.url, returnBody);
+      console.error(res.url, { status: res.status });
+      trackEvent("Error", {
+        name: "Error creating team",
+        ...body,
+        httpStatus: res.status,
+        url: res.url,
+      });
       throw new Error(`Got response with status ${res.status}`);
     }
   }

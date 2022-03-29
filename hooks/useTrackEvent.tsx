@@ -6,7 +6,10 @@ declare global {
   var posthog:
     | undefined
     | {
-        capture: (event: string, props?: Record<string, string>) => void;
+        capture: (
+          event: string,
+          props?: Record<string, string | number>
+        ) => void;
         identify: (
           userId: string,
           propsSet?: Record<string, unknown>,
@@ -19,19 +22,24 @@ declare global {
 export default function useTrackEvent() {
   const track = useMemo(
     () => ({
-      track: (event: string, props?: Record<string, string>) => {
-        if (window.analytics) {
-          window.analytics.track(event, props);
-        } else {
-          console.debug(event, props);
-        }
-
-        if (window.posthog) {
-          window.posthog.capture(event, props);
-        }
-      },
+      track: trackEvent,
     }),
     []
   );
   return track;
+}
+
+export function trackEvent(
+  event: string,
+  props?: Record<string, string | number>
+) {
+  if (window.analytics) {
+    window.analytics.track(event, props);
+  } else {
+    console.debug(event, props);
+  }
+
+  if (window.posthog) {
+    window.posthog.capture(event, props);
+  }
 }

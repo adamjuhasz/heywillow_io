@@ -1,4 +1,5 @@
 import type { RequestBody, ResponseBody } from "pages/api/v1/inbox/create";
+import { trackEvent } from "hooks/useTrackEvent";
 
 export default async function createInbox(
   teamId: number,
@@ -20,6 +21,7 @@ export default async function createInbox(
   switch (res.status) {
     case 200: {
       const responseBody = (await res.json()) as ResponseBody;
+      trackEvent("Inbox created", { ...body });
       return responseBody;
     }
 
