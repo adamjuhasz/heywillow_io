@@ -109,6 +109,10 @@ export default function GetAuthCookie(props: Props): JSX.Element {
       if (window.analytics && session.user) {
         window.analytics.identify(session.user.id, session.user);
       }
+      if (window.posthog && session.user) {
+        window.posthog.identify(session.user.id, { ...session.user });
+      }
+
       const controller = new AbortController();
       void getAuthCookie(controller.signal, "SIGNED_IN", session);
     }
