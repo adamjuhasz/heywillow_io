@@ -4,6 +4,7 @@ import { useSWRConfig } from "swr";
 import { useSupabase } from "components/UserContext";
 import { SupabaseProfile } from "types/supabase";
 import { path } from "client/getProfile";
+import { identify } from "hooks/useIdentify";
 
 type PartialProfile = Partial<SupabaseProfile> & { id: string };
 
@@ -21,6 +22,11 @@ async function changeProfile(
     throw new Error(
       `Error with NotificationPreference ${error.code} - ${error.details}`
     );
+  }
+
+  const user = supabase.auth.user();
+  if (user !== null) {
+    identify(user.id, { ...options, id: undefined });
   }
 
   return data;

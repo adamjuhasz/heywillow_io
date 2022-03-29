@@ -602,6 +602,16 @@ export default function Vercel(): JSX.Element {
                 Segment proxy using CF Workers
               </a>
             </Link>
+            <Link href="/guides/forwarding-email-gmail">
+              <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
+                Configuring Gmail Forwarding
+              </a>
+            </Link>
+            <Link href="/guides/forwarding-email-google-admin-routing">
+              <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
+                Configuring Google&rsquo;s Default Routing
+              </a>
+            </Link>
           </div>
 
           <div className="col-span-1 flex flex-col md:col-span-2">

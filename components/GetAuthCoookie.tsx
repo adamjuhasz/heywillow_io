@@ -4,7 +4,7 @@ import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import isNil from "lodash/isNil";
 
 import { useSupabase } from "components/UserContext";
-// import { useUser } from "components/UserContext";
+import useIdentify from "hooks/useIdentify";
 
 interface Props {
   redirect?: string;
@@ -15,6 +15,7 @@ export default function GetAuthCookie(props: Props): JSX.Element {
   const router = useRouter();
   // const { user, session } = useUser();
   const supabase = useSupabase();
+  const { identify } = useIdentify();
   const eCode = /error_code=(\d*)/.exec(router.asPath);
   const eDesc = /error_description=(.*)/.exec(router.asPath);
 
@@ -106,17 +107,14 @@ export default function GetAuthCookie(props: Props): JSX.Element {
 
     const session = supabase.auth.session();
     if (session !== null) {
-      if (window.analytics && session.user) {
-        window.analytics.identify(session.user.id, session.user);
-      }
-      if (window.posthog && session.user) {
-        window.posthog.identify(session.user.id, { ...session.user });
+      if (session.user) {
+        identify(session.user.id, { ...session.user });
       }
 
       const controller = new AbortController();
       void getAuthCookie(controller.signal, "SIGNED_IN", session);
     }
-  }, [supabase, getAuthCookie]);
+  }, [supabase, getAuthCookie, identify]);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
