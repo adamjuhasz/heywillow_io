@@ -10,6 +10,14 @@ export default function LogoutPage(): JSX.Element {
   const client = useSupabase();
 
   useEffect(() => {
+    if (window.analytics) {
+      window.analytics.reset();
+    }
+
+    if (window.posthog) {
+      window.posthog.reset();
+    }
+
     void client?.auth.signOut().then(async ({ error }) => {
       if (error) {
         console.error(error);

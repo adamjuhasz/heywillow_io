@@ -12,6 +12,7 @@ declare global {
           propsSet?: Record<string, unknown>,
           propsOnceSet?: Record<string, unknown>
         ) => void;
+        reset: () => void;
       };
 }
 
