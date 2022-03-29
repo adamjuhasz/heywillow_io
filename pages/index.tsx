@@ -1,10 +1,9 @@
 import Link from "next/link";
 import Head from "next/head";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { CSSProperties, PropsWithChildren } from "react";
 import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
-import once from "lodash/once";
 
 // split out to help tree shaking
 import ArrowNarrowRightIcon from "@heroicons/react/solid/ArrowNarrowRightIcon";
@@ -21,20 +20,38 @@ import useTrackEvent from "hooks/useTrackEvent";
 
 export default function Vercel(): JSX.Element {
   const pricing = useRef<HTMLDivElement>(null);
+  const unifiedView = useRef<HTMLDivElement>(null);
+  const teamwork = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const pricingObserver = useIntersectionObserver(pricing, {});
   const { track } = useTrackEvent();
 
-  const trackPricingViewed = useMemo(
-    () => once(() => track("Pricing viewed")),
-    [track]
-  );
+  const pricingObserver = useIntersectionObserver(pricing, {
+    freezeOnceVisible: true,
+  });
+  const unifiedViewObserver = useIntersectionObserver(unifiedView, {
+    freezeOnceVisible: true,
+  });
+  const teamworkObserver = useIntersectionObserver(teamwork, {
+    freezeOnceVisible: true,
+  });
 
   useEffect(() => {
     if (pricingObserver?.isIntersecting === true) {
-      trackPricingViewed();
+      track("Pricing Viewed");
     }
-  }, [pricingObserver?.isIntersecting, trackPricingViewed]);
+  }, [pricingObserver?.isIntersecting, track]);
+
+  useEffect(() => {
+    if (unifiedViewObserver?.isIntersecting === true) {
+      track("UnifiedView Viewed");
+    }
+  }, [unifiedViewObserver?.isIntersecting, track]);
+
+  useEffect(() => {
+    if (teamworkObserver?.isIntersecting === true) {
+      track("Teamwork Viewed");
+    }
+  }, [teamworkObserver?.isIntersecting, track]);
 
   const hashType = /#.*type=([a-z]*)/.exec(router.asPath);
 
@@ -203,7 +220,7 @@ export default function Vercel(): JSX.Element {
           </div>
         </div>
 
-        <div className="mb-14 flex flex-col items-center">
+        <div ref={teamwork} className="mb-14 flex flex-col items-center">
           <h3 className="flex flex-col items-center text-3xl font-semibold">
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-fuchsia-500" />
             <GradientText className="from bg-gradient-to-r from-fuchsia-600 to-pink-500 text-center">
@@ -286,7 +303,7 @@ export default function Vercel(): JSX.Element {
           </h3>
         </div>
 
-        <div className="mb-14 flex flex-col items-center">
+        <div ref={unifiedView} className="mb-14 flex flex-col items-center">
           <h3 className="flex flex-col items-center text-3xl font-semibold">
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent to-lime-500" />
             <GradientText className="from bg-gradient-to-r from-lime-600 to-emerald-500 text-center">

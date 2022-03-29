@@ -106,6 +106,9 @@ export default function GetAuthCookie(props: Props): JSX.Element {
 
     const session = supabase.auth.session();
     if (session !== null) {
+      if (window.analytics && session.user) {
+        window.analytics.identify(session.user.id, session.user);
+      }
       const controller = new AbortController();
       void getAuthCookie(controller.signal, "SIGNED_IN", session);
     }
