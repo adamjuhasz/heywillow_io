@@ -284,12 +284,18 @@ async function handler(
       }
     }
   } catch (e) {
-    await logger.error("Could not process segment webhook", {
-      body: body as unknown as JSON,
-      teamId: Number(team.Team.id),
-      apiKey: apiKey,
-    });
     console.error(e, body);
+    await logger.error(
+      `Could not process segment webhook - ${(e as Error).message}`,
+      {
+        body: body as unknown as JSON,
+        teamId: Number(team.Team.id),
+        apiKey: apiKey,
+        errorMessage: (e as Error).message,
+        errorName: (e as Error).name,
+      }
+    );
+    return res.status(500).json({ message: `Internal Error` });
   }
 }
 
