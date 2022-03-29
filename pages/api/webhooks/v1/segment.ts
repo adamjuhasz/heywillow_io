@@ -297,6 +297,10 @@ async function handler(
     );
     return res.status(500).json({ message: `Internal Error` });
   }
+
+  return res
+    .status(500)
+    .json({ message: `Internal Error, execution failed to find end` });
 }
 
 const upsertCustomer = async (teamId: number | bigint, userId: string) => {
