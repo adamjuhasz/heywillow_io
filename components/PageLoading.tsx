@@ -2,12 +2,6 @@ import Router from "next/router";
 import { useEffect, useState } from "react";
 import {} from "@segment/snippet";
 
-declare global {
-  // allow global `var` declarations
-  // eslint-disable-next-line no-var
-  var analytics: { page: (url: string) => void } | undefined;
-}
-
 export default function PageLoading() {
   const [loading, setLoading] = useState(false);
 

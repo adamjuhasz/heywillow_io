@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { CSSProperties, PropsWithChildren } from "react";
 import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
+import once from "lodash/once";
 
 // split out to help tree shaking
 import ArrowNarrowRightIcon from "@heroicons/react/solid/ArrowNarrowRightIcon";
@@ -15,9 +16,25 @@ import UserAddIcon from "@heroicons/react/outline/UserAddIcon";
 import UserGroupIcon from "@heroicons/react/outline/UserGroupIcon";
 
 import LandingPageHeader from "components/LandingPage/Header";
+import useIntersectionObserver from "hooks/useIntersectionObserver";
+import useTrackEvent from "hooks/useTrackEvent";
 
 export default function Vercel(): JSX.Element {
+  const pricing = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pricingObserver = useIntersectionObserver(pricing, {});
+  const { track } = useTrackEvent();
+
+  const trackPricingViewed = useMemo(
+    () => once(() => track("Pricing viewed")),
+    [track]
+  );
+
+  useEffect(() => {
+    if (pricingObserver?.isIntersecting === true) {
+      trackPricingViewed();
+    }
+  }, [pricingObserver?.isIntersecting, trackPricingViewed]);
 
   const hashType = /#.*type=([a-z]*)/.exec(router.asPath);
 
@@ -394,7 +411,7 @@ export default function Vercel(): JSX.Element {
           </div>
         </div>
 
-        <div className="mb-14 flex flex-col">
+        <div ref={pricing} className="mb-14 flex flex-col">
           <div className="mx-auto h-[200px] w-[1px] bg-gradient-to-b from-transparent to-white" />
           <h3
             id="pricing"
