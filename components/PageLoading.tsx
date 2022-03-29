@@ -12,8 +12,13 @@ export default function PageLoading() {
 
     const handleEnd = (url: string) => {
       setLoading(false);
+
       if (window.analytics) {
         window.analytics.page(url);
+      }
+
+      if (window.posthog) {
+        window.posthog.capture("$pageview"); // c-spell:disable-line
       }
     };
 
