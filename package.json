@@ -54,7 +54,7 @@
     "eslint-config-next": "12.1.1",
     "eslint-plugin-lodash": "^7.4.0",
     "eslint-plugin-no-secrets": "^0.8.9",
-    "eslint-plugin-sonarjs": "^0.12.0",
+    "eslint-plugin-sonarjs": "^0.13.0",
     "jest": "^27.5.1",
     "postcss": "^8.4.12",
     "prettier": "^2.6.1",
