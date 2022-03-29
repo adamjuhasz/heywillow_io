@@ -42,6 +42,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <Head>
         {process.env.NODE_ENV === "production" ? (
           <>
+            {/* PostHog */}
             <link rel="preconnect" href="https://app.posthog.com"></link>
             <link rel="dns-prefetch" href="https://app.posthog.com"></link>
             <script
@@ -51,13 +52,18 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           posthog.init("phc_5i7tJM8Uoz14akX81DF6PXpr2IB1BefrJ7bxPoppS6i",{api_host:"https://app.posthog.com"})
           `,
               }}
-            ></script>
+            />
+
+            {/* Plausible */}
             <script
               defer
               data-domain="heywillow.io"
               data-api="/api/event"
               src="/p/script.js"
-            ></script>
+            />
+
+            {/* Segment */}
+            <link rel="preconnect" href="https://seg.heywillow.io"></link>
             <script
               id="segment-script"
               dangerouslySetInnerHTML={{ __html: renderSnippet() }}
