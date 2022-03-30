@@ -1,0 +1,20 @@
+const reservedTraits: string[] = [
+  "address",
+  "age",
+  "avatar",
+  "birthday",
+  "company",
+  "createdAt",
+  "description",
+  "email",
+  "firstName",
+  "gender",
+  "id",
+  "lastName",
+  "name",
+  "phone",
+  "title",
+  "username",
+  "website",
+];
+export default reservedTraits;

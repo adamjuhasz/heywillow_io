@@ -78,7 +78,12 @@ export default function CustomerList() {
                     <tr className="border-0 bg-zinc-800 text-left text-zinc-400">
                       <th
                         scope="col"
-                        className="rounded-l-md border-t border-l border-b border-r-0 border-zinc-600 p-3"
+                        className={[
+                          "rounded-l-md border-t border-l border-b border-zinc-600 p-3",
+                          columns.length === 0
+                            ? "rounded-r-md border-r"
+                            : "border-r-0",
+                        ].join(" ")}
                       >
                         id
                       </th>
