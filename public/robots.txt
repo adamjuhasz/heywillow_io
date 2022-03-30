@@ -3,8 +3,5 @@ User-agent: *
 Allow: /
 Disallow: /are/you/a/swe/then/ping/us
 
-# Host
-Host: https://heywillow.io
-
 # Sitemaps
 Sitemap: https://heywillow.io/sitemap.xml

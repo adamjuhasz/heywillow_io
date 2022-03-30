@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 const sitemapConfig = {
   siteUrl: "https://heywillow.io",
-  generateRobotsTxt: true, // (optional)
+  generateRobotsTxt: false, // (optional)
   robotsTxtOptions: {
     policies: [
       {
