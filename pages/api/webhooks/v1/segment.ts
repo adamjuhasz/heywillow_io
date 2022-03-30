@@ -289,6 +289,13 @@ async function handler(
         "Unique constraint failed on the fields: (`idempotency`)"
       )
     ) {
+      await logger.warn(`Duplicate event processed - ${(e as Error).message}`, {
+        body: body as unknown as JSON,
+        teamId: Number(team.Team.id),
+        apiKey: apiKey,
+        errorMessage: (e as Error).message,
+        errorName: (e as Error).name,
+      });
       return res.status(200).json({ message: "Duplicate" });
     }
     console.error(e, body);
