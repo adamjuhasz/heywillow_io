@@ -458,7 +458,7 @@ export default function Vercel(): JSX.Element {
                   <div className="grow">
                     50 unique{" "}
                     <Explainer explainer={conversationExplainer}>
-                      conversations
+                      people helped
                     </Explainer>{" "}
                     per month
                   </div>
@@ -501,7 +501,7 @@ export default function Vercel(): JSX.Element {
                   <div className="grow">
                     1,000 unique{" "}
                     <Explainer explainer={conversationExplainer}>
-                      conversations
+                      people helped
                     </Explainer>{" "}
                     per month
                   </div>
@@ -544,7 +544,7 @@ export default function Vercel(): JSX.Element {
                   <div className="grow">
                     10,000 unique{" "}
                     <Explainer explainer={conversationExplainer}>
-                      conversations
+                      people helped
                     </Explainer>{" "}
                     per month
                   </div>
@@ -686,7 +686,7 @@ function GradientText({
 }
 
 const conversationExplainer =
-  "A conversation is unlimited communication with a unique person per month. Multiples email address for a customer count as 1 conversation.";
+  "A person helped is unlimited communication with a unique person per month. Multiples email address for a customer count as 1 conversation, even from different emails.";
 
 interface ExplainerProps {
   explainer: string;
