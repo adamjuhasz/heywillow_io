@@ -1,5 +1,6 @@
 import type { CreateBody, CreateReturn } from "pages/api/v1/team/create";
 import { trackEvent } from "hooks/useTrackEvent";
+import { group } from "hooks/useGroupIdentify";
 
 interface Options {
   name: string;
@@ -28,7 +29,13 @@ export default async function createTeam(options: Options) {
 
     case 200: {
       const returnBody = (await res.json()) as CreateReturn;
+
       trackEvent("Team Created", { ...body, teamId: returnBody.teamId });
+      group(returnBody.teamId, {
+        name: options.name,
+        namespace: options.namespace,
+      });
+
       return returnBody;
     }
 

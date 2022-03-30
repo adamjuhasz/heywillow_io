@@ -1,11 +1,13 @@
-import { useDebugValue } from "react";
+import { useDebugValue, useEffect } from "react";
 import { useRouter } from "next/router";
+import useGroup from "hooks/useGroupIdentify";
 
 import useGetTeams from "client/getTeams";
 
 export default function useGetTeamId(): number | undefined {
   const router = useRouter();
   const { namespace } = router.query;
+  const { group } = useGroup();
 
   const { data: teams } = useGetTeams();
 
@@ -14,5 +16,12 @@ export default function useGetTeamId(): number | undefined {
   )?.id;
 
   useDebugValue(currentTeam);
+
+  useEffect(() => {
+    if (currentTeam) {
+      group(currentTeam);
+    }
+  }, [currentTeam, group]);
+
   return currentTeam;
 }

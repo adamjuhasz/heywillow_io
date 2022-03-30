@@ -5,6 +5,7 @@ import { useSupabase } from "components/UserContext";
 import { SupabaseProfile } from "types/supabase";
 import { path } from "client/getProfile";
 import { identify } from "hooks/useIdentify";
+import { trackEvent } from "hooks/useTrackEvent";
 
 type PartialProfile = Partial<SupabaseProfile> & { id: string };
 
@@ -28,6 +29,7 @@ async function changeProfile(
   if (user !== null) {
     identify(user.id, { ...options, id: undefined });
   }
+  trackEvent("Profile Changed");
 
   return data;
 }

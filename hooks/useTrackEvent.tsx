@@ -16,6 +16,11 @@ declare global {
           propsOnceSet?: Record<string, unknown>
         ) => void;
         reset: () => void;
+        group: (
+          groupType: string,
+          groupId: string,
+          props?: Record<string, unknown>
+        ) => void;
       };
 }
 
@@ -34,12 +39,20 @@ export function trackEvent(
   props?: Record<string, string | number>
 ) {
   if (window.analytics) {
-    window.analytics.track(event, props);
+    try {
+      window.analytics.track(event, props);
+    } catch (e) {
+      console.error(e);
+    }
   } else {
     console.debug(event, props);
   }
 
   if (window.posthog) {
-    window.posthog.capture(event, props);
+    try {
+      window.posthog.capture(event, props);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }

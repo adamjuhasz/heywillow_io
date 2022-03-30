@@ -1,4 +1,6 @@
-import { Body, Return } from "pages/api/v1/team/invite/create";
+import type { Body, Return } from "pages/api/v1/team/invite/create";
+import { trackEvent } from "hooks/useTrackEvent";
+import { group } from "hooks/useGroupIdentify";
 
 interface Options {
   email: string;
@@ -22,6 +24,10 @@ export default async function createInvite(options: Options) {
   switch (res.status) {
     case 200: {
       const body = (await res.json()) as Return;
+
+      trackEvent("Invite Sent", { teamId: options.teamId });
+      group(options.teamId);
+
       return body;
     }
 

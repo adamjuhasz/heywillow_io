@@ -21,7 +21,9 @@ export default async function createInbox(
   switch (res.status) {
     case 200: {
       const responseBody = (await res.json()) as ResponseBody;
+
       trackEvent("Inbox created", { ...body });
+
       return responseBody;
     }
 

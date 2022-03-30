@@ -1,4 +1,6 @@
-import { Body, Return } from "pages/api/v1/team/invite/accept";
+import type { Body, Return } from "pages/api/v1/team/invite/accept";
+import { trackEvent } from "hooks/useTrackEvent";
+import { group } from "hooks/useGroupIdentify";
 
 export interface Options {
   inviteId: number;
@@ -20,6 +22,10 @@ export default async function acceptInvite(options: Options) {
   switch (res.status) {
     case 200: {
       const body = (await res.json()) as Return;
+
+      trackEvent("Invite Accepted", { teamId: body.teamId });
+      group(body.teamId);
+
       return body;
     }
 

@@ -284,6 +284,13 @@ async function handler(
       }
     }
   } catch (e) {
+    if (
+      (e as Error).message.includes(
+        "Unique constraint failed on the fields: (`idempotency`)"
+      )
+    ) {
+      return res.status(200).json({ message: "Duplicate" });
+    }
     console.error(e, body);
     await logger.error(
       `Could not process segment webhook - ${(e as Error).message}`,

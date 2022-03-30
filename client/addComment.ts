@@ -1,6 +1,7 @@
 import type { AddComment } from "components/Thread/CommentBox";
 import type { IToastContext } from "components/Toast";
 import type { Body, Return } from "pages/api/v1/comment/add";
+import { trackEvent } from "hooks/useTrackEvent";
 
 export default function addCommentFactory(
   teamId: number | undefined,
@@ -30,7 +31,10 @@ export default function addCommentFactory(
     switch (res.status) {
       case 200: {
         const responseBody = (await res.json()) as Return;
+
         addToast({ type: "string", string: "Comment added" });
+        trackEvent("Comment added", { teamId: teamId });
+
         return responseBody.id;
       }
 

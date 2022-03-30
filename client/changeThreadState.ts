@@ -1,4 +1,4 @@
-import { Body, Return } from "pages/api/v1/thread/[threadid]/state";
+import type { Body, Return } from "pages/api/v1/thread/[threadid]/state";
 
 export default async function changeThreadState(
   threadId: number,

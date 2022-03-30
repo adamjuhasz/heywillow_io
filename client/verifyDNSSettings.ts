@@ -1,5 +1,6 @@
-import type { RequestBody as VerifyRP } from "pages/api/v1/domain/verify/returnpath";
+import type { RequestBody as VerifyRP } from "pages/api/v1/domain/verify/returnpath"; // cspell:disable-line
 import type { RequestBody as VerifyDKIM } from "pages/api/v1/domain/verify/dkim";
+import { trackEvent } from "hooks/useTrackEvent";
 
 export type DNSSetting = "DKIM" | "ReturnPath";
 
@@ -12,7 +13,7 @@ export default async function verifyDNSSettings(
     setting === "DKIM"
       ? "dkim"
       : setting === "ReturnPath"
-      ? "returnpath"
+      ? "returnpath" // cspell:disable-line
       : "ERROR";
 
   const res = await fetch(`/api/v1/domain/verify/${normalized}`, {
@@ -26,6 +27,7 @@ export default async function verifyDNSSettings(
 
   switch (res.status) {
     case 200:
+      trackEvent(`Refreshed ${normalized.toUpperCase()} Verification`);
       break;
 
     default:

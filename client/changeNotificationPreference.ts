@@ -1,9 +1,10 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { useSWRConfig } from "swr";
 
 import { useSupabase } from "components/UserContext";
 import { SupabaseNotificationPreference } from "types/supabase";
 import { path } from "client/getNotificationPreferences";
+import { trackEvent } from "hooks/useTrackEvent";
 
 async function changeNotificationPreference(
   supabase: SupabaseClient,
@@ -19,6 +20,8 @@ async function changeNotificationPreference(
       `Error with NotificationPreference ${error.code} - ${error.details}`
     );
   }
+
+  trackEvent("Notification Preferences Changed");
 
   return data;
 }
