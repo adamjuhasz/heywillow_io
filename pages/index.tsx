@@ -592,22 +592,28 @@ export default function Vercel(): JSX.Element {
         <div className="mx-auto grid w-full max-w-4xl grid-cols-1 space-y-4 px-4 md:grid-cols-6 md:space-y-0 md:px-0">
           <div className="col-span-1 flex flex-col md:col-span-2">
             <div className="font-medium text-zinc-100">Guides</div>
-            <Link href="/guides/onboarding-checklist">
+            <Link href="/guides/onboarding-checklist" prefetch={false}>
               <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
                 Onboarding checklist
               </a>
             </Link>
-            <Link href="/guides/segment-proxy-using-cloudflare-workers">
+            <Link
+              href="/guides/segment-proxy-using-cloudflare-workers"
+              prefetch={false}
+            >
               <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
                 Segment proxy using CF Workers
               </a>
             </Link>
-            <Link href="/guides/forwarding-email-gmail">
+            <Link href="/guides/forwarding-email-gmail" prefetch={false}>
               <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
                 Configuring Gmail Forwarding
               </a>
             </Link>
-            <Link href="/guides/forwarding-email-google-admin-routing">
+            <Link
+              href="/guides/forwarding-email-google-admin-routing"
+              prefetch={false}
+            >
               <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
                 Configuring Google&rsquo;s Default Routing
               </a>
@@ -643,14 +649,14 @@ export default function Vercel(): JSX.Element {
           <div className="col-span-1 flex flex-col md:col-span-2">
             <div className="font-medium text-zinc-100">Company</div>
             <div className="">
-              <Link href="/privacy-policy">
+              <Link href="/privacy-policy" prefetch={false}>
                 <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
                   Privacy Policy
                 </a>
               </Link>
             </div>
             <div className="">
-              <Link href="/terms-of-service">
+              <Link href="/terms-of-service" prefetch={false}>
                 <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
                   Terms of service
                 </a>
