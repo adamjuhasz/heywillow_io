@@ -117,8 +117,7 @@ export default function CustomerList() {
                         >
                           <NextLink
                             href={{
-                              pathname:
-                                "/a/[namespace]/customer/[customerid]/thread",
+                              pathname: "/a/[namespace]/customer/[customerid]",
                               query: {
                                 ...router.query,
                                 customerid: customer.id,
