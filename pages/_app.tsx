@@ -7,23 +7,20 @@ import type { ReactElement, ReactNode } from "react";
 import type { AppProps } from "next/app";
 import type { NextPage } from "next";
 import Head from "next/head";
-import * as snippet from "@segment/snippet";
+import { min as snippetMin } from "@segment/snippet";
+import type { Options } from "@segment/snippet";
 
 import PageLoading from "components/PageLoading";
 
 function renderSnippet() {
-  const opts: snippet.Options = {
+  const opts: Options = {
     apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY || "",
     page: false,
     host: "seg.heywillow.io",
     useHostForBundles: true,
   };
 
-  if (process.env.NODE_ENV === "development") {
-    return snippet.max(opts);
-  }
-
-  return snippet.min(opts);
+  return snippetMin(opts);
 }
 
 type NextPageWithLayout = NextPage & {

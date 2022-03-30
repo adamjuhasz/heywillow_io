@@ -1,6 +1,5 @@
 import Router from "next/router";
 import { useEffect, useState } from "react";
-import {} from "@segment/snippet";
 
 export default function PageLoading() {
   const [loading, setLoading] = useState(false);
