@@ -56,7 +56,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
             {/* Plausible */}
             <script
-              defer
+              async
               data-domain="heywillow.io"
               data-api="/api/event"
               src="/p/script.js"
