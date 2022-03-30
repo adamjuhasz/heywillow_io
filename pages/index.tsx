@@ -125,12 +125,12 @@ export default function Vercel(): JSX.Element {
           </h1>
 
           <div className="mx-auto mb-14 flex w-full flex-col space-x-0 space-y-4 md:w-fit md:flex-row md:space-x-6 md:space-y-0">
-            <Link href="/demo">
+            <Link href="/demo" prefetch={false}>
               <a className="flex w-full items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 sm:min-w-[200px]">
                 Explore demo
               </a>
             </Link>
-            <Link href="/signup">
+            <Link href="/signup" prefetch={false}>
               <a className="flex items-center justify-center rounded-lg border-2 border-zinc-400 px-6 py-4 text-zinc-400 hover:border-zinc-100 hover:text-zinc-100 sm:min-w-[200px]">
                 Sign up now
               </a>
@@ -476,7 +476,7 @@ export default function Vercel(): JSX.Element {
               </div>
 
               <div className="flex items-center justify-center bg-zinc-600 bg-opacity-30 p-8">
-                <Link href="/signup">
+                <Link href="/signup" prefetch={false}>
                   <a className="flex w-full items-center justify-between rounded-md border-2 border-transparent bg-zinc-100 px-3 py-2 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100">
                     Sign up now
                     <ArrowNarrowRightIcon className="h-4 w-4" />
@@ -519,7 +519,7 @@ export default function Vercel(): JSX.Element {
               </div>
 
               <div className="flex items-center justify-center p-8">
-                <Link href="/signup">
+                <Link href="/signup" prefetch={false}>
                   <a className="flex w-full items-center justify-between rounded-md border-2 border-transparent bg-[#EE147C] px-3 py-2 text-zinc-100 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
                     Sign up now
                     <ArrowNarrowRightIcon className="h-4 w-4" />
@@ -562,7 +562,7 @@ export default function Vercel(): JSX.Element {
               </div>
 
               <div className="flex items-center justify-center p-8">
-                <Link href="/signup">
+                <Link href="/signup" prefetch={false}>
                   <a className="flex w-full items-center justify-between rounded-md border-2 border-transparent bg-[#8341C2] px-3 py-2 text-zinc-100 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
                     Sign up now
                     <ArrowNarrowRightIcon className="h-4 w-4" />
@@ -580,7 +580,7 @@ export default function Vercel(): JSX.Element {
               Explore our full fidelity demo to see how Willow works
             </div>
           </div>
-          <Link href="/demo">
+          <Link href="/demo" prefetch={false}>
             <a className="flex w-fit shrink-0 grow-0 items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 sm:min-w-[200px]">
               Explore demo
             </a>
