@@ -1,4 +1,6 @@
 import type { Prisma } from "@prisma/client";
+import subDays from "date-fns/subDays";
+
 import reservedTraits from "components/Customer/traits/reserved";
 
 import {
@@ -25,6 +27,34 @@ const allTraits: DemoTraits[] = [
     value: "johnappleseed@gmail.com",
   },
   { customerId: johnCustomer.id, key: "name", value: "John Appleseed" },
+  {
+    customerId: johnCustomer.id,
+    key: "address",
+    value: {
+      street: "123 Main St",
+      city: "San Francisco",
+      state: "CA",
+      zip: "94103",
+    },
+  },
+  { customerId: johnCustomer.id, key: "age", value: "34" },
+  {
+    customerId: johnCustomer.id,
+    key: "createdAt",
+    value: subDays(new Date(), 30).toISOString(),
+  },
+  { customerId: johnCustomer.id, key: "username", value: "jApple" },
+  {
+    customerId: johnCustomer.id,
+    key: "birthday",
+    value: new Date("1988-08-01").toISOString(),
+  },
+  {
+    customerId: johnCustomer.id,
+    key: "birthday",
+    value: new Date("1988-08-01").toISOString(),
+  },
+  // ---
   { customerId: onboarding5Customer.id, key: "name", value: "Fifth Smith" },
   { customerId: onboarding5Customer.id, key: "age", value: 34 },
   {
