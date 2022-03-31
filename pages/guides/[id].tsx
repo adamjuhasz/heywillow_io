@@ -13,7 +13,7 @@ import {
   getAllPostIds,
   getPostData,
   guidesDirectory,
-} from "static-build/guides";
+} from "static-build/posts";
 import LandingPageHeader from "components/LandingPage/Header";
 
 interface Params extends ParsedUrlQuery {

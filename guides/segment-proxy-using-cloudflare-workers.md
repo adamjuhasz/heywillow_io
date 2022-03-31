@@ -7,6 +7,8 @@ author: "Adam Juhasz"
 
 Segment's custom domains allow you to proxy Segment's Analytics.js and proxy all tracking event requests through your domain.
 
+---
+
 ## Prerequisites
 
 To set up a custom domain using Cloudflare workers, you need:

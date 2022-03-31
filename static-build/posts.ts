@@ -3,54 +3,53 @@ import path from "path";
 import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
+import remarkGfm from "remark-gfm";
+import orderBy from "lodash/orderBy";
+import { format } from "date-fns";
 
-const postsDirectory = path.join(process.cwd(), "changelogs");
+export const guidesDirectory = path.join(process.cwd(), "guides");
+export const blogDirectory = path.join(process.cwd(), "blog");
 
-export function getSortedPostsData() {
+export interface PostData {
+  id: string;
+  date: string;
+  formattedDate: string;
+  title: string;
+  description: string;
+  excerpt: string;
+}
+
+export function getSortedPostsData(directory: string): PostData[] {
   // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
+  const fileNames = fs.readdirSync(directory);
   const allPostsData = fileNames.map((fileName) => {
     // Remove ".md" from file name to get id
     const id = fileName.replace(/\.md$/, "");
 
     // Read markdown file as string
-    const fullPath = path.join(postsDirectory, fileName);
+    const fullPath = path.join(directory, fileName);
     const fileContents = fs.readFileSync(fullPath, "utf8");
 
     // Use gray-matter to parse the post metadata section
-    const { data } = matter(fileContents);
+    const { data, excerpt } = matter(fileContents, { excerpt: true });
 
-    const options: Intl.DateTimeFormatOptions = {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    };
-    const formattedDate = new Date(data.date).toLocaleDateString(
-      "en-IN",
-      options
-    );
+    const formattedDate = format(new Date(data.date), "PPPP");
 
     // Combine the data with the id
     return {
       ...data,
       id,
-      date: formattedDate,
-    };
+      formattedDate: formattedDate,
+      excerpt: excerpt,
+    } as PostData;
   });
+
   // Sort posts by date
-  return allPostsData.sort(({ date: a }, { date: b }) => {
-    if (a < b) {
-      return 1;
-    } else if (a > b) {
-      return -1;
-    } else {
-      return 0;
-    }
-  });
+  return orderBy(allPostsData, ["date"], ["desc"]);
 }
 
-export function getAllPostIds() {
-  const fileNames = fs.readdirSync(postsDirectory);
+export function getAllPostIds(directory: string) {
+  const fileNames = fs.readdirSync(directory);
 
   // Returns an array that looks like this:
   // [
@@ -74,8 +73,8 @@ export function getAllPostIds() {
   });
 }
 
-export async function getPostData(id: string) {
-  const fullPath = path.join(postsDirectory, `${id}.md`);
+export async function getPostData(directory: string, id: string) {
+  const fullPath = path.join(directory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
 
   // Use gray-matter to parse the post metadata section
@@ -84,6 +83,7 @@ export async function getPostData(id: string) {
   // Use remark to convert markdown into HTML string
   const processedContent = await remark()
     .use(html)
+    .use(remarkGfm)
     .process(matterResult.content);
   const contentHtml = processedContent.toString();
 

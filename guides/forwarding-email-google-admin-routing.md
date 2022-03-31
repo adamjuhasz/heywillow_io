@@ -6,6 +6,10 @@ updated: "2022-03-29"
 author: "Adam Juhasz"
 ---
 
+We'll help you get email forwarding setup using Google Apps and Routing rules
+
+---
+
 1. Visit the [default routing admin page](https://admin.google.com/u/5/ac/apps/gmail/defaultrouting).
 2. Click "CONFIGURE".
 3. Choose "Single recipient". Enter the email address you want to forward under "Email address". _ex: hi@stealth.vc_

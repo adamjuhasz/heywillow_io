@@ -9,7 +9,7 @@ import format from "date-fns/format";
 import sample from "lodash/sample";
 import { ArticleJsonLd, NextSeo } from "next-seo";
 
-import { blogDirectory, getAllPostIds, getPostData } from "static-build/guides";
+import { blogDirectory, getAllPostIds, getPostData } from "static-build/posts";
 import LandingPageHeader from "components/LandingPage/Header";
 
 interface Params extends ParsedUrlQuery {
