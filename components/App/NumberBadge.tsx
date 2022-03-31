@@ -4,6 +4,10 @@ interface Props {
 }
 
 export default function NumberBadge(props: Props) {
+  if (props.count === 0 || props.count === undefined) {
+    return <></>;
+  }
+
   return (
     <div
       className={[

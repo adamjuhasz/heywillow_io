@@ -2,7 +2,7 @@ import subDays from "date-fns/subDays";
 import type { MessageDirection } from "@prisma/client";
 
 import type { DemoThread } from "data/Demo/Types";
-import { onboarding1Customer } from "data/Demo/Customers";
+import { onboarding1Customer } from "data/Demo/AliasEmails";
 import { stealthAIInbox } from "data/Demo/Inboxes";
 
 export const onboarding1: DemoThread = {

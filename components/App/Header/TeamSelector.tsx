@@ -7,8 +7,13 @@ import type { UrlObject } from "url";
 
 import Avatar from "components/Avatar";
 
+export interface MiniTeam {
+  name: string;
+  Namespace: { namespace: string };
+}
+
 interface TeamSelectorProps {
-  teams: { name: string; Namespace: { namespace: string } }[] | undefined;
+  teams: MiniTeam[] | undefined;
   activeTeam: string;
   pathPrefix: string;
 }
