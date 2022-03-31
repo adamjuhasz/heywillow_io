@@ -4,22 +4,6 @@ import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
 import MenuIcon from "@heroicons/react/solid/MenuIcon";
 import XIcon from "@heroicons/react/solid/XIcon";
-
-import AppLayout from "layouts/app";
-import StickyBase from "components/App/Header/StickyBase";
-import AppContainer from "components/App/Container";
-import HeaderContainer from "components/App/Header/HeaderContainer";
-import WillowLogo from "components/Logo";
-import TeamSelector from "components/App/Header/TeamSelector";
-import Avatar from "components/Avatar";
-import { Link } from "components/LinkBar";
-import InputWithRef from "components/Input";
-import ToastContext from "components/Toast";
-import RightSidebar from "components/Thread/RightSidebar";
-import MultiThreadPrinter, {
-  scrollToID,
-} from "components/Thread/MultiThreadPrinter";
-import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -29,11 +13,23 @@ import { ParsedUrlQuery } from "querystring";
 import uniqWith from "lodash/uniqWith";
 import orderBy from "lodash/orderBy";
 
+import AppLayout from "layouts/app";
+
+import AppContainer from "components/App/Container";
+import InputWithRef from "components/Input";
+import ToastContext from "components/Toast";
+import RightSidebar from "components/Thread/RightSidebar";
+import MultiThreadPrinter, {
+  scrollToID,
+} from "components/Thread/MultiThreadPrinter";
+import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
+import DemoHeader from "components/Demo/Header";
+
 import teams from "data/Demo/Teams";
 import threads from "data/Demo/Threads";
 import * as demoTeamMembers from "data/Demo/TeamMembers";
 import customerEvents from "data/Demo/CustomerEvents";
-import customers from "data/Demo/Customers";
+import aliases from "data/Demo/AliasEmails";
 
 interface Params extends ParsedUrlQuery {
   threadid: string;
@@ -99,7 +95,7 @@ export default function ThreadViewer(props: Props) {
   const customerEmail = requestedThread?.Message.filter(
     (m) => m.AliasEmail !== null
   )[0]?.AliasEmail?.emailAddress;
-  const customer = customers.find((c) => c.emailAddress === customerEmail);
+  const customer = aliases.find((c) => c.emailAddress === customerEmail);
 
   const workspace = {
     pathname: "/demo/[namespace]/workspace",
@@ -162,41 +158,11 @@ export default function ThreadViewer(props: Props) {
         <title>{customerEmail ? `${customerEmail} on Willow` : "Willow"}</title>
       </Head>
 
-      <div className="flex h-8 justify-center bg-blue-500 py-1 text-white">
-        <div>
-          Demo data — Ready to get started?{" "}
-          <NextLink href="/signup">
-            <a className="underline">Sign up here</a>
-          </NextLink>
-        </div>
-      </div>
-
-      <StickyBase>
-        <AppContainer>
-          <HeaderContainer>
-            <div className="flex h-full items-center sm:space-x-1">
-              <NextLink href="/">
-                <a className="hidden items-center sm:flex">
-                  <WillowLogo className="h-5 w-5 shrink-0" />
-                </a>
-              </NextLink>
-
-              <TeamSelector
-                teams={teams}
-                activeTeam={namespaceNormed}
-                pathPrefix="demo"
-              />
-            </div>
-
-            <div className="flex h-full items-center space-x-4 ">
-              <Avatar str={""} className="h-6 w-6" />
-              <Link exact href="/signup">
-                Sign up
-              </Link>
-            </div>
-          </HeaderContainer>
-        </AppContainer>
-      </StickyBase>
+      <DemoHeader
+        threadCount={threads.length}
+        teams={teams}
+        namespace={props.namespace}
+      />
 
       <AppContainer>
         <div className="flex h-[calc(100vh_-_3rem_-_2rem)] w-full overflow-x-hidden">

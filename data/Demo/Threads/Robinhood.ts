@@ -4,7 +4,7 @@ import type { MessageDirection } from "@prisma/client";
 
 import textToSlate from "shared/slate/textToSlate";
 import type { DemoThread } from "data/Demo/Types";
-import { johnCustomer } from "data/Demo/Customers";
+import { johnAlias } from "data/Demo/AliasEmails";
 import {
   adamTeamMember,
   eileenTeamMember,
@@ -17,7 +17,7 @@ export const robinHoodThread1: DemoThread = {
   createdAt: subDays(new Date(), 21).toISOString(),
   updatedAt: subDays(new Date(), 21).toISOString(),
   teamId: 0,
-  aliasEmailId: johnCustomer.id,
+  aliasEmailId: johnAlias.id,
   inboxId: stealthAIInbox.id,
   Message: [
     {
@@ -26,7 +26,7 @@ export const robinHoodThread1: DemoThread = {
       id: 1,
       createdAt: subDays(new Date(), 21).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: johnCustomer,
+      AliasEmail: johnAlias,
       subject: "Transfer stocks not cash",
       text: textToSlate(
         `Do you support transferring securities from another brokerage to yours?\nThanks!\n- John`
@@ -112,7 +112,7 @@ export const robinHoodThread1: DemoThread = {
       id: 3,
       createdAt: subDays(new Date(), 19).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: johnCustomer,
+      AliasEmail: johnAlias,
       subject: "Re: [Pay Tgthr] Transfer stocks not cash",
       text: textToSlate("Please do! That sounds awesome"),
       Comment: [
@@ -182,7 +182,7 @@ export const robinHoodThread1: DemoThread = {
       id: 5,
       createdAt: subDays(new Date(), 17).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: johnCustomer,
+      AliasEmail: johnAlias,
       subject: "Re: [Pay Tgthr] Transfer stocks not cash",
       text: textToSlate(
         "Just started one for Apple shares from Fidelity. Thanks for the help! You guys rock"
@@ -191,7 +191,7 @@ export const robinHoodThread1: DemoThread = {
       TeamMember: null,
     },
   ],
-  AliasEmail: johnCustomer,
+  AliasEmail: johnAlias,
   Inbox: stealthAIInbox,
   ThreadState: [
     {
@@ -208,7 +208,7 @@ export const robinHoodThread2: DemoThread = {
   createdAt: subDays(new Date(), 11).toISOString(),
   updatedAt: subDays(new Date(), 3).toISOString(),
   teamId: 0,
-  aliasEmailId: johnCustomer.id,
+  aliasEmailId: johnAlias.id,
   inboxId: stealthAIInbox.id,
   Message: [
     {
@@ -217,7 +217,7 @@ export const robinHoodThread2: DemoThread = {
       id: 6,
       createdAt: subDays(new Date(), 11).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: johnCustomer,
+      AliasEmail: johnAlias,
       subject: "Transfer in not working",
       text: textToSlate("Can't seem to transfer money into my account"),
       Comment: [],
@@ -329,7 +329,7 @@ export const robinHoodThread2: DemoThread = {
       id: 10,
       createdAt: subDays(new Date(), 3).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: johnCustomer,
+      AliasEmail: johnAlias,
       subject: "Re: [Pay Tgthr] Transfer in not working",
       text: textToSlate("iOS 14.1"),
       Comment: [
@@ -410,7 +410,7 @@ export const robinHoodThread2: DemoThread = {
       TeamMember: adamTeamMember,
     },
   ],
-  AliasEmail: johnCustomer,
+  AliasEmail: johnAlias,
   Inbox: stealthAIInbox,
   ThreadState: [
     {

@@ -3,7 +3,7 @@ import type { MessageDirection } from "@prisma/client";
 
 import textToSlate from "shared/slate/textToSlate";
 import type { DemoThread } from "data/Demo/Types";
-import { onboarding2Customer } from "data/Demo/Customers";
+import { onboarding2Customer } from "data/Demo/AliasEmails";
 import { stealthAIInbox } from "data/Demo/Inboxes";
 import { adamTeamMember, eileenTeamMember } from "data/Demo/TeamMembers";
 
