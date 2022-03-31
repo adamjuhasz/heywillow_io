@@ -52,12 +52,14 @@ export async function getStaticProps({
 
 interface Props {
   namespace: string | undefined;
-  customerId: number;
+  customerId: number | undefined;
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function Customer(props: Props) {
-  const customer = allCustomers.find((c) => c.id === props.customerId);
+  const normalizedCID = props.customerId || allCustomers[0].id;
+
+  const customer = allCustomers.find((c) => c.id === normalizedCID);
   const aliases = allAliases
     .filter((a) => a.customerId === customer?.id)
     .map((a) => a.id);
