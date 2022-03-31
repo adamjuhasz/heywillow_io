@@ -11,7 +11,18 @@ const sitemapConfig = {
       },
     ],
   },
-  exclude: ["/a", "/a/*", "/p/*", "/api/*", "/management/*", "/design/*"],
+  exclude: [
+    "/a",
+    "/a/*",
+    "/p/*",
+    "/api/*",
+    "/management/*",
+    "/design",
+    "/design/*",
+    "/guides/wip-*",
+    "/blog/wip-*",
+    "/changelog/wip-*",
+  ],
 };
 
 module.exports = sitemapConfig;

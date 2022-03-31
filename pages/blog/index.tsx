@@ -10,7 +10,9 @@ export async function getStaticProps() {
   const allPostsData = getSortedPostsData(blogDirectory);
   return {
     props: {
-      allPostsData,
+      allPostsData: allPostsData.filter(
+        (p) => p.id.startsWith("wip-") === false
+      ),
     },
   };
 }
