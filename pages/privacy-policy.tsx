@@ -1,4 +1,5 @@
 import { NextSeo } from "next-seo";
+import LandingPageHeader from "components/LandingPage/Header";
 
 export default function PP() {
   return (
@@ -7,6 +8,9 @@ export default function PP() {
         title="Privacy Policy"
         description="Willow's Privacy Policy updated 23 February 2022"
       />
+
+      <LandingPageHeader />
+
       <div className="prose prose-invert mx-auto my-7 max-w-5xl">
         <h1>Privacy Policy</h1>
         <p>
