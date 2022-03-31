@@ -19,7 +19,7 @@ interface Params extends ParsedUrlQuery {
 export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
   const paths = getAllPostIds(blogDirectory);
   return {
-    paths,
+    paths: [...paths, { params: { id: "[id]" } }],
     fallback: false,
   };
 }
@@ -27,13 +27,33 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext<Params>): Promise<GetStaticPropsResult<Props>> {
-  const postData = await getPostData(blogDirectory, (params as Params).id);
+  if (params === undefined) {
+    return { notFound: true };
+  }
 
-  return {
-    props: {
-      postData,
-    },
-  };
+  if (params.id === "[id]") {
+    const paths = getAllPostIds(blogDirectory);
+    const postData = await getPostData(blogDirectory, paths[0].params.id);
+    return {
+      props: {
+        postData,
+      },
+    };
+  }
+
+  try {
+    const postData = await getPostData(blogDirectory, (params as Params).id);
+
+    return {
+      props: {
+        postData,
+      },
+    };
+  } catch (e) {
+    console.error(e);
+  }
+
+  return { notFound: true };
 }
 
 const colors = [
@@ -59,7 +79,9 @@ interface Props {
   postData: Record<string, string>;
 }
 
-export default function Post({ postData }: Props) {
+export default function Post(props: Props) {
+  console.log("props", props);
+  const { postData } = props;
   return (
     <>
       <NextSeo
@@ -178,9 +200,9 @@ export default function Post({ postData }: Props) {
         <h1 className="text-center text-5xl">{postData.title}</h1>
         <time
           dateTime={postData.date}
-          className="mt-1 w-full text-center text-sm text-zinc-400"
+          className="mt-2 w-full text-center text-sm text-zinc-400"
         >
-          Last updated: {format(new Date(postData.date), "LLLL d, yyyy")}
+          Written: {format(new Date(postData.date), "LLLL d, yyyy")}
         </time>
         <hr className="my-7 w-full max-w-2xl border-zinc-700" />
       </div>

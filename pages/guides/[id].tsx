@@ -9,7 +9,11 @@ import format from "date-fns/format";
 import sample from "lodash/sample";
 import { ArticleJsonLd, NextSeo } from "next-seo";
 
-import { blogDirectory, getAllPostIds, getPostData } from "static-build/guides";
+import {
+  getAllPostIds,
+  getPostData,
+  guidesDirectory,
+} from "static-build/guides";
 import LandingPageHeader from "components/LandingPage/Header";
 
 interface Params extends ParsedUrlQuery {
@@ -17,9 +21,9 @@ interface Params extends ParsedUrlQuery {
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
-  const paths = getAllPostIds(blogDirectory);
+  const paths = getAllPostIds(guidesDirectory);
   return {
-    paths,
+    paths: [...paths, { params: { id: "[id]" } }],
     fallback: false,
   };
 }
@@ -27,13 +31,32 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext<Params>): Promise<GetStaticPropsResult<Props>> {
-  const postData = await getPostData(blogDirectory, (params as Params).id);
+  if (params === undefined) {
+    return { notFound: true };
+  }
 
-  return {
-    props: {
-      postData,
-    },
-  };
+  if (params.id === "[id]") {
+    const paths = getAllPostIds(guidesDirectory);
+    const postData = await getPostData(guidesDirectory, paths[0].params.id);
+    return {
+      props: {
+        postData,
+      },
+    };
+  }
+
+  try {
+    const postData = await getPostData(guidesDirectory, (params as Params).id);
+
+    return {
+      props: {
+        postData,
+      },
+    };
+  } catch (e) {
+    console.error(e);
+    return { notFound: true };
+  }
 }
 
 const colors = [
@@ -178,7 +201,7 @@ export default function Post({ postData }: Props) {
         <h1 className="text-center text-5xl">{postData.title}</h1>
         <time
           dateTime={postData.date}
-          className="mt-1 w-full text-center text-sm text-zinc-400"
+          className="mt-2 w-full text-center text-sm text-zinc-400"
         >
           Last updated: {format(new Date(postData.date), "LLLL d, yyyy")}
         </time>
