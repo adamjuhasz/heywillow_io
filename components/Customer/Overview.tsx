@@ -22,6 +22,7 @@ interface MiniEvents {
 interface MiniThread {
   id: number;
   Message: { subject: null | string }[];
+  createdAt: string;
 }
 
 interface Props {
@@ -30,6 +31,7 @@ interface Props {
   traits: MiniTrait[];
   events: MiniEvents[];
   threads: MiniThread[] | undefined;
+  prefixPath: string;
 }
 
 export default function CustomerOverview(props: Props): JSX.Element {
@@ -65,7 +67,10 @@ export default function CustomerOverview(props: Props): JSX.Element {
           </div>
 
           <div className="flex w-1/2 flex-col px-2">
-            <CustomerThreadBox threads={props.threads} />
+            <CustomerThreadBox
+              threads={props.threads}
+              prefixPath={props.prefixPath}
+            />
 
             <div className="h-7" />
 

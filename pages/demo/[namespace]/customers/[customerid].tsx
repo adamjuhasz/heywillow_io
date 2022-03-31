@@ -82,6 +82,7 @@ export default function Customer(props: Props) {
             createdAt: e.createdAt.toISOString(),
           }))}
           threads={threads}
+          prefixPath="demo"
         />
       ) : (
         <div className="absolute flex h-full w-full items-center justify-center">

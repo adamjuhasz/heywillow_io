@@ -44,6 +44,7 @@ export default function Customer() {
           traits={customer.CustomerTrait}
           events={customer.CustomerEvent}
           threads={threads}
+          prefixPath="a"
         />
       ) : (
         <div className="absolute flex h-full w-full items-center justify-center">
