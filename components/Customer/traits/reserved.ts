@@ -1,4 +1,4 @@
-const reservedTraits: string[] = [
+const reservedTraits = [
   "address",
   "age",
   "avatar",
@@ -16,5 +16,5 @@ const reservedTraits: string[] = [
   "title",
   "username",
   "website",
-];
+] as const;
 export default reservedTraits;

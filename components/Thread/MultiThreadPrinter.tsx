@@ -11,7 +11,7 @@ import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
 import MessagePrinter from "components/Thread/MessagePrinter";
 import SubjectLine from "components/Thread/SubjectLine";
 import ThreadState, { MiniThreadState } from "components/Thread/ThreadState";
-import CustomerTraitValue from "components/CustomerTrait/Value";
+import CustomerTraitValue from "components/Customer/traits/Value";
 import FeedIcon from "components/Thread/Feed/HollowIcon";
 
 import { MessageWCommentsCreated } from "./Types";

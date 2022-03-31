@@ -1,14 +1,14 @@
 import { PropsWithChildren } from "react";
-import Link from "next/link";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 
 import AppContainer from "components/App/Container";
 import StickyBase from "components/App/Header/StickyBase";
 import TeamSelector from "components/App/Header/TeamSelector";
 import WillowLogoLink from "components/App/Header/WillowLogoLink";
-import TopLink from "components/App/Header/TopLink";
 import RightSideMenu from "components/App/Header/RightSideMenu";
 import HeaderContainer from "components/App/Header/HeaderContainer";
+import { Link } from "components/LinkBar";
 
 interface MiniTeam {
   name: string;
@@ -65,23 +65,40 @@ function LeftSideMenu(props: LeftSideMenuProps) {
         pathPrefix="a"
       />
 
-      <TopLink href={namespace ? "/a/[namespace]/workspace" : "/a/workspace"}>
+      <Link
+        href={namespace ? "/a/[namespace]/workspace" : "/a/workspace"}
+        activePath={
+          namespace === undefined
+            ? "/a/workspace"
+            : (href) =>
+                href.startsWith("/a/[namespace]/") &&
+                !href.startsWith("/a/[namespace]/settings")
+        }
+        className="flex h-full items-center border-b-2 hover:text-zinc-100"
+        activeClasses="border-zinc-100 text-zinc-100"
+        nonActiveClasses="border-transparent text-zinc-500"
+      >
         Workspace
-      </TopLink>
+      </Link>
 
-      <TopLink
+      <Link
         activePath={namespace ? "/a/[namespace]/settings" : undefined}
         href={namespace ? "/a/[namespace]/settings/team" : "/a/settings"}
+        className="flex h-full items-center border-b-2 hover:text-zinc-100"
+        activeClasses="border-zinc-100 text-zinc-100"
+        nonActiveClasses="border-transparent text-zinc-500"
       >
         Settings
-      </TopLink>
+      </Link>
 
       {props.bubble ? (
-        <Link href={{ pathname: props.bubble.pathname, query: router.query }}>
+        <NextLink
+          href={{ pathname: props.bubble.pathname, query: router.query }}
+        >
           <a className="flex items-center justify-center rounded-full bg-red-500 px-2 py-1 text-xs font-light text-white">
             {props.bubble.text}
           </a>
-        </Link>
+        </NextLink>
       ) : (
         <></>
       )}

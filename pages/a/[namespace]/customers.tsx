@@ -7,13 +7,12 @@ import isNil from "lodash/isNil";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
-import LinkBar, { Link } from "components/Settings/LinkBar";
-import NumberBadge from "components/App/NumberBadge";
-import CustomerTraitValue from "components/CustomerTrait/Value";
+import LinkBar, { Link } from "components/LinkBar";
+import CustomerTraitValue from "components/Customer/traits/Value";
 
 import useGetTeams from "client/getTeams";
-import useGetTeamThreads from "client/getTeamThreads";
 import useGetCustomers from "client/getCustomers";
+import AppHeaderThreadLink from "components/App/ThreadLink";
 
 export default function CustomerList() {
   const router = useRouter();
@@ -24,7 +23,6 @@ export default function CustomerList() {
   const currentTeam = teams?.find((t) => t.Namespace.namespace === namespace);
   const currentTeamId = currentTeam?.id;
 
-  const { data: threads } = useGetTeamThreads(currentTeamId);
   const { data: customers } = useGetCustomers(currentTeamId);
 
   const columns = uniq(
@@ -41,19 +39,7 @@ export default function CustomerList() {
 
       <AppHeader>
         <LinkBar hideBorder>
-          <Link href="/a/[namespace]/workspace">
-            <div className="flex items-center">
-              Threads
-              {threads && threads.length > 0 ? (
-                <NumberBadge
-                  count={threads?.length}
-                  className="bg-blue-500 text-white"
-                />
-              ) : (
-                <></>
-              )}
-            </div>
-          </Link>
+          <AppHeaderThreadLink />
           <Link href="/a/[namespace]/customers">
             <div className="flex items-center">Customers</div>
           </Link>
@@ -117,7 +103,7 @@ export default function CustomerList() {
                         >
                           <NextLink
                             href={{
-                              pathname: "/a/[namespace]/customer/[customerid]",
+                              pathname: "/a/[namespace]/customers/[customerid]",
                               query: {
                                 ...router.query,
                                 customerid: customer.id,
