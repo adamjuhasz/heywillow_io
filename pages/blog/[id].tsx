@@ -77,8 +77,8 @@ interface Props {
 }
 
 export default function Post(props: Props) {
-  console.log("props", props);
   const { postData } = props;
+
   return (
     <>
       <NextSeo

@@ -12,7 +12,6 @@ interface StaticProps {
 
 export async function getStaticProps() {
   const allPostsData = await getSortedPostsData(guidesDirectory);
-  console.log(allPostsData);
 
   return {
     props: {
