@@ -11,9 +11,9 @@ import { ArticleJsonLd, NextSeo } from "next-seo";
 
 import {
   Post as IPost,
+  blogDirectory,
   getAllPostIds,
   getPostData,
-  guidesDirectory,
 } from "static-build/posts";
 import LandingPageHeader from "components/LandingPage/Header";
 
@@ -22,7 +22,7 @@ interface Params extends ParsedUrlQuery {
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
-  const paths = getAllPostIds(guidesDirectory);
+  const paths = getAllPostIds(blogDirectory);
   return {
     paths: paths,
     fallback: false,
@@ -37,7 +37,7 @@ export async function getStaticProps({
   }
 
   try {
-    const postData = await getPostData(guidesDirectory, (params as Params).id);
+    const postData = await getPostData(blogDirectory, (params as Params).id);
 
     return {
       props: {
@@ -46,8 +46,9 @@ export async function getStaticProps({
     };
   } catch (e) {
     console.error(e);
-    return { notFound: true };
   }
+
+  return { notFound: true };
 }
 
 const colors = [
@@ -73,7 +74,9 @@ interface Props {
   postData: IPost;
 }
 
-export default function Post({ postData }: Props) {
+export default function Post(props: Props) {
+  console.log("props", props);
+  const { postData } = props;
   return (
     <>
       <NextSeo
@@ -194,7 +197,7 @@ export default function Post({ postData }: Props) {
           dateTime={postData.date}
           className="mt-2 w-full text-center text-sm text-zinc-400"
         >
-          Last updated: {format(new Date(postData.date), "LLLL d, yyyy")}
+          Written: {format(new Date(postData.date), "LLLL d, yyyy")}
         </time>
         <hr className="my-7 w-full max-w-2xl border-zinc-700" />
       </div>

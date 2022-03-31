@@ -5,6 +5,10 @@ date: "2022-03-08"
 author: "Adam Juhasz"
 ---
 
+It takes less than 5 minutes to get Willow working
+
+---
+
 ### Things you'll need before you can connect your team's email
 
 - [x] Access to you company's DNS to add a TXT and CNAME record
