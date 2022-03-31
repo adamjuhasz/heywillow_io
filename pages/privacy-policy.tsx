@@ -1,5 +1,7 @@
 import { NextSeo } from "next-seo";
+
 import LandingPageHeader from "components/LandingPage/Header";
+import LandingPageFooter from "components/LandingPage/Footer";
 
 export default function PP() {
   return (
@@ -258,6 +260,8 @@ export default function PP() {
           heyadam@heywillow.io{" "}
         </p>
       </div>
+
+      <LandingPageFooter />
     </>
   );
 }

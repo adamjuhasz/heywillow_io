@@ -1,5 +1,8 @@
 import { NextSeo } from "next-seo";
 
+import LandingPageHeader from "components/LandingPage/Header";
+import LandingPageFooter from "components/LandingPage/Footer";
+
 export default function TOS() {
   return (
     <>
@@ -7,7 +10,10 @@ export default function TOS() {
         title="Terms of Service"
         description="Willow's Terms of Service updated 23 February 2022"
       />
-      <div className="prose prose-invert mx-auto max-w-5xl">
+
+      <LandingPageHeader />
+
+      <div className="prose prose-invert mx-auto my-7 max-w-5xl">
         <h1 id="terms-of-service">Terms of Service</h1>
         <p>Last revised on 02/23/2022</p>
         <h3 id="the-gist">The Gist</h3>
@@ -380,6 +386,8 @@ export default function TOS() {
           conditions, power failures, and Internet disturbances.
         </p>
       </div>
+
+      <LandingPageFooter />
     </>
   );
 }
