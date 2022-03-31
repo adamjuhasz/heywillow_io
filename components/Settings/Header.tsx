@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import AppHeader from "components/App/HeaderHOC";
-import LinkBar, { Link } from "components/Settings/LinkBar";
+import LinkBar, { Link } from "components/LinkBar";
 
 export default function SettingsHeader() {
   const router = useRouter();

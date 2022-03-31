@@ -5,7 +5,7 @@ import {
   GetStaticPropsResult,
 } from "next";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import NextLink from "next/link";
 import uniqWith from "lodash/uniqWith";
 import orderBy from "lodash/orderBy";
 import { ParsedUrlQuery } from "querystring";
@@ -14,10 +14,10 @@ import AppContainer from "components/App/Container";
 import StickyBase from "components/App/Header/StickyBase";
 import TeamSelector from "components/App/Header/TeamSelector";
 import WillowLogo from "components/Logo";
-import TopLink from "components/App/Header/TopLink";
+import { Link } from "components/LinkBar";
 import HeaderContainer from "components/App/Header/HeaderContainer";
 import DashboardTableTop from "components/Workspace/TableTop";
-import LinkBar, { Link as LinkBarLink } from "components/Settings/LinkBar";
+import LinkBar, { Link as LinkBarLink } from "components/LinkBar";
 import AppLayout from "layouts/app";
 import NumberBadge from "components/App/NumberBadge";
 import { threads as demoThreads } from "data/Demo/Threads";
@@ -66,9 +66,9 @@ export default function DemoDashboard(props: Props) {
       <div className="flex justify-center bg-blue-500 py-1 text-white">
         <div>
           Demo data — Ready to get started?{" "}
-          <Link href="/signup">
+          <NextLink href="/signup">
             <a className="underline">Sign up here</a>
-          </Link>
+          </NextLink>
         </div>
       </div>
 
@@ -76,11 +76,11 @@ export default function DemoDashboard(props: Props) {
         <AppContainer>
           <HeaderContainer>
             <div className="flex h-full items-center sm:space-x-1 ">
-              <Link href="/">
+              <NextLink href="/">
                 <a className="hidden shrink-0 items-center sm:flex">
                   <WillowLogo className="h-5 w-5 shrink-0" />
                 </a>
-              </Link>
+              </NextLink>
 
               <TeamSelector
                 teams={Teams}
@@ -91,9 +91,9 @@ export default function DemoDashboard(props: Props) {
 
             <div className="flex h-full items-center space-x-4 ">
               <Avatar str={""} className="h-6 w-6" />
-              <TopLink exact href="/signup">
+              <Link exact href="/signup">
                 Sign up
-              </TopLink>
+              </Link>
             </div>
           </HeaderContainer>
         </AppContainer>

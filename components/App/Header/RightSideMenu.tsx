@@ -1,6 +1,6 @@
 import Avatar from "components/Avatar";
 import { useUser } from "components/UserContext";
-import TopLink from "components/App/Header/TopLink";
+import { Link } from "components/LinkBar";
 
 export default function RightSideMenu() {
   const { user } = useUser();
@@ -8,9 +8,9 @@ export default function RightSideMenu() {
   return (
     <>
       <Avatar str={user?.email || ""} className="h-6 w-6" />
-      <TopLink exact href="/a/logout" className="hidden sm:flex">
+      <Link exact href="/a/logout" className="hidden sm:flex">
         Logout
-      </TopLink>
+      </Link>
     </>
   );
 }

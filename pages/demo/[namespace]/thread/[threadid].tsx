@@ -1,5 +1,5 @@
 import { ReactElement, useContext, useState } from "react";
-import Link from "next/link";
+import NextLink from "next/link";
 import Head from "next/head";
 import ArrowLeftIcon from "@heroicons/react/solid/ArrowLeftIcon";
 import MenuIcon from "@heroicons/react/solid/MenuIcon";
@@ -12,7 +12,7 @@ import HeaderContainer from "components/App/Header/HeaderContainer";
 import WillowLogo from "components/Logo";
 import TeamSelector from "components/App/Header/TeamSelector";
 import Avatar from "components/Avatar";
-import TopLink from "components/App/Header/TopLink";
+import { Link } from "components/LinkBar";
 import InputWithRef from "components/Input";
 import ToastContext from "components/Toast";
 import RightSidebar from "components/Thread/RightSidebar";
@@ -133,13 +133,13 @@ export default function ThreadViewer(props: Props) {
   ];
 
   const backButton = (
-    <Link href={workspace}>
+    <NextLink href={workspace}>
       <a className="block rounded-full hover:shadow-zinc-900">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700 text-zinc-400 hover:bg-zinc-500 hover:text-zinc-200 hover:shadow-lg ">
           <ArrowLeftIcon className="h-6 w-6" />
         </div>
       </a>
-    </Link>
+    </NextLink>
   );
 
   const rightSideBar = (
@@ -165,9 +165,9 @@ export default function ThreadViewer(props: Props) {
       <div className="flex h-8 justify-center bg-blue-500 py-1 text-white">
         <div>
           Demo data — Ready to get started?{" "}
-          <Link href="/signup">
+          <NextLink href="/signup">
             <a className="underline">Sign up here</a>
-          </Link>
+          </NextLink>
         </div>
       </div>
 
@@ -175,11 +175,11 @@ export default function ThreadViewer(props: Props) {
         <AppContainer>
           <HeaderContainer>
             <div className="flex h-full items-center sm:space-x-1">
-              <Link href="/">
+              <NextLink href="/">
                 <a className="hidden items-center sm:flex">
                   <WillowLogo className="h-5 w-5 shrink-0" />
                 </a>
-              </Link>
+              </NextLink>
 
               <TeamSelector
                 teams={teams}
@@ -190,9 +190,9 @@ export default function ThreadViewer(props: Props) {
 
             <div className="flex h-full items-center space-x-4 ">
               <Avatar str={""} className="h-6 w-6" />
-              <TopLink exact href="/signup">
+              <Link exact href="/signup">
                 Sign up
-              </TopLink>
+              </Link>
             </div>
           </HeaderContainer>
         </AppContainer>
