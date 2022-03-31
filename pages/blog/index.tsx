@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getSortedPostsData, guidesDirectory } from "static-build/guides";
+import { blogDirectory, getSortedPostsData } from "static-build/guides";
 
 interface StaticProps {
   allPostsData: { id: string; date: string; title: string }[];
@@ -7,7 +7,7 @@ interface StaticProps {
 
 // eslint-disable-next-line require-await
 export async function getStaticProps() {
-  const allPostsData = getSortedPostsData(guidesDirectory);
+  const allPostsData = getSortedPostsData(blogDirectory);
   return {
     props: {
       allPostsData,

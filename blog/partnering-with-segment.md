@@ -5,4 +5,10 @@ date: "2022-03-25"
 author: "Adam Juhasz"
 ---
 
-## Fast connection
+## Context == Speed
+
+At Willow we believe that context is missing from customer support. Without in the right place context problems either take too long to get solved or
+
+## Partnering with Segment
+
+We're happy to be partnering with Segment to get your customer data into Willow. By connecting Willow as a destination for your Segment sources we'll start showing your customers actions, events, and traits in lifetime view of each customer.
