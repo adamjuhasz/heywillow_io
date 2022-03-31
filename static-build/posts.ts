@@ -17,32 +17,25 @@ export interface PostData {
   title: string;
   description: string;
   excerpt: string;
+  author?: string;
 }
 
-export function getSortedPostsData(directory: string): PostData[] {
+export interface Post extends PostData {
+  contentHtml: string;
+  excerptHtml: string;
+}
+
+export async function getSortedPostsData(directory: string): Promise<Post[]> {
   // Get file names under /posts
   const fileNames = fs.readdirSync(directory);
-  const allPostsData = fileNames.map((fileName) => {
-    // Remove ".md" from file name to get id
-    const id = fileName.replace(/\.md$/, "");
+  const allPostsData = await Promise.all(
+    fileNames.map(async (fileName) => {
+      // Remove ".md" from file name to get id
+      const id = fileName.replace(/\.md$/, "");
 
-    // Read markdown file as string
-    const fullPath = path.join(directory, fileName);
-    const fileContents = fs.readFileSync(fullPath, "utf8");
-
-    // Use gray-matter to parse the post metadata section
-    const { data, excerpt } = matter(fileContents, { excerpt: true });
-
-    const formattedDate = format(new Date(data.date), "PPPP");
-
-    // Combine the data with the id
-    return {
-      ...data,
-      id,
-      formattedDate: formattedDate,
-      excerpt: excerpt,
-    } as PostData;
-  });
+      return getPostData(directory, id);
+    })
+  );
 
   // Sort posts by date
   return orderBy(allPostsData, ["date"], ["desc"]);
@@ -73,12 +66,15 @@ export function getAllPostIds(directory: string) {
   });
 }
 
-export async function getPostData(directory: string, id: string) {
+export async function getPostData(
+  directory: string,
+  id: string
+): Promise<Post> {
   const fullPath = path.join(directory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
 
   // Use gray-matter to parse the post metadata section
-  const matterResult = matter(fileContents);
+  const matterResult = matter(fileContents, { excerpt: true });
 
   // Use remark to convert markdown into HTML string
   const processedContent = await remark()
@@ -87,10 +83,21 @@ export async function getPostData(directory: string, id: string) {
     .process(matterResult.content);
   const contentHtml = processedContent.toString();
 
+  const excerpt = await remark()
+    .use(html)
+    .use(remarkGfm)
+    .process(matterResult.excerpt || "");
+  const excerptHtml = excerpt.toString();
+
+  const formattedDate = format(new Date(matterResult.data.date), "PPPP");
+
   // Combine the data with the id and contentHtml
   return {
+    ...matterResult.data,
+    formattedDate: formattedDate,
     id,
     contentHtml,
-    ...matterResult.data,
-  };
+    excerptHtml,
+    excerpt: matterResult.excerpt || "",
+  } as Post;
 }

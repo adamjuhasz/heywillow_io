@@ -9,7 +9,12 @@ import format from "date-fns/format";
 import sample from "lodash/sample";
 import { ArticleJsonLd, NextSeo } from "next-seo";
 
-import { blogDirectory, getAllPostIds, getPostData } from "static-build/posts";
+import {
+  Post as IPost,
+  blogDirectory,
+  getAllPostIds,
+  getPostData,
+} from "static-build/posts";
 import LandingPageHeader from "components/LandingPage/Header";
 
 interface Params extends ParsedUrlQuery {
@@ -66,7 +71,7 @@ const colors = [
 ];
 
 interface Props {
-  postData: Record<string, string>;
+  postData: IPost;
 }
 
 export default function Post(props: Props) {
@@ -93,7 +98,7 @@ export default function Post(props: Props) {
         title={postData.title}
         images={[]}
         datePublished={postData.date}
-        authorName={postData.author}
+        authorName={postData.author || ""}
         description={postData.description}
       />
       <Head>

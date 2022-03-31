@@ -1,21 +1,17 @@
 import Link from "next/link";
 import { NextSeo } from "next-seo";
 
-import {
-  PostData,
-  blogDirectory,
-  getSortedPostsData,
-} from "static-build/posts";
+import { Post, blogDirectory, getSortedPostsData } from "static-build/posts";
 
 import LandingPageHeader from "components/LandingPage/Header";
 
 interface StaticProps {
-  allPostsData: PostData[];
+  allPostsData: Post[];
 }
 
 // eslint-disable-next-line require-await
 export async function getStaticProps() {
-  const allPostsData = getSortedPostsData(blogDirectory);
+  const allPostsData = await getSortedPostsData(blogDirectory);
   return {
     props: {
       allPostsData: allPostsData.filter(

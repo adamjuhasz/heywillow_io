@@ -6,7 +6,7 @@ updated: "2022-03-05"
 author: "Adam Juhasz"
 ---
 
-We'll help you get email forwarding set up using Gmail's forwarding rules
+We'll help you get email forwarding set up using **Gmail's forwarding rules**
 
 ---
 

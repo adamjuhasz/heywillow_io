@@ -10,6 +10,7 @@ import sample from "lodash/sample";
 import { ArticleJsonLd, NextSeo } from "next-seo";
 
 import {
+  Post as IPost,
   getAllPostIds,
   getPostData,
   guidesDirectory,
@@ -69,7 +70,7 @@ const colors = [
 ];
 
 interface Props {
-  postData: Record<string, string>;
+  postData: IPost;
 }
 
 export default function Post({ postData }: Props) {
@@ -94,7 +95,7 @@ export default function Post({ postData }: Props) {
         title={postData.title}
         images={[]}
         datePublished={postData.date}
-        authorName={postData.author}
+        authorName={postData.author || ""}
         description={postData.description}
       />
       <Head>
