@@ -45,6 +45,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<FullReturn>) {
   }
 
   const body = req.body as Body;
+  const normalizedEmail = body.inviteeEmail.toLowerCase();
 
   const membership = await prisma.teamMember.findFirst({
     where: { teamId: body.teamId, profileId: user.id },
@@ -58,7 +59,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<FullReturn>) {
   const invite = await prisma.teamInvite.create({
     data: {
       teamId: membership.teamId,
-      emailAddress: body.inviteeEmail,
+      emailAddress: normalizedEmail,
       status: "pending",
       inviterId: membership.id,
     },
@@ -74,25 +75,25 @@ async function handler(req: NextApiRequest, res: NextApiResponse<FullReturn>) {
   );
 
   const ourEmails = invite.Team.Inboxes.map((i) => i.emailAddress);
-  if (some(ourEmails, (e) => e === body.inviteeEmail)) {
+  if (some(ourEmails, (e) => e === normalizedEmail)) {
     await logger.error(
-      `Was going to send to self "${body.inviteeEmail}" is in [${ourEmails.join(
+      `Was going to send to self "${normalizedEmail}" is in [${ourEmails.join(
         ", "
       )}]`,
-      { ourEmails, inviteeEmail: body.inviteeEmail }
+      { ourEmails, inviteeEmail: normalizedEmail }
     );
     return;
   }
 
   await sendPostmarkEmail({
-    to: body.inviteeEmail,
+    to: normalizedEmail,
     subject: `Your invited to join ${membership.Team.name} on Willow`,
     htmlBody: [
       `<strong>Hello!</strong>`,
       `<br>`,
       "<h1>You're invited to join a team on Willow</h1>",
       `<p>Willow is a new customer support tool and you're invited to join the ${membership.Team.name} team to help make customers super happy</p>`,
-      `<p><a href="https://${process.env.DOMAIN}/signup?email=${body.inviteeEmail}">Sign up</a></p>`,
+      `<p><a href="https://${process.env.DOMAIN}/signup?email=${normalizedEmail}">Sign up</a></p>`,
       `<p>More info about <a href="https://${process.env.DOMAIN}">Willow</a></p>`,
     ],
     textBody: [
@@ -100,7 +101,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<FullReturn>) {
       ``,
       "You're invited to join a team on Willow",
       `Willow is a new customer support tool and you're invited to join the ${membership.Team.name} team to help make customers super happy`,
-      `Sign up: https://${process.env.DOMAIN}/signup?email=${body.inviteeEmail}`,
+      `Sign up: https://${process.env.DOMAIN}/signup?email=${normalizedEmail}`,
       `Get more info at https://${process.env.DOMAIN}`,
     ],
   });
