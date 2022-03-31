@@ -5,6 +5,7 @@ import type { Prisma } from "@prisma/client";
 import isString from "lodash/isString";
 import isNil from "lodash/isNil";
 import { formatDistanceToNow } from "date-fns";
+import Head from "next/head";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
@@ -48,6 +49,9 @@ export default function Customer() {
 
   return (
     <>
+      <Head>
+        <title>{name !== "" ? `${name} on Willow` : "Willow"}</title>
+      </Head>
       <AppHeader>
         <LinkBar hideBorder>
           <AppHeaderThreadLink />
@@ -162,11 +166,11 @@ export default function Customer() {
               </div>
 
               <div className="flex w-1/2 flex-col px-2">
-                <div className="flex flex-col rounded-md border border-zinc-600 p-4">
+                <div className="flex flex-col rounded-md border border-zinc-600 p-4 text-sm">
                   <div className="mb-3 text-xl">Threads</div>
                   {thread ? (
                     thread.length === 0 ? (
-                      <div className="text-sm text-zinc-400">None yet</div>
+                      <div className="text-zinc-400">None yet</div>
                     ) : (
                       thread.map((t) => (
                         <div key={t.id}>
@@ -188,30 +192,37 @@ export default function Customer() {
 
                 <div className="flex flex-col rounded-md border border-zinc-600 p-4 text-sm">
                   <div className="mb-3 text-xl">Journey</div>
-                  {customer.CustomerEvent.map((e, idx, arr) => (
-                    <div key={e.id} className="relative flex items-center">
-                      {idx !== 0 ? (
-                        <div className="absolute top-0 ml-[3.5px] h-[calc(50%_-_0.23rem)] w-[1px] bg-zinc-400" />
-                      ) : (
-                        <></>
-                      )}
-                      <div className="mr-2 h-2 w-2 rounded-full border-2 border-zinc-400 bg-zinc-900" />
-                      <div className="my-0.5">
-                        {e.action}{" "}
-                        <span className="text-zinc-500">
-                          •{" "}
-                          {formatDistanceToNow(new Date(e.createdAt), {
-                            addSuffix: true,
-                          })}
-                        </span>
+                  {customer.CustomerEvent.length === 0 ? (
+                    <div className="text-zinc-400">None yet</div>
+                  ) : (
+                    customer.CustomerEvent.map((e, idx, arr) => (
+                      <div key={e.id} className="relative flex items-center">
+                        {idx !== 0 ? (
+                          <div className="absolute top-0 ml-[3.5px] h-[calc(50%_-_0.23rem)] w-[1px] bg-zinc-400" />
+                        ) : (
+                          <></>
+                        )}
+
+                        <div className="mr-2 h-2 w-2 rounded-full border-2 border-zinc-400 bg-zinc-900" />
+
+                        <div className="my-0.5">
+                          {e.action}{" "}
+                          <span className="text-zinc-500">
+                            •{" "}
+                            {formatDistanceToNow(new Date(e.createdAt), {
+                              addSuffix: true,
+                            })}
+                          </span>
+                        </div>
+
+                        {idx !== arr.length - 1 ? (
+                          <div className="absolute bottom-0 ml-[3.5px] h-[calc(50%_-_0.23rem)] w-[1px] bg-zinc-400" />
+                        ) : (
+                          <></>
+                        )}
                       </div>
-                      {idx !== arr.length - 1 ? (
-                        <div className="absolute bottom-0 ml-[3.5px] h-[calc(50%_-_0.23rem)] w-[1px] bg-zinc-400" />
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
