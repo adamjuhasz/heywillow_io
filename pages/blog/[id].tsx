@@ -19,7 +19,7 @@ interface Params extends ParsedUrlQuery {
 export async function getStaticPaths(): Promise<GetStaticPathsResult<Params>> {
   const paths = getAllPostIds(blogDirectory);
   return {
-    paths: [...paths, { params: { id: "[id]" } }],
+    paths: paths,
     fallback: false,
   };
 }
@@ -29,16 +29,6 @@ export async function getStaticProps({
 }: GetStaticPropsContext<Params>): Promise<GetStaticPropsResult<Props>> {
   if (params === undefined) {
     return { notFound: true };
-  }
-
-  if (params.id === "[id]") {
-    const paths = getAllPostIds(blogDirectory);
-    const postData = await getPostData(blogDirectory, paths[0].params.id);
-    return {
-      props: {
-        postData,
-      },
-    };
   }
 
   try {
