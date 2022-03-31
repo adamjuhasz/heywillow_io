@@ -2,7 +2,7 @@ import subDays from "date-fns/subDays";
 import type { MessageDirection } from "@prisma/client";
 
 import type { DemoThread } from "data/Demo/Types";
-import { onboarding1Customer } from "data/Demo/AliasEmails";
+import { onboarding1Alias } from "data/Demo/AliasEmails";
 import { stealthAIInbox } from "data/Demo/Inboxes";
 
 export const onboarding1: DemoThread = {
@@ -10,7 +10,7 @@ export const onboarding1: DemoThread = {
   createdAt: subDays(new Date(), 180).toISOString(),
   updatedAt: subDays(new Date(), 180).toISOString(),
   teamId: 0,
-  aliasEmailId: onboarding1Customer.id,
+  aliasEmailId: onboarding1Alias.id,
   inboxId: stealthAIInbox.id,
   Message: [
     {
@@ -19,7 +19,7 @@ export const onboarding1: DemoThread = {
       id: 1,
       createdAt: subDays(new Date(), 180).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: onboarding1Customer,
+      AliasEmail: onboarding1Alias,
       subject: "What are threads?",
       text: [
         {
@@ -83,7 +83,7 @@ export const onboarding1: DemoThread = {
       TeamMember: null,
     },
   ],
-  AliasEmail: onboarding1Customer,
+  AliasEmail: onboarding1Alias,
   Inbox: stealthAIInbox,
   ThreadState: [],
 };

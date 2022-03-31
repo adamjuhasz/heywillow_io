@@ -3,7 +3,7 @@ import type { MessageDirection } from "@prisma/client";
 
 import textToSlate from "shared/slate/textToSlate";
 import type { DemoThread } from "data/Demo/Types";
-import { onboarding3Customer } from "data/Demo/AliasEmails";
+import { onboarding3Alias } from "data/Demo/AliasEmails";
 import { stealthAIInbox } from "data/Demo/Inboxes";
 import {
   abeoTeamMember,
@@ -16,7 +16,7 @@ export const onboarding3ThreadOne: DemoThread = {
   createdAt: subDays(new Date(), 100).toISOString(),
   updatedAt: subDays(new Date(), 100).toISOString(),
   teamId: 0,
-  aliasEmailId: onboarding3Customer.id,
+  aliasEmailId: onboarding3Alias.id,
   inboxId: stealthAIInbox.id,
   Message: [
     {
@@ -25,7 +25,7 @@ export const onboarding3ThreadOne: DemoThread = {
       id: 1,
       createdAt: subDays(new Date(), 100).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: onboarding3Customer,
+      AliasEmail: onboarding3Alias,
       subject: "Built in commenting",
       text: textToSlate(
         [
@@ -84,7 +84,7 @@ export const onboarding3ThreadOne: DemoThread = {
       TeamMember: abeoTeamMember,
     },
   ],
-  AliasEmail: onboarding3Customer,
+  AliasEmail: onboarding3Alias,
   Inbox: stealthAIInbox,
   ThreadState: [],
 };

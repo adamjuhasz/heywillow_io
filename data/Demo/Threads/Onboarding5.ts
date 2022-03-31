@@ -3,7 +3,7 @@ import type { MessageDirection } from "@prisma/client";
 
 import textToSlate from "shared/slate/textToSlate";
 import type { DemoThread } from "data/Demo/Types";
-import { onboarding5Customer } from "data/Demo/AliasEmails";
+import { onboarding5Alias } from "data/Demo/AliasEmails";
 import { stealthAIInbox } from "data/Demo/Inboxes";
 import { abeoTeamMember } from "../TeamMembers";
 
@@ -12,7 +12,7 @@ export const onboarding5ThreadOne: DemoThread = {
   createdAt: subDays(new Date(), 70).toISOString(),
   updatedAt: subDays(new Date(), 70).toISOString(),
   teamId: 0,
-  aliasEmailId: onboarding5Customer.id,
+  aliasEmailId: onboarding5Alias.id,
   inboxId: stealthAIInbox.id,
   Message: [
     {
@@ -21,7 +21,7 @@ export const onboarding5ThreadOne: DemoThread = {
       id: 1,
       createdAt: subDays(new Date(), 3).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: onboarding5Customer,
+      AliasEmail: onboarding5Alias,
       subject: "Events give context",
       text: textToSlate(
         [
@@ -38,7 +38,7 @@ export const onboarding5ThreadOne: DemoThread = {
       id: 2,
       createdAt: subDays(new Date(), 1).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: onboarding5Customer,
+      AliasEmail: onboarding5Alias,
       subject: "Help with sign up",
       text: textToSlate(
         [
@@ -66,7 +66,7 @@ export const onboarding5ThreadOne: DemoThread = {
       TeamMember: abeoTeamMember,
     },
   ],
-  AliasEmail: onboarding5Customer,
+  AliasEmail: onboarding5Alias,
   Inbox: stealthAIInbox,
   ThreadState: [],
 };

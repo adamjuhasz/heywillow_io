@@ -3,7 +3,7 @@ import type { MessageDirection } from "@prisma/client";
 
 import textToSlate from "shared/slate/textToSlate";
 import type { DemoThread } from "data/Demo/Types";
-import { onboarding2Customer } from "data/Demo/AliasEmails";
+import { onboarding2Alias } from "data/Demo/AliasEmails";
 import { stealthAIInbox } from "data/Demo/Inboxes";
 import { adamTeamMember, eileenTeamMember } from "data/Demo/TeamMembers";
 
@@ -12,7 +12,7 @@ export const onboarding2ThreadOne: DemoThread = {
   createdAt: subDays(new Date(), 150).toISOString(),
   updatedAt: subDays(new Date(), 150).toISOString(),
   teamId: 0,
-  aliasEmailId: onboarding2Customer.id,
+  aliasEmailId: onboarding2Alias.id,
   inboxId: stealthAIInbox.id,
   Message: [
     {
@@ -21,7 +21,7 @@ export const onboarding2ThreadOne: DemoThread = {
       id: 1,
       createdAt: subDays(new Date(), 152).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: onboarding2Customer,
+      AliasEmail: onboarding2Alias,
       subject: "A Previous thread",
       text: textToSlate(
         [
@@ -65,7 +65,7 @@ export const onboarding2ThreadOne: DemoThread = {
       TeamMember: eileenTeamMember,
     },
   ],
-  AliasEmail: onboarding2Customer,
+  AliasEmail: onboarding2Alias,
   Inbox: stealthAIInbox,
   ThreadState: [
     {
@@ -88,7 +88,7 @@ export const onboarding2ThreadTwo: DemoThread = {
   createdAt: subDays(new Date(), 129).toISOString(),
   updatedAt: subDays(new Date(), 120).toISOString(),
   teamId: 0,
-  aliasEmailId: onboarding2Customer.id,
+  aliasEmailId: onboarding2Alias.id,
   inboxId: stealthAIInbox.id,
   Message: [
     {
@@ -97,7 +97,7 @@ export const onboarding2ThreadTwo: DemoThread = {
       id: 1,
       createdAt: subDays(new Date(), 120).toISOString(),
       direction: "incoming" as MessageDirection,
-      AliasEmail: onboarding2Customer,
+      AliasEmail: onboarding2Alias,
       subject: "What's this Lifetime View?",
       text: textToSlate(
         [
@@ -125,7 +125,7 @@ export const onboarding2ThreadTwo: DemoThread = {
       TeamMember: adamTeamMember,
     },
   ],
-  AliasEmail: onboarding2Customer,
+  AliasEmail: onboarding2Alias,
   Inbox: stealthAIInbox,
   ThreadState: [],
 };
