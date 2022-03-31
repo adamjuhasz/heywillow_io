@@ -4,6 +4,7 @@ import { NextSeo } from "next-seo";
 import { Post, blogDirectory, getSortedPostsData } from "static-build/posts";
 
 import LandingPageHeader from "components/LandingPage/Header";
+import LandingPageFooter from "components/LandingPage/Footer";
 
 interface StaticProps {
   allPostsData: Post[];
@@ -49,7 +50,7 @@ export default function Blog(props: StaticProps) {
                 dateTime={post.date}
                 className="mb-3 font-light text-zinc-400"
               >
-                {post.formattedDate}
+                {post.formattedDate.endsWith}
               </time>
               <Link href={`/guides/${post.id}`}>
                 <a className="mb-3 text-2xl text-zinc-100 hover:underline">
@@ -68,6 +69,8 @@ export default function Blog(props: StaticProps) {
           ))}
         </ul>
       </div>
+
+      <LandingPageFooter />
     </>
   );
 }

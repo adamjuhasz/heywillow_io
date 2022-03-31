@@ -15,7 +15,9 @@ import {
   getAllPostIds,
   getPostData,
 } from "static-build/posts";
+
 import LandingPageHeader from "components/LandingPage/Header";
+import LandingPageFooter from "components/LandingPage/Footer";
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -213,6 +215,8 @@ export default function Post(props: Props) {
       >
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
       </article>
+
+      <LandingPageFooter />
     </>
   );
 }

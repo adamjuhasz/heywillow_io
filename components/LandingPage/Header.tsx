@@ -22,7 +22,7 @@ export default function LandingPageHeader(props: Props) {
         ].join(" ")}
       >
         <div className="flex items-center text-2xl font-medium">
-          <Link href="/">
+          <Link href="/" prefetch={false}>
             <a className="flex items-center">
               <WillowLogo className="mr-2 h-5 w-5 shrink-0" /> Willow
             </a>
@@ -30,18 +30,18 @@ export default function LandingPageHeader(props: Props) {
         </div>
 
         <div className="flex items-center space-x-4 text-sm font-normal">
-          <Link href="/guides/onboarding-checklist">
+          <Link href="/guides/onboarding-checklist" prefetch={false}>
             <a className="text-zinc-500 hover:text-zinc-100 ">Try demo</a>
           </Link>
-          <Link href="mailto:help@heywillow.io">
+          <Link href="mailto:help@heywillow.io" prefetch={false}>
             <a className="hidden text-zinc-500 hover:text-zinc-100 sm:block">
               Contact us
             </a>
           </Link>
-          <Link href="/login">
+          <Link href="/login" prefetch={false}>
             <a className="text-zinc-500 hover:text-zinc-100">Login</a>
           </Link>
-          <Link href="/signup">
+          <Link href="/signup" prefetch={false}>
             <a className="rounded-md border-2 border-transparent bg-zinc-100 px-3 py-2 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
               Sign Up
             </a>

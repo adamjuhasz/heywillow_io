@@ -4,6 +4,7 @@ import { NextSeo } from "next-seo";
 import { Post, getSortedPostsData, guidesDirectory } from "static-build/posts";
 
 import LandingPageHeader from "components/LandingPage/Header";
+import LandingPageFooter from "components/LandingPage/Footer";
 
 interface StaticProps {
   allPostsData: Post[];
@@ -80,6 +81,8 @@ export default function Blog(props: StaticProps) {
           ))}
         </ul>
       </div>
+
+      <LandingPageFooter />
     </>
   );
 }
