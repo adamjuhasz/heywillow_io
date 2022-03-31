@@ -67,6 +67,13 @@ export default function LandingPageFooter() {
         <div className="col-span-1 flex flex-col md:col-span-2">
           <div className="font-medium text-zinc-100">Company</div>
           <div className="">
+            <Link href="/" prefetch={false}>
+              <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
+                Home
+              </a>
+            </Link>
+          </div>
+          <div className="">
             <Link href="/privacy-policy" prefetch={false}>
               <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
                 Privacy Policy
