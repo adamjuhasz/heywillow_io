@@ -159,7 +159,7 @@ export default function ThreadViewer(props: Props) {
       </Head>
 
       <DemoHeader
-        threadCount={threads.length}
+        threadCount={uniqThreads.length}
         teams={teams}
         namespace={props.namespace}
       />

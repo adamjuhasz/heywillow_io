@@ -3,8 +3,10 @@ import NextLink from "next/link";
 import isNil from "lodash/isNil";
 import { useRouter } from "next/router";
 import type { Prisma } from "@prisma/client";
+import intersection from "lodash/intersection";
 
 import CustomerTraitValue from "components/Customer/traits/Value";
+import reservedCols from "components/Customer/traits/reserved";
 
 interface MiniTrait {
   key: string;
@@ -25,9 +27,11 @@ interface Props {
 export default function CustomerListTable(props: Props) {
   const router = useRouter();
 
-  const columns = uniq(
+  const allColumns = uniq(
     props.customers.flatMap((c) => c.CustomerTrait.map((t) => t.key))
   ).sort();
+
+  const selectedColumns = intersection(reservedCols, allColumns).splice(0, 8);
 
   return (
     <div className="mt-8 flex flex-col">
@@ -43,20 +47,20 @@ export default function CustomerListTable(props: Props) {
                   scope="col"
                   className={[
                     "rounded-l-md border-t border-l border-b border-zinc-600 p-3",
-                    columns.length === 0
+                    selectedColumns.length === 0
                       ? "rounded-r-md border-r"
                       : "border-r-0",
                   ].join(" ")}
                 >
                   id
                 </th>
-                {columns.map((col, idx) => (
+                {selectedColumns.map((col, idx, arr) => (
                   <th
                     key={col}
                     scope="col"
                     className={[
                       "border-b border-t border-l-0 border-zinc-600 p-3 ",
-                      idx === columns.length - 1
+                      idx === arr.length - 1
                         ? "rounded-r-md border-r"
                         : "border-r-0",
                     ].join(" ")}
@@ -94,7 +98,7 @@ export default function CustomerListTable(props: Props) {
                       </a>
                     </NextLink>
                   </td>
-                  {columns.map((col) => {
+                  {selectedColumns.map((col) => {
                     const value = customer.CustomerTrait.find(
                       (ct) => ct.key === col
                     )?.value;
