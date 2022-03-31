@@ -37,9 +37,12 @@ export default function Blog(props: StaticProps) {
 
       <div className="mx-auto max-w-4xl">
         <ul className="before:">
-          {props.allPostsData.map((post) => (
+          {props.allPostsData.map((post, idx, arr) => (
             <li
-              className="mb-7 flex flex-col border-b border-zinc-600 pb-3"
+              className={[
+                "mb-7 flex flex-col  pb-3",
+                idx !== arr.length - 1 ? "border-b border-zinc-600" : "",
+              ].join(" ")}
               key={post.id}
             >
               <time
