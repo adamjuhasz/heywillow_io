@@ -14,15 +14,13 @@ export default async function postNewMessage(threadId: number, options: Body) {
     case 200: {
       const body = (await res.json()) as Return;
 
-      trackEvent("Message Posted");
+      trackEvent("Message Posted", { threadId: threadId });
 
       return body;
     }
 
     default: {
-      const body = await res.json();
-      body.status = res.status;
-      throw body;
+      throw new Error(`Received ${res.status} from ${res.url}`);
     }
   }
 }

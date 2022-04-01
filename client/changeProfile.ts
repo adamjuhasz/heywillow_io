@@ -1,8 +1,8 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { useSWRConfig } from "swr";
 
 import { useSupabase } from "components/UserContext";
-import { SupabaseProfile } from "types/supabase";
+import type { SupabaseProfile } from "types/supabase";
 import { path } from "client/getProfile";
 import { identify } from "hooks/useIdentify";
 import { trackEvent } from "hooks/useTrackEvent";

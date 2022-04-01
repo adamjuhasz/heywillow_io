@@ -8,10 +8,11 @@ import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsBox from "components/Settings/Box/Box";
 import SettingsHeader from "components/Settings/Header";
 import AppContainer from "components/App/Container";
-import type { RequestBody } from "pages/api/v1/apikey/create";
-import useGetTeamId from "client/getTeamId";
 import Loading from "components/Loading";
+
+import useGetTeamId from "client/getTeamId";
 import useGetAPIKeys from "client/getApiKeys";
+import createAPIKey from "client/createApiKey";
 
 export default function TeamBilling(): JSX.Element {
   const teamId = useGetTeamId();
@@ -23,28 +24,7 @@ export default function TeamBilling(): JSX.Element {
       throw new Error("no team id");
     }
 
-    const body: RequestBody = {
-      teamId: teamId,
-    };
-
-    const res = await fetch("/api/v1/apikey/create", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    switch (res.status) {
-      case 200: {
-        return;
-      }
-
-      default:
-        console.error("Could not generate new api key");
-        throw new Error("Could not generate new api key");
-    }
+    await createAPIKey(teamId);
   };
 
   return (

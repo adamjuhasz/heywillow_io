@@ -146,7 +146,7 @@ export default function Message(props: Props) {
           </div>
           {props.message.MessageError.length > 0 ? (
             <div
-              className="my-0.5 rounded-md bg-red-900 bg-opacity-40 px-1.5 text-xs text-red-600"
+              className="my-0.5 w-fit rounded-md bg-red-900 bg-opacity-40 px-1.5 text-xs text-red-600"
               title={props.message.MessageError[0].errorMessage}
             >
               <ExclamationIcon className="inline h-3 w-3" />{" "}

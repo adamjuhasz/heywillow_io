@@ -1,9 +1,9 @@
 import { useDebugValue } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 import uniq from "lodash/uniq";
 
-import {
+import type {
   SupabaseAliasEmail,
   SupabaseAttachment,
   SupabaseComment,
