@@ -24,6 +24,10 @@ export default function DemoHeader(props: Props) {
           Demo data — Ready to get started?{" "}
           <NextLink href="/signup">
             <a className="underline">Sign up here</a>
+          </NextLink>{" "}
+          or{" "}
+          <NextLink href="/signup">
+            <a className="underline">Go Home</a>
           </NextLink>
         </div>
       </div>

@@ -236,7 +236,11 @@ export default function ThreadViewer() {
             />
 
             <div className="shrink-0 pb-2">
-              <InputWithRef submit={submitMessage} />
+              <InputWithRef
+                submit={submitMessage}
+                placeholder="Reply to customer..."
+                buttonText="Send"
+              />
             </div>
           </div>
 

@@ -218,6 +218,8 @@ export default function ThreadViewer(props: Props) {
                 submit={async () => {
                   return;
                 }}
+                placeholder="Reply to customer..."
+                buttonText="Send"
               />
             </div>
           </div>

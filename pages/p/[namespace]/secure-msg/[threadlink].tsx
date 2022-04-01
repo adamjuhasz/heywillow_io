@@ -154,6 +154,8 @@ export default function ThreadId(props: ServerSideProps) {
       </ul>
       <div className="shrink-0 pb-1">
         <Input
+          placeholder="What would you like to securely send to us?"
+          buttonText="Send secure message"
           submit={async (t) => {
             try {
               const body: Body = {

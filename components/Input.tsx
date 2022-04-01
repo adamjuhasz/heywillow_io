@@ -5,8 +5,8 @@ import TextareaAutosize from "react-textarea-autosize";
 interface Props {
   defaultValue?: string;
   submit: (_t: string) => Promise<unknown>;
-  buttonText?: string;
-  placeholder?: string;
+  buttonText: string;
+  placeholder: string;
 }
 
 const InputWithRef = forwardRef<HTMLDivElement, Props>(function Input(
