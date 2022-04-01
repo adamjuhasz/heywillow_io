@@ -114,7 +114,10 @@ export default function Vercel(): JSX.Element {
       </Head>
       <LandingPageHeader />
 
-      <div className="mx-auto max-w-4xl bg-zinc-900 px-4 text-zinc-200 lg:px-0">
+      <div
+        id="hero"
+        className="mx-auto max-w-4xl bg-zinc-900 px-4 text-zinc-200 lg:px-0"
+      >
         <div className="flex flex-col py-14">
           <h1 className="mb-14 flex flex-col items-center text-6xl font-semibold md:text-9xl lg:text-[100px] lg:leading-[100px]">
             <span className="text-center ">Customer support for </span>
@@ -150,7 +153,7 @@ export default function Vercel(): JSX.Element {
           </h2>
         </div>
 
-        <div className="mb-14 flex flex-col items-center">
+        <div id="lifetime-view" className="mb-14 flex flex-col items-center">
           <h3 className="flex flex-col items-center text-3xl font-semibold">
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-blue-500" />
             <GradientText className="bg-gradient-to-r from-blue-500 to-teal-400">
@@ -222,7 +225,11 @@ export default function Vercel(): JSX.Element {
           </div>
         </div>
 
-        <div ref={teamwork} className="mb-14 flex flex-col items-center">
+        <div
+          id="teamwork"
+          ref={teamwork}
+          className="mb-14 flex flex-col items-center"
+        >
           <h3 className="flex flex-col items-center text-3xl font-semibold">
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent  to-fuchsia-500" />
             <GradientText className="from bg-gradient-to-r from-fuchsia-600 to-pink-500 text-center">
@@ -305,7 +312,11 @@ export default function Vercel(): JSX.Element {
           </h3>
         </div>
 
-        <div ref={unifiedView} className="mb-14 flex flex-col items-center">
+        <div
+          id="unified-view"
+          ref={unifiedView}
+          className="mb-14 flex flex-col items-center"
+        >
           <h3 className="flex flex-col items-center text-3xl font-semibold">
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent to-lime-500" />
             <GradientText className="from bg-gradient-to-r from-lime-600 to-emerald-500 text-center">
@@ -360,13 +371,16 @@ export default function Vercel(): JSX.Element {
           </div>
         </div>
 
-        <div className="flex w-full flex-col">
+        <div id="features" className="flex w-full flex-col">
           <div className="mb-7 mt-5 text-center text-3xl md:text-5xl">
             Re-thinking customer support
           </div>
 
           <div className="mb-14 grid w-full grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-10 md:gap-y-10">
-            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
+            <div
+              id="feature-snoozing"
+              className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6"
+            >
               <div className="flex items-center">
                 <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
                   <ClockIcon className="h-6 w-6" />
@@ -383,7 +397,10 @@ export default function Vercel(): JSX.Element {
               </div>
             </div>
 
-            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
+            <div
+              id="feature-assigning"
+              className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6"
+            >
               <div className="flex items-center">
                 <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
                   <UserAddIcon className="h-6 w-6" />
@@ -397,7 +414,10 @@ export default function Vercel(): JSX.Element {
               </div>
             </div>
 
-            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
+            <div
+              id="feature-secure-messaging"
+              className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6"
+            >
               <div className="flex items-center">
                 <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
                   <LockClosedIcon className="h-6 w-6" />
@@ -413,7 +433,10 @@ export default function Vercel(): JSX.Element {
               </div>
             </div>
 
-            <div className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6">
+            <div
+              id="feature-shared-inbox"
+              className="col-span-1 flex flex-col rounded-md border border-zinc-500 border-opacity-50 p-6"
+            >
               <div className="flex items-center">
                 <div className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-500 border-opacity-50 text-purple-500">
                   <UserGroupIcon className="h-6 w-6" />
@@ -430,12 +453,9 @@ export default function Vercel(): JSX.Element {
           </div>
         </div>
 
-        <div ref={pricing} className="mb-14 flex flex-col">
+        <div id="pricing" ref={pricing} className="mb-14 flex flex-col">
           <div className="mx-auto h-[200px] w-[1px] bg-gradient-to-b from-transparent to-white" />
-          <h3
-            id="pricing"
-            className="text-center text-3xl font-medium text-zinc-100 md:text-7xl"
-          >
+          <h3 className="text-center text-3xl font-medium text-zinc-100 md:text-7xl">
             We hate per-seat pricing
           </h3>
           <div className="mt-7 text-center text-lg font-light text-zinc-500 md:text-2xl">
