@@ -27,7 +27,7 @@ export default function Blog(props: StaticProps) {
     <>
       <NextSeo
         title="Willow Guides"
-        description="A set of guides to get Willow working with a bunch of other platforms and services"
+        description="A set of blogs about Willow and Customer support"
       />
 
       <LandingPageHeader />
@@ -52,7 +52,7 @@ export default function Blog(props: StaticProps) {
               >
                 {post.formattedDate.endsWith}
               </time>
-              <Link href={`/guides/${post.id}`}>
+              <Link href={`/blog/${post.id}`}>
                 <a className="mb-3 text-2xl text-zinc-100 hover:underline">
                   {post.title}
                 </a>
@@ -60,7 +60,7 @@ export default function Blog(props: StaticProps) {
               <div className="text-base font-light text-zinc-200">
                 {post.excerpt}
               </div>
-              <Link href={`/guides/${post.id}`}>
+              <Link href={`/blog/${post.id}`}>
                 <a className="mt-3 mb-3 text-base capitalize text-blue-500 hover:underline">
                   READ MORE →
                 </a>
