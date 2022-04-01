@@ -1,8 +1,8 @@
 import { useDebugValue } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import { SupabaseCustomer, SupabaseCustomerTrait } from "types/supabase";
+import type { SupabaseCustomer, SupabaseCustomerTrait } from "types/supabase";
 import { useSupabase } from "components/UserContext";
 
 type Customer = SupabaseCustomer & {

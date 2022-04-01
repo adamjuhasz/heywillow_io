@@ -1,8 +1,8 @@
 import { useDebugValue } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import {
+import type {
   SupabaseCustomer,
   SupabaseCustomerEvent,
   SupabaseCustomerTrait,

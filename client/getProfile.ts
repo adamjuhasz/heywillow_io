@@ -1,8 +1,8 @@
 import { useDebugValue } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import { SupabaseProfile } from "types/supabase";
+import type { SupabaseProfile } from "types/supabase";
 import { useSupabase, useUser } from "components/UserContext";
 
 export const path = "/my/profile";

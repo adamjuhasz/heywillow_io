@@ -8,12 +8,10 @@ import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsBox from "components/Settings/Box/Box";
 import SettingsHeader from "components/Settings/Header";
 import AppContainer from "components/App/Container";
-import type {
-  RequestBody,
-  ReturnBody,
-} from "pages/api/v1/billing/create-portal-link";
-import useGetTeamId from "client/getTeamId";
 import Loading from "components/Loading";
+
+import useGetTeamId from "client/getTeamId";
+import createBillingPortalLink from "client/createBillingPortalLink";
 
 export default function TeamBilling(): JSX.Element {
   const router = useRouter();
@@ -27,30 +25,12 @@ export default function TeamBilling(): JSX.Element {
       throw new Error("no team id");
     }
 
-    const body: RequestBody = {
-      teamId: teamId,
-    };
-
-    const res = await fetch("/api/v1/billing/create-portal-link", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    switch (res.status) {
-      case 200: {
-        const returnBody = (await res.json()) as ReturnBody;
-        void router.push(returnBody.redirect);
-        break;
-      }
-
-      default:
-        setLoading(false);
-        console.error("Could not generate stripe link");
-        throw new Error("Could not generate stripe link");
+    try {
+      const redirect = await createBillingPortalLink(teamId);
+      void router.push(redirect);
+    } catch (e) {
+      console.error(e);
+      setLoading(false);
     }
   };
 

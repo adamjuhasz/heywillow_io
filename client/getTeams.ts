@@ -1,8 +1,8 @@
 import { useDebugValue } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import { SupabaseNamespace, SupabaseTeam } from "types/supabase";
+import type { SupabaseNamespace, SupabaseTeam } from "types/supabase";
 import { useSupabase } from "components/UserContext";
 
 export async function getTeams(supabase: SupabaseClient) {

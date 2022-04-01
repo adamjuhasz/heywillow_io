@@ -1,8 +1,8 @@
 import { useDebugValue } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import useSWR from "swr";
 
-import { SupabaseTeam, SupabaseTeamInvite } from "types/supabase";
+import type { SupabaseTeam, SupabaseTeamInvite } from "types/supabase";
 import { useSupabase, useUser } from "components/UserContext";
 
 export async function getMyInvites(supabase: SupabaseClient, email: string) {
