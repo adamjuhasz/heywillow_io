@@ -59,7 +59,7 @@ export default function CustomerListTable(props: Props) {
                     key={col}
                     scope="col"
                     className={[
-                      "border-b border-t border-l-0 border-zinc-600 p-3 ",
+                      "hidden border-b border-t border-l-0 border-zinc-600 p-3 md:table-cell ",
                       idx === arr.length - 1
                         ? "rounded-r-md border-r"
                         : "border-r-0",
@@ -107,7 +107,7 @@ export default function CustomerListTable(props: Props) {
                       <td
                         key={col}
                         className={[
-                          "whitespace-nowrap py-3 px-3",
+                          "hidden whitespace-nowrap py-3 px-3 md:table-cell",
                           idx !== arr.length - 1
                             ? "border-b border-zinc-600"
                             : "",

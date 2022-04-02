@@ -61,12 +61,12 @@ export default function CustomerOverview(props: Props): JSX.Element {
       </div>
 
       <AppContainer>
-        <div className="flex pt-7 pb-7">
-          <div className="relative w-1/2">
+        <div className="flex flex-col pt-7 pb-7 md:flex-row">
+          <div className="relative w-full md:w-1/2">
             <CustomerTraitTable traits={props.traits} />
           </div>
 
-          <div className="flex w-1/2 flex-col px-2">
+          <div className="mt-7 flex w-full flex-col px-2 md:mt-0 md:w-1/2">
             <CustomerThreadBox
               threads={props.threads}
               prefixPath={props.prefixPath}
