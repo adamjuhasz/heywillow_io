@@ -52,7 +52,7 @@ export default function Blog(props: StaticProps) {
 
       <LandingPageHeader />
 
-      <div className=" border-b border-t border-zinc-600 bg-black pt-10 pb-10 text-3xl">
+      <div className=" border-b border-t border-zinc-600 bg-black px-2 pt-10 pb-10 text-3xl lg:px-0">
         <div className="mx-auto flex max-w-4xl flex-col">
           <div>Changelog</div>
           <div className="text-lg font-light text-zinc-300">
@@ -61,18 +61,18 @@ export default function Blog(props: StaticProps) {
         </div>
       </div>
 
-      <div className="mx-auto my-7 max-w-4xl">
+      <div className="mx-auto my-7 max-w-4xl px-2 lg:px-0">
         <ul className="">
           {props.changelogs.map((post, idx, arr) => (
             <li
               id={post.id}
               className={[
-                "flex scroll-m-32",
+                "flex scroll-m-32 flex-col sm:flex-row",
                 idx !== arr.length - 1 ? "border-b border-zinc-600" : "",
               ].join(" ")}
               key={post.id}
             >
-              <div className="mt-1 flex w-2/12 flex-col font-light">
+              <div className="mt-1 mb-4 flex items-center space-x-1 font-light sm:mb-0 sm:w-2/12 sm:flex-col sm:items-start sm:space-x-0">
                 <Link href={{ hash: post.id }}>
                   <a>
                     <time
@@ -83,6 +83,7 @@ export default function Blog(props: StaticProps) {
                     </time>
                   </a>
                 </Link>
+
                 <div className="text-xs text-zinc-400">
                   {formatDistanceToNow(subHours(new Date(post.id), -7), {
                     addSuffix: true,
@@ -90,6 +91,7 @@ export default function Blog(props: StaticProps) {
                   })}
                 </div>
               </div>
+
               <article
                 className={[
                   "prose prose-invert",

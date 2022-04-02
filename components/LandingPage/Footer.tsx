@@ -17,7 +17,7 @@ interface Props {
 
 export default function LandingPageFooter(props: Props) {
   return (
-    <div className="flex min-h-[160px] w-full justify-between bg-black pt-7 pb-14 text-zinc-500">
+    <div className="flex min-h-[160px] w-full justify-between bg-black px-2 pt-7 pb-14 text-zinc-500 lg:px-0">
       <div className="mx-auto grid w-full max-w-4xl grid-cols-1 space-y-4 px-4 md:grid-cols-6 md:space-y-0 md:px-0">
         <div className="col-span-1 flex flex-col md:col-span-2">
           <Link href="/guides" prefetch={false}>
