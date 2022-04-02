@@ -1,21 +1,38 @@
 import Link from "next/link";
 import { NextSeo } from "next-seo";
+import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 
-import { Post, blogDirectory, getSortedPostsData } from "static-build/posts";
+import {
+  Post,
+  blogDirectory,
+  changelogDirectory,
+  getAllPostIds,
+  getPostData,
+  getSortedPostsData,
+} from "static-build/posts";
 
 import LandingPageHeader from "components/LandingPage/Header";
 import LandingPageFooter from "components/LandingPage/Footer";
 
 interface StaticProps {
-  allPostsData: Post[];
+  blogPosts: Post[];
+  changelogs: Post[];
 }
 
-// eslint-disable-next-line require-await
-export async function getStaticProps() {
-  const allPostsData = await getSortedPostsData(blogDirectory);
+export async function getStaticProps(
+  _params: GetStaticPropsContext
+): Promise<GetStaticPropsResult<StaticProps>> {
+  const blogPosts = await getSortedPostsData(blogDirectory);
+
+  const changelogs = await getAllPostIds(changelogDirectory);
+  const changelogPosts = await Promise.all(
+    changelogs.map(({ params: { id } }) => getPostData(changelogDirectory, id))
+  );
+
   return {
     props: {
-      allPostsData: allPostsData.filter(
+      blogPosts: blogPosts.filter((p) => p.id.startsWith("wip-") === false),
+      changelogs: changelogPosts.filter(
         (p) => p.id.startsWith("wip-") === false
       ),
     },
@@ -38,7 +55,7 @@ export default function Blog(props: StaticProps) {
 
       <div className="mx-auto max-w-4xl">
         <ul className="before:">
-          {props.allPostsData.map((post, idx, arr) => (
+          {props.blogPosts.map((post, idx, arr) => (
             <li
               className={[
                 "mb-7 flex flex-col  pb-3",
@@ -70,7 +87,10 @@ export default function Blog(props: StaticProps) {
         </ul>
       </div>
 
-      <LandingPageFooter />
+      <LandingPageFooter
+        blogs={props.blogPosts}
+        changelogs={props.changelogs}
+      />
     </>
   );
 }

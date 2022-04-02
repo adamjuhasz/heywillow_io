@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import type { CSSProperties, PropsWithChildren } from "react";
 import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
+import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 
 // split out to help tree shaking
 import ArrowNarrowRightIcon from "@heroicons/react/solid/ArrowNarrowRightIcon";
@@ -20,7 +21,40 @@ import LandingPageFooter from "components/LandingPage/Footer";
 import useIntersectionObserver from "hooks/useIntersectionObserver";
 import useTrackEvent from "hooks/useTrackEvent";
 
-export default function Vercel(): JSX.Element {
+import {
+  blogDirectory,
+  changelogDirectory,
+  getAllPostIds,
+  getPostData,
+  getSortedPostsData,
+} from "static-build/posts";
+
+export async function getStaticProps(
+  _params: GetStaticPropsContext
+): Promise<GetStaticPropsResult<Props>> {
+  const changelogs = await getAllPostIds(changelogDirectory);
+  const changelogPosts = await Promise.all(
+    changelogs.map(({ params: { id } }) => getPostData(changelogDirectory, id))
+  );
+
+  const blogPosts = await getSortedPostsData(blogDirectory);
+
+  return {
+    props: {
+      changelogs: changelogPosts.filter(
+        (p) => p.id.startsWith("wip-") === false
+      ),
+      blogs: blogPosts.filter((p) => p.id.startsWith("wip-") === false),
+    },
+  };
+}
+
+interface Props {
+  changelogs: { id: string; title: string }[];
+  blogs: { id: string; title: string }[];
+}
+
+export default function LandingPage(props: Props): JSX.Element {
   const pricing = useRef<HTMLDivElement>(null);
   const unifiedView = useRef<HTMLDivElement>(null);
   const teamwork = useRef<HTMLDivElement>(null);
@@ -620,7 +654,7 @@ export default function Vercel(): JSX.Element {
         </div>
       </div>
 
-      <LandingPageFooter />
+      <LandingPageFooter changelogs={props.changelogs} blogs={props.blogs} />
     </>
   );
 }

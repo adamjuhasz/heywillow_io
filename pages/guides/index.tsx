@@ -1,21 +1,43 @@
 import Link from "next/link";
 import { NextSeo } from "next-seo";
+import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 
-import { Post, getSortedPostsData, guidesDirectory } from "static-build/posts";
+import {
+  Post,
+  blogDirectory,
+  changelogDirectory,
+  getAllPostIds,
+  getPostData,
+  getSortedPostsData,
+  guidesDirectory,
+} from "static-build/posts";
 
 import LandingPageHeader from "components/LandingPage/Header";
 import LandingPageFooter from "components/LandingPage/Footer";
 
 interface StaticProps {
-  allPostsData: Post[];
+  guidePosts: Post[];
+  blogPosts: Post[];
+  changelogs: Post[];
 }
 
-export async function getStaticProps() {
-  const allPostsData = await getSortedPostsData(guidesDirectory);
+export async function getStaticProps(
+  _params: GetStaticPropsContext
+): Promise<GetStaticPropsResult<StaticProps>> {
+  const guidePosts = await getSortedPostsData(guidesDirectory);
+
+  const blogPosts = await getSortedPostsData(blogDirectory);
+
+  const changelogs = await getAllPostIds(changelogDirectory);
+  const changelogPosts = await Promise.all(
+    changelogs.map(({ params: { id } }) => getPostData(changelogDirectory, id))
+  );
 
   return {
     props: {
-      allPostsData: allPostsData.filter(
+      guidePosts: guidePosts.filter((p) => p.id.startsWith("wip-") === false),
+      blogPosts: blogPosts.filter((p) => p.id.startsWith("wip-") === false),
+      changelogs: changelogPosts.filter(
         (p) => p.id.startsWith("wip-") === false
       ),
     },
@@ -39,7 +61,7 @@ export default function Blog(props: StaticProps) {
       <div className="mx-auto flex max-w-4xl flex-row-reverse">
         <div className="ml-4 flex h-fit grow flex-col space-y-1 rounded-md border border-zinc-600 p-3">
           <div className="text-lg font-medium">Top Posts</div>
-          {props.allPostsData.map((p) => (
+          {props.guidePosts.map((p) => (
             <Link href={`/guides/${p.id}`} key={p.id}>
               <a className="text-sm line-clamp-1">
                 • <span className="hover:underline">{p.title}</span>
@@ -48,7 +70,7 @@ export default function Blog(props: StaticProps) {
           ))}
         </div>
         <ul className="w-2xl shrink-0">
-          {props.allPostsData.map((post, idx, arr) => (
+          {props.guidePosts.map((post, idx, arr) => (
             <li
               className={[
                 "mb-7 flex flex-col  pb-3",
@@ -81,7 +103,10 @@ export default function Blog(props: StaticProps) {
         </ul>
       </div>
 
-      <LandingPageFooter />
+      <LandingPageFooter
+        blogs={props.blogPosts}
+        changelogs={props.changelogs}
+      />
     </>
   );
 }

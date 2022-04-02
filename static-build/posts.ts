@@ -5,10 +5,12 @@ import { remark } from "remark";
 import html from "remark-html";
 import remarkGfm from "remark-gfm";
 import orderBy from "lodash/orderBy";
-import { format } from "date-fns";
+import format from "date-fns/format";
+import subHours from "date-fns/subHours";
 
 export const guidesDirectory = path.join(process.cwd(), "guides");
 export const blogDirectory = path.join(process.cwd(), "blog");
+export const changelogDirectory = path.join(process.cwd(), "changelog");
 
 export interface PostData {
   id: string;
@@ -41,22 +43,9 @@ export async function getSortedPostsData(directory: string): Promise<Post[]> {
   return orderBy(allPostsData, ["date"], ["desc"]);
 }
 
-export function getAllPostIds(directory: string) {
+export function getAllPostIds(directory: string): { params: { id: string } }[] {
   const fileNames = fs.readdirSync(directory);
 
-  // Returns an array that looks like this:
-  // [
-  //   {
-  //     params: {
-  //       id: 'ssg-ssr'
-  //     }
-  //   },
-  //   {
-  //     params: {
-  //       id: 'pre-rendering'
-  //     }
-  //   }
-  // ]
   return fileNames.map((fileName) => {
     return {
       params: {
@@ -89,11 +78,17 @@ export async function getPostData(
     .process(matterResult.excerpt || "");
   const excerptHtml = excerpt.toString();
 
-  const formattedDate = format(new Date(matterResult.data.date), "PPPP");
+  const formattedDate = matterResult.data.date
+    ? format(subHours(new Date(matterResult.data.date), -7), "PPPP")
+    : null;
 
   // Combine the data with the id and contentHtml
   return {
     ...matterResult.data,
+    date: (matterResult.data.date
+      ? subHours(new Date(matterResult.data.date), -7)
+      : new Date()
+    ).toISOString(),
     formattedDate: formattedDate,
     id,
     contentHtml,
