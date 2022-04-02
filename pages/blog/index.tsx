@@ -13,6 +13,7 @@ import {
 
 import LandingPageHeader from "components/LandingPage/Header";
 import LandingPageFooter from "components/LandingPage/Footer";
+import PostHeader from "components/Posts/Header";
 
 interface StaticProps {
   blogPosts: Post[];
@@ -49,12 +50,13 @@ export default function Blog(props: StaticProps) {
 
       <LandingPageHeader />
 
-      <div className="mb-7 border-b border-t border-zinc-600 bg-black pt-10 pb-10 text-3xl">
-        <div className="mx-auto max-w-4xl">Blog</div>
-      </div>
+      <PostHeader>
+        <div className="">Blog</div>
+        <div className="text-lg font-light text-zinc-300"></div>
+      </PostHeader>
 
-      <div className="mx-auto max-w-4xl">
-        <ul className="before:">
+      <div className="mx-auto max-w-4xl px-2 lg:px-0">
+        <ul className="">
           {props.blogPosts.map((post, idx, arr) => (
             <li
               className={[

@@ -16,6 +16,7 @@ import {
 
 import LandingPageHeader from "components/LandingPage/Header";
 import LandingPageFooter from "components/LandingPage/Footer";
+import PostHeader from "components/Posts/Header";
 
 interface StaticProps {
   changelogs: Post[];
@@ -52,14 +53,12 @@ export default function Blog(props: StaticProps) {
 
       <LandingPageHeader />
 
-      <div className=" border-b border-t border-zinc-600 bg-black px-2 pt-10 pb-10 text-3xl lg:px-0">
-        <div className="mx-auto flex max-w-4xl flex-col">
-          <div>Changelog</div>
-          <div className="text-lg font-light text-zinc-300">
-            New updates and improvements to Willow
-          </div>
+      <PostHeader>
+        <div>Changelog</div>
+        <div className="text-lg font-light text-zinc-300">
+          New updates and improvements to Willow
         </div>
-      </div>
+      </PostHeader>
 
       <div className="mx-auto my-7 max-w-4xl px-2 lg:px-0">
         <ul className="">

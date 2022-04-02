@@ -14,6 +14,7 @@ import {
 
 import LandingPageHeader from "components/LandingPage/Header";
 import LandingPageFooter from "components/LandingPage/Footer";
+import PostHeader from "components/Posts/Header";
 
 interface StaticProps {
   guidePosts: Post[];
@@ -54,12 +55,13 @@ export default function Blog(props: StaticProps) {
 
       <LandingPageHeader />
 
-      <div className="mb-7 border-b border-t border-zinc-600 bg-black pt-10 pb-10 text-3xl">
-        <div className="mx-auto max-w-4xl">Guides</div>
-      </div>
+      <PostHeader>
+        <div className="">Guides</div>
+        <div className="text-lg font-light text-zinc-300"></div>
+      </PostHeader>
 
-      <div className="mx-auto flex max-w-4xl flex-row-reverse">
-        <div className="ml-4 flex h-fit grow flex-col space-y-1 rounded-md border border-zinc-600 p-3">
+      <div className="mx-auto flex max-w-4xl px-2 py-7 lg:flex-row-reverse lg:px-0">
+        <div className="ml-4 hidden h-fit grow flex-col space-y-1 rounded-md border border-zinc-600 p-3 lg:flex">
           <div className="text-lg font-medium">Top Posts</div>
           {props.guidePosts.map((p) => (
             <Link href={`/guides/${p.id}`} key={p.id}>
@@ -69,7 +71,8 @@ export default function Blog(props: StaticProps) {
             </Link>
           ))}
         </div>
-        <ul className="w-2xl shrink-0">
+
+        <ul className="w-full shrink-0 grow-0 lg:w-4/6">
           {props.guidePosts.map((post, idx, arr) => (
             <li
               className={[
