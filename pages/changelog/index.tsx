@@ -93,7 +93,7 @@ export default function Blog(props: StaticProps) {
               <article
                 className={[
                   "prose prose-invert",
-                  "prose-img:w-96 prose-img:rounded-xl",
+                  "prose-img:w-96 prose-img:rounded-xl prose-img:border-2 prose-img:border-zinc-800",
                 ].join(" ")}
                 dangerouslySetInnerHTML={{ __html: post.contentHtml }}
               />
