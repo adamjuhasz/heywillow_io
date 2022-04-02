@@ -3,6 +3,7 @@ import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import subHours from "date-fns/subHours";
 import { GetStaticPropsContext, GetStaticPropsResult } from "next";
+import Link from "next/link";
 
 import {
   Post,
@@ -72,9 +73,16 @@ export default function Blog(props: StaticProps) {
               key={post.id}
             >
               <div className="mt-1 flex w-2/12 flex-col font-light">
-                <time dateTime={post.id} className="text-zinc-100">
-                  {format(subHours(new Date(post.id), -7), "MMM d Y")}
-                </time>
+                <Link href={{ hash: post.id }}>
+                  <a>
+                    <time
+                      dateTime={post.id}
+                      className="text-zinc-100 hover:underline"
+                    >
+                      {format(subHours(new Date(post.id), -7), "MMM d Y")}
+                    </time>
+                  </a>
+                </Link>
                 <div className="text-xs text-zinc-400">
                   {formatDistanceToNow(subHours(new Date(post.id), -7), {
                     addSuffix: true,
