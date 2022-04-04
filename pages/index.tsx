@@ -535,9 +535,7 @@ export default function LandingPage(props: Props): JSX.Element {
                 </div>
                 <div className="flex items-start text-sm">
                   <PlusCircleIcon className="mr-2 h-5 w-5 shrink-0 text-zinc-100" />
-                  <div className="grow">
-                    $0.10 per conversation over included 50
-                  </div>
+                  <div className="grow">$0.10 per person over included 50</div>
                 </div>
               </div>
 
@@ -579,7 +577,7 @@ export default function LandingPage(props: Props): JSX.Element {
                 <div className="flex items-start text-sm">
                   <PlusCircleIcon className="mr-2 h-5 w-5 shrink-0 text-[#EE147C]" />
                   <div className="grow">
-                    $0.10 per conversation over included 1,000
+                    $0.10 per person over included 1,000
                   </div>
                 </div>
               </div>
@@ -622,7 +620,7 @@ export default function LandingPage(props: Props): JSX.Element {
                 <div className="flex items-start text-sm">
                   <PlusCircleIcon className="mr-2 h-5 w-5 shrink-0 text-purple-400" />
                   <div className="grow">
-                    $0.01 per conversation over included 10,000
+                    $0.01 per person over included 10,000
                   </div>
                 </div>
               </div>
