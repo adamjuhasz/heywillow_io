@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  poweredByHeader: false,
   reactStrictMode: true,
   productionBrowserSourceMaps: true,
   experimental: {
@@ -34,6 +35,10 @@ const nextConfig = {
     {
       source: "/api/event", // Or '/api/event/' if you have `trailingSlash: true` in this config
       destination: "https://plausible.io/api/event",
+    },
+    {
+      source: "/api/v1/track/event",
+      destination: "/api/ingest/v1/event",
     },
   ],
 };

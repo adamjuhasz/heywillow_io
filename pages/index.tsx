@@ -641,7 +641,7 @@ export default function LandingPage(props: Props): JSX.Element {
           <div className="flex flex-col">
             <div className="text-2xl font-medium">Not convinced yet?</div>
             <div className="text-sm">
-              Explore our full fidelity demo to see how Willow works
+              Explore our interactive demo to see how Willow works
             </div>
           </div>
           <Link href="/demo" prefetch={false}>

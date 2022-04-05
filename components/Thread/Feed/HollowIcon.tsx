@@ -1,9 +1,19 @@
 /* eslint-disable sonarjs/no-nested-switch */
+import type { ThreadStateType } from "@prisma/client";
 
 import { FeedNode } from "components/Thread/Feed/Types";
 
+type MiniFeedNode =
+  | {
+      type: "threadState";
+      state: { state: ThreadStateType };
+    }
+  | {
+      type: Exclude<FeedNode["type"], "threadState">;
+    };
+
 interface Props {
-  node: FeedNode;
+  node: MiniFeedNode;
 }
 
 export default function FeedIcon(props: Props) {

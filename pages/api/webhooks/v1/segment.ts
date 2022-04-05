@@ -1,16 +1,15 @@
 /* eslint-disable no-secrets/no-secrets */
 import { NextApiRequest, NextApiResponse } from "next";
-import includes from "lodash/includes";
 import toPairs from "lodash/toPairs";
 import isString from "lodash/isString";
 import keys from "lodash/keys";
-import isNil from "lodash/isNil";
-import { Buffer } from "buffer";
 import type { Prisma } from "@prisma/client";
 
 import apiHandler from "server/apiHandler";
 import { prisma } from "utils/prisma";
 import { JSON, logger } from "utils/logger";
+import authorizeAPIKey from "server/authorizeAPIKey";
+import upsertCustomer from "server/ingest/upsertCustomer";
 
 export default apiHandler({ post: handler });
 
@@ -19,29 +18,11 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, never> | { message: string }>
 ): Promise<void> {
-  const authHeader = req.headers.authorization;
-  if (authHeader === undefined || !includes(authHeader, "Basic ")) {
-    return res.status(401).json({ message: "No authorization header" });
+  const authed = await authorizeAPIKey(req);
+  if (isString(authed)) {
+    return res.status(401).json({ message: authed });
   }
-
-  const base64Credentials = authHeader.split(" ")[1];
-  const credentials = Buffer.from(base64Credentials, "base64").toString(
-    "ascii"
-  );
-  const [apiKey] = credentials.split(":");
-
-  const team = await prisma.apiKey.findUnique({
-    where: { id: apiKey },
-    select: { Team: true, valid: true },
-  });
-
-  if (team === null) {
-    return res.status(401).json({ message: "API Key invalid; team issue" });
-  }
-
-  if (team.valid === false) {
-    return res.status(403).json({ message: "API Key invalid; expired key" });
-  }
+  const [team] = authed;
 
   const body = { ...req.body } as SegmentCommon;
   // Segment warns keys may not have correct case, make sure they do
@@ -99,10 +80,7 @@ async function handler(
           event: trackEvent.event,
         });
         if ("userId" in trackEvent && trackEvent.userId !== null) {
-          const customer = await upsertCustomer(
-            team.Team.id,
-            trackEvent.userId
-          );
+          const customer = await upsertCustomer(team.id, trackEvent.userId);
           await prisma.customerEvent.create({
             data: {
               customerId: customer.id,
@@ -126,10 +104,7 @@ async function handler(
           });
 
           // create or retrieve customer
-          const customer = await upsertCustomer(
-            team.Team.id,
-            identifyEvent.userId
-          );
+          const customer = await upsertCustomer(team.id, identifyEvent.userId);
 
           if (identifyEvent.traits !== undefined) {
             await prisma.customer.update({
@@ -152,7 +127,7 @@ async function handler(
                   await prisma.aliasEmail.update({
                     where: {
                       teamId_emailAddress: {
-                        teamId: team.Team.id,
+                        teamId: team.id,
                         emailAddress: value,
                       },
                     },
@@ -178,7 +153,7 @@ async function handler(
           await prisma.customer.update({
             where: {
               teamId_userId: {
-                teamId: team.Team.id,
+                teamId: team.id,
                 userId: aliasEvent.previousId,
               },
             },
@@ -196,7 +171,7 @@ async function handler(
       case "page": {
         const pageEvent = body as SegmentPageEvent;
         if ("userId" in pageEvent && pageEvent.userId !== null) {
-          const customer = await upsertCustomer(team.Team.id, pageEvent.userId);
+          const customer = await upsertCustomer(team.id, pageEvent.userId);
           await prisma.customerEvent.create({
             data: {
               customerId: customer.id,
@@ -215,10 +190,7 @@ async function handler(
       case "screen": {
         const screenEvent = body as SegmentScreenEvent;
         if ("userId" in screenEvent && screenEvent.userId !== null) {
-          const customer = await upsertCustomer(
-            team.Team.id,
-            screenEvent.userId
-          );
+          const customer = await upsertCustomer(team.id, screenEvent.userId);
           await prisma.customerEvent.create({
             data: {
               customerId: customer.id,
@@ -237,19 +209,16 @@ async function handler(
       case "group": {
         const groupEvent = body as SegmentGroupEvent;
         if ("userId" in groupEvent && groupEvent.userId !== null) {
-          const customer = await upsertCustomer(
-            team.Team.id,
-            groupEvent.userId
-          );
+          const customer = await upsertCustomer(team.id, groupEvent.userId);
           const group = await prisma.customerGroup.upsert({
             where: {
               teamId_groupId: {
-                teamId: team.Team.id,
+                teamId: team.id,
                 groupId: groupEvent.groupId,
               },
             },
             create: {
-              teamId: team.Team.id,
+              teamId: team.id,
               groupId: groupEvent.groupId,
             },
             update: { updatedAt: new Date() },
@@ -291,8 +260,7 @@ async function handler(
     ) {
       await logger.warn(`Duplicate event processed - ${(e as Error).message}`, {
         body: body as unknown as JSON,
-        teamId: Number(team.Team.id),
-        apiKey: apiKey,
+        teamId: Number(team.id),
         errorMessage: (e as Error).message,
         errorName: (e as Error).name,
       });
@@ -303,8 +271,7 @@ async function handler(
       `Could not process segment webhook - ${(e as Error).message}`,
       {
         body: body as unknown as JSON,
-        teamId: Number(team.Team.id),
-        apiKey: apiKey,
+        teamId: Number(team.id),
         errorMessage: (e as Error).message,
         errorName: (e as Error).name,
       }
@@ -316,30 +283,6 @@ async function handler(
     .status(500)
     .json({ message: `Internal Error, execution failed to find end` });
 }
-
-const upsertCustomer = async (teamId: number | bigint, userId: string) => {
-  if (isNil(teamId)) {
-    throw new Error(`teamId was nil "${teamId}"`);
-  }
-
-  if (isNil(userId)) {
-    throw new Error(`userId was nil "${userId}"`);
-  }
-
-  return prisma.customer.upsert({
-    where: {
-      teamId_userId: {
-        teamId: teamId,
-        userId: userId,
-      },
-    },
-    create: {
-      teamId: teamId,
-      userId: userId,
-    },
-    update: {},
-  });
-};
 
 type Json = { [key: string]: Prisma.InputJsonValue | null };
 

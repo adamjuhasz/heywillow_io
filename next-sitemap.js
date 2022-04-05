@@ -22,6 +22,7 @@ const sitemapConfig = {
     "/guides/wip-*",
     "/blog/wip-*",
     "/changelog/wip-*",
+    "/demo/*",
   ],
 };
 

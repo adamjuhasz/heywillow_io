@@ -3,26 +3,22 @@ import { useEffect, useMemo, useRef } from "react";
 import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
 import type { Prisma } from "@prisma/client";
-import { formatDistanceToNow } from "date-fns";
 
 import LoadingThread from "components/Thread/LoadingThread";
 import { AddComment } from "components/Thread/CommentBox";
 import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
-import MessagePrinter from "components/Thread/MessagePrinter";
-import SubjectLine from "components/Thread/SubjectLine";
-import ThreadState, { MiniThreadState } from "components/Thread/ThreadState";
-import CustomerTraitValue from "components/Customer/traits/Value";
-import FeedIcon from "components/Thread/Feed/HollowIcon";
+import { MiniThreadState } from "components/Thread/ThreadState";
+import FeedNode from "components/Thread/Feed/Node";
 
-import { MessageWCommentsCreated } from "./Types";
+import { MessageWCommentsCreated } from "components/Thread/Types";
 import {
   CustomerEventNode,
   CustomerTraitNode,
-  FeedNode,
+  FeedNode as IFeedNode,
   MessageNode,
   SubjectLineNode,
   ThreadStateNode,
-} from "./Feed/Types";
+} from "components/Thread/Feed/Types";
 
 interface MiniTrait {
   createdAt: string;
@@ -107,7 +103,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
     }
   }, [props.threads, threadBottom, props.scrollTo]);
 
-  const feed: FeedNode[] = useMemo(() => {
+  const feed: IFeedNode[] = useMemo(() => {
     const messages: MessageNode[] = (props.threads || []).flatMap((t) =>
       t.Message.map((m) => ({
         type: "message",
@@ -157,7 +153,7 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
       uniqKey: `event-${e.createdAt}-${e.action}`,
     }));
 
-    const unsortedFeed: FeedNode[] = [
+    const unsortedFeed: IFeedNode[] = [
       ...messages,
       ...threadStates,
       ...subjects,
@@ -195,34 +191,14 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
         <>
           {feed.map((node, idx, feedArray): JSX.Element => {
             return (
-              <div
-                id={`node-${idx}/${feedArray.length}`}
-                node-type={node.type}
-                className="relative w-full"
+              <FeedNode
                 key={node.uniqKey}
-              >
-                <div className="h-2" />
-                <div className="flex items-center">
-                  <div className="shrink-0 self-start">
-                    <FeedIcon node={node} />
-                  </div>
-                  <div className="grow">
-                    <NodePrinter node={node} {...props} />
-                  </div>
-                </div>
-                <div className="h-2" />
-                {idx !== 0 ? (
-                  <div className="absolute top-0 left-[calc(1.0rem_-_1.5px)] -z-10 h-2 w-[3px] bg-zinc-800" />
-                ) : undefined}
-                <div
-                  className={[
-                    "absolute left-[calc(1.0rem_-_1.5px)] -z-10 w-[3px] bg-zinc-800",
-                    idx === feedArray.length - 1
-                      ? "top-2 h-[calc(100%_-_1.5rem)] rounded-b-full"
-                      : "top-2 h-[calc(100%_-_0.5rem)]",
-                  ].join(" ")}
-                />
-              </div>
+                id={`node-${idx}/${feedArray.length}`}
+                isLast={idx === feedArray.length - 1}
+                isFirst={idx === 0}
+                node={node}
+                {...props}
+              />
             );
           })}
         </>
@@ -233,86 +209,4 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
       <div id="thread-bottom" ref={threadBottom} />
     </div>
   );
-}
-
-interface NodePrinterProps {
-  node: FeedNode;
-}
-
-function NodePrinter({ node, ...props }: NodePrinterProps & CommonProps) {
-  switch (node.type) {
-    case "message":
-      return (
-        <MessagePrinter
-          message={node.message}
-          mutate={props.refreshComment}
-          addComment={props.addComment}
-          teamMemberList={props.teamMemberList}
-        />
-      );
-
-    case "threadState":
-      return (
-        <div className="text-xs line-clamp-1">
-          <ThreadState state={node.state} />
-        </div>
-      );
-
-    case "subjectLine":
-      return (
-        <div className="text-xs line-clamp-1">
-          <div id={`thread-top-${node.threadId}`} />
-          <SubjectLine key={`${node.createdAt}`} createdAt={node.createdAt}>
-            {node.subject}
-          </SubjectLine>
-        </div>
-      );
-
-    case "traitChange":
-      return (
-        <div className="flex items-center text-xs text-zinc-500">
-          <div className="mr-1 shrink-0 text-zinc-100">
-            <span className="font-mono font-semibold ">{node.key}</span> changed
-            to
-          </div>
-          {node.value === null ? (
-            <div>Deleted</div>
-          ) : (
-            <CustomerTraitValue
-              value={node.value}
-              className="break-all text-zinc-100 line-clamp-1"
-            />
-          )}
-          <div className="ml-1 shrink-0">
-            •{" "}
-            {formatDistanceToNow(new Date(node.createdAt), {
-              addSuffix: true,
-            })}
-          </div>
-        </div>
-      );
-
-    case "event":
-      return (
-        <div className="flex items-center text-xs text-zinc-500">
-          <div className="mr-1 shrink-0  text-zinc-100">
-            <span className="font-mono font-semibold">{node.action}</span>
-          </div>
-          {node.properties === null ? (
-            <></>
-          ) : (
-            <CustomerTraitValue
-              value={node.properties}
-              className="break-all text-zinc-100 line-clamp-1"
-            />
-          )}
-          <div className="ml-1 shrink-0">
-            •{" "}
-            {formatDistanceToNow(new Date(node.createdAt), {
-              addSuffix: true,
-            })}
-          </div>
-        </div>
-      );
-  }
 }
