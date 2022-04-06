@@ -43,13 +43,14 @@ export default function CreateTeam(): JSX.Element {
             explainer={
               <>
                 <p>
-                  This is the email you use for customer support. It&apos;s
-                  helpful if you&apos;re able to read email sent to this
-                  address.
+                  This is the email you use for customer support. It&rsquo;s
+                  helpful if you&rsquo;re currently able to read email sent to
+                  this address (to click a confirmation link). It&rsquo;s not
+                  required though.
                 </p>
                 <p className="mt-2">
-                  In the next steps you&apos;ll add 2 DNS entries so outbound
-                  email from this address isn&apos;t marked as spam and set up
+                  In the next steps you&rsquo;ll add 2 DNS entries so outbound
+                  email from this address isn&rsquo;t marked as spam and set up
                   forwarding so inbound email is forwarded to Willow.
                 </p>
               </>
