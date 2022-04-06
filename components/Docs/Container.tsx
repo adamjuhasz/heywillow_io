@@ -13,7 +13,7 @@ export default function DocsContainer(props: React.PropsWithChildren<unknown>) {
 
       <div className="mx-auto flex max-w-7xl grow flex-col overflow-y-scroll px-4 pb-7">
         <div className="h-7 shrink-0 sm:hidden" />
-        <div className="hidden w-full shrink-0 space-x-4 sm:flex">
+        <div className="hidden w-full shrink-0 justify-end space-x-4 sm:flex">
           <Header />
         </div>
 
