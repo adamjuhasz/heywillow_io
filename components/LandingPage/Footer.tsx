@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface ChangeLog {
@@ -16,32 +17,48 @@ interface Props {
 }
 
 export default function LandingPageFooter(props: Props) {
+  const [prefetch, setPreFetch] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setPreFetch(true);
+    }, 60000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
   return (
     <div className="flex min-h-[160px] w-full justify-between bg-black px-2 pt-7 pb-14 text-zinc-500 lg:px-0">
       <div className="mx-auto grid w-full max-w-5xl grid-cols-1 space-y-4 px-4 md:grid-cols-8 md:space-y-0 md:px-0">
         <div className="col-span-1 flex flex-col md:col-span-2">
-          <Link href="/docs" prefetch={false}>
+          <Link href="/docs" prefetch={prefetch}>
             <a>
               <h3 className="font-medium text-zinc-100 hover:underline hover:decoration-wavy">
                 Developer Docs
               </h3>
             </a>
           </Link>
+
           <Link href="/docs/v1/introduction" prefetch={false}>
             <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Introduction
             </a>
           </Link>
+
           <Link href="/docs/v1/authentication" prefetch={false}>
             <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Authentication
             </a>
           </Link>
+
           <Link href="/docs/v1/record/event" prefetch={false}>
             <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Event tracking
             </a>
           </Link>
+
           <Link href="/docs/v1/record/trait" prefetch={false}>
             <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Record traits
@@ -50,18 +67,20 @@ export default function LandingPageFooter(props: Props) {
         </div>
 
         <div className="col-span-1 flex flex-col md:col-span-2">
-          <Link href="/guides" prefetch={false}>
+          <Link href="/guides" prefetch={prefetch}>
             <a>
               <h3 className="font-medium text-zinc-100 hover:underline hover:decoration-wavy">
                 Guides
               </h3>
             </a>
           </Link>
+
           <Link href="/guides/onboarding-checklist" prefetch={false}>
             <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Onboarding checklist
             </a>
           </Link>
+
           <Link
             href="/guides/segment-proxy-using-cloudflare-workers"
             prefetch={false}
@@ -70,11 +89,13 @@ export default function LandingPageFooter(props: Props) {
               Segment proxy using CF Workers
             </a>
           </Link>
+
           <Link href="/guides/forwarding-email-gmail" prefetch={false}>
             <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Configuring Gmail Forwarding
             </a>
           </Link>
+
           <Link
             href="/guides/forwarding-email-google-admin-routing"
             prefetch={false}
@@ -86,13 +107,14 @@ export default function LandingPageFooter(props: Props) {
         </div>
 
         <div className="col-span-1 flex flex-col md:col-span-2">
-          <Link href="/blog" prefetch={false}>
+          <Link href="/blog" prefetch={prefetch}>
             <a>
               <h3 className="font-medium text-zinc-100 hover:underline hover:decoration-wavy">
                 Blog
               </h3>
             </a>
           </Link>
+
           {(props.blogs || []).map((b) => (
             <Link
               key={b.id}
@@ -107,13 +129,14 @@ export default function LandingPageFooter(props: Props) {
         </div>
 
         <div className="col-span-1 flex flex-col md:col-span-1">
-          <Link href="/changelog" prefetch={false}>
+          <Link href="/changelog" prefetch={prefetch}>
             <a>
               <h3 className="font-medium text-zinc-100 hover:underline hover:decoration-wavy">
                 Changelog
               </h3>
             </a>
           </Link>
+
           {(props.changelogs || []).map((c) => (
             <Link
               key={c.id}
@@ -155,27 +178,24 @@ export default function LandingPageFooter(props: Props) {
 
         <div className="col-span-1 flex flex-col md:col-span-1">
           <h3 className="font-medium text-zinc-100">Company</h3>
-          <div className="">
-            <Link href="/" prefetch={false}>
-              <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
-                Home
-              </a>
-            </Link>
-          </div>
-          <div className="">
-            <Link href="/privacy-policy" prefetch={false}>
-              <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
-                Privacy Policy
-              </a>
-            </Link>
-          </div>
-          <div className="">
-            <Link href="/terms-of-service" prefetch={false}>
-              <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
-                Terms of service
-              </a>
-            </Link>
-          </div>
+
+          <Link href="/" prefetch={true}>
+            <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
+              Home
+            </a>
+          </Link>
+
+          <Link href="/privacy-policy" prefetch={false}>
+            <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
+              Privacy Policy
+            </a>
+          </Link>
+
+          <Link href="/terms-of-service" prefetch={false}>
+            <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
+              Terms of service
+            </a>
+          </Link>
         </div>
       </div>
     </div>

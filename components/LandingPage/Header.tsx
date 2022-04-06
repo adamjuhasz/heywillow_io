@@ -48,17 +48,21 @@ export default function LandingPageHeader(props: Props) {
               Developers
             </a>
           </Link>
+
           <Link href="/demo" prefetch={prefetch}>
             <a className="text-zinc-500 hover:text-zinc-100 ">Try demo</a>
           </Link>
-          <Link href="mailto:help@heywillow.io" prefetch={prefetch}>
+
+          <Link href="mailto:help@heywillow.io">
             <a className="hidden text-zinc-500 hover:text-zinc-100 sm:block">
               Contact us
             </a>
           </Link>
+
           <Link href="/login" prefetch={prefetch}>
             <a className="text-zinc-500 hover:text-zinc-100">Login</a>
           </Link>
+
           <Link href="/signup" prefetch={prefetch}>
             <a className="rounded-md border-2 border-transparent bg-zinc-100 px-3 py-2 text-zinc-900 hover:border-2 hover:border-zinc-100 hover:bg-zinc-900 hover:text-zinc-100">
               Sign Up
