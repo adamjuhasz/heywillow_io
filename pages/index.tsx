@@ -355,8 +355,6 @@ export default function LandingPage(props: Props): JSX.Element {
             <div className="mx-auto h-[100px] w-[1px] bg-gradient-to-b from-transparent to-lime-500" />
             <GradientText className="from bg-gradient-to-r from-lime-600 to-emerald-500 text-center">
               Unified view
-              <br />
-              <span className="text-xs">In alpha preview</span>
             </GradientText>
             <div className="mt-5 text-center text-3xl md:text-5xl">
               See your customer&apos;s entire story, including in-app actions,
