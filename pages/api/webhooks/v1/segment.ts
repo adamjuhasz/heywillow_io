@@ -1,6 +1,5 @@
 /* eslint-disable no-secrets/no-secrets */
 import { NextApiRequest, NextApiResponse } from "next";
-import toPairs from "lodash/toPairs";
 import isString from "lodash/isString";
 import keys from "lodash/keys";
 import type { Prisma } from "@prisma/client";
@@ -10,6 +9,7 @@ import { prisma } from "utils/prisma";
 import { JSON, logger } from "utils/logger";
 import authorizeAPIKey from "server/authorizeAPIKey";
 import upsertCustomer from "server/ingest/upsertCustomer";
+import updateCustomerTraits from "server/ingest/updateTraits";
 
 export default apiHandler({ post: handler });
 
@@ -103,40 +103,12 @@ async function handler(
             userId: identifyEvent.userId,
           });
 
-          // create or retrieve customer
-          const customer = await upsertCustomer(team.id, identifyEvent.userId);
-
           if (identifyEvent.traits !== undefined) {
-            await prisma.customer.update({
-              where: { id: customer.id },
-              data: { updatedAt: new Date() },
-            });
-            await Promise.allSettled(
-              toPairs(identifyEvent.traits).map(async ([key, value]) => {
-                await prisma.customerTrait.create({
-                  data: {
-                    customerId: customer.id,
-                    key: key,
-                    value: value === null ? undefined : value,
-                    idempotency: identifyEvent.messageId,
-                  },
-                });
-
-                // if we have an email, link alias email to customer
-                if (key === "email" && isString(value)) {
-                  await prisma.aliasEmail.update({
-                    where: {
-                      teamId_emailAddress: {
-                        teamId: team.id,
-                        emailAddress: value,
-                      },
-                    },
-                    data: {
-                      customerId: customer.id,
-                    },
-                  });
-                }
-              })
+            await updateCustomerTraits(
+              team.id,
+              identifyEvent.userId,
+              identifyEvent.traits,
+              identifyEvent.messageId
             );
           }
           return res.status(200).json({});
