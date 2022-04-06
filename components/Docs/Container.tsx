@@ -10,6 +10,10 @@ export default function DocsContainer(props: React.PropsWithChildren<unknown>) {
 
       <div className="mx-auto flex max-w-7xl grow flex-col overflow-y-scroll px-4 pb-7">
         <div className="flex w-full shrink-0 justify-end space-x-4">
+          <Link href="/">
+            <a className="hover:underline">Home</a>
+          </Link>
+
           <Link href="mailto:help@heywillow.io">
             <a className="hover:underline">Contact support</a>
           </Link>

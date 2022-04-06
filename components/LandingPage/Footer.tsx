@@ -27,6 +27,11 @@ export default function LandingPageFooter(props: Props) {
               </h3>
             </a>
           </Link>
+          <Link href="/docs" prefetch={false}>
+            <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
+              Developer docs
+            </a>
+          </Link>
           <Link href="/guides/onboarding-checklist" prefetch={false}>
             <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Onboarding checklist

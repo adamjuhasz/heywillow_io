@@ -11,7 +11,12 @@ export default function DocsSidebar() {
   return (
     <>
       <h2 className="mx-2 border-zinc-600 px-2 py-2 text-3xl">
-        Willow <span className="font-mono text-sky-500">API</span>
+        <Link href="/">
+          <a className="hover:underline">Willow</a>
+        </Link>{" "}
+        <Link href="/docs">
+          <a className="font-mono text-sky-500 hover:underline">API</a>
+        </Link>
       </h2>
 
       <div className="">
