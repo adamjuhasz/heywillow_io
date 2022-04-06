@@ -53,7 +53,11 @@ export default function CreateTeam(): JSX.Element {
             error={error}
             title="Add DNS Entries"
             button={
-              loading ? <Loading className="h-5 w-5 text-white" /> : "Next"
+              loading ? (
+                <Loading className="h-5 w-5 text-white" />
+              ) : (
+                "Next (Skip)"
+              )
             }
             onSubmit={async () => {
               setLoading(true);

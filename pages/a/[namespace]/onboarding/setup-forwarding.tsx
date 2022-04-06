@@ -48,7 +48,11 @@ export default function CreateTeam(): JSX.Element {
             title="Forward email to Willow"
             explainer=""
             button={
-              loading ? <Loading className="h-5 w-5 text-white" /> : "Done"
+              loading ? (
+                <Loading className="h-5 w-5 text-white" />
+              ) : (
+                "Done (Skip)"
+              )
             }
             onSubmit={() => {
               setLoading(true);
