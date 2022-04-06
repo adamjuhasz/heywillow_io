@@ -19,7 +19,7 @@ export default function LandingPageHeader(props: Props) {
     return () => {
       clearTimeout(timeout);
     };
-  });
+  }, []);
 
   return (
     <div
