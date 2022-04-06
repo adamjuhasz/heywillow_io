@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ReactElement } from "react";
 
 import AppLayout from "layouts/app";
-import GetAuthCookie from "components/GetAuthCoookie";
+import GetAuthCookie from "components/GetAuthCookie";
 
 import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
 

@@ -13,7 +13,7 @@ import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
 import LandingPageHeader from "components/LandingPage/Header";
-import GetAuthCookie from "components/GetAuthCoookie";
+import GetAuthCookie from "components/GetAuthCookie";
 import Loading from "components/Loading";
 
 export default function Login(): JSX.Element {
@@ -106,10 +106,11 @@ export default function Login(): JSX.Element {
                     htmlFor="email"
                     className="block text-sm font-medium text-zinc-300"
                   >
-                    Email address
+                    Email address (your personal work address)
                   </label>
                   <div className="mt-1">
                     <input
+                      placeholder="jane@stealth.ai"
                       disabled={disabled}
                       id="email"
                       name="email"

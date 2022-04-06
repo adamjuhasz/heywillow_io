@@ -14,7 +14,7 @@ import { NextSeo } from "next-seo";
 import AppLayout from "layouts/app";
 import { useSupabase } from "components/UserContext";
 import { useUser } from "components/UserContext";
-import GetAuthCookie from "components/GetAuthCoookie";
+import GetAuthCookie from "components/GetAuthCookie";
 import Loading from "components/Loading";
 
 import image from "public/images/nature/john-towner-JgOeRuGD_Y4-unsplash.jpg";
@@ -121,10 +121,11 @@ export default function SignUpPage(): JSX.Element {
                       htmlFor="email"
                       className="block text-sm font-medium text-zinc-300"
                     >
-                      Email address
+                      Email address (your personal work address)
                     </label>
                     <div className="mt-1">
                       <input
+                        placeholder="jane@stealth.ai"
                         disabled={disabled}
                         id="email"
                         name="email"
@@ -153,6 +154,7 @@ export default function SignUpPage(): JSX.Element {
                           name="password"
                           type="password"
                           autoComplete="new-password"
+                          minLength={8}
                           required
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
