@@ -23,8 +23,8 @@ export default function TrackEvent() {
           Introduction to the Willow API
         </h1>
 
-        <div className="flex w-full justify-between">
-          <article className="w-5/12 space-y-4">
+        <div className="flex w-full flex-col justify-between space-y-4 lg:flex-row lg:space-y-0">
+          <article className="w-full space-y-4 lg:w-5/12">
             <p>
               The Willow API is organized around REST. Our API has predictable
               resource-oriented URLs, accepts JSON-encoded request bodies,
@@ -38,7 +38,7 @@ export default function TrackEvent() {
             </p>
           </article>
 
-          <div className="flex w-6/12 flex-col space-y-4">
+          <div className="flex w-full flex-col space-y-4 lg:w-6/12">
             <RequestTable />
 
             <HTTPCodeTable />
@@ -65,7 +65,7 @@ function RequestTable() {
         <div className="bg-zinc-600 px-4 py-2 text-zinc-300">URL</div>
         <div className="flex items-center py-2">
           <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
-            https://heywillow.io/api/v1/record/event
+            https://heywillow.io/api/v1
           </div>
         </div>
       </div>
@@ -76,22 +76,22 @@ function RequestTable() {
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right">Content-Type</div>
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
+          <div className="w-1/5 text-right line-clamp-1">Content-Type</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
             application/json
           </div>
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right">Accept</div>
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
+          <div className="w-1/5 text-right line-clamp-1">Accept</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
             application/json
           </div>
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right">Authorization</div>
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
+          <div className="w-1/5 text-right line-clamp-1">Authorization</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
             {teams?.length === 0 ? (
               <Link href="/login">
                 <a className="italic underline">Not logged in</a>
@@ -118,20 +118,26 @@ function HTTPCodeTable() {
       </div>
 
       <div className="flex items-center py-2">
-        <div className="w-3/12 text-right font-mono text-xs">200 - Ok</div>
-        <div className=" w-9/12 pl-4 text-left">Success</div>
+        <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
+          200 - Ok
+        </div>
+        <div className=" w-9/12 pl-4 text-left line-clamp-1">Success</div>
       </div>
 
       <div className="flex items-center py-2">
-        <div className="w-3/12 text-right font-mono text-xs">201 - Created</div>
-        <div className=" w-9/12 pl-4 text-left">The object was recorded</div>
+        <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
+          201 - Created
+        </div>
+        <div className=" w-9/12 pl-4 text-left line-clamp-1">
+          The object was recorded
+        </div>
       </div>
 
       <div className="flex items-center py-2">
-        <div className="w-3/12 text-right font-mono text-xs">
+        <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
           202 - Accepted
         </div>
-        <div className=" w-9/12 pl-4 text-left">
+        <div className=" w-9/12 pl-4 text-left line-clamp-1">
           A record with that idempotency key already exists
         </div>
       </div>

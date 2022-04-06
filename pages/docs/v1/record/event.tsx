@@ -47,8 +47,8 @@ export default function TrackEvent() {
   return (
     <>
       <NextSeo
-        title="Willow Docs - Track customer event"
-        description="API documentation for tracking customer events onto their lifetime views. This is a part of Willow's unified view platform."
+        title="Willow Docs - Record customer event"
+        description="API documentation for recording customer events onto their lifetime views. This is a part of Willow's unified view platform."
       />
 
       <DocsContainer>
@@ -56,8 +56,8 @@ export default function TrackEvent() {
           Recording a customer event
         </h1>
 
-        <div className="flex w-full justify-between">
-          <article className="w-5/12 space-y-4">
+        <div className="flex w-full flex-col justify-between space-y-4 lg:flex-row lg:space-y-0">
+          <article className="w-full space-y-4 lg:w-5/12">
             <div>
               <p>
                 It can be very helpful to see what customers were doing before
@@ -261,7 +261,7 @@ export default function TrackEvent() {
             </div>
           </article>
 
-          <div className="flex w-6/12 flex-col space-y-4">
+          <div className="flex w-full flex-col space-y-4 lg:w-6/12">
             <RequestTable />
 
             <HTTPCodeTable />
@@ -353,7 +353,7 @@ export default function TrackEvent() {
 
               <div
                 className={[
-                  "px-4",
+                  "text-ellipsis px-4 line-clamp-1",
                   currentSection === "idempotencyKey" ? "bg-slate-800" : "",
                   properties.join("") === "" ? "hidden" : "",
                 ].join(" ")}
@@ -377,41 +377,6 @@ export default function TrackEvent() {
                 In-App Demo
               </div>
               <div className="flex flex-col">
-                <FeedNode
-                  id="0"
-                  isFirst
-                  node={{
-                    type: "event",
-                    action: "Completed a previous event",
-                    createdAt: new Date().toISOString(),
-                    properties: null,
-                    uniqKey: "0",
-                  }}
-                  addComment={async () => {
-                    return 0;
-                  }}
-                  refreshComment={() => {
-                    return;
-                  }}
-                  teamMemberList={[]}
-                />
-                <FeedNode
-                  id="0"
-                  node={{
-                    type: "event",
-                    action: "Completed another previous event",
-                    createdAt: new Date().toISOString(),
-                    properties: null,
-                    uniqKey: "0",
-                  }}
-                  addComment={async () => {
-                    return 0;
-                  }}
-                  refreshComment={() => {
-                    return;
-                  }}
-                  teamMemberList={[]}
-                />
                 <FeedNode
                   id="1"
                   node={node}
@@ -488,7 +453,7 @@ function RequestTable() {
       <div className="flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400">
         <div className="bg-zinc-600 px-4 py-2 text-zinc-300">URL</div>
         <div className="flex items-center py-2">
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
+          <div className="-mt-0.5 w-4/5 text-ellipsis pl-4 text-left font-mono line-clamp-1">
             https://heywillow.io/api/v1/record/event
           </div>
         </div>
@@ -500,21 +465,21 @@ function RequestTable() {
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right">Content-Type</div>
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
+          <div className="w-1/5 text-right line-clamp-1">Content-Type</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
             application/json
           </div>
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right">Accept</div>
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
+          <div className="w-1/5 text-right line-clamp-1">Accept</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
             application/json
           </div>
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right">Authorization</div>
+          <div className="w-1/5 text-right line-clamp-1">Authorization</div>
           <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
             {teams?.length === 0 ? (
               <Link href="/login">
@@ -542,17 +507,19 @@ function HTTPCodeTable() {
       </div>
 
       <div className="flex items-center py-2">
-        <div className="w-3/12 text-right font-mono text-xs">201 - Created</div>
-        <div className=" w-9/12 pl-4 text-left">
+        <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
+          201 - Created
+        </div>
+        <div className=" w-9/12 pl-4 text-left line-clamp-1">
           Event has been added to the customer&rsquo;s journey
         </div>
       </div>
 
       <div className="flex items-center py-2">
-        <div className="w-3/12 text-right font-mono text-xs">
+        <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
           202 - Accepted
         </div>
-        <div className=" w-9/12 pl-4 text-left">
+        <div className=" w-9/12 pl-4 text-left line-clamp-1">
           Event with this idempotency already recorded, ignoring
         </div>
       </div>

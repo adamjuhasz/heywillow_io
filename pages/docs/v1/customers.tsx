@@ -10,15 +10,15 @@ export default function TrackEvent() {
   return (
     <>
       <NextSeo
-        title="Willow API Docs - Introduction"
-        description="A high level introduction to Willow's API."
+        title="Willow API Docs - Customers"
+        description="What's a customer?"
       />
 
       <DocsContainer>
         <h1 className="mb-14 text-3xl font-medium">What is a customer?</h1>
 
         <div className="flex w-full justify-between">
-          <article className="w-5/12 space-y-4">
+          <article className="w-full space-y-4 lg:w-5/12">
             <p>
               A customer represents a user of your app, website, or service.
               Customers have{" "}
@@ -43,7 +43,7 @@ export default function TrackEvent() {
             </p>
           </article>
 
-          <div className="flex w-6/12 flex-col space-y-4"></div>
+          <div className="hidden w-6/12 flex-col space-y-4 lg:flex"></div>
         </div>
       </DocsContainer>
     </>

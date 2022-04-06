@@ -19,7 +19,7 @@ export default function TrackEvent() {
         </h1>
 
         <div className="flex w-full justify-between">
-          <article className="w-5/12 space-y-4">
+          <article className="w-full space-y-4 lg:w-5/12">
             <p>
               The Willow API uses API keys to authenticate requests. You can
               view and manage your API keys on the &ldquo;API Keys&rdquo;
@@ -43,7 +43,7 @@ export default function TrackEvent() {
             </p>
           </article>
 
-          <div className="flex w-6/12 flex-col space-y-4"></div>
+          <div className="hidden w-6/12 flex-col space-y-4 lg:flex"></div>
         </div>
       </DocsContainer>
     </>

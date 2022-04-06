@@ -5,7 +5,7 @@ export default function DocsSidebar() {
   const router = useRouter();
 
   const basicClasses =
-    "block text-zinc-400 rounded-r-xl px-4 mr-4 py-1 hover:text-zinc-100";
+    "block text-zinc-400 rounded-r-xl px-4 mr-4 py-1 hover:text-zinc-100 line-clamp-1";
   const activeClasses = "text-sky-500 bg-sky-300 bg-opacity-10";
 
   return (
