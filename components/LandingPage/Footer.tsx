@@ -185,6 +185,12 @@ export default function LandingPageFooter(props: Props) {
             </a>
           </Link>
 
+          <Link href="https://status.heywillow.io" prefetch={false}>
+            <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
+              Platform Status
+            </a>
+          </Link>
+
           <Link href="/privacy-policy" prefetch={false}>
             <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Privacy Policy
