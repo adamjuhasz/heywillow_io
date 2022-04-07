@@ -53,13 +53,13 @@ export default function LandingPageFooter(props: Props) {
             </a>
           </Link>
 
-          <Link href="/docs/v1/record/event" prefetch={false}>
+          <Link href="/docs/v1/user/user_id/event" prefetch={false}>
             <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Event tracking
             </a>
           </Link>
 
-          <Link href="/docs/v1/record/trait" prefetch={false}>
+          <Link href="/docs/v1/user/user_id" prefetch={false}>
             <a className="hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Record traits
             </a>

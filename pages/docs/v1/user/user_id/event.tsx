@@ -5,7 +5,6 @@ import { btoa } from "isomorphic-base64";
 import Link from "next/link";
 import isString from "lodash/isString";
 import { NextSeo } from "next-seo";
-import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import useGetAPIKeys from "client/getApiKeys";
@@ -18,8 +17,6 @@ type Section = null | "userId" | "event" | "properties" | "idempotencyKey";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function TrackEvent() {
-  const router = useRouter();
-
   const [userId, setUserId] = useState<string>("");
   const [event, setEvent] = useState<string>("Order Completed");
   const [idempotencyKey, setIdempotencyKey] = useState<string>("");
@@ -52,9 +49,7 @@ export default function TrackEvent() {
       />
 
       <DocsContainer>
-        <h1 className="mb-14 text-3xl font-medium">
-          Recording a customer event
-        </h1>
+        <h1 className="mb-14 text-3xl font-medium">Recording a user event</h1>
 
         <div className="flex w-full flex-col justify-between space-y-4 lg:flex-row lg:space-y-0">
           <article className="w-full space-y-4 lg:w-5/12">
@@ -70,7 +65,6 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("userId");
-                void router.replace({ hash: "userId" });
               }}
               id="userId"
               className={[
@@ -81,6 +75,7 @@ export default function TrackEvent() {
               ].join(" ")}
             >
               <h2 className="text-lg font-medium">User Id</h2>
+              <div className="text-xs text-zinc-400">string</div>
 
               <p className="text-zinc-400">
                 A User Id should be a robust, static, unique identifier that you
@@ -100,14 +95,13 @@ export default function TrackEvent() {
                 value={userId}
                 className="rounded-md border-2 border-zinc-600 bg-zinc-900"
                 onChange={(e) => setUserId(e.target.value)}
-                placeholder="{user_db_id}"
+                placeholder="{user_id}"
               />
             </div>
 
             <div
               onClick={() => {
                 setSection("event");
-                void router.replace({ hash: "event" });
               }}
               id="event"
               className={[
@@ -118,11 +112,14 @@ export default function TrackEvent() {
               ].join(" ")}
             >
               <h2 className="text-lg font-medium">Event</h2>
+              <div className="text-xs text-zinc-400">string</div>
+
               <p className="text-zinc-400">
                 Every event records a single user action. We recommend that you
                 make your event names human-readable (use spaces), so that
                 everyone on your team can know what they mean instantly.
               </p>
+
               <p className="text-zinc-400">
                 We don&rsquo;t recommend using nondescript names like{" "}
                 <span className="rounded-sm bg-zinc-100 bg-opacity-30 px-0.5 text-zinc-900">
@@ -135,9 +132,11 @@ export default function TrackEvent() {
                 </span>
                 .
               </p>
+
               <p className="text-zinc-400">
                 We recommend event names built from a noun and past-tense verb.
               </p>
+
               <input
                 autoComplete="off"
                 type="text"
@@ -151,7 +150,6 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("properties");
-                void router.replace({ hash: "properties" });
               }}
               id="properties"
               className={[
@@ -165,6 +163,7 @@ export default function TrackEvent() {
                 Properties{" "}
                 <span className="text-sm italic text-zinc-400">optional</span>
               </h2>
+              <div className="text-xs text-zinc-400">{`{ [key: string]: string | null | number | boolean }`}</div>
 
               <p className="text-zinc-400">
                 Properties are extra pieces of information you can tie to events
@@ -226,9 +225,8 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("idempotencyKey");
-                void router.replace({ hash: "idempotencyKey" });
               }}
-              id="event"
+              id="idempotencyKey"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
                 currentSection === "idempotencyKey"
@@ -240,6 +238,7 @@ export default function TrackEvent() {
                 Idempotency Key{" "}
                 <span className="text-sm italic text-zinc-400">optional</span>
               </h2>
+              <div className="text-xs text-zinc-400">string</div>
 
               <p className="text-zinc-400">
                 The API supports idempotency for safely retrying requests
@@ -262,7 +261,7 @@ export default function TrackEvent() {
           </article>
 
           <div className="flex w-full flex-col space-y-4 lg:w-6/12">
-            <RequestTable />
+            <RequestTable userId={userId} />
 
             <HTTPCodeTable />
 
@@ -271,20 +270,6 @@ export default function TrackEvent() {
                 Request body
               </div>
               <div className="px-4">{"{"}</div>
-
-              <div
-                className={[
-                  "px-4",
-                  currentSection === "userId" ? "bg-slate-800" : "",
-                ].join(" ")}
-              >
-                {"  "}
-                <span className="text-lime-200">{`"userId"`}</span>:{" "}
-                <span className="font-mono text-sky-300">
-                  &quot;{userId === "" ? "{user_db_id}" : userId}&quot;
-                </span>
-                ,
-              </div>
 
               <div
                 className={[
@@ -442,7 +427,11 @@ TrackEvent.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };
 
-function RequestTable() {
+interface RequestTableProps {
+  userId: string;
+}
+
+function RequestTable(props: RequestTableProps) {
   const { data: teams } = useGetTeams();
   const { data: apiKeys } = useGetAPIKeys(teams?.[0]?.id);
 
@@ -451,10 +440,21 @@ function RequestTable() {
   return (
     <>
       <div className="flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400">
-        <div className="bg-zinc-600 px-4 py-2 text-zinc-300">URL</div>
+        <div className="bg-zinc-600 px-4 py-2 text-zinc-300">Endpoint</div>
+
         <div className="flex items-center py-2">
+          <div className="w-1/5 text-right line-clamp-1">URL</div>
           <div className="-mt-0.5 w-4/5 text-ellipsis pl-4 text-left font-mono line-clamp-1">
-            https://heywillow.io/api/v1/record/event
+            {`/api/v1/user/${
+              props.userId === "" ? "{user_id}" : props.userId
+            }/event`}
+          </div>
+        </div>
+
+        <div className="flex items-center py-2">
+          <div className="w-1/5 text-right line-clamp-1">Method</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
+            POST
           </div>
         </div>
       </div>
@@ -511,7 +511,7 @@ function HTTPCodeTable() {
           201 - Created
         </div>
         <div className=" w-9/12 pl-4 text-left line-clamp-1">
-          Event has been added to the customer&rsquo;s journey
+          Event has been added to the user&rsquo;s journey
         </div>
       </div>
 

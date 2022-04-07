@@ -5,7 +5,6 @@ import { btoa } from "isomorphic-base64";
 import Link from "next/link";
 import isString from "lodash/isString";
 import { NextSeo } from "next-seo";
-import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import useGetAPIKeys from "client/getApiKeys";
@@ -17,8 +16,6 @@ import DocsContainer from "components/Docs/Container";
 type Section = null | "userId" | "traits";
 
 export default function TrackEvent() {
-  const router = useRouter();
-
   const [userId, setUserId] = useState<string>("");
   const [traits, setTraits] = useState<[string, string][]>([
     ["email", "customer@example.email"],
@@ -33,9 +30,7 @@ export default function TrackEvent() {
       />
 
       <DocsContainer>
-        <h1 className="mb-14 text-3xl font-medium">
-          Recording a customer trait
-        </h1>
+        <h1 className="mb-14 text-3xl font-medium">Recording a user trait</h1>
 
         <div className="flex w-full flex-col justify-between space-y-4 lg:flex-row lg:space-y-0">
           <article className="w-full space-y-4 lg:w-5/12">
@@ -52,7 +47,6 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("userId");
-                void router.replace({ hash: "userId" });
               }}
               id="userId"
               className={[
@@ -63,6 +57,7 @@ export default function TrackEvent() {
               ].join(" ")}
             >
               <h2 className="text-lg font-medium">User Id</h2>
+              <div className="text-xs text-zinc-400">string</div>
 
               <p className="text-zinc-400">
                 A User Id should be a robust, static, unique identifier that you
@@ -82,16 +77,15 @@ export default function TrackEvent() {
                 value={userId}
                 className="rounded-md border-2 border-zinc-600 bg-zinc-900"
                 onChange={(e) => setUserId(e.target.value)}
-                placeholder="{user_db_id}"
+                placeholder="{user_id}"
               />
             </div>
 
             <div
               onClick={() => {
                 setSection("traits");
-                void router.replace({ hash: "traits" });
               }}
-              id="properties"
+              id="traits"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
                 currentSection === "traits"
@@ -100,6 +94,7 @@ export default function TrackEvent() {
               ].join(" ")}
             >
               <h2 className="text-lg font-medium">Traits</h2>
+              <div className="text-xs text-zinc-400">{`{ [key: string]: string | null | number | boolean }`}</div>
 
               <p className="text-zinc-400">
                 Traits are pieces of information you know about a user. These
@@ -200,7 +195,7 @@ export default function TrackEvent() {
           </article>
 
           <div className="flex w-full flex-col space-y-4 lg:w-6/12">
-            <RequestTable />
+            <RequestTable userId={userId} />
 
             <HTTPCodeTable />
 
@@ -209,20 +204,6 @@ export default function TrackEvent() {
                 Request body
               </div>
               <div className="px-4">{"{"}</div>
-
-              <div
-                className={[
-                  "px-4",
-                  currentSection === "userId" ? "bg-slate-800" : "",
-                ].join(" ")}
-              >
-                {"  "}
-                <span className="text-lime-200">{`"userId"`}</span>:{" "}
-                <span className="font-mono text-sky-300">
-                  &quot;{userId === "" ? "{user_db_id}" : userId}&quot;
-                </span>
-                ,
-              </div>
 
               <div
                 className={[
@@ -364,7 +345,11 @@ TrackEvent.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };
 
-function RequestTable() {
+interface RequestTableProps {
+  userId: string;
+}
+
+function RequestTable(props: RequestTableProps) {
   const { data: teams } = useGetTeams();
   const { data: apiKeys } = useGetAPIKeys(teams?.[0]?.id);
 
@@ -373,11 +358,18 @@ function RequestTable() {
   return (
     <>
       <div className="flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400">
-        <div className="bg-zinc-600 px-4 py-2 text-zinc-300">URL</div>
+        <div className="bg-zinc-600 px-4 py-2 text-zinc-300">Endpoint</div>
+
         <div className="flex items-center py-2">
+          <div className="w-1/5 text-right">URL</div>
           <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
-            https://heywillow.io/api/v1/record/trait
+            {`/api/v1/user/${props.userId === "" ? "{user_id}" : props.userId}`}
           </div>
+        </div>
+
+        <div className="flex items-center py-2">
+          <div className="w-1/5 text-right">Method</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">PUT</div>
         </div>
       </div>
 

@@ -8,19 +8,21 @@ import isArray from "lodash/isArray";
 
 import apiHandler from "server/apiHandler";
 import authorizeAPIKey from "server/authorizeAPIKey";
-import updateCustomerTraits, { Json } from "server/ingest/updateTraits";
+import updateCustomerTraits from "server/ingest/updateTraits";
 
-export default apiHandler({ post: trackEventHandler });
+export default apiHandler({ put: trackTraitHandler });
 
 export interface Request {
-  userId: string;
   traits: Prisma.JsonValue;
 }
 
-async function trackEventHandler(
+async function trackTraitHandler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, never> | { message: string }>
 ): Promise<void> {
+  // cspell: disable-next-line
+  const { userid: userId } = req.query;
+
   const authed = await authorizeAPIKey(req);
   if (isString(authed)) {
     return res.status(401).json({ message: authed });
@@ -36,17 +38,16 @@ async function trackEventHandler(
   }
   const body = req.body as Request;
 
-  let errors: string[] = [];
-
-  if (isString(body.userId) === false || body.userId === "") {
-    errors = [...errors, "`userId` must be a non-empty string"];
+  if (userId === "" || isArray(userId)) {
+    return res.status(400).json({
+      message: "Invalid values for keys: `userId` must be a non-empty string",
+    });
   }
 
   if (isNil(body.traits)) {
-    errors = [...errors, "`traits` must be a non-empty object"];
-    return res
-      .status(400)
-      .json({ message: `Invalid values for keys: ${errors.join(", ")}` });
+    return res.status(400).json({
+      message: "Invalid values for keys: `traits` must be a non-empty object",
+    });
   }
 
   if (
@@ -55,19 +56,10 @@ async function trackEventHandler(
     isBoolean(body.traits) ||
     isArray(body.traits)
   ) {
-    errors = [...errors, "`traits` must be an object"];
-    return res
-      .status(400)
-      .json({ message: `Invalid values for keys: ${errors.join(", ")}` });
+    return res.status(400).json({ message: "`traits` must be an object" });
   }
 
-  if (errors.length > 0) {
-    return res
-      .status(400)
-      .json({ message: `Invalid values for keys: ${errors.join(", ")}` });
-  }
-
-  await updateCustomerTraits(team.id, body.userId, body.traits as Json);
+  await updateCustomerTraits(team.id, userId, body.traits);
 
   return res.status(200).json({});
 }

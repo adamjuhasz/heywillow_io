@@ -31,13 +31,14 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function MyApp({ Component, pageProps, ..._props }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return getLayout(
     <>
       <Head>
-        {process.env.NODE_ENV === "production" ? (
+        {process.env.NODE_ENV === "production" &&
+        process.env.NEXT_PUBLIC_ANALYTICS_ENABLE !== undefined ? (
           <>
             {/* PostHog */}
             <link rel="preconnect" href="https://app.posthog.com"></link>
