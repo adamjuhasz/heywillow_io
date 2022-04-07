@@ -30,6 +30,7 @@ export default function DocsSidebar() {
             Introduction
           </a>
         </Link>
+
         <Link href={{ pathname: "/docs/v1/authentication" }}>
           <a
             className={[
@@ -58,6 +59,17 @@ export default function DocsSidebar() {
           </a>
         </Link>
 
+        <Link href={{ pathname: "/docs/v1/user/user_id" }}>
+          <a
+            className={[
+              basicClasses,
+              router.pathname === "/docs/v1/user/user_id" ? activeClasses : "",
+            ].join(" ")}
+          >
+            Trait recording
+          </a>
+        </Link>
+
         <Link href={{ pathname: "/docs/v1/user/user_id/event" }}>
           <a
             className={[
@@ -70,15 +82,45 @@ export default function DocsSidebar() {
             Event recording
           </a>
         </Link>
+      </div>
 
-        <Link href={{ pathname: "/docs/v1/user/user_id" }}>
+      <div className="flex flex-row items-center sm:w-full sm:flex-col sm:items-start">
+        <h3 className={"px-4 text-lg"}>Group</h3>
+
+        <Link href={{ pathname: "/docs/v1/group" }}>
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/user/user_id" ? activeClasses : "",
+              router.pathname === "/docs/v1/group" ? activeClasses : "",
+            ].join(" ")}
+          >
+            Introduction
+          </a>
+        </Link>
+
+        <Link href={{ pathname: "/docs/v1/group/group_id" }}>
+          <a
+            className={[
+              basicClasses,
+              router.pathname === "/docs/v1/group/group_id"
+                ? activeClasses
+                : "",
             ].join(" ")}
           >
             Trait recording
+          </a>
+        </Link>
+
+        <Link href={{ pathname: "/docs/v1/group/group_id/associate" }}>
+          <a
+            className={[
+              basicClasses,
+              router.pathname === "/docs/v1/group/group_id/associate"
+                ? activeClasses
+                : "",
+            ].join(" ")}
+          >
+            Associate user
           </a>
         </Link>
       </div>

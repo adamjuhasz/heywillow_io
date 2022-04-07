@@ -31,14 +31,13 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function MyApp({ Component, pageProps, ..._props }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return getLayout(
     <>
       <Head>
-        {process.env.NODE_ENV === "production" &&
-        window.location.hostname === "heywillow.io" ? (
+        {process.env.NODE_ENV === "production" ? (
           <>
             {/* PostHog */}
             <link rel="preconnect" href="https://app.posthog.com"></link>
