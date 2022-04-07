@@ -400,9 +400,9 @@ model CustomerGroup {
   groupId String
   teamId  BigInt
 
-  Team                Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  Customer            CustomerInCustomerGroup[]
-  CustomerGroupTraits CustomerGroupTraits[]
+  Team        Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Customer    CustomerInCustomerGroup[]
+  GroupTraits CustomerGroupTraits[]
 
   @@unique([teamId, groupId])
 }
