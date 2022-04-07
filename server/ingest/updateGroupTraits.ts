@@ -6,12 +6,10 @@ import isBoolean from "lodash/isBoolean";
 import isNull from "lodash/isNull";
 import isArray from "lodash/isArrayLike";
 
-import upsertCustomer from "server/ingest/upsertCustomer";
 import { prisma } from "utils/prisma";
 
-export default async function updateCustomerTraits(
-  teamId: number | bigint,
-  userId: string,
+export default async function updateGroupTraits(
+  groupId: number | bigint,
   traits: Prisma.JsonValue,
   idempotency?: string | undefined
 ) {
@@ -33,46 +31,26 @@ export default async function updateCustomerTraits(
 
   if (isArray(traits)) {
     await Promise.allSettled(
-      traits.map((trait) =>
-        updateCustomerTraits(teamId, userId, trait, idempotency)
-      )
+      traits.map((trait) => updateGroupTraits(groupId, trait, idempotency))
     );
     return;
   }
 
-  // create or retrieve customer
-  const customer = await upsertCustomer(teamId, userId);
-
-  await prisma.customer.update({
-    where: { id: customer.id },
+  await prisma.customerGroup.update({
+    where: { id: groupId },
     data: { updatedAt: new Date() },
   });
 
   await Promise.allSettled(
     toPairs(traits).map(async ([key, value]) => {
-      await prisma.customerTrait.create({
+      await prisma.customerGroupTraits.create({
         data: {
-          customerId: customer.id,
+          customerGroupId: groupId,
           key: key,
           value: value === null ? undefined : value,
           idempotency: idempotency,
         },
       });
-
-      // if we have an email, link alias email to customer
-      if (key === "email" && isString(value)) {
-        await prisma.aliasEmail.update({
-          where: {
-            teamId_emailAddress: {
-              teamId: teamId,
-              emailAddress: value,
-            },
-          },
-          data: {
-            customerId: customer.id,
-          },
-        });
-      }
     })
   );
 }

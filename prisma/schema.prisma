@@ -397,13 +397,29 @@ model CustomerGroup {
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
 
-
   groupId String
   teamId  BigInt
 
-  Team     Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  Customer CustomerInCustomerGroup[]
+  Team                Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Customer            CustomerInCustomerGroup[]
+  CustomerGroupTraits CustomerGroupTraits[]
+
   @@unique([teamId, groupId])
+}
+
+model CustomerGroupTraits {
+  id          BigInt   @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  key         String
+  value       Json?
+  idempotency String?
+
+  customerGroupId BigInt
+
+  CustomerGroup CustomerGroup @relation(fields: [customerGroupId], references: [id], onDelete: Cascade)
+
+  @@unique([key, idempotency])
 }
 
 model CustomerInCustomerGroup {

@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import isString from "lodash/isString";
 import keys from "lodash/keys";
+import isNil from "lodash/isNil";
 import type { Prisma } from "@prisma/client";
 
 import apiHandler from "server/apiHandler";
@@ -10,6 +11,9 @@ import { JSON, logger } from "utils/logger";
 import authorizeAPIKey from "server/authorizeAPIKey";
 import upsertCustomer from "server/ingest/upsertCustomer";
 import updateCustomerTraits from "server/ingest/updateTraits";
+import upsertGroup from "server/ingest/upsertGroup";
+import addCustomerToGroup from "server/ingest/addCustomerToGroup";
+import updateGroupTraits from "server/ingest/updateGroupTraits";
 
 export default apiHandler({ post: handler });
 
@@ -85,7 +89,9 @@ async function handler(
             data: {
               customerId: customer.id,
               action: trackEvent.event,
-              properties: trackEvent.properties,
+              properties: isNil(trackEvent.properties)
+                ? undefined
+                : trackEvent.properties,
               idempotency: trackEvent.messageId,
             },
           });
@@ -103,7 +109,7 @@ async function handler(
             userId: identifyEvent.userId,
           });
 
-          if (identifyEvent.traits !== undefined) {
+          if (!isNil(identifyEvent.traits)) {
             await updateCustomerTraits(
               team.id,
               identifyEvent.userId,
@@ -148,7 +154,9 @@ async function handler(
             data: {
               customerId: customer.id,
               action: "Viewed Page",
-              properties: pageEvent.properties,
+              properties: isNil(pageEvent.properties)
+                ? undefined
+                : pageEvent.properties,
               idempotency: pageEvent.messageId,
             },
           });
@@ -167,7 +175,9 @@ async function handler(
             data: {
               customerId: customer.id,
               action: "Viewed Screen",
-              properties: screenEvent.properties,
+              properties: isNil(screenEvent.properties)
+                ? undefined
+                : screenEvent.properties,
               idempotency: screenEvent.messageId,
             },
           });
@@ -182,34 +192,18 @@ async function handler(
         const groupEvent = body as SegmentGroupEvent;
         if ("userId" in groupEvent && groupEvent.userId !== null) {
           const customer = await upsertCustomer(team.id, groupEvent.userId);
-          const group = await prisma.customerGroup.upsert({
-            where: {
-              teamId_groupId: {
-                teamId: team.id,
-                groupId: groupEvent.groupId,
-              },
-            },
-            create: {
-              teamId: team.id,
-              groupId: groupEvent.groupId,
-            },
-            update: { updatedAt: new Date() },
-          });
-          await prisma.customerInCustomerGroup.upsert({
-            where: {
-              customerId_customerGroupId: {
-                customerId: customer.id,
-                customerGroupId: group.id,
-              },
-            },
-            create: {
-              customerId: customer.id,
-              customerGroupId: group.id,
-            },
-            update: {
-              updatedAt: new Date(),
-            },
-          });
+
+          const group = await upsertGroup(team.id, groupEvent.groupId);
+
+          await addCustomerToGroup(group.id, customer.id);
+
+          if (!isNil(groupEvent.traits)) {
+            await updateGroupTraits(
+              group.id,
+              groupEvent.traits,
+              groupEvent.messageId
+            );
+          }
           return res.status(200).json({});
         } else {
           return res.status(202).json({});
@@ -256,19 +250,17 @@ async function handler(
     .json({ message: `Internal Error, execution failed to find end` });
 }
 
-type Json = { [key: string]: Prisma.InputJsonValue | null };
-
 // from https://segment.com/docs/connections/spec/track/
 type SegmentTrackEvent = SegmentCommon & {
   type: "track";
   event: string;
-  properties: Json;
+  properties?: Prisma.JsonValue;
 };
 
 // from https://segment.com/docs/connections/spec/identify/
 type SegmentIdentifyEvent = SegmentCommon & {
   type: "identify";
-  traits?: Json;
+  traits?: Prisma.JsonValue;
 };
 
 type SegmentAliasEvent = SegmentCommon & {
@@ -279,19 +271,19 @@ type SegmentAliasEvent = SegmentCommon & {
 type SegmentPageEvent = SegmentCommon & {
   type: "page";
   name: string;
-  properties: Json;
+  properties?: Prisma.JsonValue;
 };
 
 type SegmentScreenEvent = SegmentCommon & {
   type: "screen";
   name: string;
-  properties: Json;
+  properties?: Prisma.JsonValue;
 };
 
 type SegmentGroupEvent = SegmentCommon & {
   type: "group";
   groupId: string;
-  properties: Json;
+  traits?: Prisma.JsonValue;
 };
 
 // from https://segment.com/docs/connections/spec/common/#context

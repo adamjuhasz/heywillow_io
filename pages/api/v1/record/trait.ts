@@ -8,16 +8,16 @@ import isArray from "lodash/isArray";
 
 import apiHandler from "server/apiHandler";
 import authorizeAPIKey from "server/authorizeAPIKey";
-import updateCustomerTraits, { Json } from "server/ingest/updateTraits";
+import updateCustomerTraits from "server/ingest/updateTraits";
 
-export default apiHandler({ post: trackEventHandler });
+export default apiHandler({ post: trackTraitHandler });
 
 export interface Request {
   userId: string;
   traits: Prisma.JsonValue;
 }
 
-async function trackEventHandler(
+async function trackTraitHandler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, never> | { message: string }>
 ): Promise<void> {
@@ -67,7 +67,7 @@ async function trackEventHandler(
       .json({ message: `Invalid values for keys: ${errors.join(", ")}` });
   }
 
-  await updateCustomerTraits(team.id, body.userId, body.traits as Json);
+  await updateCustomerTraits(team.id, body.userId, body.traits);
 
   return res.status(200).json({});
 }
