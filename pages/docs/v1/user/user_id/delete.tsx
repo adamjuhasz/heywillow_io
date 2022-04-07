@@ -118,6 +118,13 @@ function RequestTable(props: RequestTableProps) {
         </div>
 
         <div className="flex items-center py-2">
+          <div className="w-1/5 text-right line-clamp-1">Accept</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
+            application/json
+          </div>
+        </div>
+
+        <div className="flex items-center py-2">
           <div className="w-1/5 text-right">Authorization</div>
           <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
             {teams?.length === 0 ? (

@@ -170,6 +170,15 @@ function HTTPCodeTable() {
 
       <div className="flex items-center py-2">
         <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
+          404 - Not Found
+        </div>
+        <div className=" w-9/12 pl-4 text-left line-clamp-1">
+          Object you&rsquo;re trying to interact with wasn&rsquo;t found
+        </div>
+      </div>
+
+      <div className="flex items-center py-2">
+        <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
           405 - Method Not Allowed
         </div>
         <div className=" w-9/12 pl-4 text-left line-clamp-1">
