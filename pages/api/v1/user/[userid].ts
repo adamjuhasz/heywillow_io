@@ -9,8 +9,9 @@ import isArray from "lodash/isArray";
 import apiHandler from "server/apiHandler";
 import authorizeAPIKey from "server/authorizeAPIKey";
 import updateCustomerTraits from "server/ingest/updateTraits";
+import { prisma } from "utils/prisma";
 
-export default apiHandler({ put: trackTraitHandler });
+export default apiHandler({ post: trackTraitHandler, deleteUser: deleteUser });
 
 export interface Request {
   traits: Prisma.JsonValue;
@@ -60,6 +61,38 @@ async function trackTraitHandler(
   }
 
   await updateCustomerTraits(team.id, userId, body.traits);
+
+  return res.status(200).json({});
+}
+
+async function deleteUser(
+  req: NextApiRequest,
+  res: NextApiResponse<Record<string, never> | { message: string }>
+): Promise<void> {
+  // cspell: disable-next-line
+  const { userid: userId } = req.query;
+
+  const authed = await authorizeAPIKey(req);
+  if (isString(authed)) {
+    return res.status(401).json({ message: authed });
+  }
+  const [team] = authed;
+
+  if (isArray(userId) || userId === "") {
+    return res
+      .status(400)
+      .json({ message: "`userId` must be a non-empty string" });
+  }
+
+  const customer = await prisma.customer.findUnique({
+    where: { teamId_userId: { teamId: team.id, userId: userId } },
+  });
+
+  if (customer === null) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  await prisma.customer.delete({ where: { id: customer.id } });
 
   return res.status(200).json({});
 }

@@ -8,8 +8,9 @@ import apiHandler from "server/apiHandler";
 import authorizeAPIKey from "server/authorizeAPIKey";
 import upsertGroup from "server/ingest/upsertGroup";
 import updateGroupTraits from "server/ingest/updateGroupTraits";
+import { prisma } from "utils/prisma";
 
-export default apiHandler({ put: trackGroupHandler });
+export default apiHandler({ post: trackGroupHandler, delete: deleteGroup });
 
 export interface Request {
   traits?: Prisma.JsonValue;
@@ -48,6 +49,40 @@ async function trackGroupHandler(
   if (!isNil(body.traits)) {
     await updateGroupTraits(group.id, body.traits);
   }
+
+  return res.status(200).json({});
+}
+
+async function deleteGroup(
+  req: NextApiRequest,
+  res: NextApiResponse<Record<string, never> | { message: string }>
+) {
+  // cspell: disable-next-line
+  const { groupid: groupId } = req.query;
+
+  const authed = await authorizeAPIKey(req);
+  if (isString(authed)) {
+    return res.status(401).json({ message: authed });
+  }
+  const [team] = authed;
+
+  if (isArray(groupId) || groupId === "") {
+    return res
+      .status(400)
+      .json({ message: "`groupId` must be a non-empty string" });
+  }
+
+  const group = await prisma.customerGroup.findUnique({
+    where: { teamId_groupId: { teamId: team.id, groupId: groupId } },
+  });
+
+  if (group === null) {
+    return res.status(404).json({ message: "Group not found" });
+  }
+
+  await prisma.customerGroup.delete({
+    where: { id: group.id },
+  });
 
   return res.status(200).json({});
 }

@@ -369,7 +369,7 @@ function RequestTable(props: RequestTableProps) {
 
         <div className="flex items-center py-2">
           <div className="w-1/5 text-right">Method</div>
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">PUT</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">POST</div>
         </div>
       </div>
 

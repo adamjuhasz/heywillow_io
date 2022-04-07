@@ -82,6 +82,19 @@ export default function DocsSidebar() {
             Event tracking
           </a>
         </Link>
+
+        <Link href={{ pathname: "/docs/v1/user/user_id/delete" }}>
+          <a
+            className={[
+              basicClasses,
+              router.pathname === "/docs/v1/user/user_id/delete"
+                ? activeClasses
+                : "",
+            ].join(" ")}
+          >
+            Deleting
+          </a>
+        </Link>
       </div>
 
       <div className="flex flex-row items-center sm:w-full sm:flex-col sm:items-start">
@@ -134,6 +147,19 @@ export default function DocsSidebar() {
             ].join(" ")}
           >
             Event tracking
+          </a>
+        </Link>
+
+        <Link href={{ pathname: "/docs/v1/group/group_id/delete" }}>
+          <a
+            className={[
+              basicClasses,
+              router.pathname === "/docs/v1/group/group_id/delete"
+                ? activeClasses
+                : "",
+            ].join(" ")}
+          >
+            Deleting
           </a>
         </Link>
       </div>
