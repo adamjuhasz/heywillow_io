@@ -37,7 +37,8 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return getLayout(
     <>
       <Head>
-        {process.env.NODE_ENV === "production" ? (
+        {process.env.NODE_ENV === "production" &&
+        window.location.hostname === "heywillow.io" ? (
           <>
             {/* PostHog */}
             <link rel="preconnect" href="https://app.posthog.com"></link>
