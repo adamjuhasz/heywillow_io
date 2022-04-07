@@ -16,9 +16,16 @@ module.exports = {
           "0%": { "background-position": "0% 0%" },
           "100%": { "background-position": "-200% 0%" },
         },
+        largePing: {
+          "75%, 100%": {
+            transform: "scale(4)",
+            opacity: "0",
+          },
+        },
       },
       animation: {
         loading: "leftRightAnim 1s linear infinite",
+        "ping-slow": "largePing 3s ease-in-out infinite",
       },
     },
   },

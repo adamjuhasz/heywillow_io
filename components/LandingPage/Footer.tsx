@@ -31,7 +31,7 @@ export default function LandingPageFooter(props: Props) {
 
   return (
     <div className="flex min-h-[160px] w-full justify-between bg-black px-2 pt-7 pb-14 text-zinc-500 lg:px-0">
-      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 space-y-4 px-4 md:grid-cols-8 md:space-y-0 md:px-0">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 space-y-4 px-4 md:grid-cols-9 md:space-y-0 md:px-0">
         <div className="col-span-1 flex flex-col md:col-span-2">
           <Link href="/docs" prefetch={prefetch}>
             <a>
@@ -176,7 +176,7 @@ export default function LandingPageFooter(props: Props) {
           <div className="">Labi Desk vs Willow</div>
         </div> */}
 
-        <div className="col-span-1 flex flex-col md:col-span-1">
+        <div className="col-span-1 ml-3 flex flex-col md:col-span-2">
           <h3 className="font-medium text-zinc-100">Company</h3>
 
           <Link href="/" prefetch={true}>
@@ -186,7 +186,13 @@ export default function LandingPageFooter(props: Props) {
           </Link>
 
           <Link href="https://status.heywillow.io" prefetch={false}>
-            <a className="line-clamp-1 hover:text-zinc-100 hover:underline hover:decoration-wavy">
+            <a className="relative items-center hover:text-zinc-100 hover:underline hover:decoration-wavy">
+              <div className="absolute -ml-3 flex h-full items-center">
+                <div className="h-1.5 w-1.5 animate-ping-slow rounded-full bg-lime-500" />
+              </div>
+              <div className="absolute -ml-3 flex h-full items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-lime-500" />
+              </div>
               Platform Status
             </a>
           </Link>
