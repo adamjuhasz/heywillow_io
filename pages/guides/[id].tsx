@@ -6,8 +6,8 @@ import {
 import { ParsedUrlQuery } from "querystring";
 import Head from "next/head";
 import format from "date-fns/format";
-import sample from "lodash/sample";
 import { ArticleJsonLd, NextSeo } from "next-seo";
+import arbit from "arbit"; // cspell: disable-line
 
 import {
   Post as IPost,
@@ -76,6 +76,12 @@ interface Props {
 }
 
 export default function Post({ postData }: Props) {
+  const random = arbit(postData.id); // cspell: disable-line
+
+  const sample: <T>(arr: T[]) => T = (arr) => {
+    return arr[random.nextInt(0, arr.length)];
+  };
+
   return (
     <>
       <NextSeo
