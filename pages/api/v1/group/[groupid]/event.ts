@@ -1,15 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import isString from "lodash/isString";
-import type { CustomerEvent, Prisma } from "@prisma/client";
-import isNil from "lodash/isNil";
 import isArray from "lodash/isArray";
+import type { GroupEvent, Prisma } from "@prisma/client";
+import isNil from "lodash/isNil";
 
 import apiHandler from "server/apiHandler";
 import authorizeAPIKey from "server/authorizeAPIKey";
+import upsertGroup from "server/ingest/upsertGroup";
 import { prisma } from "utils/prisma";
-import upsertCustomer from "server/ingest/upsertCustomer";
 
-export default apiHandler({ post: trackEventHandler });
+export default apiHandler({ post: trackGroupHandler });
 
 export interface Request {
   event: string;
@@ -17,12 +17,12 @@ export interface Request {
   idempotencyKey?: string;
 }
 
-async function trackEventHandler(
+async function trackGroupHandler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, never> | { message: string }>
 ): Promise<void> {
   // cspell: disable-next-line
-  const { userid: userId } = req.query;
+  const { groupid: groupId } = req.query;
 
   const authed = await authorizeAPIKey(req);
   if (isString(authed)) {
@@ -39,37 +39,20 @@ async function trackEventHandler(
   }
   const body = req.body as Request;
 
-  if (userId === "" || isArray(userId)) {
-    return res.status(400).json({
-      message: "Invalid values for keys: `userId` must be a non-empty string",
-    });
+  if (isArray(groupId) || groupId === "") {
+    return res
+      .status(400)
+      .json({ message: "`groupId` must be a non-empty string" });
   }
 
-  if (isString(body.event) === false || body.event === "") {
-    return res.status(400).json({
-      message: "Invalid values for keys: `event` must be a non-empty string",
-    });
-  }
-
+  const group = await upsertGroup(team.id, groupId);
   const idempotencyKey = body.idempotencyKey;
 
-  if (!(idempotencyKey === undefined || isString(idempotencyKey))) {
-    return res.status(400).json({
-      message:
-        "Invalid values for keys: `idempotencyKey` must be a string or not present",
-    });
-  }
-
-  const customer = await upsertCustomer(team.id, userId);
-
-  let existingEvent: CustomerEvent | null = null;
+  let existingEvent: GroupEvent | null = null;
   if (isString(idempotencyKey)) {
-    existingEvent = await prisma.customerEvent.findUnique({
+    existingEvent = await prisma.groupEvent.findUnique({
       where: {
-        customerId_idempotency: {
-          customerId: customer.id,
-          idempotency: idempotencyKey,
-        },
+        groupId_idempotency: { groupId: group.id, idempotency: idempotencyKey },
       },
     });
   }
@@ -78,14 +61,14 @@ async function trackEventHandler(
     return res.status(202).json({ message: "Already recorded" });
   }
 
-  await prisma.customerEvent.create({
+  await prisma.groupEvent.create({
     data: {
-      customerId: customer.id,
+      groupId: group.id,
       action: body.event,
       properties: isNil(body.properties) ? undefined : body.properties,
       idempotency: idempotencyKey,
     },
   });
 
-  return res.status(201).json({});
+  return res.status(200).json({});
 }

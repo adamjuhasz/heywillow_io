@@ -79,7 +79,7 @@ export default function DocsSidebar() {
                 : "",
             ].join(" ")}
           >
-            Event recording
+            Event tracking
           </a>
         </Link>
       </div>
@@ -121,6 +121,19 @@ export default function DocsSidebar() {
             ].join(" ")}
           >
             Associate user
+          </a>
+        </Link>
+
+        <Link href={{ pathname: "/docs/v1/group/group_id/event" }}>
+          <a
+            className={[
+              basicClasses,
+              router.pathname === "/docs/v1/group/group_id/event"
+                ? activeClasses
+                : "",
+            ].join(" ")}
+          >
+            Event tracking
           </a>
         </Link>
       </div>
