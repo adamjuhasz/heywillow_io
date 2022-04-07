@@ -403,6 +403,7 @@ model CustomerGroup {
   Team        Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Customer    CustomerInCustomerGroup[]
   GroupTraits CustomerGroupTraits[]
+  GroupEvents GroupEvent[]
 
   @@unique([teamId, groupId])
 }
@@ -449,16 +450,35 @@ model CustomerTrait {
 }
 
 model CustomerEvent {
-  id          BigInt   @id @default(autoincrement())
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
   action      String
   properties  Json?
-  idempotency String?  @unique
+  idempotency String?
 
   customerId BigInt
 
   Customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, idempotency])
+}
+
+model GroupEvent {
+  id        BigInt   @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  action      String
+  properties  Json?
+  idempotency String?
+
+  groupId BigInt
+
+  Group CustomerGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, idempotency])
 }
 
 enum PriceType {
