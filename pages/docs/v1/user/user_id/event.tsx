@@ -79,6 +79,7 @@ export default function TrackEvent() {
               ].join(" ")}
             >
               <h2 className="text-lg font-medium">User Id</h2>
+              <div className="text-xs text-zinc-400">string</div>
 
               <p className="text-zinc-400">
                 A User Id should be a robust, static, unique identifier that you
@@ -116,11 +117,14 @@ export default function TrackEvent() {
               ].join(" ")}
             >
               <h2 className="text-lg font-medium">Event</h2>
+              <div className="text-xs text-zinc-400">string</div>
+
               <p className="text-zinc-400">
                 Every event records a single user action. We recommend that you
                 make your event names human-readable (use spaces), so that
                 everyone on your team can know what they mean instantly.
               </p>
+
               <p className="text-zinc-400">
                 We don&rsquo;t recommend using nondescript names like{" "}
                 <span className="rounded-sm bg-zinc-100 bg-opacity-30 px-0.5 text-zinc-900">
@@ -133,9 +137,11 @@ export default function TrackEvent() {
                 </span>
                 .
               </p>
+
               <p className="text-zinc-400">
                 We recommend event names built from a noun and past-tense verb.
               </p>
+
               <input
                 autoComplete="off"
                 type="text"
@@ -163,6 +169,7 @@ export default function TrackEvent() {
                 Properties{" "}
                 <span className="text-sm italic text-zinc-400">optional</span>
               </h2>
+              <div className="text-xs text-zinc-400">{`{ [key: string]: string | null | number | boolean }`}</div>
 
               <p className="text-zinc-400">
                 Properties are extra pieces of information you can tie to events
@@ -238,6 +245,7 @@ export default function TrackEvent() {
                 Idempotency Key{" "}
                 <span className="text-sm italic text-zinc-400">optional</span>
               </h2>
+              <div className="text-xs text-zinc-400">string</div>
 
               <p className="text-zinc-400">
                 The API supports idempotency for safely retrying requests

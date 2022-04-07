@@ -10,78 +10,70 @@ import { useRouter } from "next/router";
 import AppLayout from "layouts/app";
 import useGetAPIKeys from "client/getApiKeys";
 import useGetTeams from "client/getTeams";
-import FeedNode from "components/Thread/Feed/Node";
-import { CustomerTraitNode } from "components/Thread/Feed/Types";
 import DocsContainer from "components/Docs/Container";
 
-type Section = null | "userId" | "traits";
+type Section = null | "groupId" | "traits";
 
 export default function TrackEvent() {
   const router = useRouter();
 
-  const [userId, setUserId] = useState<string>("");
+  const [groupId, setGroupId] = useState<string>("");
   const [traits, setTraits] = useState<[string, string][]>([
-    ["email", "customer@example.email"],
+    ["plan", "growing-group"],
   ]);
   const [currentSection, setSection] = useState<Section>(null);
 
   return (
     <>
       <NextSeo
-        title="Willow Docs - Record customer traits"
-        description="API documentation for recording customer traits onto their lifetime views. This is a part of Willow's unified view platform."
+        title="Willow Docs - Record group traits"
+        description="API documentation for recording group traits. This is a part of Willow's unified view platform."
       />
 
       <DocsContainer>
-        <h1 className="mb-14 text-3xl font-medium">Recording a user trait</h1>
+        <h1 className="mb-14 text-3xl font-medium">Recording a group trait</h1>
 
         <div className="flex w-full flex-col justify-between space-y-4 lg:flex-row lg:space-y-0">
           <article className="w-full space-y-4 lg:w-5/12">
             <div>
               <p>
                 In order to take advantage of Willow&rsquo;s unified view
-                it&rsquo;s helpful to record customers&rsquo; changing
-                attributes (we call them traits). We&rsquo;ll display these
-                changing traits in the the customer&rsquo;s lifetime view inline
-                with their messages and events.
+                it&rsquo;s helpful to record a groups&rsquo; changing attributes
+                (we call them traits). We&rsquo;ll display these changing traits
+                in the the associated customer&rsquo;s lifetime view inline with
+                their messages and events.
               </p>
             </div>
 
             <div
               onClick={() => {
-                setSection("userId");
-                void router.replace({ hash: "userId" });
+                setSection("groupId");
+                void router.replace({ hash: "groupId" });
               }}
               id="userId"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
-                currentSection === "userId"
+                currentSection === "groupId"
                   ? "border-zinc-600"
                   : "border-transparent",
               ].join(" ")}
             >
-              <h2 className="text-lg font-medium">User Id</h2>
+              <h2 className="text-lg font-medium">Group Id</h2>
               <div className="text-xs text-zinc-400">string</div>
 
               <p className="text-zinc-400">
-                A User Id should be a robust, static, unique identifier that you
-                recognize a user by in your own systems. Ideally, the User Id
-                would be a database ID.
-              </p>
-
-              <p className="text-zinc-400">
-                We don&rsquo;t recommend using email addresses or usernames as a
-                User ID, as these can change over time, User Ids should not
-                change.
+                A Group Id should be a robust, static, unique identifier that
+                you recognize a user by in your own systems. Ideally, the Group
+                Id would be a database ID.
               </p>
 
               <input
                 autoComplete="off"
                 type="text"
-                value={userId}
+                value={groupId}
                 className="rounded-md border-2 border-zinc-600 bg-zinc-900"
-                onChange={(e) => setUserId(e.target.value)}
-                placeholder="{user_id}"
+                onChange={(e) => setGroupId(e.target.value)}
+                placeholder="{group_id}"
               />
             </div>
 
@@ -102,17 +94,9 @@ export default function TrackEvent() {
               <div className="text-xs text-zinc-400">{`{ [key: string]: string | null | number | boolean }`}</div>
 
               <p className="text-zinc-400">
-                Traits are pieces of information you know about a user. These
-                could be demographics like age or cohort, account-specific like
-                plan, or even things like whether a user has seen a particular
-                A/B test variation. Up to you!{" "}
+                Traits are pieces of information you know about a group.
               </p>
-              <p className="text-zinc-400">
-                We&rsquo;ve reserved some traits that have semantic meanings and
-                we handle them in special ways. For example, we always expect
-                email to be the user&rsquo;s email address and use this info to
-                connect threads to customers.
-              </p>
+
               {traits.map(([key, val], idx, arr) => (
                 <div key={idx} className="flex items-center justify-between">
                   <input
@@ -155,52 +139,10 @@ export default function TrackEvent() {
                 </div>
               ))}
             </div>
-
-            <div
-              id="userId"
-              className={"-ml-3 space-y-2 border-l-4 border-transparent pl-2"}
-            >
-              <h2 className="text-lg font-medium">Reserved traits</h2>
-
-              <div className="flex flex-col divide-y divide-zinc-600 text-zinc-400">
-                <div className="flex py-2">
-                  <div className="w-1/5 pr-2 text-zinc-100">email</div>
-                  <div className="w-4/5 pl-2">
-                    will attach any threads from this email address to this
-                    customer
-                  </div>
-                </div>
-
-                <div className="flex py-2">
-                  <div className="w-1/5 pr-2 text-zinc-100">avatar</div>
-                  <div className="w-4/5 pl-2">
-                    URL to an avatar image for the user
-                  </div>
-                </div>
-
-                <div className="flex py-2">
-                  <div className="w-1/5 pr-2 text-zinc-100">firstName</div>
-                  <div className="w-4/5 pl-2">First name of a user</div>
-                </div>
-
-                <div className="flex py-2">
-                  <div className="w-1/5 pr-2 text-zinc-100">lastName</div>
-                  <div className="w-4/5 pl-2">Last name of a user</div>
-                </div>
-
-                <div className="flex py-2">
-                  <div className="w-1/5 pr-2 text-zinc-100">name</div>
-                  <div className="w-4/5 pl-2">
-                    Full name of a user, this will override firstName and
-                    lastName
-                  </div>
-                </div>
-              </div>
-            </div>
           </article>
 
           <div className="flex w-full flex-col space-y-4 lg:w-6/12">
-            <RequestTable userId={userId} />
+            <RequestTable groupId={groupId} />
 
             <HTTPCodeTable />
 
@@ -263,82 +205,6 @@ export default function TrackEvent() {
 
               <div className="px-4">{"}"}</div>
             </pre>
-
-            <div className="flex flex-col rounded-md border-2 border-zinc-600 text-sm text-zinc-400">
-              <div className="bg-zinc-600 px-4 py-2 text-zinc-300">
-                In-App Demo
-              </div>
-              <div className="flex flex-col">
-                {traits.map(([key, val], idx) =>
-                  key !== "" ? (
-                    <FeedNode
-                      key={`${key}-${idx}`}
-                      id="0"
-                      node={
-                        {
-                          type: "traitChange",
-                          key: key,
-                          createdAt: new Date().toISOString(),
-                          value: val,
-                          uniqKey: `${key}-${idx}`,
-                        } as CustomerTraitNode
-                      }
-                      addComment={async () => {
-                        return 0;
-                      }}
-                      refreshComment={() => {
-                        return;
-                      }}
-                      teamMemberList={[]}
-                    />
-                  ) : (
-                    <></>
-                  )
-                )}
-
-                <FeedNode
-                  id="2"
-                  isLast
-                  node={{
-                    type: "message",
-                    createdAt: new Date().toISOString(),
-                    message: {
-                      id: 1,
-                      Comment: [],
-                      AliasEmail: { emailAddress: "customer@example.email" },
-                      Attachment: [],
-                      MessageError: [],
-                      TeamMember: null,
-                      createdAt: new Date().toISOString(),
-                      direction: "incoming",
-                      subject: null,
-                      text: [
-                        {
-                          type: "paragraph",
-                          children: [
-                            {
-                              text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat", // cspell:disable-line
-                            },
-                          ],
-                        },
-                        {
-                          type: "paragraph",
-                          children: [{ text: "- Customer" }],
-                        },
-                      ],
-                    },
-                    uniqKey: "end",
-                  }}
-                  addComment={async () => {
-                    return 0;
-                  }}
-                  refreshComment={() => {
-                    return;
-                  }}
-                  teamMemberList={[]}
-                />
-              </div>
-            </div>
           </div>
         </div>
       </DocsContainer>
@@ -351,7 +217,7 @@ TrackEvent.getLayout = function getLayout(page: ReactElement) {
 };
 
 interface RequestTableProps {
-  userId: string;
+  groupId: string;
 }
 
 function RequestTable(props: RequestTableProps) {
@@ -368,7 +234,9 @@ function RequestTable(props: RequestTableProps) {
         <div className="flex items-center py-2">
           <div className="w-1/5 text-right">URL</div>
           <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
-            {`/api/v1/user/${props.userId === "" ? "{user_id}" : props.userId}`}
+            {`/api/v1/group/${
+              props.groupId === "" ? "{group_id}" : props.groupId
+            }`}
           </div>
         </div>
 
