@@ -11,59 +11,39 @@ import AppLayout from "layouts/app";
 import useGetAPIKeys from "client/getApiKeys";
 import useGetTeams from "client/getTeams";
 import FeedNode from "components/Thread/Feed/Node";
-import { CustomerEventNode } from "components/Thread/Feed/Types";
+import { CustomerTraitNode } from "components/Thread/Feed/Types";
 import DocsContainer from "components/Docs/Container";
 
-type Section = null | "userId" | "event" | "properties" | "idempotencyKey";
+type Section = null | "userId" | "traits";
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export default function TrackEvent() {
   const router = useRouter();
 
   const [userId, setUserId] = useState<string>("");
-  const [event, setEvent] = useState<string>("Order Completed");
-  const [idempotencyKey, setIdempotencyKey] = useState<string>("");
-  const [properties, setProperties] = useState<[string, string][]>([
-    ["product", "hot dog"],
+  const [traits, setTraits] = useState<[string, string][]>([
+    ["email", "customer@example.email"],
   ]);
   const [currentSection, setSection] = useState<Section>(null);
-
-  const node: CustomerEventNode = {
-    uniqKey: new Date().toISOString(),
-    type: "event",
-    action: event === "" ? "{event_name}" : event,
-    createdAt: new Date().toISOString(),
-    properties:
-      properties.map(([key]) => key).join("") === ""
-        ? null
-        : properties.reduce((acc, [key, val]) => {
-            if (key !== "") {
-              acc[key] = val;
-            }
-            return acc;
-          }, {} as Record<string, string>),
-  };
 
   return (
     <>
       <NextSeo
-        title="Willow Docs - Record customer event"
-        description="API documentation for recording customer events onto their lifetime views. This is a part of Willow's unified view platform."
+        title="Willow Docs - Record customer traits"
+        description="API documentation for recording customer traits onto their lifetime views. This is a part of Willow's unified view platform."
       />
 
       <DocsContainer>
-        <h1 className="mb-14 text-3xl font-medium">
-          Recording a customer event
-        </h1>
+        <h1 className="mb-14 text-3xl font-medium">Recording a user trait</h1>
 
         <div className="flex w-full flex-col justify-between space-y-4 lg:flex-row lg:space-y-0">
           <article className="w-full space-y-4 lg:w-5/12">
             <div>
               <p>
-                It can be very helpful to see what customers were doing before
-                they wrote in about some issue. For that we developed
-                &ldquo;unified view&rdquo; which gives the whole team a full
-                view into what customers were doing and what they were seeing.
+                In order to take advantage of Willow&rsquo;s unified view
+                it&rsquo;s helpful to record customers&rsquo; changing
+                attributes (we call them traits). We&rsquo;ll display these
+                changing traits in the the customer&rsquo;s lifetime view inline
+                with their messages and events.
               </p>
             </div>
 
@@ -100,85 +80,38 @@ export default function TrackEvent() {
                 value={userId}
                 className="rounded-md border-2 border-zinc-600 bg-zinc-900"
                 onChange={(e) => setUserId(e.target.value)}
-                placeholder="{user_db_id}"
+                placeholder="{user_id}"
               />
             </div>
 
             <div
               onClick={() => {
-                setSection("event");
-                void router.replace({ hash: "event" });
-              }}
-              id="event"
-              className={[
-                "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
-                currentSection === "event"
-                  ? "border-zinc-600"
-                  : "border-transparent",
-              ].join(" ")}
-            >
-              <h2 className="text-lg font-medium">Event</h2>
-              <p className="text-zinc-400">
-                Every event records a single user action. We recommend that you
-                make your event names human-readable (use spaces), so that
-                everyone on your team can know what they mean instantly.
-              </p>
-              <p className="text-zinc-400">
-                We don&rsquo;t recommend using nondescript names like{" "}
-                <span className="rounded-sm bg-zinc-100 bg-opacity-30 px-0.5 text-zinc-900">
-                  OrdComp
-                </span>
-                . Instead, use unique and recognizable names like
-                {"  "}
-                <span className="rounded-sm bg-zinc-100 bg-opacity-30 px-0.5 text-zinc-900">
-                  Order Completed
-                </span>
-                .
-              </p>
-              <p className="text-zinc-400">
-                We recommend event names built from a noun and past-tense verb.
-              </p>
-              <input
-                autoComplete="off"
-                type="text"
-                value={event}
-                className="rounded-md border-2 border-zinc-600 bg-zinc-900"
-                onChange={(e) => setEvent(e.target.value)}
-                placeholder="{event_name}"
-              />
-            </div>
-
-            <div
-              onClick={() => {
-                setSection("properties");
-                void router.replace({ hash: "properties" });
+                setSection("traits");
+                void router.replace({ hash: "traits" });
               }}
               id="properties"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
-                currentSection === "properties"
+                currentSection === "traits"
                   ? "border-zinc-600"
                   : "border-transparent",
               ].join(" ")}
             >
-              <h2 className="text-lg font-medium">
-                Properties{" "}
-                <span className="text-sm italic text-zinc-400">optional</span>
-              </h2>
+              <h2 className="text-lg font-medium">Traits</h2>
 
               <p className="text-zinc-400">
-                Properties are extra pieces of information you can tie to events
-                you track. They can be anything that will be useful while
-                analyzing the events later.
+                Traits are pieces of information you know about a user. These
+                could be demographics like age or cohort, account-specific like
+                plan, or even things like whether a user has seen a particular
+                A/B test variation. Up to you!{" "}
               </p>
-
               <p className="text-zinc-400">
-                We recommend sending properties whenever possible because they
-                give you a more complete picture of what your customers are
-                doing. Any valid JSON is accepted, including for sub-keys
+                We&rsquo;ve reserved some traits that have semantic meanings and
+                we handle them in special ways. For example, we always expect
+                email to be the user&rsquo;s email address and use this info to
+                connect threads to customers.
               </p>
-
-              {properties.map(([key, val], idx, arr) => (
+              {traits.map(([key, val], idx, arr) => (
                 <div key={idx} className="flex items-center justify-between">
                   <input
                     autoComplete="off"
@@ -186,8 +119,8 @@ export default function TrackEvent() {
                     value={key}
                     className="w-5/12 rounded-md border-2 border-zinc-600 bg-zinc-900"
                     onChange={(e) =>
-                      setProperties(
-                        properties.map((prop, num) =>
+                      setTraits(
+                        traits.map((prop, num) =>
                           idx === num ? [e.target.value, val] : prop
                         )
                       )
@@ -200,8 +133,8 @@ export default function TrackEvent() {
                     value={val}
                     className="w-5/12 rounded-md border-2 border-zinc-600 bg-zinc-900"
                     onChange={(e) =>
-                      setProperties(
-                        properties.map((prop, num) =>
+                      setTraits(
+                        traits.map((prop, num) =>
                           idx === num ? [key, e.target.value] : prop
                         )
                       )
@@ -210,9 +143,7 @@ export default function TrackEvent() {
                   />{" "}
                   <div className="m flex w-1/12 items-center">
                     {arr.length - 1 === idx ? (
-                      <button
-                        onClick={() => setProperties([...properties, ["", ""]])}
-                      >
+                      <button onClick={() => setTraits([...traits, ["", ""]])}>
                         <PlusCircleIcon className="h-5 w-5 text-zinc-100" />
                       </button>
                     ) : (
@@ -224,45 +155,50 @@ export default function TrackEvent() {
             </div>
 
             <div
-              onClick={() => {
-                setSection("idempotencyKey");
-                void router.replace({ hash: "idempotencyKey" });
-              }}
-              id="event"
-              className={[
-                "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
-                currentSection === "idempotencyKey"
-                  ? "border-zinc-600"
-                  : "border-transparent",
-              ].join(" ")}
+              id="userId"
+              className={"-ml-3 space-y-2 border-l-4 border-transparent pl-2"}
             >
-              <h2 className="text-lg font-medium">
-                Idempotency Key{" "}
-                <span className="text-sm italic text-zinc-400">optional</span>
-              </h2>
+              <h2 className="text-lg font-medium">Reserved traits</h2>
 
-              <p className="text-zinc-400">
-                The API supports idempotency for safely retrying requests
-                without accidentally recording the same event twice. To perform
-                an idempotent request, provide an additional idempotencyKey key
-                in the request body.
-              </p>
+              <div className="flex flex-col divide-y divide-zinc-600 text-zinc-400">
+                <div className="flex py-2">
+                  <div className="w-1/5 pr-2 text-zinc-100">email</div>
+                  <div className="w-4/5 pl-2">
+                    will attach any threads from this email address to this
+                    customer
+                  </div>
+                </div>
 
-              <p className="text-zinc-400">We recommend using a v4 UUID</p>
+                <div className="flex py-2">
+                  <div className="w-1/5 pr-2 text-zinc-100">avatar</div>
+                  <div className="w-4/5 pl-2">
+                    URL to an avatar image for the user
+                  </div>
+                </div>
 
-              <input
-                autoComplete="off"
-                type="text"
-                value={idempotencyKey}
-                className="rounded-md border-2 border-zinc-600 bg-zinc-900"
-                onChange={(e) => setIdempotencyKey(e.target.value)}
-                placeholder="{idempotent_value}"
-              />
+                <div className="flex py-2">
+                  <div className="w-1/5 pr-2 text-zinc-100">firstName</div>
+                  <div className="w-4/5 pl-2">First name of a user</div>
+                </div>
+
+                <div className="flex py-2">
+                  <div className="w-1/5 pr-2 text-zinc-100">lastName</div>
+                  <div className="w-4/5 pl-2">Last name of a user</div>
+                </div>
+
+                <div className="flex py-2">
+                  <div className="w-1/5 pr-2 text-zinc-100">name</div>
+                  <div className="w-4/5 pl-2">
+                    Full name of a user, this will override firstName and
+                    lastName
+                  </div>
+                </div>
+              </div>
             </div>
           </article>
 
           <div className="flex w-full flex-col space-y-4 lg:w-6/12">
-            <RequestTable />
+            <RequestTable userId={userId} />
 
             <HTTPCodeTable />
 
@@ -275,49 +211,21 @@ export default function TrackEvent() {
               <div
                 className={[
                   "px-4",
-                  currentSection === "userId" ? "bg-slate-800" : "",
+                  currentSection === "traits" ? "bg-slate-800" : "",
+                  traits.join("") === "" ? "hidden" : "",
                 ].join(" ")}
               >
                 {"  "}
-                <span className="text-lime-200">{`"userId"`}</span>:{" "}
-                <span className="font-mono text-sky-300">
-                  &quot;{userId === "" ? "{user_db_id}" : userId}&quot;
-                </span>
-                ,
-              </div>
-
-              <div
-                className={[
-                  "px-4",
-                  currentSection === "event" ? "bg-slate-800" : "",
-                ].join(" ")}
-              >
-                {"  "}
-                <span className="text-lime-200">{`"event"`}</span>:{" "}
-                <span className="font-mono text-sky-300">
-                  &quot;{event === "" ? "{event_name}" : event}&quot;
-                </span>
-                ,
-              </div>
-
-              <div
-                className={[
-                  "px-4",
-                  currentSection === "properties" ? "bg-slate-800" : "",
-                  properties.join("") === "" ? "hidden" : "",
-                ].join(" ")}
-              >
-                {"  "}
-                <span className="text-lime-200">{`"properties"`}</span>:{" "}
+                <span className="text-lime-200">{`"traits"`}</span>:{" "}
                 <span className="">{"{"}</span>
               </div>
 
-              {properties.map(([key, val], idx) => (
+              {traits.map(([key, val], idx) => (
                 <div
                   key={idx}
                   className={[
                     "px-4",
-                    currentSection === "properties" ? "bg-slate-800" : "",
+                    currentSection === "traits" ? "bg-slate-800" : "",
                     key === "" ? "hidden" : "",
                   ].join(" ")}
                 >
@@ -343,30 +251,12 @@ export default function TrackEvent() {
               <div
                 className={[
                   "px-4",
-                  currentSection === "properties" ? "bg-slate-800" : "",
-                  properties.join("") === "" ? "hidden" : "",
+                  currentSection === "traits" ? "bg-slate-800" : "",
+                  traits.join("") === "" ? "hidden" : "",
                 ].join(" ")}
               >
                 {"  "}
                 <span className="">{"}"}</span>,
-              </div>
-
-              <div
-                className={[
-                  "text-ellipsis px-4 line-clamp-1",
-                  currentSection === "idempotencyKey" ? "bg-slate-800" : "",
-                  properties.join("") === "" ? "hidden" : "",
-                ].join(" ")}
-              >
-                {"  "}
-                <span className="text-lime-200">{`"idempotencyKey"`}</span>:{" "}
-                <span className="font-mono text-sky-300">
-                  &quot;
-                  {idempotencyKey === ""
-                    ? "{idempotent_value}"
-                    : idempotencyKey}
-                  &quot;
-                </span>
               </div>
 
               <div className="px-4">{"}"}</div>
@@ -377,17 +267,33 @@ export default function TrackEvent() {
                 In-App Demo
               </div>
               <div className="flex flex-col">
-                <FeedNode
-                  id="1"
-                  node={node}
-                  addComment={async () => {
-                    return 0;
-                  }}
-                  refreshComment={() => {
-                    return;
-                  }}
-                  teamMemberList={[]}
-                />
+                {traits.map(([key, val], idx) =>
+                  key !== "" ? (
+                    <FeedNode
+                      key={`${key}-${idx}`}
+                      id="0"
+                      node={
+                        {
+                          type: "traitChange",
+                          key: key,
+                          createdAt: new Date().toISOString(),
+                          value: val,
+                          uniqKey: `${key}-${idx}`,
+                        } as CustomerTraitNode
+                      }
+                      addComment={async () => {
+                        return 0;
+                      }}
+                      refreshComment={() => {
+                        return;
+                      }}
+                      teamMemberList={[]}
+                    />
+                  ) : (
+                    <></>
+                  )
+                )}
+
                 <FeedNode
                   id="2"
                   isLast
@@ -442,7 +348,11 @@ TrackEvent.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };
 
-function RequestTable() {
+interface RequestTableProps {
+  userId: string;
+}
+
+function RequestTable(props: RequestTableProps) {
   const { data: teams } = useGetTeams();
   const { data: apiKeys } = useGetAPIKeys(teams?.[0]?.id);
 
@@ -451,11 +361,18 @@ function RequestTable() {
   return (
     <>
       <div className="flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400">
-        <div className="bg-zinc-600 px-4 py-2 text-zinc-300">URL</div>
+        <div className="bg-zinc-600 px-4 py-2 text-zinc-300">Endpoint</div>
+
         <div className="flex items-center py-2">
-          <div className="-mt-0.5 w-4/5 text-ellipsis pl-4 text-left font-mono line-clamp-1">
-            https://heywillow.io/api/v1/record/event
+          <div className="w-1/5 text-right">URL</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
+            {`/api/v1/user/${props.userId === "" ? "{user_id}" : props.userId}`}
           </div>
+        </div>
+
+        <div className="flex items-center py-2">
+          <div className="w-1/5 text-right">Method</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">PUT</div>
         </div>
       </div>
 
@@ -465,21 +382,21 @@ function RequestTable() {
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right line-clamp-1">Content-Type</div>
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
+          <div className="w-1/5 text-right">Content-Type</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
             application/json
           </div>
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right line-clamp-1">Accept</div>
-          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono line-clamp-1">
+          <div className="w-1/5 text-right">Accept</div>
+          <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
             application/json
           </div>
         </div>
 
         <div className="flex items-center py-2">
-          <div className="w-1/5 text-right line-clamp-1">Authorization</div>
+          <div className="w-1/5 text-right">Authorization</div>
           <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
             {teams?.length === 0 ? (
               <Link href="/login">
@@ -507,21 +424,8 @@ function HTTPCodeTable() {
       </div>
 
       <div className="flex items-center py-2">
-        <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
-          201 - Created
-        </div>
-        <div className=" w-9/12 pl-4 text-left line-clamp-1">
-          Event has been added to the customer&rsquo;s journey
-        </div>
-      </div>
-
-      <div className="flex items-center py-2">
-        <div className="w-3/12 text-right font-mono text-xs line-clamp-1">
-          202 - Accepted
-        </div>
-        <div className=" w-9/12 pl-4 text-left line-clamp-1">
-          Event with this idempotency already recorded, ignoring
-        </div>
+        <div className="w-3/12 text-right font-mono text-xs">200 - Ok</div>
+        <div className=" w-9/12 pl-4 text-left">Traits recorded</div>
       </div>
 
       <div className="flex items-center py-2">

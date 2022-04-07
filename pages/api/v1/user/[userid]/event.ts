@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import isString from "lodash/isString";
 import type { Prisma } from "@prisma/client";
 import isNil from "lodash/isNil";
+import isArray from "lodash/isArray";
 
 import apiHandler from "server/apiHandler";
 import authorizeAPIKey from "server/authorizeAPIKey";
@@ -11,7 +12,6 @@ import upsertCustomer from "server/ingest/upsertCustomer";
 export default apiHandler({ post: trackEventHandler });
 
 export interface Request {
-  userId: string;
   event: string;
   properties?: Prisma.JsonValue;
   idempotencyKey?: string;
@@ -21,6 +21,9 @@ async function trackEventHandler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, never> | { message: string }>
 ): Promise<void> {
+  // cspell: disable-next-line
+  const { userid: userId } = req.query;
+
   const authed = await authorizeAPIKey(req);
   if (isString(authed)) {
     return res.status(401).json({ message: authed });
@@ -36,27 +39,26 @@ async function trackEventHandler(
   }
   const body = req.body as Request;
 
-  let errors: string[] = [];
-
-  if (isString(body.userId) === false || body.userId === "") {
-    errors = [...errors, "userId must be a non-empty string"];
+  if (userId === "" || isArray(userId)) {
+    return res.status(400).json({
+      message: "Invalid values for keys: `userId` must be a non-empty string",
+    });
   }
 
   if (isString(body.event) === false || body.event === "") {
-    errors = [...errors, "event must be a non-empty string"];
+    return res.status(400).json({
+      message: "Invalid values for keys: `event` must be a non-empty string",
+    });
   }
 
   if (!(body.idempotencyKey === undefined || isString(body.idempotencyKey))) {
-    errors = [...errors, "idempotencyKey must be a string or not present"];
+    return res.status(400).json({
+      message:
+        "Invalid values for keys: `idempotencyKey` must be a string or not present",
+    });
   }
 
-  if (errors.length > 0) {
-    return res
-      .status(400)
-      .json({ message: `Invalid values for keys: ${errors.join(", ")}` });
-  }
-
-  const customer = await upsertCustomer(team.id, body.userId);
+  const customer = await upsertCustomer(team.id, userId);
 
   const existingEvent = await prisma.customerEvent.findUnique({
     where: { idempotency: body.idempotencyKey },

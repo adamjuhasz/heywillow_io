@@ -65,7 +65,7 @@ function RequestTable() {
         <div className="bg-zinc-600 px-4 py-2 text-zinc-300">URL</div>
         <div className="flex items-center py-2">
           <div className="-mt-0.5 w-4/5 pl-4 text-left font-mono">
-            https://heywillow.io/api/v1
+            https://heywillow.io
           </div>
         </div>
       </div>

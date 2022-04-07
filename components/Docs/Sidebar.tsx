@@ -42,37 +42,40 @@ export default function DocsSidebar() {
             Authentication
           </a>
         </Link>
-        <Link href={{ pathname: "/docs/v1/customers" }}>
-          <a
-            className={[
-              basicClasses,
-              router.pathname === "/docs/v1/customers" ? activeClasses : "",
-            ].join(" ")}
-          >
-            Customers
-          </a>
-        </Link>
       </div>
 
       <div className="flex flex-row items-center sm:w-full sm:flex-col sm:items-start">
-        <h3 className={"px-4 text-lg"}>Customer</h3>
+        <h3 className={"px-4 text-lg"}>User</h3>
 
-        <Link href={{ pathname: "/docs/v1/record/event" }}>
+        <Link href={{ pathname: "/docs/v1/user" }}>
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/record/event" ? activeClasses : "",
+              router.pathname === "/docs/v1/user" ? activeClasses : "",
+            ].join(" ")}
+          >
+            Introduction
+          </a>
+        </Link>
+
+        <Link href={{ pathname: "/docs/v1/user/user_id/event" }}>
+          <a
+            className={[
+              basicClasses,
+              router.pathname === "/docs/v1/user/user_id/event"
+                ? activeClasses
+                : "",
             ].join(" ")}
           >
             Event recording
           </a>
         </Link>
 
-        <Link href={{ pathname: "/docs/v1/record/trait" }}>
+        <Link href={{ pathname: "/docs/v1/user/user_id" }}>
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/record/trait" ? activeClasses : "",
+              router.pathname === "/docs/v1/user/user_id" ? activeClasses : "",
             ].join(" ")}
           >
             Trait recording
