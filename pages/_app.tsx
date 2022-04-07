@@ -37,7 +37,8 @@ function MyApp({ Component, pageProps, ..._props }: AppPropsWithLayout) {
   return getLayout(
     <>
       <Head>
-        {process.env.NODE_ENV === "production" ? (
+        {process.env.NODE_ENV === "production" &&
+        process.env.NEXT_PUBLIC_ANALYTICS_ENABLE !== undefined ? (
           <>
             {/* PostHog */}
             <link rel="preconnect" href="https://app.posthog.com"></link>
