@@ -4,7 +4,6 @@ import { btoa } from "isomorphic-base64";
 import Link from "next/link";
 import isString from "lodash/isString";
 import { NextSeo } from "next-seo";
-import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import useGetAPIKeys from "client/getApiKeys";
@@ -14,8 +13,6 @@ import DocsContainer from "components/Docs/Container";
 type Section = null | "groupId" | "userId";
 
 export default function TrackEvent() {
-  const router = useRouter();
-
   const [groupId, setGroupId] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [currentSection, setSection] = useState<Section>(null);
@@ -41,9 +38,8 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("groupId");
-                void router.replace({ hash: "groupId" });
               }}
-              id="userId"
+              id="groupId"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
                 currentSection === "groupId"
@@ -73,9 +69,8 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("userId");
-                void router.replace({ hash: "userId" });
               }}
-              id="event"
+              id="userId"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
                 currentSection === "userId"
@@ -219,7 +214,7 @@ function HTTPCodeTable() {
 
       <div className="flex items-center py-2">
         <div className="w-3/12 text-right font-mono text-xs">200 - Ok</div>
-        <div className=" w-9/12 pl-4 text-left">Traits recorded</div>
+        <div className=" w-9/12 pl-4 text-left">User associated</div>
       </div>
 
       <div className="flex items-center py-2">

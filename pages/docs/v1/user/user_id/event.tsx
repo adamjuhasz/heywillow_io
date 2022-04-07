@@ -5,7 +5,6 @@ import { btoa } from "isomorphic-base64";
 import Link from "next/link";
 import isString from "lodash/isString";
 import { NextSeo } from "next-seo";
-import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import useGetAPIKeys from "client/getApiKeys";
@@ -18,8 +17,6 @@ type Section = null | "userId" | "event" | "properties" | "idempotencyKey";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function TrackEvent() {
-  const router = useRouter();
-
   const [userId, setUserId] = useState<string>("");
   const [event, setEvent] = useState<string>("Order Completed");
   const [idempotencyKey, setIdempotencyKey] = useState<string>("");
@@ -68,7 +65,6 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("userId");
-                void router.replace({ hash: "userId" });
               }}
               id="userId"
               className={[
@@ -106,7 +102,6 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("event");
-                void router.replace({ hash: "event" });
               }}
               id="event"
               className={[
@@ -155,7 +150,6 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("properties");
-                void router.replace({ hash: "properties" });
               }}
               id="properties"
               className={[
@@ -231,9 +225,8 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("idempotencyKey");
-                void router.replace({ hash: "idempotencyKey" });
               }}
-              id="event"
+              id="idempotencyKey"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
                 currentSection === "idempotencyKey"

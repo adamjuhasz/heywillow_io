@@ -5,7 +5,6 @@ import { btoa } from "isomorphic-base64";
 import Link from "next/link";
 import isString from "lodash/isString";
 import { NextSeo } from "next-seo";
-import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import useGetAPIKeys from "client/getApiKeys";
@@ -15,8 +14,6 @@ import DocsContainer from "components/Docs/Container";
 type Section = null | "groupId" | "traits";
 
 export default function TrackEvent() {
-  const router = useRouter();
-
   const [groupId, setGroupId] = useState<string>("");
   const [traits, setTraits] = useState<[string, string][]>([
     ["plan", "growing-group"],
@@ -48,9 +45,8 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("groupId");
-                void router.replace({ hash: "groupId" });
               }}
-              id="userId"
+              id="groupId"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
                 currentSection === "groupId"
@@ -80,9 +76,8 @@ export default function TrackEvent() {
             <div
               onClick={() => {
                 setSection("traits");
-                void router.replace({ hash: "traits" });
               }}
-              id="properties"
+              id="traits"
               className={[
                 "-ml-3 cursor-pointer space-y-2 border-l-4 pl-2",
                 currentSection === "traits"
