@@ -48,7 +48,7 @@ Not only is the api value valid for the type (did they send a string instead of 
 
 ## Lightning round
 
-- Be liberal with `id` anchors. Allow easy linking to sections of our pages so colleagues can link to specific sections.
+- Be liberal with `id` anchors. Allow easy linking to sections of your documentation so colleagues can link to specific sections.
 - Be consistent. We do allow some optional arguments around idempotency and had to decide if the idempotency key should be sent as an optional header or be an optional key in the body. The easy thing would be to accept both, but that violated ethos 4. After a brief poll we found that some libraries made it
   easier to modify the body vs adding optional headers so we went with adding optional keys. Now all optional features will be keys.
 - Match your developer docs hierarchy with your api hierarchy. For Willow, You can replace the `/api/` part of any endpoint with `/docs/` to get to the right page.
