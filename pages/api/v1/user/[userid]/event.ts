@@ -24,18 +24,6 @@ async function trackEventHandler(
   // cspell: disable-next-line
   const { userid: userId } = req.query;
 
-  if (isString(req.url)) {
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const docsURL = url.href
-      .replace("/api/", "/docs/")
-      .replace("http://", "https://");
-    res.setHeader(
-      "Link",
-      `<${docsURL}>; rel="documentation"; title="API Docs"`
-    );
-    res.setHeader("X-Documentation", `${docsURL}`);
-  }
-
   const authed = await authorizeAPIKey(req);
   if (isString(authed)) {
     return res.status(401).json({ message: authed });
