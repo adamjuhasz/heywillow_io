@@ -1,11 +1,11 @@
 ---
 title: "Designing a developer experience oriented API"
-description: "Designing a developer experience oriented API"
+description: "Designing a developer experience oriented API means we focus on the developer and how they'll consume the API and its documentation"
 date: "2022-04-08"
 author: "Adam Juhasz"
 ---
 
-We've all dealt with the frustration of working with a hastily designed and badly documented API. Since we got to start fresh, we wanted to make sure the #1 focus eas on the developer experience around consuming our API. The easier (and maybe even delightful) the API was to consume, the better chance we have of converting our next customer.
+We've all dealt with the frustration of working with a hastily designed and badly documented API. Since we got to start fresh, we wanted to make sure the #1 focus was on the developer experience around consuming our API. The easier (and maybe even delightful) the API was to consume, the better chance we have of converting our next customer.
 
 ---
 
