@@ -8,11 +8,15 @@ import Head from "next/head";
 import format from "date-fns/format";
 import { ArticleJsonLd, NextSeo } from "next-seo";
 import arbit from "arbit"; // cspell: disable-line
+import orderBy from "lodash/orderBy";
 
 import {
   Post as IPost,
+  blogDirectory,
+  changelogDirectory,
   getAllPostIds,
   getPostData,
+  getSortedPostsData,
   guidesDirectory,
 } from "static-build/posts";
 
@@ -40,10 +44,21 @@ export async function getStaticProps({
 
   try {
     const postData = await getPostData(guidesDirectory, (params as Params).id);
+    const changelogs = getAllPostIds(changelogDirectory);
+    const changelogPosts = await Promise.all(
+      orderBy(changelogs, ["param.id"], ["desc"]).map(({ params: { id } }) =>
+        getPostData(changelogDirectory, id)
+      )
+    );
+    const blogPosts = (await getSortedPostsData(blogDirectory)).filter(
+      (p) => p.id.startsWith("wip-") === false
+    );
 
     return {
       props: {
         postData,
+        changelogs: changelogPosts,
+        blogPosts: blogPosts,
       },
     };
   } catch (e) {
@@ -73,9 +88,11 @@ const colors = [
 
 interface Props {
   postData: IPost;
+  blogPosts: IPost[];
+  changelogs: IPost[];
 }
 
-export default function Post({ postData }: Props) {
+export default function Post({ postData, ...props }: Props) {
   const random = arbit(postData.id); // cspell: disable-line
 
   const sample: <T>(arr: T[]) => T = (arr) => {
@@ -219,7 +236,10 @@ export default function Post({ postData }: Props) {
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
       </article>
 
-      <LandingPageFooter />
+      <LandingPageFooter
+        blogs={props.blogPosts}
+        changelogs={props.changelogs}
+      />
     </>
   );
 }

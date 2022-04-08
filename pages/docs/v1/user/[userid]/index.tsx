@@ -18,7 +18,7 @@ type Section = null | "userId" | "traits";
 
 export default function TrackEvent() {
   const router = useRouter();
-  const { userid: queryUserId } = router.query;
+  const { userid: queryUserId } = router.query; // cspell: disable-line
 
   const [userId, setUserId] = useState<string>("");
   const [traits, setTraits] = useState<[string, string][]>([
@@ -209,7 +209,10 @@ export default function TrackEvent() {
 
             <HTTPCodeTable />
 
-            <pre className="flex flex-col rounded-md bg-slate-700 py-4 text-slate-300">
+            <pre
+              id="request-body"
+              className="flex flex-col rounded-md bg-slate-700 py-4 text-slate-300"
+            >
               <div className="-mt-2 mb-2 px-4 font-sans text-slate-400">
                 Request body
               </div>
@@ -269,7 +272,10 @@ export default function TrackEvent() {
               <div className="px-4">{"}"}</div>
             </pre>
 
-            <div className="flex flex-col rounded-md border-2 border-zinc-600 text-sm text-zinc-400">
+            <div
+              id="in-app-demo"
+              className="flex flex-col rounded-md border-2 border-zinc-600 text-sm text-zinc-400"
+            >
               <div className="bg-zinc-600 px-4 py-2 text-zinc-300">
                 In-App Demo
               </div>
@@ -367,7 +373,10 @@ function RequestTable(props: RequestTableProps) {
 
   return (
     <>
-      <div className="flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400">
+      <div
+        id="endpoint"
+        className="flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400"
+      >
         <div className="bg-zinc-600 px-4 py-2 text-zinc-300">Endpoint</div>
 
         <div className="flex items-center py-2">
@@ -383,7 +392,10 @@ function RequestTable(props: RequestTableProps) {
         </div>
       </div>
 
-      <div className="flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400">
+      <div
+        id="request-headers"
+        className="flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400"
+      >
         <div className="bg-zinc-600 px-4 py-2 text-zinc-300">
           Request headers
         </div>
@@ -425,7 +437,10 @@ function RequestTable(props: RequestTableProps) {
 
 function HTTPCodeTable() {
   return (
-    <div className="mb-4 flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400">
+    <div
+      id="http-status"
+      className="mb-4 flex flex-col rounded-md border-2 border-zinc-600 bg-zinc-800 text-sm text-zinc-400"
+    >
       <div className="bg-zinc-600 px-4 py-2 text-zinc-300">
         HTTP Status code summary
       </div>

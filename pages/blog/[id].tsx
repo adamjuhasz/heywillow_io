@@ -8,12 +8,15 @@ import Head from "next/head";
 import format from "date-fns/format";
 import { ArticleJsonLd, NextSeo } from "next-seo";
 import arbit from "arbit"; // cspell: disable-line
+import orderBy from "lodash/orderBy";
 
 import {
   Post as IPost,
   blogDirectory,
+  changelogDirectory,
   getAllPostIds,
   getPostData,
+  getSortedPostsData,
 } from "static-build/posts";
 
 import LandingPageHeader from "components/LandingPage/Header";
@@ -40,10 +43,21 @@ export async function getStaticProps({
 
   try {
     const postData = await getPostData(blogDirectory, (params as Params).id);
+    const changelogs = getAllPostIds(changelogDirectory);
+    const changelogPosts = await Promise.all(
+      orderBy(changelogs, ["param.id"], ["desc"]).map(({ params: { id } }) =>
+        getPostData(changelogDirectory, id)
+      )
+    );
+    const blogPosts = (await getSortedPostsData(blogDirectory)).filter(
+      (p) => p.id.startsWith("wip-") === false
+    );
 
     return {
       props: {
         postData,
+        changelogs: changelogPosts,
+        blogPosts: blogPosts,
       },
     };
   } catch (e) {
@@ -74,6 +88,8 @@ const colors = [
 
 interface Props {
   postData: IPost;
+  changelogs: IPost[];
+  blogPosts: IPost[];
 }
 
 export default function Post(props: Props) {
@@ -211,17 +227,21 @@ export default function Post(props: Props) {
 
       <article
         className={[
-          "prose prose-invert mx-auto max-w-4xl px-4",
+          "prose prose-invert mx-auto max-w-4xl px-4 pb-24",
           "prose-h1:font-semibold",
           "prose-code:bg-black prose-code:p-1 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none",
           "prose-hr:mx-auto prose-hr:w-10/12 prose-hr:border-zinc-600",
           "prose-pre:bg-black",
+          "prose-img:w-96 prose-img:rounded-xl prose-img:border-2 prose-img:border-zinc-800",
         ].join(" ")}
       >
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
       </article>
 
-      <LandingPageFooter />
+      <LandingPageFooter
+        changelogs={props.changelogs}
+        blogs={props.blogPosts}
+      />
     </>
   );
 }
