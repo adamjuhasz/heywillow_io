@@ -169,7 +169,7 @@ export default function LandingPage(props: Props): JSX.Element {
           <div className="mx-auto mb-14 flex w-full flex-col space-x-0 space-y-4 md:w-fit md:flex-row md:space-x-6 md:space-y-0">
             <Link href="/demo" prefetch={false}>
               <a className="flex w-full items-center justify-center rounded-lg border-2 border-transparent bg-zinc-100 px-6 py-4 text-zinc-900  hover:border-zinc-100 hover:bg-transparent hover:text-zinc-100 sm:min-w-[200px]">
-                Explore demo
+                Interactive demo
               </a>
             </Link>
             <Link href="/signup" prefetch={false}>
