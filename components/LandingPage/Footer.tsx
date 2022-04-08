@@ -176,7 +176,7 @@ export default function LandingPageFooter(props: Props) {
           <div className="">Labi Desk vs Willow</div>
         </div> */}
 
-        <div className="col-span-1 ml-3 flex flex-col md:col-span-2">
+        <div className="col-span-1 flex flex-col md:col-span-2">
           <h3 className="font-medium text-zinc-100">Company</h3>
 
           <Link href="/" prefetch={true}>
@@ -186,14 +186,11 @@ export default function LandingPageFooter(props: Props) {
           </Link>
 
           <Link href="https://status.heywillow.io" prefetch={false}>
-            <a className="relative items-center hover:text-zinc-100 hover:underline hover:decoration-wavy">
-              <div className="absolute -ml-3 flex h-full items-center">
-                <div className="h-1.5 w-1.5 animate-ping-slow rounded-full bg-lime-500" />
-              </div>
-              <div className="absolute -ml-3 flex h-full items-center">
-                <div className="h-1.5 w-1.5 rounded-full bg-lime-500" />
-              </div>
+            <a className="flex items-center hover:text-zinc-100 hover:underline hover:decoration-wavy">
               Platform Status
+              <div className="relative ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-lime-500">
+                <div className="absolute inline-block h-1.5 w-1.5 animate-ping-slow rounded-full bg-lime-500" />
+              </div>
             </a>
           </Link>
 
