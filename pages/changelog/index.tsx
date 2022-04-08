@@ -4,6 +4,7 @@ import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import subHours from "date-fns/subHours";
 import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 import Link from "next/link";
+import orderBy from "lodash/orderBy";
 
 import {
   Post,
@@ -26,9 +27,11 @@ interface StaticProps {
 export async function getStaticProps(
   _params: GetStaticPropsContext
 ): Promise<GetStaticPropsResult<StaticProps>> {
-  const changelogs = await getAllPostIds(changelogDirectory);
+  const changelogs = getAllPostIds(changelogDirectory);
   const changelogPosts = await Promise.all(
-    changelogs.map(({ params: { id } }) => getPostData(changelogDirectory, id))
+    orderBy(changelogs, ["params.id"], ["desc"]).map(({ params: { id } }) =>
+      getPostData(changelogDirectory, id)
+    )
   );
 
   const blogPosts = await getSortedPostsData(blogDirectory);
@@ -66,7 +69,7 @@ export default function Blog(props: StaticProps) {
             <li
               id={post.id}
               className={[
-                "flex scroll-m-32 flex-col sm:flex-row",
+                "flex scroll-m-32 flex-col py-7 sm:flex-row",
                 idx !== arr.length - 1 ? "border-b border-zinc-600" : "",
               ].join(" ")}
               key={post.id}

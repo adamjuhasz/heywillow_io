@@ -5,6 +5,7 @@ import type { CSSProperties, PropsWithChildren } from "react";
 import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
 import { GetStaticPropsContext, GetStaticPropsResult } from "next";
+import orderBy from "lodash/orderBy";
 
 // split out to help tree shaking
 import ArrowNarrowRightIcon from "@heroicons/react/solid/ArrowNarrowRightIcon";
@@ -34,7 +35,9 @@ export async function getStaticProps(
 ): Promise<GetStaticPropsResult<Props>> {
   const changelogs = await getAllPostIds(changelogDirectory);
   const changelogPosts = await Promise.all(
-    changelogs.map(({ params: { id } }) => getPostData(changelogDirectory, id))
+    orderBy(changelogs, ["params.id"], ["desc"]).map(({ params: { id } }) =>
+      getPostData(changelogDirectory, id)
+    )
   );
 
   const blogPosts = await getSortedPostsData(blogDirectory);

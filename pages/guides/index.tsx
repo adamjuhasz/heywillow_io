@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { NextSeo } from "next-seo";
 import { GetStaticPropsContext, GetStaticPropsResult } from "next";
+import orderBy from "lodash/orderBy";
 
 import {
   Post,
@@ -29,9 +30,11 @@ export async function getStaticProps(
 
   const blogPosts = await getSortedPostsData(blogDirectory);
 
-  const changelogs = await getAllPostIds(changelogDirectory);
+  const changelogs = getAllPostIds(changelogDirectory);
   const changelogPosts = await Promise.all(
-    changelogs.map(({ params: { id } }) => getPostData(changelogDirectory, id))
+    orderBy(changelogs, ["param.id"], ["desc"]).map(({ params: { id } }) =>
+      getPostData(changelogDirectory, id)
+    )
   );
 
   return {
