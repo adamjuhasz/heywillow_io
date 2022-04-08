@@ -23,15 +23,17 @@ async function trackTraitHandler(
 ): Promise<void> {
   // cspell: disable-next-line
   const { userid: userId } = req.query;
+
   if (isString(req.url)) {
     const url = new URL(req.url, `http://${req.headers.host}`);
+    const docsURL = url.href
+      .replace("/api/", "/docs/")
+      .replace("http://", "https://");
     res.setHeader(
       "Link",
-      `<https://${url.href.replace(
-        "/api/",
-        "/docs/"
-      )}>; rel="documentation"; title="API Docs"`
+      `<${docsURL}>; rel="documentation"; title="API Docs"`
     );
+    res.setHeader("X-Documentation", `${docsURL}`);
   }
 
   const authed = await authorizeAPIKey(req);
