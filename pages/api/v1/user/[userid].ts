@@ -11,7 +11,7 @@ import authorizeAPIKey from "server/authorizeAPIKey";
 import updateCustomerTraits from "server/ingest/updateTraits";
 import { prisma } from "utils/prisma";
 
-export default apiHandler({ post: trackTraitHandler, deleteUser: deleteUser });
+export default apiHandler({ post: trackTraitHandler, delete: deleteUser });
 
 export interface Request {
   traits: Prisma.JsonValue;
@@ -23,6 +23,13 @@ async function trackTraitHandler(
 ): Promise<void> {
   // cspell: disable-next-line
   const { userid: userId } = req.query;
+  if (isString(req.url)) {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    res.setHeader(
+      "Link",
+      `<https://${url.href.replace("/api/", "/docs/")}>; rel=documentation`
+    );
+  }
 
   const authed = await authorizeAPIKey(req);
   if (isString(authed)) {
@@ -71,6 +78,14 @@ async function deleteUser(
 ): Promise<void> {
   // cspell: disable-next-line
   const { userid: userId } = req.query;
+
+  if (isString(req.url)) {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    res.setHeader(
+      "Link",
+      `<https://${url.href.replace("/api/", "/docs/")}>; rel=documentation`
+    );
+  }
 
   const authed = await authorizeAPIKey(req);
   if (isString(authed)) {

@@ -59,11 +59,15 @@ export default function DocsSidebar() {
           </a>
         </Link>
 
-        <Link href={{ pathname: "/docs/v1/user/user_id" }}>
+        <Link
+          href={{
+            pathname: "/docs/v1/user/user_id",
+          }}
+        >
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/user/user_id" ? activeClasses : "",
+              router.pathname === "/docs/v1/user/[userid]" ? activeClasses : "", // cspell: disable-line
             ].join(" ")}
           >
             Trait recording
@@ -74,7 +78,7 @@ export default function DocsSidebar() {
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/user/user_id/event"
+              router.pathname === "/docs/v1/user/[userid]/event" // cspell: disable-line
                 ? activeClasses
                 : "",
             ].join(" ")}
@@ -87,7 +91,7 @@ export default function DocsSidebar() {
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/user/user_id/delete"
+              router.pathname === "/docs/v1/user/[userid]/delete" // cspell: disable-line
                 ? activeClasses
                 : "",
             ].join(" ")}
@@ -115,7 +119,7 @@ export default function DocsSidebar() {
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/group/group_id"
+              router.pathname === "/docs/v1/group/[groupid]" // cspell: disable-line
                 ? activeClasses
                 : "",
             ].join(" ")}
@@ -128,7 +132,7 @@ export default function DocsSidebar() {
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/group/group_id/associate"
+              router.pathname === "/docs/v1/group/[groupid]/associate" // cspell: disable-line
                 ? activeClasses
                 : "",
             ].join(" ")}
@@ -141,7 +145,7 @@ export default function DocsSidebar() {
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/group/group_id/event"
+              router.pathname === "/docs/v1/group/[groupid]/event" // cspell: disable-line
                 ? activeClasses
                 : "",
             ].join(" ")}
@@ -154,7 +158,7 @@ export default function DocsSidebar() {
           <a
             className={[
               basicClasses,
-              router.pathname === "/docs/v1/group/group_id/delete"
+              router.pathname === "/docs/v1/group/[groupid]/delete" // cspell: disable-line
                 ? activeClasses
                 : "",
             ].join(" ")}

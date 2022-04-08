@@ -21,6 +21,14 @@ async function trackGroupHandler(
   // cspell: disable-next-line
   const { groupid: groupId } = req.query;
 
+  if (isString(req.url)) {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    res.setHeader(
+      "Link",
+      `<https://${url.href.replace("/api/", "/docs/")}>; rel=documentation`
+    );
+  }
+
   const authed = await authorizeAPIKey(req);
   if (isString(authed)) {
     return res.status(401).json({ message: authed });
