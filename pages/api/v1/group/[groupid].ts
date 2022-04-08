@@ -72,6 +72,19 @@ async function deleteGroup(
   // cspell: disable-next-line
   const { groupid: groupId } = req.query;
 
+  if (isString(req.url)) {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const docsURL = url.href
+      .replace("/api/", "/docs/")
+      .replace("http://", "https://")
+      .concat("/delete");
+    res.setHeader(
+      "Link",
+      `<${docsURL}>; rel="documentation"; title="API Docs"`
+    );
+    res.setHeader("X-Documentation", `${docsURL}`);
+  }
+
   const authed = await authorizeAPIKey(req);
   if (isString(authed)) {
     return res.status(401).json({ message: authed });

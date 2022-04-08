@@ -14,11 +14,14 @@ export default async function middleware(
       .replace("http://", "https://");
 
     const response = NextResponse.next();
-    response.headers.set(
-      "Link",
-      `<${docsURL}>; rel="documentation"; title="API Docs"`
-    );
-    response.headers.set("X-Documentation", `${docsURL}`);
+
+    if (response.headers.has("X-Documentation") === false) {
+      response.headers.set(
+        "Link",
+        `<${docsURL}>; rel="documentation"; title="API Docs"`
+      );
+      response.headers.set("X-Documentation", `${docsURL}`);
+    }
 
     return response;
   } else {
