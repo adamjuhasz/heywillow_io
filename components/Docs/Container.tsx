@@ -1,5 +1,8 @@
-import DocSidebar from "components/Docs/Sidebar";
 import Link from "next/link";
+import isNil from "lodash/isNil";
+
+import DocSidebar from "components/Docs/Sidebar";
+import { useUser } from "components/UserContext";
 
 export default function DocsContainer(props: React.PropsWithChildren<unknown>) {
   return (
@@ -26,6 +29,8 @@ export default function DocsContainer(props: React.PropsWithChildren<unknown>) {
 }
 
 function Header() {
+  const user = useUser();
+
   return (
     <>
       <Link href="/">
@@ -36,7 +41,7 @@ function Header() {
         <a className="hover:underline">Contact support</a>
       </Link>
 
-      <Link href="/a/workspace">
+      <Link href={isNil(user.session) ? "/login" : "/a/workspace"}>
         <a className="">
           <span className="hover:underline">Workspace</span> →
         </a>
