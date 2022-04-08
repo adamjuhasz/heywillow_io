@@ -28,7 +28,10 @@ async function trackGroupHandler(
     const url = new URL(req.url, `http://${req.headers.host}`);
     res.setHeader(
       "Link",
-      `<https://${url.href.replace("/api/", "/docs/")}>; rel=documentation`
+      `<https://${url.href.replace(
+        "/api/",
+        "/docs/"
+      )}>; rel="documentation"; title="API Docs"`
     );
   }
 

@@ -25,10 +25,14 @@ async function trackGroupHandler(
 
   if (isString(req.url)) {
     const url = new URL(req.url, `http://${req.headers.host}`);
+    const docsURL = url.href
+      .replace("/api/", "/docs/")
+      .replace("http://", "https://");
     res.setHeader(
       "Link",
-      `<https://${url.href.replace("/api/", "/docs/")}>; rel=documentation`
+      `<${docsURL}>; rel="documentation"; title="API Docs"`
     );
+    res.setHeader("X-Documentation", `${docsURL}`);
   }
 
   const authed = await authorizeAPIKey(req);
@@ -72,7 +76,10 @@ async function deleteGroup(
     const url = new URL(req.url, `http://${req.headers.host}`);
     res.setHeader(
       "Link",
-      `<https://${url.href.replace("/api/", "/docs/")}>; rel=documentation`
+      `<https://${url.href.replace(
+        "/api/",
+        "/docs/"
+      )}>; rel="documentation"; title="API Docs"`
     );
   }
 
