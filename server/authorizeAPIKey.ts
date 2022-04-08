@@ -10,7 +10,7 @@ export default async function authorizeAPIKey(
 ): Promise<string | [Team, string]> {
   const authHeader = req.headers.authorization;
   if (authHeader === undefined || !includes(authHeader, "Basic ")) {
-    return "No authorization header";
+    return "API Key invalid; No authorization header, see https://heywillow.io/docs/v1/authentication";
   }
 
   const base64Credentials = authHeader.split(" ")[1];
@@ -25,7 +25,7 @@ export default async function authorizeAPIKey(
   });
 
   if (team === null) {
-    return "API Key invalid; team issue";
+    return "API Key invalid; not found, please check it";
   }
 
   if (team.valid === false) {
