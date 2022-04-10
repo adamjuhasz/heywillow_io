@@ -24,6 +24,8 @@ export default async function middleware(
     }
 
     return response;
+  } else if (request.nextUrl.pathname === "/api/v1/_health") {
+    return NextResponse.json({ status: "Ok" });
   } else {
     return NextResponse.next();
   }
