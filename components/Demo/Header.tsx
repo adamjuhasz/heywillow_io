@@ -72,7 +72,7 @@ export default function DemoHeader(props: Props) {
               </div>
             </LinkBarLink>
             <LinkBarLink href={"/demo/[namespace]/customers"}>
-              <div className="flex items-center">Customers</div>
+              <div className="flex items-center">Users</div>
             </LinkBarLink>
           </LinkBar>
         </AppContainer>

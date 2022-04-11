@@ -8,10 +8,7 @@ import DocsContainer from "components/Docs/Container";
 export default function TrackEvent() {
   return (
     <>
-      <NextSeo
-        title="Willow API Docs - Customers"
-        description="What's a customer?"
-      />
+      <NextSeo title="Willow API Docs - Group" description="What's a group?" />
 
       <DocsContainer>
         <h1 className="mb-14 text-3xl font-medium">What is a group?</h1>

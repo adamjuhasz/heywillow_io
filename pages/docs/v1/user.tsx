@@ -10,7 +10,7 @@ export default function TrackEvent() {
   return (
     <>
       <NextSeo
-        title="Willow API Docs - Customers"
+        title="Willow API Docs - Users"
         description="What's a customer?"
       />
 

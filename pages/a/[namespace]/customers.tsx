@@ -6,10 +6,11 @@ import uniq from "lodash/uniq";
 import AppLayout from "layouts/app";
 
 import AppHeader from "components/App/HeaderHOC";
-import LinkBar, { Link } from "components/LinkBar";
+import LinkBar from "components/LinkBar";
 import AppHeaderThreadLink from "components/App/ThreadLink";
 import CustomerListTable from "components/Customer/CustomerListTable";
 import EmptyTable from "components/Design/EmptyTable";
+import AppHeaderUsersLink from "components/App/UsersLink";
 
 import useGetTeams from "client/getTeams";
 import useGetCustomers from "client/getCustomers";
@@ -39,9 +40,7 @@ export default function CustomerList() {
       <AppHeader>
         <LinkBar hideBorder>
           <AppHeaderThreadLink />
-          <Link href="/a/[namespace]/customers">
-            <div className="flex items-center">Customers</div>
-          </Link>
+          <AppHeaderUsersLink />
         </LinkBar>
       </AppHeader>
 

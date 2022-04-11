@@ -5,9 +5,10 @@ import Head from "next/head";
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
 import DashboardTableTop from "components/Workspace/TableTop";
-import LinkBar, { Link } from "components/LinkBar";
+import LinkBar from "components/LinkBar";
 import AppContainer from "components/App/Container";
 import AppHeaderThreadLink from "components/App/ThreadLink";
+import AppHeaderUsersLink from "components/App/UsersLink";
 
 import useGetTeams from "client/getTeams";
 import useGetTeamThreads from "client/getTeamThreads";
@@ -34,9 +35,7 @@ export default function DashboardPage() {
       <AppHeader>
         <LinkBar hideBorder>
           <AppHeaderThreadLink />
-          <Link href="/a/[namespace]/customers">
-            <div className="flex items-center">Customers</div>
-          </Link>
+          <AppHeaderUsersLink />
         </LinkBar>
       </AppHeader>
 

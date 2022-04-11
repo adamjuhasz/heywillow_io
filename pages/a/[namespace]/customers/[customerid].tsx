@@ -7,6 +7,7 @@ import LinkBar, { Link } from "components/LinkBar";
 import AppHeaderThreadLink from "components/App/ThreadLink";
 import Loading from "components/Loading";
 import CustomerOverview from "components/Customer/Overview";
+import AppHeaderUsersLink from "components/App/UsersLink";
 
 import useGetCustomer from "client/getCustomer";
 import useGetThread from "client/getThread";
@@ -31,9 +32,7 @@ export default function Customer() {
       <AppHeader>
         <LinkBar hideBorder>
           <AppHeaderThreadLink />
-          <Link href="/a/[namespace]/customers" exact={false}>
-            <div className="flex items-center">Customers</div>
-          </Link>
+          <AppHeaderUsersLink />
         </LinkBar>
       </AppHeader>
 
