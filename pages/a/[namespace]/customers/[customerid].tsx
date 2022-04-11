@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
-import LinkBar, { Link } from "components/LinkBar";
+import LinkBar from "components/LinkBar";
 import AppHeaderThreadLink from "components/App/ThreadLink";
 import Loading from "components/Loading";
 import CustomerOverview from "components/Customer/Overview";
