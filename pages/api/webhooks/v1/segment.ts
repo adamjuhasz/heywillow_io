@@ -220,9 +220,8 @@ async function handler(
     }
   } catch (e) {
     if (
-      (e as Error).message.includes(
-        "Unique constraint failed on the fields: (`idempotency`)"
-      )
+      (e as Error).message.includes("`idempotency`") &&
+      (e as Error).message.includes("Unique constraint failed on the fields")
     ) {
       await logger.warn(`Duplicate event processed - ${(e as Error).message}`, {
         body: body as unknown as JSON,
