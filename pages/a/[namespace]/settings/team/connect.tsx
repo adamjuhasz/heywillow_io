@@ -14,6 +14,7 @@ import ClipboardCopyIcon from "@heroicons/react/solid/ClipboardCopyIcon";
 import ExternalLinkIcon from "@heroicons/react/solid/ExternalLinkIcon";
 import MinusCircleIcon from "@heroicons/react/solid/MinusCircleIcon";
 import Link from "next/link";
+import isError from "lodash/isError";
 
 import AppLayout from "layouts/app";
 import SettingsHeader from "components/Settings/Header";
@@ -31,7 +32,7 @@ import type { SupabaseInbox } from "types/supabase";
 import type { PostmarkResponse } from "pages/api/v1/domain/get";
 import useGetTeams from "client/getTeams";
 import verifyDNS from "client/verifyDNSSettings";
-import createInbox from "client/createInbox";
+import createInbox, { BadRequest } from "client/createInbox";
 
 type Tabs = "Inboxes" | "Domains";
 
@@ -88,8 +89,16 @@ export default function ConnectInbox(): JSX.Element {
 
                 setEmailAddress("");
               } catch (e) {
-                console.error(e);
-                addToast({ type: "error", string: "Error connecting email" });
+                if (e instanceof BadRequest) {
+                  console.error("400 error from server", e.errorCode, e);
+                  addToast({ type: "error", string: e.message });
+                } else if (isError(e)) {
+                  console.error(e);
+                  addToast({ type: "error", string: e.message });
+                } else {
+                  console.error(e);
+                  addToast({ type: "error", string: "Please try again" });
+                }
               } finally {
                 setLoading(false);
                 setTimeout(async () => {
@@ -124,10 +133,10 @@ export default function ConnectInbox(): JSX.Element {
               <button
                 onClick={() => setTab("Inboxes")}
                 className={[
-                  "flex h-9 items-center font-light hover:text-zinc-100",
+                  "flex h-9 items-center hover:text-zinc-100",
                   currentTab === "Inboxes"
                     ? "box-content border-b-2 border-zinc-100 font-normal text-zinc-100"
-                    : "text-zinc-500",
+                    : "font-light text-zinc-500",
                 ].join(" ")}
               >
                 Connected accounts
@@ -136,10 +145,10 @@ export default function ConnectInbox(): JSX.Element {
               <button
                 onClick={() => setTab("Domains")}
                 className={[
-                  "flex h-9 items-center font-light hover:text-zinc-100",
+                  "flex h-9 items-center hover:text-zinc-100",
                   currentTab === "Domains"
                     ? "box-content border-b-2 border-zinc-100 font-normal text-zinc-100"
-                    : "text-zinc-500",
+                    : "font-light text-zinc-500",
                 ].join(" ")}
               >
                 <div className="flex items-center">

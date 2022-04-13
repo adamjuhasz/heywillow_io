@@ -1,5 +1,18 @@
-import type { RequestBody, ResponseBody } from "pages/api/v1/inbox/create";
+import type {
+  BadRequestError,
+  RequestBody,
+  ResponseBody,
+} from "pages/api/v1/inbox/create";
 import { trackEvent } from "hooks/useTrackEvent";
+
+export class BadRequest extends Error {
+  errorCode: number;
+
+  constructor(message: string, code: number) {
+    super(message);
+    this.errorCode = code;
+  }
+}
 
 export default async function createInbox(
   teamId: number,
@@ -25,6 +38,12 @@ export default async function createInbox(
       trackEvent("Inbox created", { ...body });
 
       return responseBody;
+    }
+
+    case 400: {
+      const responseBody = (await res.json()) as BadRequestError;
+
+      throw new BadRequest(responseBody.error, responseBody.errorCode);
     }
 
     default:

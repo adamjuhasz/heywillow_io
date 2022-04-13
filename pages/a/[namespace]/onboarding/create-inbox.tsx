@@ -1,6 +1,7 @@
 import { ReactElement, useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import isError from "lodash/isError";
 
 import AppLayout from "layouts/app";
 import OnboardingHeader from "components/Onboarding/Header";
@@ -8,7 +9,7 @@ import SettingsBox from "components/Settings/Box/Box";
 import Loading from "components/Loading";
 import AppContainer from "components/App/Container";
 import useGetTeamId from "client/getTeamId";
-import createInbox from "client/createInbox";
+import createInbox, { BadRequest } from "client/createInbox";
 import ToastContext from "components/Toast";
 
 const nextOnboardingStep = "/a/[namespace]/onboarding/setup-dns";
@@ -86,8 +87,16 @@ export default function CreateTeam(): JSX.Element {
                   query: router.query,
                 });
               } catch (e) {
-                console.error(e);
-                addToast({ type: "error", string: "Error connecting email" });
+                if (e instanceof BadRequest) {
+                  console.error("400 error from server", e.errorCode, e);
+                  addToast({ type: "error", string: e.message });
+                } else if (isError(e)) {
+                  console.error(e);
+                  addToast({ type: "error", string: e.message });
+                } else {
+                  console.error(e);
+                  addToast({ type: "error", string: "Please try again" });
+                }
               } finally {
                 setLoading(false);
               }

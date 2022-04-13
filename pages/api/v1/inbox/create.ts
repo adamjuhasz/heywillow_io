@@ -8,7 +8,9 @@ import { serviceSupabase } from "server/supabase";
 import getPostmarkDomainInfo, {
   PostmarkDomain,
 } from "server/postmark/getDomainInfo";
-import processPMResponse from "server/postmark/processPMResponse";
+import processPMResponse, {
+  PostmarkError,
+} from "server/postmark/processPMResponse";
 import createPostmarkServer from "server/postmark/createServer";
 
 export interface RequestBody {
@@ -25,11 +27,17 @@ export type ResponseBody = {
   ReturnPathDomainCNAMEValue: string;
 };
 
+export type BadRequestError = {
+  error: string;
+  errorCode: number;
+};
+
 export default apiHandler({ post: handler });
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseBody | { error: string }>
+  res: NextApiResponse<ResponseBody | BadRequestError | { error: string }>
 ) {
   await logger.info("Creating inbox", {});
 
@@ -102,6 +110,19 @@ async function handler(
       await createPostmarkDomain(domain, teamMember.Team.id);
       // create a sender signature
     } catch (e) {
+      const error = e as PostmarkError;
+      if (error.postmarkCode === 503) {
+        await logger.warn("Caught error creating domain, user error", {
+          domain: domain,
+          teamId: Number(teamMember.Team.id),
+          code: error.postmarkCode,
+          message: error.postmarkMessage,
+        });
+        return res.status(400).json({
+          error: error.postmarkMessage,
+          errorCode: error.postmarkCode,
+        });
+      }
       await logger.error("Caught error creating domain", {
         domain: domain,
         teamId: Number(teamMember.Team.id),

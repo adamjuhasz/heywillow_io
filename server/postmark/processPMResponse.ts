@@ -1,5 +1,16 @@
 import { logger } from "utils/logger";
 
+export class PostmarkError extends Error {
+  postmarkCode: number;
+  postmarkMessage: string;
+
+  constructor(message: string, postmarkCode: number, postmarkMessage: string) {
+    super(message);
+    this.postmarkCode = postmarkCode;
+    this.postmarkMessage = postmarkMessage;
+  }
+}
+
 export default async function processPMResponse(serverCreate: Response) {
   switch (serverCreate.status) {
     case 200:
@@ -26,7 +37,11 @@ export default async function processPMResponse(serverCreate: Response) {
         "Unprocessable Entity -- https://postmarkapp.com/developer/api/overview#error-codes",
         { errorCode: errorBody.ErrorCode, message: errorBody.Message }
       );
-      throw new Error("Got 422");
+      throw new PostmarkError(
+        "Got 422",
+        errorBody.ErrorCode,
+        errorBody.Message
+      );
     }
 
     case 429:
