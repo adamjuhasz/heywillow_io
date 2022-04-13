@@ -345,19 +345,19 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-0.6.1.tgz#aed861a1b6dbebadf14a9dd829ba67f4f3ae795c"
   integrity sha512-Y30eVMcZva8o84c0HcXAtDO4BEzPJMvF6+B7x7urL2xbAqVsGJhojOyHLaoQHQYjb6OkqRq5kO+zeySycQwKqg==
 
-"@floating-ui/dom@^0.4.2", "@floating-ui/dom@^0.4.4":
+"@floating-ui/dom@^0.4.4":
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-0.4.4.tgz#e0919d23e40bcc84ce2ebe1b9701b211f2d84b3c"
   integrity sha512-0Ulu3B/dqQplUUSqnTx0foSrlYuMN+GTtlJWvNJwt6Fr7/PqmlR/Y08o6/+bxDWr6p3roBJRaQ51MDZsNmEhhw==
   dependencies:
     "@floating-ui/core" "^0.6.1"
 
-"@floating-ui/react-dom@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-0.6.1.tgz#ca3d3d05ef00f50e3d0b64c18703e692a48b5c31"
-  integrity sha512-XQbdgj1uWAViEua9PkfzgqOWjYP3dZy21pYpUYB7i5WOf1ZBAqTgCkyipjpJdxP8qGftjnhrTROLGs+DNGYnJg==
+"@floating-ui/react-dom@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-0.6.2.tgz#90747ce6da475a6d00301368632547329ec07eae"
+  integrity sha512-nMk1ZDllNLagXrM4NmRkmC0BGxcDQUPIJsBxmvc45SzgjolcQK9b1Y0rGTqvJJIe6ae7xFd3c707vg5wM4hs5g==
   dependencies:
-    "@floating-ui/dom" "^0.4.2"
+    "@floating-ui/dom" "^0.4.4"
     use-isomorphic-layout-effect "^1.1.1"
 
 "@headlessui/react@^1.5.0":
