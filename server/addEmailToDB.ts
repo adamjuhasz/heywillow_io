@@ -12,6 +12,7 @@ import { JSON, logger, toJSONable } from "utils/logger";
 import sendPostmarkEmailAsTeam, {
   Options,
 } from "./postmark/sendPostmarkEmailAsTeam";
+import trackGroupEvent from "./analytics/groupEvent";
 
 export interface AttachmentData {
   data: string;
@@ -197,6 +198,7 @@ export default async function addEmailToDB(
           include: {
             Thread: { include: { ThreadState: true, Team: true } },
             Attachments: true,
+            Alias: true,
           },
         },
       },
@@ -280,6 +282,13 @@ export default async function addEmailToDB(
         });
       }
     }
+
+    await trackGroupEvent(Number(inbox.Team.id), "Message Received", {
+      threadId: Number(savedEmail.Message.Thread.id),
+      from: message.fromEmail,
+      to: message.toEmail.join(", "),
+      subject: message.subject,
+    });
 
     return savedEmail.id;
   } catch (e) {
