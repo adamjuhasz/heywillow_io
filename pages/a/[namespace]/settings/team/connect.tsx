@@ -91,7 +91,17 @@ export default function ConnectInbox(): JSX.Element {
               } catch (e) {
                 if (e instanceof BadRequest) {
                   console.error("400 error from server", e.errorCode, e);
-                  addToast({ type: "error", string: e.message });
+                  switch (e.errorCode) {
+                    case 503:
+                      addToast({
+                        type: "error",
+                        string: `The email needs to be on your own domain (ex: "stealth.com)`,
+                      });
+                      break;
+
+                    default:
+                      addToast({ type: "error", string: e.message });
+                  }
                 } else if (isError(e)) {
                   console.error(e);
                   addToast({ type: "error", string: e.message });

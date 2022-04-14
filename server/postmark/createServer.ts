@@ -11,9 +11,14 @@ export interface CreatePostmarkServerResponse {
   InboundAddress: string;
 }
 
+export interface ServerInfo {
+  serverId: number;
+  serverToken: string;
+}
+
 export default async function createPostmarkServer(
   namespace: string
-): Promise<string> {
+): Promise<ServerInfo> {
   const inboundURL = `https://${process.env.POSTMARK_WEBHOOK}@heywillow.io/api/webhooks/v1/postmark/inbound/${namespace}`;
   const serverCreate = await fetch(`https://api.postmarkapp.com/servers`, {
     method: "POST",
@@ -46,7 +51,7 @@ export default async function createPostmarkServer(
     await createWebhook(serverPostmark, namespace, "outbound");
     await createWebhook(serverPostmark, namespace, "broadcast");
 
-    return serverToken;
+    return { serverToken: serverToken, serverId: createServerResponse.ID };
   } catch (e) {
     await logger.error(
       `Caught error creating server ${(e as Error)?.message}`,

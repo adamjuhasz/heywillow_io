@@ -11,7 +11,7 @@ import getPostmarkDomainInfo, {
 import processPMResponse, {
   PostmarkError,
 } from "server/postmark/processPMResponse";
-import createPostmarkServer from "server/postmark/createServer";
+import getOrCreatePostmarkServer from "server/postmark/getOrCreateServer";
 
 export interface RequestBody {
   emailAddress: string;
@@ -86,13 +86,14 @@ async function handler(
     serverToken = existingInbox.PostmarkToken.token;
   } else {
     try {
-      serverToken = await createPostmarkServer(namespace);
+      const serverInfo = await getOrCreatePostmarkServer(namespace);
+      serverToken = serverInfo.serverToken;
     } catch (e) {
       return res.status(500).json({ error: "Could no create postmark server" });
     }
   }
 
-  await prisma.inbox.create({
+  const inbox = await prisma.inbox.create({
     data: {
       emailAddress: body.emailAddress,
       Team: { connect: { id: teamMember.teamId } },
@@ -110,6 +111,12 @@ async function handler(
       await createPostmarkDomain(domain, teamMember.Team.id);
       // create a sender signature
     } catch (e) {
+      await prisma.inbox.delete({ where: { id: inbox.id } });
+      await logger.info(`Deleting inbox due to error ${inbox.id}`, {
+        inbox: Number(inbox.id),
+        domain: domain,
+        teamId: Number(teamMember.Team.id),
+      });
       const error = e as PostmarkError;
       if (error.postmarkCode === 503) {
         await logger.warn("Caught error creating domain, user error", {
