@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "utils/prisma";
 import { serviceSupabase } from "server/supabase";
 import apiHandler from "server/apiHandler";
+import trackGroupEvent from "server/analytics/groupEvent";
 
 export default apiHandler({
   post: handler,
@@ -54,6 +55,10 @@ async function handler(
       teamId: true,
       Team: true,
     },
+  });
+
+  await trackGroupEvent(Number(invite.teamId), "Invite accepted", {
+    email: user.email || "Unknown",
   });
 
   await prisma.teamInvite.update({

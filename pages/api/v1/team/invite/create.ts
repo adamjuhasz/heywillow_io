@@ -6,6 +6,7 @@ import { serviceSupabase } from "server/supabase";
 import sendPostmarkEmail from "server/postmark/sendPostmarkEmail";
 import { logger } from "utils/logger";
 import apiHandler from "server/apiHandler";
+import trackGroupEvent from "server/analytics/groupEvent";
 
 export default apiHandler({
   post: handler,
@@ -73,6 +74,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse<FullReturn>) {
       email: invite.emailAddress,
     }
   );
+  await trackGroupEvent(Number(membership.teamId), "Invite sent", {
+    inviteId: Number(invite.id),
+    email: invite.emailAddress,
+  });
 
   const ourEmails = invite.Team.Inboxes.map((i) => i.emailAddress);
   if (some(ourEmails, (e) => e === normalizedEmail)) {
