@@ -18,7 +18,7 @@ export default function InvitesSettingsPage(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Accept team invites</SettingsTitle>
 
-      <AppContainer className="my-14 flex">
+      <AppContainer className="flex flex-col sm:my-14 sm:flex-row">
         <OverviewTeamSidebar />
 
         <div className="grow space-y-6">

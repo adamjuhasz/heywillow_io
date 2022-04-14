@@ -39,7 +39,7 @@ export default function InviteTeammates(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Team settings</SettingsTitle>
 
-      <AppContainer className="my-14 flex">
+      <AppContainer className="flex flex-col sm:my-14 sm:flex-row">
         <TeamSettingsSidebar />
 
         <div className="grow space-y-6">

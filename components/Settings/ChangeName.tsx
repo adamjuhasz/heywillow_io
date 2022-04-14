@@ -53,7 +53,7 @@ export default function ChangeName(): JSX.Element {
         value={firstName}
         onChange={(e) => setFirstName(e.target.value)}
         required
-        className="block w-72 appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm"
+        className="block w-full appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:w-72 sm:text-sm"
         placeholder="Jane"
       />
 
@@ -66,7 +66,7 @@ export default function ChangeName(): JSX.Element {
         value={lastName}
         onChange={(e) => setLastName(e.target.value)}
         required
-        className="block w-72 appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm"
+        className="block w-full appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:w-72 sm:text-sm"
         placeholder="Appleseed"
       />
     </SettingsBox>

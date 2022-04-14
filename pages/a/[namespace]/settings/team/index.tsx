@@ -27,10 +27,10 @@ export default function TeamSettings(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Team settings</SettingsTitle>
 
-      <AppContainer className="mt-14 flex">
+      <AppContainer className="flex flex-col sm:mt-14 sm:flex-row">
         <TeamSettingsSidebar />
 
-        <div className="grow space-y-6">
+        <div className="grow space-y-6 pb-7">
           <SettingsBox
             title="Team Name"
             explainer=" This is your team's name, it will be visible around the Willow website."
@@ -45,7 +45,7 @@ export default function TeamSettings(): JSX.Element {
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               required
-              className="block w-72 appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm"
+              className="block w-full appearance-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:cursor-not-allowed sm:w-72 sm:text-sm"
               placeholder="Stealth AI"
             />
           </SettingsBox>
@@ -58,7 +58,7 @@ export default function TeamSettings(): JSX.Element {
             disabled
           >
             <div className="mt-1 flex rounded-md shadow-sm">
-              <span className="inline-flex items-center rounded-l-md border border-r-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:text-sm">
+              <span className="hidden items-center rounded-l-md border border-r-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:inline-flex sm:text-sm">
                 https://heywillow.io/a/
               </span>
               <input
@@ -67,10 +67,10 @@ export default function TeamSettings(): JSX.Element {
                 name="Namespace"
                 id="Namespace"
                 value={(namespace as string) || ""}
-                className="block w-20 min-w-0 max-w-full flex-1 rounded-none border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="block w-20 min-w-0 max-w-full flex-1 rounded-md border-zinc-600 bg-zinc-900 px-3 py-2 placeholder-zinc-500 focus:border-indigo-500 focus:ring-indigo-500 sm:rounded-l-none sm:text-sm md:rounded-none"
                 placeholder="stealth-ai"
               />
-              <span className="inline-flex items-center rounded-r-md border border-l-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:text-sm">
+              <span className="hidden items-center rounded-r-md border border-l-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:text-sm md:inline-flex">
                 /workspace
               </span>
             </div>

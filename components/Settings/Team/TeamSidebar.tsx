@@ -9,7 +9,7 @@ export default function TeamSettingsSidebar(): JSX.Element {
     inboxes !== undefined ? inboxes.length : undefined;
 
   return (
-    <div className="flex w-56 shrink-0 flex-col space-y-4 text-sm font-light text-zinc-500">
+    <div className="flex w-full shrink-0 flex-row space-x-4 space-y-0 overflow-x-scroll py-4 text-sm font-light text-zinc-500 sm:w-56 sm:flex-col sm:space-x-0 sm:space-y-4 sm:py-0">
       <SidebarLink href="/a/[namespace]/settings/team/notifications">
         Notification preferences
       </SidebarLink>

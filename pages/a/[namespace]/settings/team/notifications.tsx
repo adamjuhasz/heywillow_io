@@ -76,7 +76,7 @@ export default function NotificationSettingsPage(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Notification Preferences</SettingsTitle>
 
-      <AppContainer className="my-14 flex">
+      <AppContainer className="flex flex-col sm:my-14 sm:flex-row">
         <TeamSettingsSidebar />
 
         <div

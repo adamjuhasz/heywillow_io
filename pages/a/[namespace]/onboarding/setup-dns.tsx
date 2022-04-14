@@ -45,7 +45,7 @@ export default function CreateTeam(): JSX.Element {
 
       <OnboardingHeader />
 
-      <AppContainer className="my-14 flex">
+      <AppContainer className="flex flex-col sm:my-14 sm:flex-row">
         <div className="grow space-y-6">
           <SettingsBox
             explainer=""

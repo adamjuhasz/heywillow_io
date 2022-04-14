@@ -33,7 +33,7 @@ export default function CreateTeam(): JSX.Element {
 
       <OnboardingHeader />
 
-      <AppContainer className="my-14 flex">
+      <AppContainer className="flex flex-col sm:my-14 sm:flex-row">
         <div className="grow space-y-6">
           <SettingsBox
             error={error}
@@ -102,28 +102,30 @@ export default function CreateTeam(): JSX.Element {
               characters
             </div>
             <div className="mt-1 flex rounded-md shadow-sm">
-              <span className="inline-flex items-center rounded-l-md border border-r-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:text-sm">
+              <span className="hidden items-center rounded-l-md border border-r-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:inline-flex sm:text-sm">
                 https://heywillow.io/s/
               </span>
               <input
                 disabled={loading}
                 onFocus={() => {
                   if (namespace === "" && name !== "") {
-                    setNamespace(namespacer(name.replace(/ /g, "")));
+                    setNamespace(namespaceNormalizer(name.replace(/ /g, "")));
                   }
                 }}
                 value={namespace}
-                onChange={(e) => setNamespace(namespacer(e.target.value))}
+                onChange={(e) =>
+                  setNamespace(namespaceNormalizer(e.target.value))
+                }
                 type="text"
                 name="namespace"
                 id="namespace"
                 className={[
-                  "block w-20 min-w-0 max-w-full flex-1 rounded-none bg-zinc-900 px-3 py-2 placeholder-zinc-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                  "block w-20 min-w-0 max-w-full flex-1 rounded-md bg-zinc-900 px-3 py-2 placeholder-zinc-500 focus:border-indigo-500 focus:ring-indigo-500 sm:rounded-none sm:text-sm",
                   error ? "border-red-500 " : "border-zinc-600 ",
                 ].join(" ")}
                 placeholder="stealth-ai"
               />
-              <span className="inline-flex items-center rounded-r-md border border-l-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:text-sm">
+              <span className="hidden items-center rounded-r-md border border-l-0 border-zinc-600 bg-zinc-800 px-3 text-zinc-400 sm:inline-flex sm:text-sm">
                 /secure-msg/123
               </span>
             </div>
@@ -138,7 +140,7 @@ CreateTeam.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };
 
-const namespacer = (s: string): string =>
+const namespaceNormalizer = (s: string): string =>
   s
     .replace(/ /g, "-")
     .toLowerCase()

@@ -40,7 +40,7 @@ export default function CreateTeam(): JSX.Element {
 
       <OnboardingHeader />
 
-      <AppContainer className="mt-14 flex">
+      <AppContainer className="flex flex-col sm:mt-14 sm:flex-row">
         <div className="grow space-y-6">
           <SettingsBox
             disabled={loading}

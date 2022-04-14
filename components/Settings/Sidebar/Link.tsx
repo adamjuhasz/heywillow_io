@@ -24,7 +24,7 @@ export default function SidebarLink({
     <Link href={{ pathname: props.href, query: router.query }}>
       <a
         className={[
-          " hover:font-normal hover:text-zinc-100",
+          "shrink-0 hover:font-normal hover:text-zinc-100",
           isActive ? "font-normal text-zinc-100" : "font-light text-zinc-500",
         ].join(" ")}
       >

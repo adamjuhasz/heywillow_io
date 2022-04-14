@@ -42,7 +42,7 @@ export default function TeamBilling(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Team settings</SettingsTitle>
 
-      <AppContainer className="mt-14 flex">
+      <AppContainer className="flex flex-col sm:mt-14 sm:flex-row">
         <TeamSettingsSidebar />
 
         <div className="grow space-y-6">

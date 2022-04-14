@@ -18,7 +18,7 @@ export default function SettingsPage(): JSX.Element {
       <SettingsHeader />
       <SettingsTitle>Profile settings</SettingsTitle>
 
-      <AppContainer className="mt-14 flex">
+      <AppContainer className="flex flex-col sm:mt-14 sm:flex-row">
         <SettingsSidebar />
 
         <div className="grow space-y-6">

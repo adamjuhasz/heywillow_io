@@ -7,10 +7,11 @@ export default function SettingsSidebar(): JSX.Element {
   const pendingCount = pending?.length || 0;
 
   return (
-    <div className="flex w-56 shrink-0 flex-col space-y-4 text-sm font-light text-zinc-500">
+    <div className="flex w-full shrink-0 flex-row space-y-0 space-x-4 py-4 text-sm font-light text-zinc-500 sm:w-56 sm:flex-col sm:space-x-0 sm:space-y-4 sm:py-0">
       <SidebarLink exact href="/a/settings">
         Profile
       </SidebarLink>
+
       <SidebarLink href="/a/settings/invites">
         Invites{" "}
         {pendingCount !== 0 ? (
