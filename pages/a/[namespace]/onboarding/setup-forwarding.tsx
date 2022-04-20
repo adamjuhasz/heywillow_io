@@ -9,7 +9,7 @@ import OnboardingHeader from "components/Onboarding/Header";
 import SettingsBox from "components/Settings/Box/Box";
 import Loading from "components/Loading";
 import AppContainer from "components/App/Container";
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import useGetInboxes from "client/getInboxes";
 import type { SupabaseInbox } from "types/supabase";
 import ToastContext from "components/Toast";
@@ -20,8 +20,11 @@ export default function CreateTeam(): JSX.Element {
   const { addToast } = useContext(ToastContext);
   const [error] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
+
   const { data: inboxes } = useGetInboxes(teamId);
 
   const inbox: SupabaseInbox | undefined = (inboxes || [])[0];

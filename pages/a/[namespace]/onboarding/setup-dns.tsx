@@ -11,7 +11,7 @@ import SettingsBox from "components/Settings/Box/Box";
 import Loading from "components/Loading";
 import AppContainer from "components/App/Container";
 import ToastContext from "components/Toast";
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import useGetDomain from "client/getDomains";
 import type { PostmarkResponse } from "pages/api/v1/domain/get";
 import verifyDNSSettings from "client/verifyDNSSettings";
@@ -22,7 +22,8 @@ export default function CreateTeam(): JSX.Element {
   const [error] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
   const { data: domains, mutate: mutateDomains } = useGetDomain(teamId);
 
   const justDomains: PostmarkResponse[] = defaultTo(domains, []).reduce(

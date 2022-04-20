@@ -21,7 +21,7 @@ import SettingsHeader from "components/Settings/Header";
 import SettingsTitle from "components/Settings/Title";
 import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsBox from "components/Settings/Box/Box";
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import useGetInboxes from "client/getInboxes";
 import Avatar from "components/Avatar";
 import AppContainer from "components/App/Container";
@@ -37,13 +37,17 @@ import createInbox, { BadRequest } from "client/createInbox";
 type Tabs = "Inboxes" | "Domains";
 
 export default function ConnectInbox(): JSX.Element {
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
+
   const { data: inboxes, mutate: mutateInboxes } = useGetInboxes(teamId);
+
   const [emailAddress, setEmailAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const { addToast } = useContext(ToastContext);
   const [currentTab, setTab] = useState<Tabs>("Inboxes");
   const { data: domains, mutate: mutateDomains } = useGetDomain(teamId);
+
   const { data: teams } = useGetTeams();
 
   const thisTeam = (teams || []).find((t) => t.id === teamId);

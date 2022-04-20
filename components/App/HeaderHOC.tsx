@@ -4,13 +4,17 @@ import { useRouter } from "next/router";
 import AppHeader from "components/App/Header";
 import useGetTeams from "client/getTeams";
 import useGetInboxes from "client/getInboxes";
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import useGetMyInvites from "client/getMyInvites";
 
 export default function AppHeaderHOC(props: PropsWithChildren<unknown>) {
   const router = useRouter();
+
   const { data: teams } = useGetTeams();
-  const teamId = useGetTeamId();
+
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
+
   const { data: invites } = useGetMyInvites();
   const nonAccepted = invites?.filter((i) => i.status !== "accepted") || [];
 

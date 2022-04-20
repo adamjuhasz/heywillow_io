@@ -3,20 +3,22 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
+
 import SettingsTitle from "components/Settings/Title";
 import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsBox from "components/Settings/Box/Box";
 import SettingsHeader from "components/Settings/Header";
-import useGetTeams from "client/getTeams";
 import AppContainer from "components/App/Container";
+
+import useGetCurrentTeam from "client/getTeamId";
 
 export default function TeamSettings(): JSX.Element {
   const router = useRouter();
   const { namespace } = router.query;
-  const { data: teams } = useGetTeams();
-  const teamName = teams?.find(
-    (t) => t.Namespace.namespace === namespace
-  )?.name;
+
+  const currentTeam = useGetCurrentTeam();
+  const teamName = currentTeam?.currentTeamName;
+
   const [newName, setNewName] = useState(teamName || "");
 
   return (

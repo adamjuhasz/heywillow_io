@@ -1,9 +1,11 @@
 import SidebarLink from "components/Settings/Sidebar/Link";
 import useGetInboxes from "client/getInboxes";
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 
 export default function TeamSettingsSidebar(): JSX.Element {
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
+
   const { data: inboxes } = useGetInboxes(teamId);
   const inboxCount: undefined | number =
     inboxes !== undefined ? inboxes.length : undefined;

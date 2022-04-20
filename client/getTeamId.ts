@@ -4,24 +4,31 @@ import useGroup from "hooks/useGroupIdentify";
 
 import useGetTeams from "client/getTeams";
 
-export default function useGetTeamId(): number | undefined {
+interface Return {
+  currentTeamId: number;
+  currentTeamName: string;
+}
+
+export default function useGetCurrentTeam(): Return | undefined {
   const router = useRouter();
   const { namespace } = router.query;
   const { group } = useGroup();
 
   const { data: teams } = useGetTeams();
 
-  const currentTeam = teams?.find(
-    (t) => t.Namespace.namespace === namespace
-  )?.id;
+  const currentTeam = teams?.find((t) => t.Namespace.namespace === namespace);
 
   useDebugValue(currentTeam);
 
   useEffect(() => {
-    if (currentTeam) {
-      group(currentTeam);
+    if (currentTeam !== undefined) {
+      group(currentTeam.id);
     }
   }, [currentTeam, group]);
 
-  return currentTeam;
+  if (currentTeam !== undefined) {
+    return { currentTeamId: currentTeam.id, currentTeamName: currentTeam.name };
+  } else {
+    return currentTeam;
+  }
 }

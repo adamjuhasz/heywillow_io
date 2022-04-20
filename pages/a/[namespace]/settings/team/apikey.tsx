@@ -10,12 +10,14 @@ import SettingsHeader from "components/Settings/Header";
 import AppContainer from "components/App/Container";
 import Loading from "components/Loading";
 
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import useGetAPIKeys from "client/getApiKeys";
 import createAPIKey from "client/createApiKey";
 
 export default function TeamBilling(): JSX.Element {
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
+
   const [loading, setLoading] = useState(false);
   const { data: apiKeys, mutate } = useGetAPIKeys(teamId);
 

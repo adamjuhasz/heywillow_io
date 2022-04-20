@@ -19,7 +19,7 @@ import MultiThreadPrinter, {
 import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
 import { useUser } from "components/UserContext";
 
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import postNewMessage from "client/postNewMessage";
 import useGetTeams from "client/getTeams";
 import useGetTeamMembers from "client/getTeamMembers";
@@ -48,7 +48,9 @@ export default function ThreadViewer() {
 
   const { user } = useUser();
 
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
+
   const { data: allThreads, mutate: refreshAllThreads } = useGetThread({
     threadId: threadNum,
     aliasEmailId: undefined,

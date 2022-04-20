@@ -8,7 +8,7 @@ import SettingsTitle from "components/Settings/Title";
 import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import SettingsHeader from "components/Settings/Header";
 import createInvite from "client/createInvite";
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import Loading from "components/Loading";
 import useGetInvites from "client/getInvites";
 import Avatar from "components/Avatar";
@@ -20,7 +20,10 @@ type Tabs = "current" | "pending";
 export default function InviteTeammates(): JSX.Element {
   const [emailCount, setEmailCount] = useState(1);
   const [emails, setEmails] = useState([""]);
-  const teamId = useGetTeamId();
+
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
+
   const [currentTab, setTab] = useState<Tabs>("current");
   const [isLoading, setLoading] = useState(false);
   const { data: invites, mutate } = useGetInvites(teamId);
