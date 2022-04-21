@@ -52,14 +52,6 @@ function MyApp({ Component, pageProps, ..._props }: AppPropsWithLayout) {
               }}
             />
 
-            {/* Plausible */}
-            <script
-              async
-              data-domain="heywillow.io"
-              data-api="/api/event"
-              src="/p/script.js"
-            />
-
             {/* Segment */}
             <link rel="preconnect" href="https://seg.heywillow.io"></link>
             <script
