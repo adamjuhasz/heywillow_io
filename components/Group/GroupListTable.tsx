@@ -76,7 +76,7 @@ export default function CustomerListTable(props: Props) {
                 <tr key={group.id} className="">
                   <td
                     className={[
-                      "whitespace-nowrap py-3 px-3 font-medium hover:underline",
+                      "overflow-hidden text-ellipsis whitespace-nowrap py-3 px-3 font-medium hover:underline",
                       idx !== arr.length - 1 ? "border-b border-zinc-600" : "",
                     ].join(" ")}
                   >
@@ -90,11 +90,7 @@ export default function CustomerListTable(props: Props) {
                         },
                       }}
                     >
-                      <a>
-                        {group.groupId.length > 12
-                          ? `${group.groupId.slice(0, 10)}...`
-                          : group.groupId}
-                      </a>
+                      <a>{group.groupId}</a>
                     </NextLink>
                   </td>
                   {selectedColumns.map((col) => {
@@ -106,7 +102,7 @@ export default function CustomerListTable(props: Props) {
                       <td
                         key={col}
                         className={[
-                          "hidden whitespace-nowrap py-3 px-3 md:table-cell",
+                          "hidden overflow-hidden text-ellipsis whitespace-nowrap py-3 px-3 md:table-cell",
                           idx !== arr.length - 1
                             ? "border-b border-zinc-600"
                             : "",
@@ -115,7 +111,7 @@ export default function CustomerListTable(props: Props) {
                         {isNil(value) ? (
                           <span className="text-xs text-zinc-700">Empty</span>
                         ) : (
-                          <CustomerTraitValue value={value} maxLength={10} />
+                          <CustomerTraitValue value={value} />
                         )}
                       </td>
                     );

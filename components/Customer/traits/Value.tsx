@@ -31,11 +31,11 @@ export default function CustomerTraitValue({
     }
 
     return (
-      <span className={className || "string-willow"}>
+      <>
         {isNumber(maxLength) && value.length > maxLength - 3
           ? `${value.slice(0, maxLength - 3)}...`
           : value}
-      </span>
+      </>
     );
   }
 
