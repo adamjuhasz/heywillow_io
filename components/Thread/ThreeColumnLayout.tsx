@@ -10,7 +10,7 @@ export default function ThreeColumnLayout(
   return (
     <div className="h-full">
       <div className="py-6">
-        <div className="mx-auto max-w-3xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-8 lg:px-8">
+        <div className="w-full sm:px-6 lg:grid lg:grid-cols-12 lg:gap-8 lg:px-8">
           <div className="hidden lg:col-span-3 lg:block xl:col-span-2">
             <nav
               aria-label="Sidebar"
