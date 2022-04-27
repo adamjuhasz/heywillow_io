@@ -6,21 +6,21 @@ import type { Prisma } from "@prisma/client";
 import intersection from "lodash/intersection";
 
 import CustomerTraitValue from "components/Customer/traits/Value";
-import reservedCols from "components/Customer/traits/reserved";
+import reservedCols from "components/Group/traits/reserved";
 
 interface MiniTrait {
   key: string;
   value: Prisma.JsonValue;
 }
 
-interface MiniCustomer {
+interface MiniGroup {
   id: number;
-  userId: string;
-  CustomerTrait: MiniTrait[];
+  groupId: string;
+  CustomerGroupTraits: MiniTrait[];
 }
 
 interface Props {
-  customers: MiniCustomer[];
+  groups: MiniGroup[];
   pathPrefix: string;
 }
 
@@ -28,7 +28,7 @@ export default function CustomerListTable(props: Props) {
   const router = useRouter();
 
   const allColumns = uniq(
-    props.customers.flatMap((c) => c.CustomerTrait.map((t) => t.key))
+    props.groups.flatMap((c) => c.CustomerGroupTraits.map((t) => t.key))
   ).sort();
 
   const selectedColumns = intersection(reservedCols, allColumns).splice(0, 8);
@@ -72,8 +72,8 @@ export default function CustomerListTable(props: Props) {
             </thead>
             <tbody className="text-left">
               {/* eslint-disable-next-line sonarjs/cognitive-complexity */}
-              {props.customers.map((customer, idx, arr) => (
-                <tr key={customer.id} className="">
+              {props.groups.map((group, idx, arr) => (
+                <tr key={group.id} className="">
                   <td
                     className={[
                       "overflow-hidden text-ellipsis whitespace-nowrap py-3 px-3 font-medium hover:underline",
@@ -82,20 +82,19 @@ export default function CustomerListTable(props: Props) {
                   >
                     <NextLink
                       href={{
-                        pathname:
-                          "/[prefix]/[namespace]/customers/[customerid]",
+                        pathname: "/[prefix]/[namespace]/groups/[group]",
                         query: {
                           ...router.query,
-                          customerid: customer.id,
+                          group: group.id,
                           prefix: props.pathPrefix,
                         },
                       }}
                     >
-                      <a>{customer.userId}</a>
+                      <a>{group.groupId}</a>
                     </NextLink>
                   </td>
                   {selectedColumns.map((col) => {
-                    const value = customer.CustomerTrait.find(
+                    const value = group.CustomerGroupTraits.find(
                       (ct) => ct.key === col
                     )?.value;
 

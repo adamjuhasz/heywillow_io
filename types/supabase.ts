@@ -200,3 +200,29 @@ export interface SupabaseCustomerEvent {
   properties: Prisma.JsonValue | null;
   updatedAt: string;
 }
+
+export interface SupabaseCustomerGroup {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  groupId: string;
+  teamId: number;
+}
+
+export interface SupabaseGroupTrait {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  key: string;
+  value: Prisma.JsonValue | null;
+  idempotency: string | null;
+}
+
+export interface SupabaseGroupEvent {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  action: string;
+  properties: Prisma.JsonValue | null;
+  idempotency: string | null;
+}

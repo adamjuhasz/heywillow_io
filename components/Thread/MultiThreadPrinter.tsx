@@ -1,24 +1,16 @@
 /* eslint-disable sonarjs/no-nested-switch */
 import { useEffect, useMemo, useRef } from "react";
-import sortBy from "lodash/sortBy";
-import orderBy from "lodash/orderBy";
 import type { Prisma } from "@prisma/client";
 
 import LoadingThread from "components/Thread/LoadingThread";
 import { AddComment } from "components/Thread/CommentBox";
 import type { UserDBEntry } from "components/Thread/Comments/TextEntry";
 import { MiniThreadState } from "components/Thread/ThreadState";
-import FeedNode from "components/Thread/Feed/Node";
+import Feed from "components/Thread/Feed";
+import convertIntoFeed from "./Feed/convert";
 
 import { MessageWCommentsCreated } from "components/Thread/Types";
-import {
-  CustomerEventNode,
-  CustomerTraitNode,
-  FeedNode as IFeedNode,
-  MessageNode,
-  SubjectLineNode,
-  ThreadStateNode,
-} from "components/Thread/Feed/Types";
+import { FeedNode as IFeedNode } from "components/Thread/Feed/Types";
 
 interface MiniTrait {
   createdAt: string;
@@ -103,105 +95,25 @@ export default function MultiThreadPrinter(props: Props & CommonProps) {
     }
   }, [props.threads, threadBottom, props.scrollTo]);
 
-  const feed: IFeedNode[] = useMemo(() => {
-    const messages: MessageNode[] = (props.threads || []).flatMap((t) =>
-      t.Message.map((m) => ({
-        type: "message",
-        message: m,
-        createdAt: m.createdAt,
-        uniqKey: `message-${m.id}`,
-      }))
-    );
-
-    const threadStates: ThreadStateNode[] = (props.threads || []).flatMap((t) =>
-      t.ThreadState.filter((s) => s.state !== "open").map((s) => ({
-        type: "threadState",
-        state: s,
-        createdAt: s.createdAt,
-        uniqKey: `thread-state-${s.id}`,
-      }))
-    );
-
-    const subjects: SubjectLineNode[] = (props.threads || []).map((t) => {
-      const hasSubject = sortBy(
-        t.Message.filter((m) => m.subject !== null),
-        ["createdAt"]
-      );
-
-      return {
-        type: "subjectLine",
-        subject: hasSubject[0].subject as string,
-        createdAt: hasSubject[0].createdAt,
-        threadId: t.id,
-        uniqKey: `thread-${t.id}`,
-      };
-    });
-
-    const traits: CustomerTraitNode[] = (props.traits || []).map((t) => ({
-      type: "traitChange",
-      createdAt: t.createdAt,
-      key: t.key,
-      value: t.value,
-      uniqKey: `trait-${t.createdAt}-${t.key}`,
-    }));
-
-    const events: CustomerEventNode[] = (props.events || []).map((e) => ({
-      type: "event",
-      createdAt: e.createdAt,
-      action: e.action,
-      properties: e.properties,
-      uniqKey: `event-${e.createdAt}-${e.action}`,
-    }));
-
-    const unsortedFeed: IFeedNode[] = [
-      ...messages,
-      ...threadStates,
-      ...subjects,
-      ...traits,
-      ...events,
-    ];
-
-    // eslint-disable-next-line lodash/collection-ordering
-    return orderBy(
-      unsortedFeed,
-      [
-        (node) => node.createdAt,
-        (node) => {
-          switch (node.type) {
-            case "subjectLine":
-              return 0;
-            case "threadState":
-              return 1;
-            case "message":
-              return 2;
-            case "traitChange":
-              return 3;
-            case "event":
-              return 4;
-          }
-        },
-      ],
-      ["asc", "asc"]
-    );
-  }, [props.threads, props.traits, props.events]);
+  const feed: IFeedNode[] = useMemo(
+    () =>
+      convertIntoFeed({
+        threads: props.threads,
+        traits: props.traits,
+        events: props.events,
+      }),
+    [props.threads, props.traits, props.events]
+  );
 
   return (
     <div className="grow overflow-x-hidden overflow-y-scroll">
       {props.threads ? (
-        <>
-          {feed.map((node, idx, feedArray): JSX.Element => {
-            return (
-              <FeedNode
-                key={node.uniqKey}
-                id={`node-${idx}/${feedArray.length}`}
-                isLast={idx === feedArray.length - 1}
-                isFirst={idx === 0}
-                node={node}
-                {...props}
-              />
-            );
-          })}
-        </>
+        <Feed
+          feed={feed}
+          addComment={props.addComment}
+          refreshComment={props.refreshComment}
+          teamMemberList={props.teamMemberList}
+        />
       ) : (
         <LoadingThread />
       )}

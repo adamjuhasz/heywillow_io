@@ -8,7 +8,7 @@ import OnboardingHeader from "components/Onboarding/Header";
 import SettingsBox from "components/Settings/Box/Box";
 import Loading from "components/Loading";
 import AppContainer from "components/App/Container";
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import createInbox, { BadRequest } from "client/createInbox";
 import ToastContext from "components/Toast";
 
@@ -20,7 +20,8 @@ export default function CreateTeam(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const router = useRouter();
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
 
   useEffect(() => {
     void router.prefetch(nextOnboardingStep);

@@ -12,7 +12,7 @@ import TeamSettingsSidebar from "components/Settings/Team/TeamSidebar";
 import useGetNotificationPreferences from "client/getNotificationPreferences";
 import useChangeNotificationPreference from "client/changeNotificationPreference";
 import useGetMyTeamMemberId from "client/getMyTeamMemberId";
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import notificationDefaults from "shared/notifications/defaults";
 
 export default function NotificationSettingsPage(): JSX.Element {
@@ -22,7 +22,8 @@ export default function NotificationSettingsPage(): JSX.Element {
     isValidating,
   } = useGetNotificationPreferences();
   const changePref = useChangeNotificationPreference();
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
   const { data: teamMemberId } = useGetMyTeamMemberId(teamId);
 
   const channelName: Record<NotificationChannel, string> = {

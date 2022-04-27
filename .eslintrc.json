@@ -50,7 +50,8 @@
     "no-var": ["error"],
     "sonarjs/prefer-immediate-return": ["off"],
     "@typescript-eslint/explicit-function-return-type": ["off"],
-    "lodash/matches-prop-shorthand": ["off"]
+    "lodash/matches-prop-shorthand": ["off"],
+    "lodash/prefer-constant": ["off"]
   },
   "globals": { "JSX": "readonly", "NodeJS": "readonly" }
 }

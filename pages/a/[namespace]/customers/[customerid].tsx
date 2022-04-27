@@ -3,11 +3,9 @@ import { useRouter } from "next/router";
 
 import AppLayout from "layouts/app";
 import AppHeader from "components/App/HeaderHOC";
-import LinkBar from "components/LinkBar";
-import AppHeaderThreadLink from "components/App/ThreadLink";
 import Loading from "components/Loading";
 import CustomerOverview from "components/Customer/Overview";
-import AppHeaderUsersLink from "components/App/UsersLink";
+import WorkspaceHeader from "components/App/WorkspaceHeader";
 
 import useGetCustomer from "client/getCustomer";
 import useGetThread from "client/getThread";
@@ -30,10 +28,7 @@ export default function Customer() {
   return (
     <>
       <AppHeader>
-        <LinkBar hideBorder>
-          <AppHeaderThreadLink />
-          <AppHeaderUsersLink />
-        </LinkBar>
+        <WorkspaceHeader />
       </AppHeader>
 
       {customer ? (

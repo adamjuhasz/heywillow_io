@@ -1,19 +1,13 @@
-import { useRouter } from "next/router";
-
 import { Link } from "components/LinkBar";
 import NumberBadge from "components/App/NumberBadge";
 
-import useGetTeams from "client/getTeams";
 import useGetTeamThreads from "client/getTeamThreads";
+import useGetCurrentTeam from "client/getTeamId";
 
 export default function AppHeaderThreadLink() {
-  const router = useRouter();
+  const currentTeam = useGetCurrentTeam();
 
-  const { namespace } = router.query;
-  const { data: teams } = useGetTeams();
-
-  const currentTeam = teams?.find((t) => t.Namespace.namespace === namespace);
-  const currentTeamId = currentTeam?.id;
+  const currentTeamId = currentTeam?.currentTeamId;
 
   const { data: threads } = useGetTeamThreads(currentTeamId);
 

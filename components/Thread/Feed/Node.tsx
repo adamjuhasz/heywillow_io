@@ -92,9 +92,27 @@ function NodePrinter({ node, ...props }: NodePrinterProps): JSX.Element {
       );
 
     case "traitChange":
-      return <TraitChange node={node} />;
+      return (
+        <div className="flex flex-col">
+          {node.displayName ? (
+            <div className="text-xs">{node.displayName}</div>
+          ) : (
+            <></>
+          )}
+          <TraitChange node={node} />
+        </div>
+      );
 
     case "event":
-      return <Event node={node} />;
+      return (
+        <div className="flex flex-col">
+          {node.displayName ? (
+            <div className="text-xs">{node.displayName}</div>
+          ) : (
+            <></>
+          )}
+          <Event node={node} />
+        </div>
+      );
   }
 }

@@ -10,12 +10,13 @@ import SettingsHeader from "components/Settings/Header";
 import AppContainer from "components/App/Container";
 import Loading from "components/Loading";
 
-import useGetTeamId from "client/getTeamId";
+import useGetCurrentTeam from "client/getTeamId";
 import createBillingPortalLink from "client/createBillingPortalLink";
 
 export default function TeamBilling(): JSX.Element {
   const router = useRouter();
-  const teamId = useGetTeamId();
+  const currentTeam = useGetCurrentTeam();
+  const teamId = currentTeam?.currentTeamId;
   const [loading, setLoading] = useState(false);
 
   const openStripe = async () => {
