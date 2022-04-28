@@ -51,7 +51,8 @@
     "sonarjs/prefer-immediate-return": ["off"],
     "@typescript-eslint/explicit-function-return-type": ["off"],
     "lodash/matches-prop-shorthand": ["off"],
-    "lodash/prefer-constant": ["off"]
+    "lodash/prefer-constant": ["off"],
+    "sonarjs/no-nested-switch": ["off"]
   },
   "globals": { "JSX": "readonly", "NodeJS": "readonly" }
 }
