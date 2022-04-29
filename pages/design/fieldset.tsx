@@ -2,6 +2,8 @@ import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 import { NextSeo } from "next-seo";
 import { ParsedUrlQuery } from "querystring";
 import orderBy from "lodash/orderBy";
+import fs from "fs";
+import path from "path";
 
 import LandingPageHeader from "components/LandingPage/Header";
 import LandingPageFooter from "components/LandingPage/Footer";
@@ -30,6 +32,9 @@ export async function getStaticProps(
   _params: GetStaticPropsContext<Params>
 ): Promise<GetStaticPropsResult<Props>> {
   try {
+    const sourceFile = fs
+      .readFileSync(path.join(process.cwd(), "components/Design/Fieldset.tsx"))
+      .toString();
     const changelogs = getAllPostIds(changelogDirectory);
     const changelogPosts = await Promise.all(
       orderBy(changelogs, ["param.id"], ["desc"]).map(({ params: { id } }) =>
@@ -44,6 +49,7 @@ export async function getStaticProps(
       props: {
         changelogs: changelogPosts,
         blogPosts: blogPosts,
+        sourceCode: sourceFile,
       },
     };
   } catch (e) {
@@ -56,6 +62,7 @@ export async function getStaticProps(
 interface Props {
   changelogs: IPost[];
   blogPosts: IPost[];
+  sourceCode: string;
 }
 
 export default function DesignPatterns(props: Props) {
@@ -68,7 +75,7 @@ export default function DesignPatterns(props: Props) {
 
       <LandingPageHeader />
 
-      <DesignPageContainer>
+      <DesignPageContainer className="space-y-3">
         <Fieldset>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -83,6 +90,11 @@ export default function DesignPatterns(props: Props) {
             All your base
             <FooterActions>hi</FooterActions>
           </Footer>
+        </Fieldset>
+
+        <Fieldset>
+          <Title>Fieldset&rsquo;s code</Title>
+          <pre className="text-xs">{props.sourceCode}</pre>
         </Fieldset>
       </DesignPageContainer>
 

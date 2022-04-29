@@ -25,11 +25,11 @@ export default function DesignSidebar() {
                     <a>Button</a>
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link href={{ pathname: "/design/capacity" }}>
                     <a>Capacity</a>
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link href={{ pathname: "/design/fieldset" }}>
                     <a>Fieldset</a>
