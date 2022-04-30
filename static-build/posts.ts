@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import orderBy from "lodash/orderBy";
 import format from "date-fns/format";
 import subHours from "date-fns/subHours";
+import remarkHeadingId from "remark-heading-id";
 
 export const guidesDirectory = path.join(process.cwd(), "guides");
 export const blogDirectory = path.join(process.cwd(), "blog");
@@ -69,8 +70,11 @@ export async function getPostData(
   const processedContent = await remark()
     .use(html)
     .use(remarkGfm)
+    .use(remarkHeadingId)
     .process(matterResult.content);
-  const contentHtml = processedContent.toString();
+  const contentHtml = processedContent
+    .toString()
+    .replace(/id="user-content-/g, 'id="');
 
   const excerpt = await remark()
     .use(html)

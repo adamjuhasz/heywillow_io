@@ -231,6 +231,7 @@ export default function Post({ postData, ...props }: Props) {
           "prose-code:bg-black prose-code:p-1 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none",
           "prose-hr:mx-auto prose-hr:w-10/12 prose-hr:border-zinc-600",
           "prose-pre:bg-black",
+          "prose-h1:scroll-mt-32 prose-h2:scroll-mt-32 prose-h3:scroll-mt-32 prose-h4:scroll-mt-32 prose-a:scroll-mt-32 prose-li:scroll-mt-32 ",
         ].join(" ")}
       >
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />

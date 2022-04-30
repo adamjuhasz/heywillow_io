@@ -36,6 +36,7 @@
     "react-textarea-autosize": "^8.3.3",
     "remark": "^14.0.2",
     "remark-gfm": "^3.0.1",
+    "remark-heading-id": "^1.0.0",
     "remark-html": "^15.0.1",
     "slate": "^0.78.0",
     "slate-react": "^0.77.4",

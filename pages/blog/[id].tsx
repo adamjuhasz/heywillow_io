@@ -233,6 +233,7 @@ export default function Post(props: Props) {
           "prose-hr:mx-auto prose-hr:w-10/12 prose-hr:border-zinc-600",
           "prose-pre:bg-black",
           "prose-img:w-96 prose-img:rounded-xl prose-img:border-2 prose-img:border-zinc-800",
+          "prose-h1:scroll-mt-32 prose-h2:scroll-mt-32 prose-h3:scroll-mt-32 prose-h4:scroll-mt-32 prose-a:scroll-mt-32 prose-li:scroll-mt-32 ",
         ].join(" ")}
       >
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />

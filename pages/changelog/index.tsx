@@ -98,6 +98,7 @@ export default function Blog(props: StaticProps) {
                 className={[
                   "prose prose-invert",
                   "prose-img:w-96 prose-img:rounded-xl prose-img:border-2 prose-img:border-zinc-800",
+                  "prose-h1:scroll-mt-32 prose-h2:scroll-mt-32 prose-h3:scroll-mt-32 prose-h4:scroll-mt-32 prose-a:scroll-mt-32 prose-li:scroll-mt-32 ",
                 ].join(" ")}
                 dangerouslySetInnerHTML={{ __html: post.contentHtml }}
               />

@@ -96,7 +96,10 @@ export default function Blog(props: StaticProps) {
                 </a>
               </Link>
               <div
-                className="prose prose-invert font-light text-zinc-200"
+                className={[
+                  "prose prose-invert font-light text-zinc-200",
+                  "prose-h1:scroll-mt-32 prose-h2:scroll-mt-32 prose-h3:scroll-mt-32 prose-h4:scroll-mt-32 prose-a:scroll-mt-32 prose-li:scroll-mt-32 ",
+                ].join(" ")}
                 dangerouslySetInnerHTML={{ __html: post.excerptHtml }}
               />
               <Link href={`/guides/${post.id}`}>
