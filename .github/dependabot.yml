@@ -8,10 +8,10 @@ updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "monthly"
       time: "07:00"
       timezone: "America/Los_Angeles"
     allow:
-      - dependency-type: "direct"
+      - dependency-name: "none" # disabled
     # Allow up to 10 open pull requests for npm dependencies
     open-pull-requests-limit: 10
