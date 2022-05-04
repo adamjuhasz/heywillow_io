@@ -9,140 +9,156 @@ interface Props {
     | "warning"
     | "alert"
     | "tertiary";
-
   variant?: "normal" | "shadow" | "ghost";
   loading?: boolean;
   disabled?: boolean;
 }
 
-export default function Button(props: React.PropsWithChildren<Props>) {
-  let size = "";
-  let loadingSize = "";
-  let shape = "";
-  let color = "";
-  let variant = "";
+type ButtonProps = Omit<
+  React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  >,
+  "type"
+>;
 
-  switch (props.shape) {
+export default function Button({
+  shape,
+  size,
+  children,
+  type,
+  variant,
+  loading,
+  disabled,
+  ...props
+}: React.PropsWithChildren<ButtonProps & Props>) {
+  let sizeClasses = "";
+  let loadingSize = "";
+  let shapeClasses = "";
+  let colorClasses = "";
+  let variantClasses = "";
+
+  switch (shape) {
     case "circle":
-      shape = "aspect-square rounded-full";
+      shapeClasses = "aspect-square rounded-full";
       break;
 
     case "square":
-      shape = "aspect-square rounded-md";
+      shapeClasses = "aspect-square rounded-md";
       break;
 
     case undefined:
-      shape = "rounded-md";
+      shapeClasses = "rounded-md";
       break;
   }
 
-  switch (props.shape) {
+  switch (shape) {
     case "circle":
     case "square":
-      switch (props.size) {
+      switch (size) {
         case "small":
-          size = "h-7";
+          sizeClasses = "h-7";
           loadingSize = "h-3 w-3";
           break;
 
         case undefined:
         case "normal":
-          size = "h-11";
+          sizeClasses = "h-11";
           loadingSize = "h-4 w-4";
           break;
 
         case "large":
-          size = "h-16";
+          sizeClasses = "h-16";
           loadingSize = "h-6 w-6";
           break;
       }
       break;
 
     default:
-      switch (props.size) {
+      switch (size) {
         case "small":
-          size = "py-1 px-3 h-max";
+          sizeClasses = "py-1 px-3 h-max";
           loadingSize = "h-3 w-3";
           break;
 
         case undefined:
         case "normal":
-          size = "py-2 px-3 h-max";
+          sizeClasses = "py-2 px-3 h-max";
           loadingSize = "h-4 w-4";
           break;
 
         case "large":
-          size = "py-4 px-3 h-max";
+          sizeClasses = "py-4 px-3 h-max";
           loadingSize = "h-6 w-6";
           break;
       }
   }
 
-  switch (props.type) {
+  switch (type) {
     case "alert":
-      color = alertColor;
+      colorClasses = alertColor;
       break;
 
     case "error":
-      color = errorColor;
+      colorClasses = errorColor;
       break;
 
     case "secondary":
-      color = [secondaryColor, hoverColor].join(" ");
+      colorClasses = [secondaryColor, hoverColor].join(" ");
       break;
 
     case "success":
-      color = successColor;
+      colorClasses = successColor;
       break;
 
     case "tertiary":
-      color = tertiaryColor;
+      colorClasses = tertiaryColor;
       break;
 
     case "warning":
-      color = warningColor;
+      colorClasses = warningColor;
       break;
 
     case "primary":
     default:
-      color = [primaryColor, hoverColor].join(" ");
+      colorClasses = [primaryColor, hoverColor].join(" ");
       break;
   }
 
-  switch (props.variant) {
+  switch (variant) {
     case "shadow":
-      variant = "hover:-translate-y-1 ";
+      variantClasses = "hover:-translate-y-1 ";
       break;
 
     case "ghost":
-      switch (props.type) {
+      switch (type) {
         case "alert":
-          color = ghostAlertColor;
+          colorClasses = ghostAlertColor;
           break;
 
         case "error":
-          color = ghostErrorColor;
+          colorClasses = ghostErrorColor;
           break;
 
         case "secondary":
-          color = ghostSecondaryColor;
+          colorClasses = ghostSecondaryColor;
           break;
 
         case "success":
-          color = ghostSuccessColor;
+          colorClasses = ghostSuccessColor;
           break;
 
         case "tertiary":
-          color = ghostTertiaryColor;
+          colorClasses = ghostTertiaryColor;
           break;
 
         case "warning":
-          color = ghostWarningColor;
+          colorClasses = ghostWarningColor;
           break;
 
         case "primary":
         default:
-          color = ghostPrimaryColor;
+          colorClasses = ghostPrimaryColor;
           break;
       }
       break;
@@ -154,20 +170,21 @@ export default function Button(props: React.PropsWithChildren<Props>) {
 
   return (
     <button
-      disabled={props.loading || props.disabled}
+      {...props}
+      disabled={loading || disabled}
       className={[
         "flex items-center justify-center border font-normal transition disabled:cursor-not-allowed",
-        size,
-        shape,
-        color,
-        variant,
+        sizeClasses,
+        shapeClasses,
+        colorClasses,
+        variantClasses,
         disabledColor,
       ].join(" ")}
     >
-      {props.loading && (
+      {loading && (
         <Loading className={["mr-1", loadingSize, loadingColor].join(" ")} />
       )}{" "}
-      {props.children}
+      {children}
     </button>
   );
 }
