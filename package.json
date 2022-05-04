@@ -13,7 +13,7 @@
   "dependencies": {
     "@floating-ui/dom": "^0.4.5",
     "@floating-ui/react-dom": "^0.6.3",
-    "@headlessui/react": "^1.6.0",
+    "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
     "@prisma/client": "^3.13.0",
     "@segment/snippet": "^4.15.3",
